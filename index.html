@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09d';
+var APP_VERSION = '2026-11-09g';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -4435,7 +4435,7 @@ body.hs-mobile #pc-qr-card{display:none !important;}
 
 
 /* ---- 관리자 위쪽 메뉴 (2026-10-20o): 관리자는 연습하지 않으므로 면접 연습·리포트·내 성장만 숨김 (홈 화면은 그대로) ---- */
-body.is-admin-ui .d3-nav a[data-go="practice"], body.is-admin-ui .d3-nav a[data-go="reports"], body.is-admin-ui .d3-nav a[data-go="growth"]{ display:none !important; }
+body.is-admin-ui .d3-nav a[data-go="practice"], body.is-admin-ui .d3-nav a[data-go="reports"], body.is-admin-ui .d3-nav a[data-go="growth"], body.is-admin-ui .d3-nav a[data-go="debate"]{ display:none !important; }
 /* 2026-10-20o: 관리자 메뉴에 공지사항·관리자 화면을 홈 옆에 꺼내고, 이름 메뉴에서는 같은 항목·카카오톡 문의를 뺌 */
 .d3-nav a.adm-only{ display:none; }
 body.is-admin-ui .d3-nav a.adm-only{ display:inline-flex; }
@@ -5628,6 +5628,68 @@ html.pk-open{overflow:hidden;}
 .pk-ax{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border-radius:10px;overflow:hidden;} .pk-ax th,.pk-ax td{padding:7px 10px;border-bottom:1px solid #EEF1F5;text-align:center;} .pk-ax th:first-child{text-align:left;}
 .pk-ax thead th{font-size:12px;color:#6B7485;background:#F4F6FA;} .pk-ax td.up{color:#21633C;font-weight:800;} .pk-ax td.down{color:#A12B2B;font-weight:800;}
 .pk-fb{padding:12px 14px;border-radius:12px;background:#fff;border:1px solid #E6EAF0;} .pk-fb > b{color:#C8441C;font-size:13.5px;} .pk-fb p{margin:6px 0 0;line-height:1.7;white-space:pre-line;font-size:14px;}
+/* 2026-11-09e 홈 카드 · 토론·PT 연습 · 기관별 후기 질문 */
+.hx-card .hx-lead{margin:6px 0 14px;font-size:14px;color:#4A5466;line-height:1.65;} .hx-acts{display:flex;gap:8px;flex-wrap:wrap;} .hx-last{margin:10px 0 0;font-size:12.5px;color:#8a8a90;} .hx-fine{margin:4px 0 0;font-size:12px;color:#8a8a90;line-height:1.6;}
+.pk-fresh .pk-big > div:first-child, .pk-fresh .pk-big > i, .pk-fresh .pk-delta{display:none;}
+.pk-fresh .pk-ax th:nth-child(2), .pk-fresh .pk-ax td:nth-child(2), .pk-fresh .pk-ax th:nth-child(4), .pk-fresh .pk-ax td:nth-child(4){display:none;}
+.dbt-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;}
+.dbt-sel{display:flex;align-items:center;gap:8px;font-size:13px;color:#6B7485;} .dbt-sel select{height:38px;border:1.5px solid #C5CEDC;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;background:#fff;max-width:280px;}
+.dbt-kind{display:inline-flex;border:1.5px solid #C5CEDC;border-radius:10px;overflow:hidden;} .dbt-kind button{border:0;background:#fff;padding:8px 16px;font:inherit;font-size:14px;font-weight:700;color:#4A5466;cursor:pointer;} .dbt-kind button.on{background:#1c2a44;color:#fff;}
+.dbt-how{margin:0;font-size:13.5px;color:#4A5466;line-height:1.65;background:#F4F6FA;border-radius:10px;padding:10px 12px;}
+.dbt-note{margin:0;font-size:13px;color:#8a5a00;background:#FBF1DC;border-radius:8px;padding:8px 10px;line-height:1.6;}
+.dbt-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+.dbt-list button{width:100%;display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:left;border:1.5px solid #E6EAF0;border-radius:12px;background:#fff;padding:11px 14px;font:inherit;cursor:pointer;}
+.dbt-list button:hover{border-color:#1c2a44;} .dbt-org{grid-column:1;font-size:12px;color:#8a8a90;} .dbt-q{grid-column:1;font-size:14.5px;color:#172033;line-height:1.5;font-weight:600;} .dbt-list i{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;color:#b0aea8;font-size:20px;}
+.dbt-topic{background:#FBEDE7;border-radius:12px;padding:12px 14px;} .dbt-topic small{font-size:12px;color:#c8441c;font-weight:700;} .dbt-topic p{margin:4px 0 0;font-size:16px;font-weight:700;line-height:1.55;color:#172033;} .dbt-topic.sm p{font-size:14.5px;}
+.dbt-timer{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:6px 8px;} .dbt-timer b{font-size:28px;color:#1c2a44;font-variant-numeric:tabular-nums;min-width:2ch;text-align:right;} .dbt-timer span{font-size:13px;color:#6B7485;} .dbt-timer i{height:8px;border-radius:4px;background:#EEF1F5;overflow:hidden;margin-left:8px;} .dbt-timer em{display:block;height:100%;width:0;background:#c8441c;transition:width 1s linear;}
+#dbt-memo{width:100%;box-sizing:border-box;border:1.5px solid #C5CEDC;border-radius:10px;padding:10px 12px;font:inherit;font-size:14px;line-height:1.6;resize:vertical;}
+.dbt-memo-v summary,.dbt-log summary{cursor:pointer;font-size:13px;color:#4A5466;} .dbt-memo-v p{white-space:pre-line;margin:6px 0 0;font-size:13.5px;color:#4A5466;background:#F7F8FA;border-radius:8px;padding:8px 10px;}
+.dbt-ai{border-left:4px solid #2346A0;background:#F1F5FF;border-radius:0 12px 12px 0;padding:10px 14px;} .dbt-ai b{font-size:12.5px;color:#2346A0;} .dbt-ai p{margin:4px 0 0;font-size:14.5px;line-height:1.65;color:#172033;}
+.dbt-score{display:flex;gap:14px;align-items:center;background:#F4F6FA;border-radius:12px;padding:12px 14px;} .dbt-score > div{display:flex;flex-direction:column;align-items:center;min-width:72px;} .dbt-score small{font-size:12px;color:#6B7485;} .dbt-score b{font-size:32px;color:#c8441c;line-height:1.1;} .dbt-score span{font-size:11px;color:#8a8a90;} .dbt-score p{margin:0;font-size:14px;line-height:1.6;color:#172033;}
+.dbt-axes{list-style:none;margin:0;padding:0;display:grid;gap:8px;} .dbt-axes li{display:grid;grid-template-columns:80px 1fr 44px;align-items:center;gap:10px;font-size:13.5px;color:#172033;} .dbt-axes i{height:10px;background:#EEF1F5;border-radius:5px;overflow:hidden;} .dbt-axes em{display:block;height:100%;background:#1c2a44;border-radius:5px;} .dbt-axes b{text-align:right;} .dbt-axes small{color:#8a8a90;font-weight:400;}
+.pk-fb ul{margin:6px 0 0;padding-left:18px;line-height:1.65;font-size:14px;} .pk-fb ul li + li{margin-top:4px;} .dbt-good > b{color:#1f7a45 !important;}
+.dbt-ex{background:#F2F8F4;border-radius:12px;padding:12px 14px;} .dbt-ex b{font-size:13px;color:#1f4d33;} .dbt-ex p{margin:6px 0 0;font-size:14px;line-height:1.7;color:#172033;}
+.dbt-log dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:8px 0 0;font-size:13.5px;line-height:1.6;} .dbt-log dt{color:#8a8a90;font-weight:700;white-space:nowrap;} .dbt-log dd{margin:0;}
+.qbr-h{margin:4px 0 0;font-size:13px;color:#6B7485;}
+.qbr-orgs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;} .qbr-orgs button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;border:1.5px solid #E6EAF0;border-radius:12px;background:#fff;padding:12px 14px;font:inherit;cursor:pointer;text-align:left;} .qbr-orgs button:hover{border-color:#1c2a44;} .qbr-orgs b{font-size:14.5px;color:#172033;} .qbr-orgs span{font-size:12.5px;color:#8a8a90;white-space:nowrap;}
+.qbr-top{display:flex;gap:10px;align-items:center;} .qbr-back{border:0;background:none;font:inherit;font-size:13.5px;color:#4A5466;cursor:pointer;padding:6px 0;white-space:nowrap;} #qbr-q{flex:1;min-width:0;height:38px;border:1.5px solid #C5CEDC;border-radius:10px;padding:0 12px;font:inherit;font-size:14px;}
+.qbr-tabs{display:flex;gap:6px;flex-wrap:wrap;} .qbr-tabs button{border:1.5px solid #E6EAF0;background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;font-weight:600;color:#4A5466;cursor:pointer;} .qbr-tabs button.on{background:#1c2a44;border-color:#1c2a44;color:#fff;} .qbr-tabs small{opacity:.75;font-weight:500;}
+.qbr-list{list-style:none;margin:0;padding:0;} .qbr-list li{padding:12px 2px;border-top:1px solid #EEF1F5;} .qbr-list li:first-child{border-top:0;} .qbr-list p{margin:0;font-size:14.5px;line-height:1.55;color:#172033;} .qbr-meta{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:#8a8a90;} .qbr-meta .pk-btn{margin-left:auto;} .qbr-tag{background:#EEF3FF;color:#2f5bd3;border-radius:999px;padding:1px 8px;font-weight:700;}
+.pk-btn.sm{min-height:32px;padding:0 12px;font-size:13px;} .qbr-more{align-self:center;}
+.cc-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;} .cc-btn{min-height:36px;padding:0 14px;border:1.5px solid #E3C9BD;border-radius:10px;background:#FBEDE7;color:#a8381a;font:inherit;font-size:13px;font-weight:700;cursor:pointer;} .cc-btn:hover{border-color:#c8441c;}
+/* 2026-11-09f 토론 연습 전용 화면 · 홈 '토론·발표 면접' 버튼 */
+.hm-mode.hm-debate{grid-column:1/-1;background:#1c2a44;border-color:#1c2a44;color:#fff;padding-right:150px;}
+.hm-mode.hm-debate em{color:#FFC9B3;} .hm-mode.hm-debate span{color:rgba(255,255,255,.82);}
+.hm-mode.hm-debate i{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-style:normal;font-size:14px;font-weight:800;background:#fff;color:#1c2a44;border-radius:999px;padding:9px 16px;white-space:nowrap;}
+.hm-mode.hm-debate:hover{border-color:#1c2a44;box-shadow:0 0 0 3px rgba(28,42,68,.18);}
+.dbp-steps{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-wrap:wrap;gap:6px;counter-reset:dbp;}
+.dbp-steps li{counter-increment:dbp;display:flex;align-items:center;gap:6px;padding:6px 12px 6px 6px;border-radius:999px;background:#F0F2F5;color:#6B7485;font-size:13px;font-weight:700;}
+.dbp-steps li::before{content:counter(dbp);display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#fff;color:#6B7485;font-size:12px;}
+.dbp-steps li.on{background:#1c2a44;color:#fff;} .dbp-steps li.on::before{color:#1c2a44;}
+.dbp-steps li.done{background:#E3F3E9;color:#21633C;} .dbp-steps li.done::before{content:"✓";color:#21633C;}
+.dbp-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start;}
+.dbp-main{padding:0;overflow:hidden;display:flex;flex-direction:column;scroll-margin-top:80px;}
+.dbp-mh{padding:18px 22px 4px;} .dbp-mh h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.01em;color:#172033;}
+.dbp-b{padding:12px 22px 18px;display:flex;flex-direction:column;gap:12px;font-size:14.5px;color:#172033;}
+.dbp-f{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:12px 22px;border-top:1px solid #E6EAF0;background:#FAFBFC;}
+.dbp-f:empty{display:none;}
+.dbp-b #dbt-memo{width:100%;box-sizing:border-box;padding:12px;border:1.5px solid #CFD7E3;border-radius:12px;font:inherit;font-size:14.5px;line-height:1.65;resize:vertical;}
+.dbp-side{display:flex;flex-direction:column;gap:16px;}
+.dbp-guide{margin:6px 0 8px;display:grid;gap:4px;font-size:13.5px;line-height:1.65;color:#4A5466;} .dbp-guide dt{font-weight:800;color:#172033;margin-top:6px;} .dbp-guide dt:first-child{margin-top:0;} .dbp-guide dd{margin:0;}
+.dbp-empty{margin:6px 0 0;font-size:13.5px;color:#6B7485;line-height:1.65;}
+.dbp-hist{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;max-height:460px;overflow:auto;}
+.dbp-hist button{width:100%;display:flex;gap:12px;align-items:center;text-align:left;border:1px solid #E6EAF0;border-radius:12px;background:#fff;padding:10px 12px;font:inherit;cursor:pointer;}
+.dbp-hist button:hover{border-color:#1c2a44;}
+.dbp-sc{flex:none;min-width:46px;text-align:center;font-size:20px;color:#c8441c;line-height:1.1;} .dbp-sc small{font-size:11px;color:#8a8a90;font-weight:600;margin-left:1px;}
+.dbp-ht{flex:1;min-width:0;font-size:13.5px;line-height:1.5;color:#172033;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;} .dbp-ht em{display:block;font-style:normal;font-size:12px;color:#8a8a90;}
+.dbt-sels{display:flex;flex-wrap:wrap;gap:10px;} .dbt-kind button small{font-size:11.5px;font-weight:600;opacity:.75;margin-left:2px;}
+.dbt-grp{display:flex;flex-direction:column;gap:8px;background:#F7F8FA;border-radius:12px;padding:12px 14px;} .dbt-grp-h{font-size:12.5px;color:#4A5466;}
+.dbt-mem{display:flex;gap:10px;align-items:flex-start;} .dbt-mem > div{flex:1;min-width:0;background:#fff;border:1px solid #E6EAF0;border-radius:0 12px 12px 12px;padding:8px 12px;}
+.dbt-mem b{font-size:12.5px;color:#172033;} .dbt-mem b small{font-weight:600;color:#8a8a90;margin-left:4px;} .dbt-mem p{margin:3px 0 0;font-size:14.5px;line-height:1.65;color:#172033;}
+.dbt-av{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff;background:#2346A0;} .dbt-av[data-w="B"]{background:#1f7a45;} .dbt-av[data-w="C"]{background:#8A5A00;}
+@media(max-width:960px){ .dbp-grid{grid-template-columns:1fr;} }
+@media(max-width:720px){ .hm-mode.hm-debate{padding-right:20px;} .hm-mode.hm-debate i{position:static;transform:none;margin-top:10px;align-self:flex-start;} .dbp-mh{padding:16px 16px 2px;} .dbp-b{padding:10px 16px 16px;} .dbp-f{padding:12px 16px;} .dbp-f .pk-btn{flex:1 1 auto;} .dbp-steps li{font-size:12px;padding:5px 10px 5px 5px;} }
+@media(max-width:720px){ .dbt-ctl{flex-direction:column;align-items:stretch;} .dbt-sel select{max-width:none;flex:1;} .dbt-kind{align-self:flex-start;} .dbt-sels{flex-direction:column;} .dbt-sel{width:100%;} .dbt-sel > span{flex:none;width:64px;} .qbr-orgs{grid-template-columns:1fr;} .dbt-score{flex-direction:column;align-items:flex-start;} .dbt-score > div{flex-direction:row;align-items:baseline;gap:6px;} }
 .pk-s b{color:#21633C;margin-right:4px;} .pk-i b{color:#B26A00;margin-right:4px;}
 .pk-acts{display:flex;gap:8px;flex-wrap:wrap;}
 .pk-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;} .pk-two section{padding:12px 14px;border:1px solid #E6EAF0;border-radius:12px;background:#F7F8FA;} .pk-two section.ai{background:#F3F8F4;border-color:#CFE5D6;}
@@ -6192,6 +6254,74 @@ html.ivv-dr-open{overflow:hidden;}
   #screen-result .bar-top, #screen-result .bar-top span{font-size:15px !important;}
   #screen-result .rp-col li, #screen-result .rp-reco li, #screen-result .rp-grade-note, #screen-result .rp-row{font-size:15px !important;}
 }
+/* 2026-11-09g 휴대폰 화면 다듬기: 글자·여백을 한 단계 줄이고, 빈 공간·겹친 상자를 정리 */
+@media(max-width:640px){
+  #screen-dashboard.v3{--pad-card:16px;}
+  #screen-dashboard .d3-page{padding-left:14px;padding-right:14px;}
+  #screen-dashboard .d3-hdr-inner{padding-left:14px;padding-right:14px;}
+  .d3-brand{transform:scale(.88);transform-origin:left center;}
+  .d3-nav a{height:40px;padding:0 10px;font-size:14px !important;}
+  .d3-hero{margin-top:12px;gap:12px;}
+  .d3-greet{padding:18px 16px;}
+  .d3-greet-meta{margin-bottom:8px;font-size:12px;}
+  .d3-greet h1{font-size:21px;line-height:1.35;}
+  .d3-lead{margin-top:6px;font-size:13.5px;}
+  .g4-top{gap:12px;}
+  .g4-week{padding:10px 12px;gap:10px;min-width:0;}
+  .g4-week .ring{width:44px;height:44px;} .g4-week .ring svg{width:44px;height:44px;}
+  .g4-week .wm{font-size:13.5px;}
+  .hm-modes{gap:8px;margin-top:12px;}
+  .hm-mode{padding:12px 14px;border-radius:12px;gap:1px;}
+  .hm-mode b{font-size:16px !important;} .hm-mode span{font-size:12.5px;line-height:1.5;} .hm-mode em{font-size:11px;}
+  .hm-mode.hm-debate{padding:12px 92px 12px 14px;}
+  .hm-mode.hm-debate i{position:absolute;right:12px;top:50%;transform:translateY(-50%);margin:0;padding:7px 11px;font-size:12.5px;}
+  .hm-first{font-size:13px;}
+  .d3-today{margin-top:12px !important;}
+  .g4-reco{margin-top:12px;padding:14px;}
+  .g4-reco h2{font-size:17px;margin:6px 0 4px;}
+  .g4-reco p{font-size:13px;}
+  .g4-reco .d3-btn{height:44px;font-size:15px;}
+  .d3-btn{height:42px;padding:0 16px;font-size:14.5px;}
+  .d3-stats{padding:18px 16px;}
+  .d3-stats-main{margin-top:12px;}
+  .d3-stat-big .num{font-size:40px;}
+  .us-chart{height:64px;margin-top:10px;}
+  .d3-stats-sub,.as-mini{gap:8px;}
+  #d3-stats .as-mini{grid-template-columns:repeat(3,1fr);padding-top:12px;}
+  #d3-stats .as-mini > div{padding:10px;}
+  .d3-stat-mid .num{font-size:20px;}
+  .as-go{min-height:40px;font-size:13.5px;}
+  .d3-panel{min-height:0;}
+  .d3-panel-head{min-height:0;margin-bottom:4px;}
+  .d3-panel-title,.d3-section-title{font-size:16px !important;}
+  .hm-row{gap:12px;margin-top:12px;}
+  .hm-data{padding:16px;margin-top:12px;}
+  .hm-data p{font-size:13px;}
+  .hx-card .hx-lead{font-size:13px;margin:2px 0 10px;}
+  .qa-empty{padding:14px 8px !important;font-size:13px;}
+  .qa-empty svg,.pk-empty-ic{transform:scale(.8);}
+  .g4-reports{gap:8px;}
+  .g4-rep{padding:12px 14px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:4px 10px;}
+  .g4-rep .rd{flex-basis:100%;}
+  .g4-rep .rs b{font-size:22px;}
+  .g4-rep .rt{font-size:12.5px;flex:1;min-width:0;}
+  .g4-rep .rb{margin:0;flex-basis:100%;} .g4-rep .rb span{padding:4px 10px;font-size:12.5px;}
+  .gw-title{font-size:21px !important;} .gw-head{margin-bottom:10px;}
+  .dbp-steps li{padding:4px 9px 4px 4px;font-size:11.5px;} .dbp-steps li::before{width:18px;height:18px;font-size:11px;}
+  .dbp-mh h2{font-size:17px;}
+  .dbt-list button{padding:9px 12px;} .dbt-q{font-size:14px;}
+  .dbt-kind button{padding:7px 12px;font-size:13.5px;}
+  .dbt-sel select{height:36px;font-size:13.5px;}
+  .dbt-how{font-size:12.5px;padding:9px 11px;}
+  .d3-greet.g4-greet{background:transparent;padding:6px 2px 4px;}
+  #screen-dashboard.v3 .qa-empty{padding:10px 6px !important;font-size:13px;gap:6px;}
+  #screen-dashboard.v3 .qa-empty:before{width:36px;height:36px;border-radius:12px;background-size:18px;}
+  .hm-data-acts{gap:6px;} .hm-data-acts .d3-btn{height:38px;padding:0 13px;font-size:13.5px;}
+  .hx-acts .d3-btn,.pk-home .d3-btn{height:40px;padding:0 14px;font-size:14px;}
+  .hm-sum{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:6px;}
+  .hm-sum > div{padding:9px 10px;} .hm-sum b{font-size:18px;} .hm-sum span{font-size:11.5px;} .hm-sum small{font-size:10.5px;line-height:1.35;}
+  .hm-sum-card{margin-top:12px;}
+}
 </style>
 </head>
 <body>
@@ -6717,6 +6847,7 @@ html.ivv-dr-open{overflow:hidden;}
         <a href="javascript:void(0)" class="adm-only" data-adm="notices" onclick="openAdminScreen('notices')">공지사항</a>
         <a href="javascript:void(0)" class="adm-only" data-adm="admin" onclick="openAdminScreen()">관리자 화면</a>
         <a href="javascript:void(0)" data-go="practice" onclick="navGo('practice')">면접 시작</a>
+        <a href="javascript:void(0)" data-go="debate" onclick="navGo('debate')">토론 연습</a>
         <a href="javascript:void(0)" data-go="reports" onclick="navGo('reports')">면접 기록</a>
         <a href="javascript:void(0)" data-go="growth" onclick="navGo('growth')">나의 성장</a>
         <a href="javascript:void(0)" data-go="coach" onclick="navGo('coach')" style="display:none;">자기소개 코치</a>
@@ -6762,6 +6893,7 @@ html.ivv-dr-open{overflow:hidden;}
         <div class="hm-modes">
           <button type="button" class="hm-mode" data-hm-kind="major" aria-pressed="false" onclick="StartFlow.pickFromHome('major')"><em>면접 목적</em><b>전공·경험 면접</b><span>수강 과목·프로젝트·활동 경험을 설명해 보는 면접</span></button>
           <button type="button" class="hm-mode" data-hm-kind="job" aria-pressed="false" onclick="StartFlow.pickFromHome('job')"><em>면접 목적</em><b>기업·직무 맞춤 면접</b><span>목표 기업·직무·채용공고에 맞춘 면접</span></button>
+          <button type="button" class="hm-mode hm-debate" onclick="navGo('debate')"><em>토론 연습</em><b>토론·토의·발표(PT) 면접</b><span>공공기관 면접 후기 주제로 준비 → 말하기 → AI 반론·다른 지원자 의견 → 피드백</span><i aria-hidden="true">토론 시작 ›</i></button>
         </div>
         <div class="hm-first" id="hm-first" hidden><b>처음이라면 이렇게 시작해 보세요</b><ol><li>위에서 면접 목적을 골라요</li><li>전공·학년과 내 경험을 확인해요</li><li>연습형으로 첫 면접을 해 봐요</li></ol></div>
         <div class="d3-banners"><div class="access-banner" id="access-banner" style="display:none;"></div><div class="access-banner perm-ready" id="perm-ready-chip" style="display:none;"></div><div class="access-banner quota" id="ai-quota-chip" style="display:none;" title="AI 즉석 꼬리질문·채점을 쓰는 라이브 면접 횟수예요. 한도가 차면 AI 없이 계속 연습할 수 있어요."></div></div>
@@ -6784,6 +6916,10 @@ html.ivv-dr-open{overflow:hidden;}
     <div class="hm-row pk-home"><!-- 2026-11-04 면접 D-day · 내 질문 모음 -->
       <section class="d3-card d3-panel" id="pk-dday-card" aria-label="면접 D-day"></section>
       <section class="d3-card d3-panel" id="pk-bm-card" aria-label="내 질문 모음"></section>
+    </div>
+    <div class="hm-row pk-home"><!-- 2026-11-09e 토론·PT 면접 연습 · 기관별 후기 질문 -->
+      <section class="d3-card d3-panel hx-card" id="dbt-card" aria-label="토론·PT 면접 연습"></section>
+      <section class="d3-card d3-panel hx-card" id="qbr-card" aria-label="기관별 후기 질문"></section>
     </div>
     <div class="hm-row">
       <section class="d3-card d3-panel">
@@ -6831,6 +6967,32 @@ html.ivv-dr-open{overflow:hidden;}
     </section>
 
     <div style="display:none;" aria-hidden="true"><div id="history-list"></div><div id="trend-chart"></div><span id="d3-trend-scope"></span></div>
+  </main>
+
+  <!-- 2026-11-09f 토론 연습 전용 화면 (면접과 따로) -->
+  <main class="d3-page" id="d3-debate" hidden>
+    <div class="gw-head">
+      <div><p class="gw-scope">공공기관 토론·토의·발표 면접 대비</p><h1 class="gw-title">토론 연습</h1></div>
+    </div>
+    <ol class="dbp-steps" id="dbp-steps" aria-label="진행 순서"><li data-k="pick">주제 고르기</li><li data-k="prep">준비 1분</li><li data-k="s1">내 입장 말하기</li><li data-k="s2">반론에 답하기</li><li data-k="fb">피드백</li></ol>
+    <div class="dbp-grid">
+      <section class="d3-card dbp-main" aria-live="polite">
+        <div class="dbp-mh"><h2 id="dbt-ptitle">주제 고르기</h2></div>
+        <div class="dbp-b" id="dbt-b"><div class="pk-wait"><i></i>주제를 불러오고 있어요</div></div>
+        <footer class="dbp-f" id="dbt-f"></footer>
+      </section>
+      <aside class="dbp-side">
+        <section class="d3-card d3-panel">
+          <div class="d3-panel-head"><h3 class="d3-panel-title">토론·토의·발표 면접</h3></div>
+          <dl class="dbp-guide"><dt>토론 (찬반)</dt><dd>주제에 대해 찬성·반대 입장을 정하고, 이유와 예시로 설득해요. 상대(AI)의 반론을 받아 인정할 건 인정하고 차분히 답하는 것이 핵심이에요.</dd><dt>토의 (여럿이)</dt><dd>실제 면접처럼 여러 지원자(AI 3명)와 함께 해결 방안을 하나로 정해요. 남의 말을 잘 듣고, 의견을 모아 정리하는 사람이 점수를 받아요.</dd><dt>발표(PT)</dt><dd>문제 → 원인 → 해결 방안 → 기대 효과 순서로 2분 안팎 발표하고, 면접관 질문에 답해요.</dd></dl>
+          <p class="hx-fine">주제는 한림대 권역 공공기관 면접 후기를 AI가 다시 쓴 문장이에요. 병원 면접은 인성·직무 질문 위주라 토론·발표가 거의 없어요.</p>
+        </section>
+        <section class="d3-card d3-panel">
+          <div class="d3-panel-head"><h3 class="d3-panel-title">내 토론 기록</h3></div>
+          <div id="dbt-hist"><p class="hx-fine">불러오는 중…</p></div>
+        </section>
+      </aside>
+    </div>
   </main>
 
   <!-- 내 성장 (2026-10-14 확정 시안) -->
@@ -7618,6 +7780,7 @@ html.ivv-dr-open{overflow:hidden;}
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="practice">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" aria-current="page">면접 시작</a>
+        <a href="javascript:void(0)" onclick="navGo('debate')">토론 연습</a>
         <a href="javascript:void(0)" onclick="navGo('reports')">면접 기록</a>
         <a href="javascript:void(0)" onclick="navGo('growth')">나의 성장</a>
         <a href="javascript:void(0)" onclick="navGo('coach')" style="display:none;">자기소개 코치</a>
@@ -7709,6 +7872,7 @@ html.ivv-dr-open{overflow:hidden;}
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="interview">
         <a href="javascript:void(0)" onclick="openConfirmEnd()">홈</a>
         <a href="javascript:void(0)" aria-current="page">면접 시작</a>
+        <a href="javascript:void(0)" onclick="openConfirmEnd()">토론 연습</a>
         <a href="javascript:void(0)" onclick="openConfirmEnd()">면접 기록</a>
         <a href="javascript:void(0)" onclick="openConfirmEnd()">나의 성장</a>
         <a href="javascript:void(0)" onclick="openConfirmEnd()" style="display:none;">자기소개 코치</a>
@@ -7936,6 +8100,7 @@ html.ivv-dr-open{overflow:hidden;}
       <nav class="d3-nav r4-nav" aria-label="주 메뉴" data-nav="result">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" onclick="navGo('practice')">면접 시작</a>
+        <a href="javascript:void(0)" onclick="navGo('debate')">토론 연습</a>
         <a href="javascript:void(0)" aria-current="page">면접 기록</a>
         <a href="javascript:void(0)" onclick="navGo('growth')">나의 성장</a>
         <a href="javascript:void(0)" onclick="navGo('coach')" style="display:none;">자기소개 코치</a>
@@ -11876,15 +12041,28 @@ function navGo(where){
   }
   if(where === 'reports'){ openAllHistory(); return; }
   if(where === 'growth'){ openGrowthScreen(); return; }
+  if(where === 'debate'){ openDebateScreen(); return; }
   if(where === 'coach'){ openCoach(); return; }
 }
 function setDashView(view){
-  const home = document.getElementById('d3-home'), gw = document.getElementById('d3-growth');
+  const home = document.getElementById('d3-home'), gw = document.getElementById('d3-growth'), db = document.getElementById('d3-debate');
   if(!home || !gw) return;
-  const isG = view === 'growth';
-  home.hidden = isG; gw.hidden = !isG;
-  document.querySelectorAll('#screen-dashboard .d3-nav a[data-go]').forEach(a=>{ const on = a.dataset.go === (isG ? 'growth' : 'home'); if(on) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
-  state.dashView = isG ? 'growth' : 'home';
+  const v = view === 'growth' || (view === 'debate' && db) ? view : 'home';   // 2026-11-09f 토론 연습 화면
+  home.hidden = v !== 'home'; gw.hidden = v !== 'growth'; if(db) db.hidden = v !== 'debate';
+  if(v !== 'debate'){ try{ Debate.stopTimer(); PracticeKit.stopMic(); }catch(_){} }
+  document.querySelectorAll('#screen-dashboard .d3-nav a[data-go]').forEach(a=>{ const on = a.dataset.go === v; if(on) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+  state.dashView = v;
+}
+/* 2026-11-09f 토론 연습 전용 화면 — 면접 흐름과 따로, 홈의 '토론·발표 면접' 버튼과 위 메뉴 '토론 연습'으로 들어옴 */
+function openDebateScreen(tid){
+  if(!state.currentUser){ showToast('먼저 로그인해 주세요.'); return; }
+  if(state.currentUser.isAdmin){ showToast('토론 연습은 면접자 계정에서 할 수 있어요.'); return; }
+  try{ PracticeKit.close(); }catch(_){}
+  const act = document.querySelector('.screen.active');
+  if(!act || act.id !== 'screen-dashboard'){ stopLiveRefresh(); showScreen('screen-dashboard'); Activity.setPresence('dashboard'); }
+  setDashView('debate');
+  window.scrollTo(0,0);
+  Debate.openPage(tid);
 }
 function openGrowthScreen(){
   if(!state.currentUser){ showToast('먼저 로그인해 주세요.'); return; }
@@ -12131,7 +12309,9 @@ const CompanyCard = {
       fm.length ? ['주된 면접', CompanyCard.dots(fm.map(escapeHtml))] : null, df ? ['난이도', `<b>${escapeHtml(df[0])}</b>이 가장 많아요`] : null,
       r.announce_days != null ? ['결과 발표', `보통 ${r.announce_days}일 뒤`] : null, done >= 5 ? ['합격 후기', `${Math.round((res['합격'] || 0) / done * 100)}%`] : null].filter(Boolean);
     const often = !compact && (r.often || []).length ? `<p class="cc-sub">후기에 여러 번 나온 질문</p><ul class="cc-past">${r.often.slice(0, 3).map(x=>`<li>${escapeHtml(this.flat(x))}</li>`).join('')}</ul>` : '';
-    return `<div class="cc-row"><span class="cc-lbl">면접 후기</span><div><dl class="cc-facts cc-facts-top">${facts.map(([k, v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>${often}
+    const tid = p.talent && p.talent.id && /^[GH]\d/.test(p.talent.id) ? p.talent.id : '';
+    const acts = !compact && tid ? `<div class="cc-acts"><button type="button" class="cc-btn" onclick="QBrowse.open('${tid}')">후기 질문 ${r.questions ? r.questions.toLocaleString() + '개 ' : ''}골라 연습</button><button type="button" class="cc-btn" onclick="Debate.open('${tid}')">토론·PT 연습</button></div>` : '';
+    return `<div class="cc-row"><span class="cc-lbl">면접 후기</span><div><dl class="cc-facts cc-facts-top">${facts.map(([k, v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>${often}${acts}
       <div class="cc-fine">${often ? '<p>질문은 후기를 다시 쓴 문장이고, 연습할 때는 AI가 자연스럽게 다듬어 물어요.</p>' : ''}<p>잡플래닛 면접 후기를 숫자로 모은 참고 정보예요. 지원자 기억이라 실제와 다를 수 있어요.</p></div></div></div>`;
   },
   html(p, compact){
@@ -21809,7 +21989,7 @@ function printReport(){
   try{ Activity.log('report_print', { field: state.selectedField && state.selectedField.name }); }catch(e){}
   setTimeout(()=>{ try{ window.print(); }catch(e){ restore(); } }, 60);
 }
-function goDashboard(){ stopLiveRefresh(); if(state.dashView === 'growth') setDashView('home'); renderDashboard(); showScreen('screen-dashboard'); Activity.setPresence('dashboard'); maybeOpenDemoFromUrl(); }
+function goDashboard(){ stopLiveRefresh(); if(state.dashView && state.dashView !== 'home') setDashView('home'); renderDashboard(); showScreen('screen-dashboard'); Activity.setPresence('dashboard'); maybeOpenDemoFromUrl(); }
 function retryPractice(){ openSetupFromResult(); }
 function openSetupFromResult(){
   showScreen('screen-dashboard');
@@ -25055,14 +25235,14 @@ const PracticeKit = {
   /* ── ① 이 질문 다시 답하기 ── */
   openRetry(k, prefill){
     const o = typeof k === 'string' ? this.items.get(k) : k; if(!o) return; this.cur = o;
-    this.modal(this.head('이 질문 다시 답하기', escapeHtml(o.q)) + `<div class="pk-b">
+    this.modal(this.head(o.fresh ? (o.companyName ? escapeHtml(o.companyName) + ' · 후기 질문' : '후기 질문 연습') : '이 질문 다시 답하기', escapeHtml(o.q)) + `<div class="pk-b">
         ${o.answer ? `<details class="pk-prev"><summary>${escapeHtml(o.prevLabel || '이전 답변 보기')} ${o.score != null ? `<span class="pk-sc">${o.score}점</span>` : ''}</summary><p>${escapeHtml(o.answer)}</p>${o.feedback ? `<p class="pk-prev-fb"><b>그때 피드백</b> ${escapeHtml(this.fbBody(o.feedback))}</p>` : ''}</details>` : ''}
-        <p class="pk-tip">피드백에서 짚은 점을 넣어 다시 답해 보세요. <b>말로 답하거나 직접 써도</b> 돼요.</p>
+        <p class="pk-tip">${o.fresh ? '실제 면접이라고 생각하고 답해 보세요. 결론을 먼저 말하고 경험 하나를 붙이면 좋아요.' : '피드백에서 짚은 점을 넣어 다시 답해 보세요.'} <b>말로 답하거나 직접 써도</b> 돼요.</p>
         <textarea id="pk-ans" rows="6" placeholder="여기에 답변을 쓰거나, 아래 '말로 답하기'를 누르세요" autofocus>${escapeHtml(prefill || '')}</textarea>
         <div class="pk-row"><button type="button" class="pk-btn" id="pk-mic" onclick="PracticeKit.mic()">🎙 말로 답하기</button><span class="pk-mut" id="pk-mic-st"></span><span class="pk-cnt" id="pk-cnt">0자</span></div>
         <div id="pk-res" aria-live="polite"></div>
       </div>
-      <footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button><button type="button" class="pk-btn pri" id="pk-grade" onclick="PracticeKit.grade()">채점하고 비교하기</button></footer>`, 'wide');
+      <footer class="pk-f">${o.back ? '<button type="button" class="pk-btn ghost" onclick="PracticeKit.back()">← 질문 목록</button>' : ''}<button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button><button type="button" class="pk-btn pri" id="pk-grade" onclick="PracticeKit.grade()">${o.fresh ? '채점하기' : '채점하고 비교하기'}</button></footer>`, 'wide');
     const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt');
     const upd = ()=>{ cnt.textContent = ta.value.trim().length + '자'; }; ta.oninput = upd; upd();
   },
@@ -25080,6 +25260,7 @@ const PracticeKit = {
     }, { silenceMs: 2500, noSpeechMs: 10000, maxMs: 150000 });
   },
   stopMic(){ if(this._mic){ this._mic = false; try{ StenoListener.stop('manual'); }catch(_){} } },
+  back(){ const b = this.cur && this.cur.back; this.stopMic(); if(typeof b === 'function') b(); else this.close(); },   // 2026-11-09e 후기 질문 목록으로
   async aiOn(){ if(!AiSwitch.loaded){ try{ await AiSwitch.load(); }catch(_){} } return typeof AI_GRADING_ENABLED !== 'undefined' && AI_GRADING_ENABLED && AiSwitch.on('ai_grading'); },   // 설정을 아직 안 읽었으면 먼저 읽음
   async aiGrade(o, ans){
     if(!(await this.aiOn())) return null;
@@ -25110,10 +25291,11 @@ const PracticeKit = {
     const cmpPrev = ai && ai.ae ? (prevAe ? Object.fromEntries(AeReport.AX.map(k=>[k + ' ' + AeReport.name(k), prevAe.scores[k]])) : null) : prevAxes;
     const rows = cmpNow ? Object.keys(cmpNow).map(k=>{ const a = cmpPrev && cmpPrev[k] != null ? cmpPrev[k] : null, b = cmpNow[k]; const dd = a != null && b != null ? b - a : null;
       return `<tr><th>${escapeHtml(k)}</th><td>${a != null ? a : '–'}</td><td><b>${b != null ? b : '–'}</b></td><td class="${dd > 0 ? 'up' : dd < 0 ? 'down' : ''}">${dd == null ? '' : dd > 0 ? '▲' + dd : dd < 0 ? '▼' + (-dd) : '='}</td></tr>`; }).join('') : '';
+    res.classList.toggle('pk-fresh', !!o.fresh && o.score == null);   // 2026-11-09e 처음 답한 질문은 이전 점수 칸 없이
     res.innerHTML = `<div class="pk-cmp">
-        <div class="pk-big"><div><small>이전</small><b>${o.score != null ? o.score : '–'}</b></div><i>→</i><div><small>이번</small><b class="now">${score}</b></div>${d != null ? `<span class="pk-delta ${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d > 0 ? '+' + d + '점 올랐어요' : d < 0 ? d + '점' : '그대로예요'}</span>` : ''}</div>
+        <div class="pk-big"><div><small>이전</small><b>${o.score != null ? o.score : '–'}</b></div><i>→</i><div><small>${o.fresh && o.score == null ? '점수' : '이번'}</small><b class="now">${score}</b></div>${d != null ? `<span class="pk-delta ${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d > 0 ? '+' + d + '점 올랐어요' : d < 0 ? d + '점' : '그대로예요'}</span>` : ''}</div>
         ${o.noGrowth ? '' : this.growthHtml(o.answer, ans, prevAxes, axes, d)}
-        ${rows ? `<table class="pk-ax"><thead><tr><th>항목</th><th>이전</th><th>이번</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : ''}
+        ${rows ? `<table class="pk-ax"><thead><tr><th>항목</th><th>이전</th><th>${o.fresh && o.score == null ? '점수' : '이번'}</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : ''}
         <div class="pk-fb"><b>${ai ? 'AI 피드백' : '피드백 (기본 채점)'}</b><p>${escapeHtml(fb)}</p>
           ${ai && ai.strengths.length ? `<p class="pk-s"><b>잘한 점</b> ${ai.strengths.map(escapeHtml).join(' · ')}</p>` : ''}${ai && ai.improvements.length ? `<p class="pk-i"><b>보완할 점</b> ${ai.improvements.map(escapeHtml).join(' · ')}</p>` : ''}</div>
         <div class="pk-acts"><button type="button" class="pk-btn" onclick="PracticeKit.again()">↻ 한 번 더 고쳐 답하기</button><button type="button" class="pk-btn pk-ai" onclick="PracticeKit.rewriteNow()">✎ 이 답변 AI로 고쳐 보기</button></div>
@@ -25441,8 +25623,271 @@ const PracticeKit = {
   async renderHome(){
     if(!this.uid() || !document.getElementById('pk-dday-card')) return;
     this.renderBm(); this.renderPlan();
+    try{ Debate.renderHome(); QBrowse.renderHome(); }catch(_){}   // 2026-11-09e 토론·PT 연습 · 기관별 후기 질문
     try{ ExpCoach.renderHome(); PrepSync.pull().then(()=>ExpCoach.renderHome()); }catch(_){}   // 2026-11-04f 경험 정리 도우미
     await this.loadBm(); await this.loadPlan();
+  },
+};
+/* ---------------- 2026-11-09e 토론·PT 면접 연습 (Debate) ----------------
+   한림대 권역 기관 면접 후기에서 다시 쓴 토론·발표 주제(list_review_questions p_debate=true)로
+   ① 주제 고르기 → ② 준비 1분(메모) → ③ 1차 발언 → ④ AI 반론(토론)·면접관 질문(발표) → ⑤ 2차 발언 → ⑥ 피드백(주장·근거·대응·태도)
+   AI: debate-coach 서버 함수. 기록: debate_practice (본인만). 말하기는 연습 도구의 녹음 칸(PracticeKit.mic)을 그대로 씀 */
+const Debate = {
+  orgs: null, topics: null, s: null, _t: null,
+  AX: { claim:'주장', evidence:'근거', response:'반론 대응', attitude:'태도' },
+  async loadOrgs(){ if(this.orgs) return this.orgs; const { data, error } = await sb.rpc('list_review_orgs'); if(error) throw error; return (this.orgs = data || []); },
+  async loadTopics(){
+    if(this.topics) return this.topics;
+    const { data, error } = await sb.rpc('list_review_questions', { p_talent_id: null, p_debate: true }); if(error) throw error;
+    return (this.topics = (data || []).map(r=>{ const raw = String(r.question || ''); return { id: r.id, tid: r.talent_id, org: r.company, pt: /^발표/.test(raw) || /발표해\s?주세요|발표하세요|프레젠테이션|PT\s?(면접|주제)/.test(raw), q: raw.replace(/^(토론|발표|토의)\s*주제\s*[:：]\s*/, '').trim() }; }));
+  },
+  renderHome(){
+    const box = document.getElementById('dbt-card'); if(!box) return;
+    box.innerHTML = `<div class="d3-panel-head"><h3 class="d3-panel-title">토론·토의·발표 면접 연습</h3></div>
+      <p class="hx-lead">공공기관 면접에 자주 나오는 토론·토의·발표 면접을 연습해요. 실제 후기에 나온 주제로 <b>준비 → 말하기 → AI 반론·다른 지원자 의견 → 다시 말하기 → 피드백</b> 순서예요.</p>
+      <div class="hx-acts"><button type="button" class="d3-btn d3-btn-primary" onclick="navGo('debate')">토론 연습 시작하기</button></div><p class="hx-last" id="dbt-last"></p>`;
+    this.loadLast();
+  },
+  async loadLast(){ try{ const { data } = await sb.from('debate_practice').select('topic,score,kind,created_at').order('created_at', { ascending:false }).limit(1); const el = document.getElementById('dbt-last');
+    if(el && data && data[0]) el.textContent = `최근 연습 ${data[0].score != null ? data[0].score + '점' : ''} · ${String(data[0].topic).slice(0, 34)}${String(data[0].topic).length > 34 ? '…' : ''}`; }catch(_){} },
+  el(id){ return document.querySelector((this.page ? '#d3-debate ' : '#pk-modal ') + '#' + id); },   // 화면·작은 창 둘 다 같은 이름을 쓰므로 지금 쓰는 쪽만
+  body(html){ const b = this.el('dbt-b'); if(b){ b.innerHTML = html; b.scrollTop = 0; } if(this.page){ const m = document.querySelector('#d3-debate .dbp-main'); if(m && m.getBoundingClientRect().top < 0) m.scrollIntoView({ block:'start' }); } return b; },
+  stopTimer(){ if(this._t){ clearInterval(this._t); this._t = null; } },
+  page: false,
+  /* 2026-11-09f 기관 카드 등에서 부르면 토론 연습 화면으로 (면접 중에는 예전처럼 작은 창으로) */
+  open(tid){
+    const act = document.querySelector('.screen.active');
+    if(act && act.id === 'screen-interview') return this.openModal(tid);
+    openDebateScreen(tid);
+  },
+  async openPage(tid){
+    this.stopTimer(); this.page = true;
+    this.renderHist();
+    if(this.s && !tid && this.topics){ this.pickView(); return; }   // 다시 들어오면 고르던 화면 그대로
+    this.body('<div class="pk-wait"><i></i>주제를 불러오고 있어요</div>'); this.foot('');
+    try{ await Promise.all([this.loadOrgs(), this.loadTopics()]); }catch(e){ this.body(`<p class="pk-tip">주제를 불러오지 못했어요. 잠시 뒤 다시 열어 주세요. (${escapeHtml(e.message || e)})</p>`); return; }
+    this.s = { tid: tid || '', kind: 'debate', seed: Math.random() };
+    this.pickView();
+  },
+  step(k){ if(!this.page) return; const order = ['pick', 'prep', 's1', 's2', 'fb'], i = order.indexOf(k); document.querySelectorAll('#dbp-steps li').forEach((li, j)=>{ li.className = j < i ? 'done' : j === i ? 'on' : ''; }); },
+  stepNames(){ if(!this.s) return; const K = this.K[this.s.kind] || this.K.debate, p = this.prepSec(); const n = { prep: `준비 ${p / 60}분`, s1: K.s1, s2: K.s2 }; document.querySelectorAll('#dbp-steps li').forEach(li=>{ if(n[li.dataset.k]) li.textContent = n[li.dataset.k]; }); },
+  closeBtn(){ return this.page ? '' : '<button type="button" class="pk-btn ghost" onclick="Debate.close()">닫기</button>'; },
+  hist: [],
+  async renderHist(){
+    const box = document.getElementById('dbt-hist'); if(!box) return;
+    try{
+      const { data, error } = await sb.from('debate_practice').select('id,org,kind,topic,score,feedback,rounds,created_at').order('created_at', { ascending:false }).limit(20); if(error) throw error;
+      this.hist = data || [];
+      if(!this.hist.length){ box.innerHTML = '<p class="dbp-empty">아직 토론 연습 기록이 없어요.<br>주제를 하나 골라 첫 연습을 해 보세요.</p>'; return; }
+      box.innerHTML = `<ul class="dbp-hist">${this.hist.map((r, i)=>{ const d = new Date(r.created_at); return `<li><button type="button" onclick="Debate.showHist(${i})"><b class="dbp-sc">${r.score != null ? r.score : '-'}<small>점</small></b><span class="dbp-ht"><em>${(this.K[r.kind] || this.K.debate).name} · ${escapeHtml(r.org || '')} · ${d.getMonth() + 1}/${d.getDate()}</em>${escapeHtml(r.topic || '')}</span></button></li>`; }).join('')}</ul>`;
+    }catch(e){ box.innerHTML = '<p class="hx-fine">기록을 불러오지 못했어요.</p>'; }
+  },
+  showHist(i){
+    const r = this.hist[i]; if(!r) return; this.stopTimer(); PracticeKit.stopMic();
+    const t = (this.topics || []).find(x=>x.q === r.topic) || { id: '', tid: '', org: r.org || '', q: r.topic || '' };
+    this.s = Object.assign(this.s || { seed: Math.random(), tid: '' }, { kind: this.K[r.kind] ? r.kind : 'debate', topic: t, rounds: Array.isArray(r.rounds) ? r.rounds : [], memo: '' });
+    this.result(r.feedback || {}, { old: r.created_at });
+  },
+  async openModal(tid){
+    this.stopTimer(); this.page = false; const pb = document.querySelector('#d3-debate #dbt-b'); if(pb) pb.innerHTML = '';
+    PracticeKit.modal(PracticeKit.head('토론·PT 면접 연습', '주제 고르기') + `<div class="pk-b" id="dbt-b"><div class="pk-wait"><i></i>주제를 불러오고 있어요</div></div><footer class="pk-f" id="dbt-f"><button type="button" class="pk-btn ghost" onclick="Debate.close()">닫기</button></footer>`, 'wide');
+    try{ await Promise.all([this.loadOrgs(), this.loadTopics()]); }catch(e){ this.body(`<p class="pk-tip">주제를 불러오지 못했어요. 잠시 뒤 다시 열어 주세요. (${escapeHtml(e.message || e)})</p>`); return; }
+    this.s = { tid: tid || '', kind: 'debate', seed: Math.random() };
+    this.pickView();
+  },
+  close(){ this.stopTimer(); if(this.page){ PracticeKit.stopMic(); this.pickView(); return; } PracticeKit.close(); },
+  title(t){ const h = this.page ? document.getElementById('dbt-ptitle') : document.querySelector('#pk-modal .pk-h h3'); if(h) h.textContent = t; },
+  foot(html){ const f = this.el('dbt-f'); if(f) f.innerHTML = html; },
+  /* 2026-11-09f 방식 3가지: 토론(찬반) · 토의(AI가 다른 지원자 3명, 함께 해결책) · 발표(PT) / 준비 시간 고르기 */
+  K: {
+    debate: { name:'토론', s1:'내 입장 말하기', s2:'반론에 답하기', prep:60 },
+    group:  { name:'토의', s1:'내 의견 말하기', s2:'의견 모으기', prep:60 },
+    pt:     { name:'발표', s1:'발표하기', s2:'질문에 답하기', prep:300 },
+  },
+  kn(){ return (this.K[this.s && this.s.kind] || this.K.debate).name; },
+  axLabel(k, kind){ return ({ claim: kind === 'group' ? '의견 제시' : '주장', evidence:'근거', response: kind === 'pt' ? '질문 대응' : '반론 대응', listening: kind === 'group' ? '경청' : '경청·인정', coordination:'의견 조율', attitude:'태도' })[k] || k; },
+  prepSec(){ const s = this.s; return s.prep || this.K[s.kind].prep; },
+  fmt(sec){ sec = Math.max(0, sec); return sec >= 60 ? `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}` : String(sec); },
+  pickView(){
+    this.stopTimer(); this.title('주제 고르기'); this.stepNames(); this.step('pick');
+    const s = this.s, withT = (this.orgs || []).filter(o=>o.topics > 0), me = (this.orgs || []).find(o=>o.talent_id === s.tid);
+    const mine = this.topics.filter(t=>t.tid === s.tid);
+    let pool = (mine.length ? mine : this.topics).slice();
+    if(s.kind !== 'pt' && pool.some(t=>!t.pt)) pool = pool.filter(t=>!t.pt);   // 토론·토의를 고르면 발표 주제는 빼고
+    let x = Math.floor(s.seed * 1e6); pool.sort((a, b)=>(s.kind === 'pt' ? (b.pt - a.pt) : 0) || ((a.id.charCodeAt(a.id.length - 1) * 31 + x) % 97) - ((b.id.charCodeAt(b.id.length - 1) * 31 + x) % 97));   // 발표를 고르면 발표 주제 먼저
+    const list = pool.slice(0, 8);
+    const note = s.tid && !mine.length ? `<p class="dbt-note">${me && me.grp === '병원' ? `${escapeHtml(me.name)} 등 병원 면접 후기에는 토론·발표 주제가 거의 없어요. 병원은 인성·직무 면접 위주라, 이 연습은 공공기관을 준비할 때 더 도움이 돼요. 아래는 공공기관 주제예요.` : `${escapeHtml(me ? me.name : '고른 기관')}은 토론·발표 주제 후기가 아직 없어서, 다른 공공기관 주제를 보여 드려요.`}</p>` : '';
+    const how = {
+      debate: '<b>토론</b> — 입장(찬성·반대)을 정하고 <b>입장 → 이유 두 가지 → 예시</b> 순서로 1분 안팎 말해요. 끝나면 AI가 반대 입장에서 반론을 해요.',
+      group: '<b>토의</b> — 다른 지원자 3명(AI)과 함께 <b>해결 방안을 하나로 정하는</b> 면접이에요. 다른 사람 의견을 짚으며 내 의견을 말하고, 마지막에 의견을 모아 정리해요. 이기는 것보다 <b>잘 듣고 잘 모으는 것</b>이 점수예요.',
+      pt: '<b>발표(PT)</b> — 준비한 뒤 <b>문제 → 원인 → 해결 방안 → 기대 효과</b> 순서로 2분 안팎 말해요. 끝나면 면접관이 질문 하나를 해요. 실제 발표 면접은 준비 시간이 10~30분인 곳이 많아요.',
+    }[s.kind];
+    const prep = this.prepSec();
+    this.body(`<div class="dbt-ctl">
+        <div class="dbt-kind" role="radiogroup" aria-label="면접 방식">${['debate', 'group', 'pt'].map(k=>`<button type="button" role="radio" aria-checked="${s.kind === k}" class="${s.kind === k ? 'on' : ''}" onclick="Debate.setKind('${k}')">${k === 'group' ? '토의 <small>여럿이</small>' : k === 'pt' ? '발표(PT)' : '토론 <small>찬반</small>'}</button>`).join('')}</div>
+        <div class="dbt-sels">
+          <label class="dbt-sel"><span>기관</span><select id="dbt-org"><option value="">전체 기관 (${this.topics.length}개 주제)</option>${withT.map(o=>`<option value="${escapeHtml(o.talent_id)}"${o.talent_id === s.tid ? ' selected' : ''}>${escapeHtml(o.name)} (${o.topics})</option>`).join('')}${me && !me.topics ? `<option value="${escapeHtml(me.talent_id)}" selected>${escapeHtml(me.name)}</option>` : ''}</select></label>
+          <label class="dbt-sel"><span>준비 시간</span><select id="dbt-prep">${[60, 180, 300, 600].map(v=>`<option value="${v}"${v === prep ? ' selected' : ''}>${v / 60}분</option>`).join('')}</select></label>
+        </div>
+      </div>
+      <p class="dbt-how">${how}</p>
+      ${note}
+      <ul class="dbt-list">${list.map(t=>`<li><button type="button" onclick="Debate.prep('${t.id}')"><span class="dbt-org">${escapeHtml(t.org)}</span><span class="dbt-q">${escapeHtml(t.q)}</span><i aria-hidden="true">›</i></button></li>`).join('')}</ul>`);
+    this.foot(`${this.closeBtn()}<button type="button" class="pk-btn" onclick="Debate.shuffle()">↻ 다른 주제 보기</button>`);
+    const sel = document.getElementById('dbt-org'); if(sel) sel.onchange = ()=>{ this.s.tid = sel.value; this.s.seed = Math.random(); this.pickView(); };
+    const ps = document.getElementById('dbt-prep'); if(ps) ps.onchange = ()=>{ this.s.prep = +ps.value; this.stepNames(); };
+  },
+  setKind(k){ this.s.kind = k; this.pickView(); },
+  shuffle(){ this.s.seed = Math.random(); this.pickView(); },
+  prep(id){
+    const t = this.topics.find(x=>x.id === id); if(!t) return;
+    Object.assign(this.s, { topic: t, rounds: [], memo: '' }); if(t.pt) this.s.kind = 'pt';
+    const k = this.s.kind, total = this.prepSec(); this.title(this.kn() + ' 준비'); this.stepNames(); this.step('prep');
+    const memo = {
+      debate: ['메모에 <b>입장(찬성/반대) · 이유 1 · 이유 2 · 예시</b>를 한 줄씩 적어 보세요.', '입장:\n이유 1:\n이유 2:\n예시:'],
+      group: ['메모에 <b>내 의견 · 이유 · 다른 사람이 낼 만한 의견 · 합칠 수 있는 점</b>을 적어 보세요.', '내 의견:\n이유:\n예상되는 다른 의견:\n합칠 수 있는 점:'],
+      pt: ['메모에 <b>문제 · 원인 · 해결 방안 · 기대 효과</b>를 한 줄씩 적어 보세요.', '문제:\n원인:\n해결 방안:\n기대 효과:'],
+    }[k];
+    this.body(`<div class="dbt-topic"><small>${escapeHtml(t.org)} · ${this.kn()} 주제</small><p>${escapeHtml(t.q)}</p></div>
+      <div class="dbt-timer" aria-live="polite"><b id="dbt-sec">${this.fmt(total)}</b><span>${total >= 60 ? '' : '초 '}남았어요</span><i><em id="dbt-bar"></em></i></div>
+      <p class="pk-tip">${memo[0]} 준비가 끝나면 바로 말해도 돼요.</p>
+      <textarea id="dbt-memo" rows="5" placeholder="${memo[1]}"></textarea>`);
+    this.foot(`<button type="button" class="pk-btn ghost" onclick="Debate.pickView()">← 주제 다시 고르기</button><button type="button" class="pk-btn pri" onclick="Debate.speak(1)">준비 끝, ${k === 'group' ? '토의 시작' : '말하기'}</button>`);
+    let left = total; const sec = document.getElementById('dbt-sec'), bar = document.getElementById('dbt-bar'), unit = sec.nextElementSibling;
+    this.stopTimer(); this._t = setInterval(()=>{ if(!document.getElementById('dbt-sec')){ this.stopTimer(); return; } left--; sec.textContent = this.fmt(left); unit.textContent = left >= 60 ? '남았어요' : '초 남았어요'; bar.style.width = (100 - left / total * 100) + '%'; if(left <= 0){ this.stopTimer(); this.speak(1); } }, 1000);
+  },
+  async speak(round){
+    this.stopTimer();
+    const m = document.getElementById('dbt-memo'); if(m) this.s.memo = m.value;
+    const s = this.s, k = s.kind, pt = k === 'pt', grp = k === 'group';
+    this.title(round === 1 ? this.K[k].s1 : this.K[k].s2); this.step(round === 1 ? 's1' : 's2');
+    const topicBox = `<div class="dbt-topic sm"><small>${escapeHtml(s.topic.org)} · ${this.kn()} 주제</small><p>${escapeHtml(s.topic.q)}</p></div>`;
+    if(grp && round === 1 && !s.rounds.some(r=>r.role === 'ai')){   // 토의: 다른 지원자 3명이 먼저 의견을 냄
+      this.body(`${topicBox}<div class="pk-wait"><i></i>다른 지원자들이 첫 의견을 말하고 있어요</div>`); this.foot(`<button type="button" class="pk-btn ghost" onclick="Debate.pickView()">그만하고 주제 고르기</button>`);
+      try{
+        if(!(await PracticeKit.aiOn())) throw new Error('지금은 AI 연습이 꺼져 있어요. 담당자에게 문의해 주세요.');
+        const d = await this.call('open'); if(this.s !== s || s.rounds.length) return;
+        (d.members || []).forEach(x=>s.rounds.push({ role: 'ai', who: x.who, view: x.view, text: x.text }));
+      }catch(e){ this.body(`${topicBox}<p class="pk-err">${escapeHtml(e.message || 'AI가 답하지 못했어요')}</p>`); this.foot(`<button type="button" class="pk-btn ghost" onclick="Debate.pickView()">주제 고르기</button><button type="button" class="pk-btn pri" onclick="Debate.speak(1)">다시 시도</button>`); return; }
+    }
+    const lastMe = s.rounds.map(r=>r.role).lastIndexOf('me'), ais = s.rounds.slice(lastMe + 1).filter(r=>r.role === 'ai');
+    const aiHtml = !ais.length ? '' : grp
+      ? `<div class="dbt-grp"><b class="dbt-grp-h">${round === 1 ? '다른 지원자들의 첫 의견' : '이어진 의견'}</b>${ais.map(r=>`<div class="dbt-mem"><span class="dbt-av" data-w="${escapeHtml((r.who || '').slice(-1))}">${escapeHtml((r.who || '').slice(-1))}</span><div><b>${escapeHtml(r.who || '다른 지원자')}${r.view ? ` <small>${escapeHtml(r.view)}</small>` : ''}</b><p>${escapeHtml(r.text)}</p></div></div>`).join('')}</div>`
+      : `<div class="dbt-ai"><b>${pt ? '면접관 질문' : 'AI 반론'}</b><p>${escapeHtml(ais[ais.length - 1].text)}</p></div>`;
+    const tip = round === 1
+      ? { debate:'입장을 먼저 밝히고 1분 안팎으로 말해 보세요.', group:'다른 지원자 의견 하나를 짚고(예: "A님 말씀처럼…"), 내 의견과 이유를 1분 안팎으로 말해 보세요.', pt:'실제 발표처럼 2분 안팎으로 말해 보세요.' }[k]
+      : { debate:'반론을 한 번 요약해 받고, 인정할 부분은 인정한 뒤 근거를 들어 다시 말해 보세요.', group:'나온 의견들의 공통점을 찾아 정리하고, 모두 받아들일 수 있는 방안을 제안해 보세요. (예: "정리하면 세 분 모두 …에는 동의하시니, …부터 하면 어떨까요?")', pt:'질문의 핵심에 먼저 답하고, 보완책을 덧붙여 보세요.' }[k];
+    this.body(`${topicBox}
+      ${s.memo.trim() ? `<details class="dbt-memo-v"><summary>내 메모 보기</summary><p>${escapeHtml(s.memo)}</p></details>` : ''}
+      ${aiHtml}
+      <p class="pk-tip">${tip} 말로 하거나 직접 써도 돼요.</p>
+      <textarea id="pk-ans" rows="7" placeholder="여기에 쓰거나, 아래 '말로 답하기'를 누르세요"></textarea>
+      <div class="pk-row"><button type="button" class="pk-btn" id="pk-mic" onclick="PracticeKit.mic()">🎙 말로 답하기</button><span class="pk-mut" id="pk-mic-st"></span><span class="pk-cnt" id="pk-cnt">0자</span></div>`);
+    const next = round === 1 ? { debate:'다 말했어요, 반론 듣기', group:'다 말했어요, 다음 의견 듣기', pt:'발표 끝, 질문 받기' }[k] : '다 말했어요, 피드백 받기';
+    this.foot(`<button type="button" class="pk-btn ghost" onclick="Debate.pickView()">그만하고 주제 고르기</button><button type="button" class="pk-btn pri" id="dbt-next" onclick="Debate.submit(${round})">${next}</button>`);
+    const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt'); ta.oninput = ()=>{ cnt.textContent = ta.value.trim().length + '자'; }; ta.focus();
+  },
+  async call(action){
+    const s = this.s;
+    const call = sb.functions.invoke('debate-coach', { body: { action, kind: s.kind, org: s.topic.org, topic: s.topic.q, rounds: s.rounds.map(r=>({ role: r.role, who: r.who, text: r.text })) } });
+    const { data, error } = await Promise.race([call, new Promise((_, rej)=>setTimeout(()=>rej(new Error('AI 응답이 늦어요. 잠시 뒤 다시 눌러 주세요.')), 60000))]);
+    if(error){ let msg = error.message || ''; try{ const j = await error.context.json(); if(j && j.error === 'limit') msg = '오늘 쓸 수 있는 AI 연습 횟수를 다 썼어요. 내일 다시 해 주세요.'; else if(j && j.message) msg = j.message; }catch(_){} throw new Error(msg || 'AI가 답하지 못했어요'); }
+    if(!data || data.error) throw new Error((data && (data.message || data.error)) || 'AI가 답하지 못했어요');
+    return data;
+  },
+  async submit(round){
+    const ta = document.getElementById('pk-ans'), btn = document.getElementById('dbt-next'); if(!ta) return;
+    const text = ta.value.trim(); if(text.length < 15) return showToast('조금 더 말해 주세요 (15자 이상)');
+    if(!(await PracticeKit.aiOn())) return showToast('지금은 AI 연습이 꺼져 있어요. 담당자에게 문의해 주세요.');
+    PracticeKit.stopMic(); btn.disabled = true; btn.textContent = round === 1 ? '듣고 있어요…' : '피드백을 만드는 중…';
+    this.s.rounds.push({ role: 'me', text });
+    try{
+      if(round === 1){
+        const d = await this.call('rebut');
+        if(this.s.kind === 'group') (d.remarks || []).forEach(x=>this.s.rounds.push({ role: 'ai', who: x.who, text: x.text }));
+        else this.s.rounds.push({ role: 'ai', text: d.rebut });
+        this.speak(2);
+      }
+      else { const d = await this.call('feedback'); this.result(d); }
+    }catch(e){ this.s.rounds.pop(); btn.disabled = false; btn.textContent = '다시 보내기'; showToast(e.message || 'AI가 답하지 못했어요'); }
+  },
+  result(d, opt){
+    const s = this.s, pt = s.kind === 'pt', old = opt && opt.old;
+    this.title(old ? '지난 피드백' : '피드백'); this.stepNames(); this.step('fb');
+    const ax = Object.entries(d.axes || {}).map(([k, v])=>`<li><span>${this.axLabel(k, s.kind)}</span><i><em style="width:${v * 20}%"></em></i><b>${v}<small>/5</small></b></li>`).join('');
+    const me = s.rounds.filter(r=>r.role === 'me');
+    this.body(`<div class="dbt-topic sm"><small>${escapeHtml(s.topic.org)} · ${this.kn()} 주제${old ? ` · ${new Date(old).toLocaleDateString('ko-KR')} 연습` : ''}</small><p>${escapeHtml(s.topic.q)}</p></div>
+      <div class="dbt-score"><div><small>총점</small><b>${d.score}</b><span>/100</span></div><p>${escapeHtml(d.summary || '')}</p></div>
+      <ul class="dbt-axes">${ax}</ul>
+      ${(d.strengths || []).length ? `<div class="pk-fb dbt-good"><b>잘한 점</b><ul>${d.strengths.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>` : ''}
+      ${(d.improvements || []).length ? `<div class="pk-fb"><b>고칠 점</b><ul>${d.improvements.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>` : ''}
+      ${d.better_start ? `<div class="dbt-ex"><b>이렇게 시작해 보세요</b><p>${escapeHtml(d.better_start)}</p></div>` : ''}
+      <details class="dbt-log"><summary>${s.kind === 'group' ? '토의 내용 다시 보기' : `내 발언과 ${pt ? '질문' : '반론'} 다시 보기`}</summary><dl>${s.rounds.map(r=>`<dt>${r.role === 'ai' ? (s.kind === 'group' ? escapeHtml(r.who || '다른 지원자') : pt ? '면접관 질문' : 'AI 반론') : '나'}</dt><dd>${escapeHtml(r.text)}</dd>`).join('')}</dl></details>
+      <p class="hx-fine">AI 피드백은 연습용 참고예요. 주제는 면접 후기를 다시 쓴 문장이에요.</p>`);
+    this.foot(`${this.closeBtn()}<button type="button" class="pk-btn" onclick="Debate.pickView()">다른 주제</button>${s.topic.id ? `<button type="button" class="pk-btn pri" onclick="Debate.prep('${s.topic.id}')">같은 주제 다시</button>` : ''}`);
+    if(old) return;
+    sb.from('debate_practice').insert({ talent_id: s.topic.tid || null, org: s.topic.org, kind: s.kind, topic: s.topic.q.slice(0, 300), rounds: s.rounds, feedback: d, score: d.score })
+      .then(r=>{ if(r.error) console.warn('[토론 기록 저장 실패]', r.error.message); else { this.loadLast(); this.renderHist(); } });
+    void me;
+  },
+};
+
+/* ---------------- 2026-11-09e 기관별 후기 질문 골라 연습 (QBrowse) ----------------
+   한림대 권역 기관의 면접 후기를 다시 쓴 질문(HLR)·작성 질문(HLQ)을 기관·유형별로 보고, 골라서 바로 답해 봄 (채점은 '다시 답하기' 창 그대로)
+   질문은행 원문(엑셀)은 보여 주지 않음 — 서버 함수 list_review_questions가 후기를 다시 쓴 질문만 줌 */
+const QBrowse = {
+  cache: new Map(), st: null,
+  ORDER: ['경험·역량', '인성·가치관', '상황대처', '직무·전공지식', '기업·산업', '지원동기', '입사후포부', '시사·이슈', '자기소개', '마무리', '영어'],
+  renderHome(){
+    const box = document.getElementById('qbr-card'); if(!box) return;
+    box.innerHTML = `<div class="d3-panel-head"><h3 class="d3-panel-title">기관별 후기 질문</h3></div>
+      <p class="hx-lead">강원권 병원과 원주 공공기관 등 <b>17곳</b>의 면접 후기에 나온 질문을 유형별로 보고, 골라서 바로 답해 볼 수 있어요.</p>
+      <div class="hx-acts"><button type="button" class="d3-btn d3-btn-primary" onclick="QBrowse.open()">기관 고르기</button></div>`;
+  },
+  body(html){ const b = document.getElementById('qbr-b'); if(b) b.innerHTML = html; return b; },
+  async open(tid){
+    Debate.stopTimer();
+    PracticeKit.modal(PracticeKit.head('기관별 후기 질문', '기관 고르기') + `<div class="pk-b" id="qbr-b"><div class="pk-wait"><i></i>불러오고 있어요</div></div><footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button></footer>`, 'wide');
+    try{ await Debate.loadOrgs(); }catch(e){ this.body(`<p class="pk-tip">기관 목록을 불러오지 못했어요. (${escapeHtml(e.message || e)})</p>`); return; }
+    if(tid) return this.list(tid);
+    this.pick();
+  },
+  title(t){ const h = document.querySelector('#pk-modal .pk-h h3'); if(h) h.textContent = t; },
+  pick(){
+    this.title('기관 고르기');
+    const os = (Debate.orgs || []).filter(o=>o.questions > 0), grp = g=>os.filter(o=>(g === '병원') === (o.grp === '병원'));
+    const sec = (t, L)=>L.length ? `<h4 class="qbr-h">${t}</h4><ul class="qbr-orgs">${L.map(o=>`<li><button type="button" onclick="QBrowse.list('${escapeHtml(o.talent_id)}')"><b>${escapeHtml(o.name)}</b><span>${o.questions.toLocaleString()}개</span></button></li>`).join('')}</ul>` : '';
+    this.body(sec('병원', grp('병원')) + sec('공공기관', grp('공기업')));
+  },
+  async list(tid){
+    const o = (Debate.orgs || []).find(x=>x.talent_id === tid) || { talent_id: tid, name: '', grp: '' };
+    this.title(o.name || '후기 질문');
+    if(!this.cache.has(tid)){
+      this.body('<div class="pk-wait"><i></i>질문을 불러오고 있어요</div>');
+      const { data, error } = await sb.rpc('list_review_questions', { p_talent_id: tid, p_debate: false });
+      if(error){ this.body(`<p class="pk-tip">질문을 불러오지 못했어요. (${escapeHtml(error.message)})</p>`); return; }
+      this.cache.set(tid, data || []);
+    }
+    const all = this.cache.get(tid), cnt = {}; all.forEach(r=>{ cnt[r.qtype] = (cnt[r.qtype] || 0) + 1; });
+    const types = this.ORDER.filter(t=>cnt[t]).concat(Object.keys(cnt).filter(t=>!this.ORDER.includes(t)));
+    if(!this.st || this.st.tid !== tid) this.st = { tid, type: types[0] || '', q: '', shown: 20 };
+    this.st.org = o;
+    const st = this.st, kw = st.q.trim();
+    const L = all.filter(r=>r.qtype === st.type && (!kw || String(r.question).includes(kw)));
+    this.body(`<div class="qbr-top"><button type="button" class="qbr-back" onclick="QBrowse.pick()">← 기관 목록</button><input type="search" id="qbr-q" placeholder="낱말로 찾기 (예: 갈등, 민원)" value="${escapeHtml(st.q)}"></div>
+      <div class="qbr-tabs" role="tablist">${types.map(t=>`<button type="button" role="tab" aria-selected="${t === st.type}" class="${t === st.type ? 'on' : ''}" onclick="QBrowse.tab('${t}')">${escapeHtml(t)} <small>${cnt[t]}</small></button>`).join('')}</div>
+      ${L.length ? `<ul class="qbr-list">${L.slice(0, st.shown).map(r=>`<li><p>${escapeHtml(r.question)}</p><div class="qbr-meta">${r.job_detail ? `<span class="qbr-tag">${escapeHtml(r.job_detail)}</span>` : ''}${r.year ? `<span>${r.year}년 후기</span>` : ''}<button type="button" class="pk-btn sm" onclick="QBrowse.practice('${escapeHtml(r.id)}')">답해 보기</button></div></li>`).join('')}</ul>
+        ${L.length > st.shown ? `<button type="button" class="pk-btn qbr-more" onclick="QBrowse.more()">더 보기 (${L.length - st.shown}개 남음)</button>` : ''}` : '<p class="pk-tip">찾는 질문이 없어요.</p>'}
+      <p class="hx-fine">면접 후기에 나온 질문을 뜻만 살려 다시 쓴 문장이에요. 실제 면접에서는 표현이 다를 수 있어요.</p>`);
+    const qi = document.getElementById('qbr-q'); if(qi) qi.oninput = ()=>{ clearTimeout(this._k); this._k = setTimeout(()=>{ const p = qi.selectionStart; st.q = qi.value; st.shown = 20; this.list(tid).then(()=>{ const n = document.getElementById('qbr-q'); if(n){ n.focus(); try{ n.setSelectionRange(p, p); }catch(_){} } }); }, 250); };
+  },
+  tab(t){ this.st.type = t; this.st.shown = 20; this.list(this.st.tid); },
+  more(){ this.st.shown += 20; this.list(this.st.tid); },
+  practice(id){
+    const st = this.st, r = (this.cache.get(st.tid) || []).find(x=>x.id === id); if(!r) return;
+    const o = st.org || {}, fid = o.grp === '병원' ? 'medical' : 'pubcorp', f = (typeof FIELDS !== 'undefined' ? FIELDS : []).find(x=>x.id === fid);
+    PracticeKit.openRetry({ q: r.question, fieldId: fid, fieldName: f ? f.name : '', companyId: /^[GH]\d/.test(st.tid) ? st.tid : null, companyName: o.name || r.company, qbType: r.qtype,
+      fresh: true, back: ()=>{ QBrowse.open(st.tid); } });
   },
 };
 /* ---------------- 2026-11-04f 경험 정리 도우미 (ExpCoach) ----------------
