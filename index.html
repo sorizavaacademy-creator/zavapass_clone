@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09a';
+var APP_VERSION = '2026-11-09b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -294,6 +294,7 @@ var APP_VERSION = '2026-11-09a';
   .signup-head p{margin:3px 0 0;font-size:12.5px;color:var(--slate-400);line-height:1.5;}
   .signup-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;row-gap:0;}
   @media(max-width:520px){.signup-grid{grid-template-columns:1fr;}}
+  @media(max-width:520px){.signup-grid.su-contact{row-gap:16px;}}   /* 2026-11-09b 휴대폰 번호·이메일이 세로로 쌓일 때 간격 */
   .signup-field label{display:block;font-size:12.5px;font-weight:600;color:var(--slate-600);margin-bottom:6px;}
   .signup-field input{width:100%;padding:11px 12px;border:1px solid var(--slate-300);border-radius:var(--radius-s);background:#fff;color:var(--navy-900);font-family:var(--font-ui);font-size:13.5px;transition:border-color .15s, box-shadow .15s;}
   .signup-field input:focus{border-color:var(--blue-500);box-shadow:0 0 0 3px rgba(61,107,240,.15);}
@@ -3150,6 +3151,10 @@ var APP_VERSION = '2026-11-09a';
   #screen-login.v3 .lg-hint{font-size:12px;color:var(--c-ink-3);padding-left:26px;line-height:1.5;}
   #screen-login.v3 .lg-submit{width:100%;height:50px;border:0;border-radius:10px;background:var(--c-accent-btn);color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:background var(--dur);} #screen-login.v3 .lg-submit:hover{background:var(--c-accent-btn-hover);} #screen-login.v3 .lg-submit:disabled{background:#d9d6d0;color:#5f5e5a;cursor:progress;}
   #screen-login.v3 .lg-join{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;padding-top:20px;border-top:1px solid var(--c-line);font-size:14px;color:var(--c-ink-2);}
+  /* 2026-11-09b 학번 로그인: 교직원·관리자 이메일 로그인으로 바꾸는 작은 버튼 */
+  .su-idtag-g{background:#eef6ef !important;color:#2f7a45 !important;}
+  .su-idtag{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#eef3ff;color:#2f5bd3;font-size:11px;font-weight:700;vertical-align:1px;}
+  #screen-login.v3 .lg-mode{display:block;margin:10px auto 0;padding:6px 8px;border:0;background:none;color:var(--c-ink-3);font:inherit;font-size:13px;cursor:pointer;} #screen-login.v3 .lg-mode b{font-weight:600;color:var(--c-ink-2,#444);text-decoration:underline;text-underline-offset:3px;} #screen-login.v3 .lg-mode:hover b{color:var(--c-ink);}
   #screen-login.v3 .lg-join-btn{height:44px;padding:0 20px;border:1px solid var(--c-line-strong);border-radius:10px;background:#fff;color:var(--c-ink);font:inherit;font-size:15px;font-weight:600;cursor:pointer;} #screen-login.v3 .lg-join-btn:hover{border-color:var(--c-ink);}
   #screen-login.v3 .lg-info{margin-top:24px;background:var(--c-surface);border-radius:12px;padding:16px 18px;} #screen-login.v3 .lg-info .t{margin:0 0 6px;font-size:13px;font-weight:700;color:var(--c-ink);} #screen-login.v3 .lg-info ol{margin:0;padding-left:18px;font-size:13px;color:var(--c-ink-2);line-height:1.65;} #screen-login.v3 .lg-help{margin:10px 0 0;font-size:13px;color:var(--c-ink-2);}
   #screen-login.v3 .lg-foot{max-width:1160px;width:100%;margin:0 auto;padding:16px clamp(16px,4vw,32px) 28px;font-size:13px;color:var(--c-ink-3);box-sizing:border-box;}
@@ -6565,23 +6570,24 @@ html.ivv-dr-open{overflow:hidden;}
       <section class="lg-panel">
         <div class="lg-form-box">
           <h2 class="lg-title">로그인</h2>
-          <p class="lg-sub">가입한 이메일과 비밀번호를 입력해 주세요.</p>
+          <p class="lg-sub" id="login-sub">한림대학교 <b>학번</b>과 비밀번호를 입력해 주세요.</p>
           <div class="lg-browser" id="lg-browser" style="display:none;"></div>
           <form class="lg-form" onsubmit="event.preventDefault(); handleLogin();" novalidate>
             <div class="lg-alert" id="login-alert" role="alert" style="display:none;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div><p class="t" id="login-alert-t"></p><p class="d" id="login-alert-d"></p></div></div>
             <div class="lg-field">
-              <label for="login-id">이메일</label>
-              <div class="lg-input"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg><input id="login-id" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="name@example.com" value="" oninput="hideLoginAlert()"></div>
+              <label for="login-id" id="login-id-label">학번</label>
+              <div class="lg-input"><svg id="login-id-ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.4"/><path d="M5.8 16.5c.6-1.7 1.8-2.6 3.2-2.6s2.6.9 3.2 2.6M14.5 9.5h3.5M14.5 13h3.5"/></svg><input id="login-id" type="text" inputmode="numeric" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="예: 20231234" value="" oninput="hideLoginAlert()"></div>
             </div>
             <div class="lg-field">
               <label for="login-pw">비밀번호</label>
               <div class="lg-input"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="login-pw" type="password" autocomplete="current-password" value="" oninput="hideLoginAlert()"><button type="button" class="lg-eye" onclick="togglePw('login-pw', this)" aria-label="비밀번호 보기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
             </div>
             <div class="lg-rem">
-              <label class="lg-check"><input type="checkbox" id="login-remember" checked>이메일 기억하기</label>
-              <span class="lg-hint">이 기기에 이메일만 저장해요. 비밀번호는 브라우저의 비밀번호 저장 기능을 이용해 주세요.</span>
+              <label class="lg-check"><input type="checkbox" id="login-remember" checked><span id="login-remember-t">학번 기억하기</span></label>
+              <span class="lg-hint" id="login-remember-hint">이 기기에 학번만 저장해요. 비밀번호는 브라우저의 비밀번호 저장 기능을 이용해 주세요.</span>
             </div>
             <button type="submit" class="lg-submit" id="btn-login">로그인</button>
+            <button type="button" class="lg-mode" id="login-mode" onclick="LoginId.toggle()">교직원·관리자, 이메일로 가입한 계정은 <b>이메일로 로그인</b> ›</button>
           </form>
           <div class="lg-join"><span>처음이신가요?</span><button type="button" class="lg-join-btn" onclick="openSignup()">회원가입</button></div>
           <div class="hs-link-row"><button type="button" class="hs-link" onclick="HomeApp.open(true)"><img src="apple-touch-icon.png?v=27c" alt="">다음부터 바로 들어오기 · <span class="nw">홈 화면에 추가</span></button></div>
@@ -6589,7 +6595,7 @@ html.ivv-dr-open{overflow:hidden;}
             <p class="t">이용 안내</p>
             <ol>
               <li><b>한림대학교 재학생</b>을 위한 AI 모의면접 서비스예요.</li>
-              <li>회원가입할 때 <b>소속 학과와 학번</b>을 입력해 주세요.</li>
+              <li>회원가입할 때 입력한 <b>학번이 로그인 아이디</b>가 돼요.</li>
               <li>가입하면 바로 면접 연습을 시작할 수 있어요.</li>
             </ol>
             <p class="lg-help">로그인이 안 되거나 비밀번호를 잊었다면 한림대학교 취업진로지원센터로 문의해 주세요.</p>
@@ -8677,7 +8683,7 @@ html.ivv-dr-open{overflow:hidden;}
       </div>
       <div>
         <h2>회원가입</h2>
-        <p><b>한림대학교 재학생</b>을 위한 AI 모의면접이에요. 소속 학과와 학번을 입력하고 가입하면 바로 면접 연습을 시작할 수 있어요.</p>
+        <p><b>한림대학교 재학생</b>을 위한 AI 모의면접이에요. <b>학번이 로그인 아이디</b>가 되고, 가입하면 바로 면접 연습을 시작할 수 있어요.</p>
       </div>
     </div>
     <div class="modal-body">
@@ -8692,8 +8698,8 @@ html.ivv-dr-open{overflow:hidden;}
           <input id="signup-name" type="text" placeholder="예: 홍길동" autocomplete="name">
         </div>
         <div class="signup-field">
-          <label for="signup-id">이메일 <span class="req">*</span></label>
-          <input id="signup-id" type="email" placeholder="로그인에 사용할 이메일" autocomplete="email">
+          <label for="signup-sid">학번 <span class="req">*</span> <small class="su-idtag">로그인 아이디</small></label>
+          <input id="signup-sid" type="text" inputmode="numeric" maxlength="10" placeholder="예: 20231234" autocomplete="username" oninput="this.value=this.value.replace(/\D/g,''); validateSignupField('univ')">
         </div>
       </div>
       <div class="signup-grid">
@@ -8723,18 +8729,23 @@ html.ivv-dr-open{overflow:hidden;}
             <select id="signup-dept" disabled onchange="validateSignupField('univ')"><option value="">학과 선택</option></select>
           </div>
         </div>
-        <div class="signup-field" style="margin-bottom:0;">
-          <label for="signup-sid">학번 <span class="req">*</span></label>
-          <input id="signup-sid" type="text" inputmode="numeric" maxlength="10" placeholder="예: 20231234" autocomplete="off" oninput="this.value=this.value.replace(/\D/g,''); validateSignupField('univ')">
-          <div class="field-error" id="signup-univ-err"></div>
-          <div class="signup-hint">학번은 학생 확인에만 써요. 학교 학적 시스템과 연동되면 자동으로 확인돼요.</div>
-        </div>
+        <div class="field-error" id="signup-univ-err"></div>
+        <div class="signup-hint">로그인할 때 학번과 비밀번호를 써요. 학교 학적 시스템과 연동되면 학번이 자동으로 확인돼요.</div>
       </div>
-      <div class="signup-field" style="margin-bottom:0;">
-        <label for="signup-phone">휴대폰 번호 <span class="req">*</span></label>
-        <input id="signup-phone" type="tel" inputmode="numeric" placeholder="010-1234-5678" autocomplete="tel" maxlength="13" oninput="this.value=formatPhone(this.value); validateSignupField('phone')" onkeydown="if(event.key==='Enter') submitSignup()">
-        <div class="field-error" id="signup-phone-err"></div>
-        <div class="signup-hint">면접 연습 안내 등 꼭 필요한 연락에만 사용해요.</div>
+      <div class="signup-grid su-contact">
+        <div class="signup-field" style="margin-bottom:0;">
+          <label for="signup-phone">휴대폰 번호 <span class="req">*</span></label>
+          <input id="signup-phone" type="tel" inputmode="numeric" placeholder="010-1234-5678" autocomplete="tel" maxlength="13" oninput="this.value=formatPhone(this.value); validateSignupField('phone')">
+          <div class="field-error" id="signup-phone-err"></div>
+          <div class="signup-hint">면접 연습 안내 등 꼭 필요한 연락에만 사용해요.</div>
+        </div>
+        <!-- 2026-11-09b 로그인은 학번, 이메일은 비밀번호 찾기용으로만 받음 (profiles.contact_email) -->
+        <div class="signup-field" style="margin-bottom:0;">
+          <label for="signup-email">이메일 <span class="req">*</span> <small class="su-idtag su-idtag-g">비밀번호 찾기용</small></label>
+          <input id="signup-email" type="email" inputmode="email" placeholder="name@example.com" autocomplete="email" maxlength="120" autocapitalize="none" spellcheck="false" oninput="validateSignupField('email')" onkeydown="if(event.key==='Enter') submitSignup()">
+          <div class="field-error" id="signup-email-err"></div>
+          <div class="signup-hint">비밀번호를 잊었을 때 찾는 데만 써요. 로그인은 학번으로 해요.</div>
+        </div>
       </div>
       <div class="su-agree" role="group" aria-labelledby="su-agree-t">
         <p class="su-agree-t" id="su-agree-t">필수 동의 <small>두 가지 모두 체크해야 가입할 수 있어요</small></p>
@@ -8855,8 +8866,8 @@ html.ivv-dr-open{overflow:hidden;}
     <div class="modal-body privacy-body">
       <p>ZAVAPASS AI 모의면접은 연습 서비스 제공을 위해 아래 정보를 수집·이용합니다.</p>
       <table class="privacy-table">
-        <tr><th>수집 항목</th><td>이름, 이메일, 휴대폰 번호, 지원 기관(선택), 자기소개서·이력서 파일 내용(선택), 면접 답변 원문·점수·피드백, 연습 일시, 표정·시선 숫자 요약(카메라 사용 시), 서류 합격 확인 캡처(승인 요청 시 · 확인 뒤 담당자가 삭제), 실제 면접 후기·받은 질문(남긴 경우)</td></tr>
-        <tr><th>이용 목적</th><td>회원 식별과 로그인, 면접 연습 기록 저장·결과 제공, 관리자의 연습 현황 확인과 면접 일정 안내 연락, 자기소개서·이력서 기반 맞춤 질문과 AI 꼬리질문 생성, 서류 합격 확인(승인), 남긴 면접 질문을 다른 지원자의 연습 문항으로 활용(이름 없이)</td></tr>
+        <tr><th>수집 항목</th><td>이름, 학번(로그인 아이디), 소속 단과대학·학과, 이메일(비밀번호 찾기용), 휴대폰 번호, 지원 기관(선택), 자기소개서·이력서 파일 내용(선택), 면접 답변 원문·점수·피드백, 연습 일시, 표정·시선 숫자 요약(카메라 사용 시), 서류 합격 확인 캡처(승인 요청 시 · 확인 뒤 담당자가 삭제), 실제 면접 후기·받은 질문(남긴 경우)</td></tr>
+        <tr><th>이용 목적</th><td>회원 식별과 로그인·비밀번호 찾기, 면접 연습 기록 저장·결과 제공, 관리자의 연습 현황 확인과 면접 일정 안내 연락, 자기소개서·이력서 기반 맞춤 질문과 AI 꼬리질문 생성, 서류 합격 확인(승인), 남긴 면접 질문을 다른 지원자의 연습 문항으로 활용(이름 없이)</td></tr>
         <tr><th>보유 기간</th><td>회원 탈퇴(계정 삭제) 또는 본인의 삭제 요청 시까지 보관해요. 이용 기간이 끝나면 면접 연습이 막히고(면접 후기 남기기만 가능) 기록은 지워지지 않아요. 삭제를 요청하면 지체 없이 파기해요.</td></tr>
         <tr><th>동의 거부</th><td>동의하지 않을 권리가 있으나, 필수 항목에 동의하지 않으면 서비스 이용(회원가입)이 불가합니다.</td></tr>
       </table>
@@ -9443,15 +9454,15 @@ function svg(name){
 function authErrorMessage(err, ctx){
   const m = String((err && err.message) || err || '').trim();
   const t = m.toLowerCase();
-  if(/already (been )?registered|already exists|user_already_exists|email_exists/.test(t)) return '이미 가입된 이메일이에요. 로그인해 주세요.';
-  if(/invalid login credentials|invalid_credentials|invalid grant/.test(t)) return '이메일 또는 비밀번호가 맞지 않아요. 다시 확인해 주세요.';
-  if(/email not confirmed|email_not_confirmed/.test(t)) return '이메일 확인이 아직 완료되지 않은 계정이에요. 관리자에게 문의해 주세요.';
+  if(/already (been )?registered|already exists|user_already_exists|email_exists/.test(t)) return '이미 가입된 학번(아이디)이에요. 로그인해 주세요.';
+  if(/invalid login credentials|invalid_credentials|invalid grant/.test(t)) return '학번(아이디) 또는 비밀번호가 맞지 않아요. 다시 확인해 주세요.';
+  if(/email not confirmed|email_not_confirmed/.test(t)) return '아직 사용할 수 없는 계정이에요. 관리자에게 문의해 주세요.';
   if(/known to be weak|easy to guess|pwned|leaked/.test(t)) return '흔히 쓰이거나 유출된 적이 있는 비밀번호라 쓸 수 없어요. 다른 비밀번호로 정해 주세요.';   // 2026-10-22v 유출 비밀번호 차단
   if(/password should|weak_password|password is too/.test(t)) return '비밀번호는 영문과 숫자를 모두 넣어 8자 이상으로 만들어 주세요.';
-  if(/unable to validate email|invalid email|email address .*invalid|validation_failed/.test(t)) return '이메일 주소 형식이 올바르지 않아요. 예: name@example.com';
+  if(/unable to validate email|invalid email|email address .*invalid|validation_failed/.test(t)) return '아이디 형식이 올바르지 않아요. 학번은 숫자로, 교직원·관리자는 이메일 주소로 입력해 주세요.';
   if(/rate limit|too many requests|over_.*_rate_limit|429/.test(t)) return '요청이 너무 많아 잠시 막혔어요. 1분 뒤에 다시 시도해 주세요.';
   if(/signups not allowed|signup_disabled/.test(t)) return '지금은 회원가입이 닫혀 있어요. 관리자에게 문의해 주세요.';
-  if(/user not found|user_not_found/.test(t)) return '등록되지 않은 이메일이에요. 회원가입을 먼저 해 주세요.';
+  if(/user not found|user_not_found/.test(t)) return '등록되지 않은 학번(아이디)이에요. 회원가입을 먼저 해 주세요.';
   if(/failed to fetch|network|load failed|fetch/.test(t)) return '인터넷 연결을 확인한 뒤 다시 시도해 주세요.';
   if(!m) return (ctx==='signup' ? '회원가입' : '로그인')+'에 실패했어요. 잠시 후 다시 시도해 주세요.';
   return (ctx==='signup' ? '회원가입' : '로그인')+'에 실패했어요. ('+m+')';
@@ -9642,13 +9653,40 @@ function startAccessWatch(){
 }
 
 /* ---------------- login ---------------- */
-/* 로그인 이메일 기억하기 (이 브라우저에만 저장, 비밀번호는 저장하지 않음) */
+/* 2026-11-09b 학번 로그인: 학생은 학번으로 가입·로그인. 로그인 서버(Supabase)는 이메일 형식 아이디만 받아서
+   학번을 '학번@student.hallym.example.com'(실제로 메일이 가지 않는 예약 주소)으로 바꿔 씀. 학생 화면에는 학번만 보임.
+   교직원·관리자와 예전 이메일 계정은 '이메일로 로그인'으로 그대로 들어옴 (@가 있으면 이메일로 봄) */
+const LoginId = {
+  DOMAIN: 'student.hallym.example.com',
+  SID: /^\d{6,10}$/,
+  emailMode: false,
+  /** 입력값 → 로그인 계정. 학번이 아니고 이메일도 아니면 null */
+  toEmail(v){ v = String(v||'').trim(); if(v.includes('@')) return v.toLowerCase(); return this.SID.test(v) ? v + '@' + this.DOMAIN : null; },
+  /** 로그인 계정 → 화면에 보일 아이디 ("학번 20231234" 또는 이메일 그대로) */
+  label(email){ const m = String(email||'').match(/^(\d{6,10})@student\.hallym\.example\.com$/i); return m ? '학번 ' + m[1] : String(email||''); },
+  set(email){
+    this.emailMode = !!email;
+    const inp = document.getElementById('login-id'); if(!inp) return;
+    const T = (id, v)=>{ const e = document.getElementById(id); if(e) e.innerHTML = v; };
+    const ico = document.getElementById('login-id-ico');
+    if(ico) ico.innerHTML = email ? '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/>'
+                                  : '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.4"/><path d="M5.8 16.5c.6-1.7 1.8-2.6 3.2-2.6s2.6.9 3.2 2.6M14.5 9.5h3.5M14.5 13h3.5"/>';
+    inp.type = email ? 'email' : 'text'; inp.inputMode = email ? 'email' : 'numeric'; inp.placeholder = email ? 'name@example.com' : '예: 20231234';
+    T('login-id-label', email ? '이메일' : '학번');
+    T('login-sub', email ? '계정 이메일과 비밀번호를 입력해 주세요. (교직원·관리자, 이메일로 가입한 계정)' : '한림대학교 <b>학번</b>과 비밀번호를 입력해 주세요.');
+    T('login-remember-t', email ? '이메일 기억하기' : '학번 기억하기');
+    T('login-remember-hint', (email ? '이 기기에 이메일만' : '이 기기에 학번만') + ' 저장해요. 비밀번호는 브라우저의 비밀번호 저장 기능을 이용해 주세요.');
+    T('login-mode', email ? '학생은 <b>학번으로 로그인</b> ›' : '교직원·관리자, 이메일로 가입한 계정은 <b>이메일로 로그인</b> ›');
+  },
+  toggle(){ this.set(!this.emailMode); hideLoginAlert(); const inp = document.getElementById('login-id'); if(inp){ inp.value = ''; inp.focus(); } }
+};
+/* 로그인 아이디(학번·이메일) 기억하기 (이 브라우저에만 저장, 비밀번호는 저장하지 않음) */
 const REMEMBER_KEY = 'stenotalk_remember_email';
 function loadRememberedEmail(){
   try{
     const v = localStorage.getItem(REMEMBER_KEY);
     const box = document.getElementById('login-remember'), input = document.getElementById('login-id');
-    if(v && input && !input.value){ input.value = v; if(box) box.checked = true; const pw=document.getElementById('login-pw'); if(pw) setTimeout(()=>{ try{ pw.focus(); }catch(e){} }, 50); }
+    if(v && input && !input.value){ LoginId.set(v.includes('@')); input.value = v; if(box) box.checked = true; const pw=document.getElementById('login-pw'); if(pw) setTimeout(()=>{ try{ pw.focus(); }catch(e){} }, 50); }
     else if(box && localStorage.getItem(REMEMBER_KEY+'_off')==='1'){ box.checked = false; }
   }catch(e){}
 }
@@ -9777,11 +9815,18 @@ function precheckSummary(){
 function showLoginAlert(title, desc){ const box=document.getElementById('login-alert'); if(!box){ showToast(title); return; } box.style.display=''; document.getElementById('login-alert-t').textContent = title||''; document.getElementById('login-alert-d').textContent = desc||''; }
 function hideLoginAlert(){ const box=document.getElementById('login-alert'); if(box) box.style.display='none'; }
 async function handleLogin(){
-  const email = document.getElementById('login-id').value.trim();
+  const loginRaw = document.getElementById('login-id').value.trim();
   const pw = document.getElementById('login-pw').value;
-  if(!email || !pw){
-    showLoginAlert(!email ? '이메일을 입력해 주세요.' : '비밀번호를 입력해 주세요.', !email ? '가입할 때 쓴 이메일 주소를 적어 주세요. 예: name@example.com' : '비밀번호를 적은 뒤 로그인을 눌러 주세요.');
-    (document.getElementById(!email ? 'login-id' : 'login-pw')||{focus(){}}).focus();
+  const idName = LoginId.emailMode ? '이메일' : '학번';
+  if(!loginRaw || !pw){
+    showLoginAlert(!loginRaw ? idName + '을 입력해 주세요.' : '비밀번호를 입력해 주세요.', !loginRaw ? (LoginId.emailMode ? '계정 이메일 주소를 적어 주세요. 예: name@example.com' : '가입할 때 입력한 학번을 숫자로 적어 주세요. 예: 20231234') : '비밀번호를 적은 뒤 로그인을 눌러 주세요.');
+    (document.getElementById(!loginRaw ? 'login-id' : 'login-pw')||{focus(){}}).focus();
+    return;
+  }
+  const email = LoginId.toEmail(loginRaw);
+  if(!email){
+    showLoginAlert('학번은 숫자 6~10자리로 입력해 주세요.', '교직원·관리자나 이메일로 가입한 계정은 아래 "이메일로 로그인"을 눌러 주세요.');
+    document.getElementById('login-id').focus();
     return;
   }
   hideLoginAlert();
@@ -9805,9 +9850,9 @@ async function handleLogin(){
     else showToast('프로필 조회 실패 (id: '+data.user.id.slice(0,8)+'…): '+profErr.code+' '+profErr.message);
     return;
   }
-  if(await rejectIfExpired(profile, data.user)){ saveRememberedEmail(email); return; }
+  if(await rejectIfExpired(profile, data.user)){ saveRememberedEmail(loginRaw); return; }
   if(await School.rejectSuspended(profile)) return;
-  saveRememberedEmail(email);
+  saveRememberedEmail(loginRaw);
   state.currentUser = {
     id: data.user.id,
     email: data.user.email,
@@ -12765,7 +12810,7 @@ const School = {
     const ib = p.ib, dv = p.docs && (p.docs.file_name || p.docs.cv_file_name), adm = this.can('admin');
     const ibRows = ib ? [['목표', [this.fName(ib.target_field), ib.target_role].filter(Boolean).join(' · ')], ['학년', ib.grade ? (ib.grade === '졸업' ? '졸업(예정)' : ib.grade + '학년') : ''], ['학점', ib.gpa != null ? `${ib.gpa} / ${ib.gpa_max}${ib.major_gpa != null ? ` (전공 ${ib.major_gpa})` : ''}` : ''], ['어학', [ib.toeic ? `TOEIC ${ib.toeic}` : '', ib.toeic_speaking ? `토익스피킹 ${ib.toeic_speaking}` : '', ib.opic ? `OPIc ${ib.opic}` : '', ib.other_lang || ''].filter(Boolean).join(' · ')],
       ['자격', (ib.certs || []).map(c=>c.name).join(', ')], ['경험', [ib.intern_months ? `인턴 ${ib.intern_months}개월` : '', ib.projects ? `프로젝트 ${ib.projects}` : '', ib.activities ? `대외활동 ${ib.activities}` : '', ib.awards ? `수상 ${ib.awards}` : '', ib.volunteer_hours ? `봉사 ${ib.volunteer_hours}시간` : ''].filter(Boolean).join(' · ')]].filter(r=>r[1]) : [];
-    return `<header class="schl-dr-h"><div><h2>${escapeHtml(p.name)}${p.is_test ? ' <span class="schl-test">테스트</span>' : ''}</h2><p>${escapeHtml([p.college, p.dept].filter(Boolean).join(' '))}${p.email ? ` · ${escapeHtml(p.email)}` : ''}${p.phone ? ` · ${escapeHtml(p.phone)}` : ''}</p></div><button type="button" class="schl-dr-close" aria-label="닫기">✕</button></header>
+    return `<header class="schl-dr-h"><div><h2>${escapeHtml(p.name)}${p.is_test ? ' <span class="schl-test">테스트</span>' : ''}</h2><p>${escapeHtml([p.college, p.dept].filter(Boolean).join(' '))}${p.email ? ` · ${escapeHtml(LoginId.label(p.email))}` : ''}${p.phone ? ` · ${escapeHtml(p.phone)}` : ''}</p></div><button type="button" class="schl-dr-close" aria-label="닫기">✕</button></header>
       <div class="schl-dr-body">
         <div class="schl-mini">${this.kpi('연습', `${p.n}회`)}${this.kpi('평균', p.avg != null ? `${p.avg}점` : '–')}${this.kpi('최근 3회', p.recent3 != null ? `${p.recent3}점` : '–')}${this.kpi('마지막 연습', this.ago(p.lastAt))}</div>
         <section><h3>점수 추이 <small>최근 15번</small></h3>${this.trendChart(p)}</section>
@@ -15249,7 +15294,7 @@ function renderRealSetView(){
       }).join('') : '<div class="muted" style="padding:6px 0;">실전 세트 기록이 아직 없어요.</div>') + `<div style="padding-top:8px;"><button type="button" class="btn-manage" onclick="event.stopPropagation(); openAdminUserDetail('${r.u.id}')">면접자 상세 열기</button></div></div>`;
     }
     return `<div class="bt-row rs-row" onclick="toggleRealSetRow('${r.u.id}')" title="누르면 실전 세트 기록이 펼쳐져요">
-      <span class="bt-name"><b>${escapeHtml(r.u.name||'(이름 없음)')}</b>${r.u.email?`<small class="bt-email">${escapeHtml(r.u.email)}</small>`:''}${r.u.phone?`<small>${escapeHtml(r.u.phone)}</small>`:''}</span>
+      <span class="bt-name"><b>${escapeHtml(r.u.name||'(이름 없음)')}</b>${r.u.email?`<small class="bt-email">${escapeHtml(LoginId.label(r.u.email))}</small>`:''}${r.u.phone?`<small>${escapeHtml(r.u.phone)}</small>`:''}</span>
       <span class="bt-cell" data-l="실전 세트">${r.n ? `<b>${r.n}회</b><small>평균 ${r.avg!=null?r.avg+'점':'–'}</small>` : '<span class="muted">0회</span>'}</span>
       <span class="bt-cell" data-l="최근 점수">${r.last && r.last.score!=null ? `<b>${r.last.score}점</b><small>최고 ${r.best!=null?r.best+'점':'–'}</small>` : '<span class="muted">–</span>'}</span>
       <span class="bt-cell" data-l="15분 초과">${r.over ? `<span class="bt-pill none">${r.over}회</span>` : (r.n ? '<span class="muted">없음</span>' : '<span class="muted">–</span>')}</span>
@@ -15286,7 +15331,7 @@ function renderBetaView(){
     const accTxt = r.acc.until ? (r.acc.expired ? '<span class="bt-bad">끝남</span>' : `${r.acc.label}<small>${r.acc.daysLeft===0?'오늘까지':r.acc.daysLeft+'일 남음'}</small>`) : '<span class="muted">기한 없음</span>';
     const perm = r.hasPerm ? '' : ' <span class="bt-warn-tag">권한 없음</span>';
     return `<div class="bt-row" onclick="openAdminUserDetail('${r.u.id}')" title="누르면 면접자 상세가 열려요">
-      <span class="bt-name"><b>${escapeHtml(r.u.name||'(이름 없음)')}</b>${perm}${r.u.email?`<small class="bt-email">${escapeHtml(r.u.email)}</small>`:''}${r.u.phone?`<small>${escapeHtml(r.u.phone)}</small>`:''}</span>
+      <span class="bt-name"><b>${escapeHtml(r.u.name||'(이름 없음)')}</b>${perm}${r.u.email?`<small class="bt-email">${escapeHtml(LoginId.label(r.u.email))}</small>`:''}${r.u.phone?`<small>${escapeHtml(r.u.phone)}</small>`:''}</span>
       <span><span class="bt-pill ${pc}">${pt}</span></span>
       <span class="bt-cell" data-l="마지막 접속">${lastTxt}</span>
       <span class="bt-cell" data-l="연습"><b>${r.n}회</b><small>최근 3일 ${r.recent}회</small></span>
@@ -21810,7 +21855,7 @@ async function renderAdmin(){
           ${u.is_admin ? ' <span class="perm-chip">관리자</span>' : ` <span class="status-chip ${statusChipClass(status)}">${escapeHtml(status)}</span>`}${isSelf ? ' <span class="status-chip">나</span>' : ''}${u.is_admin ? '' : ' '+accessChipHtml(u.access_until)}${u.ai_override==='on' ? ' <span class="status-chip until" title="이 사람만 AI 즉석 꼬리질문·채점 켬">AI 켬</span>' : u.ai_override==='off' ? ' <span class="status-chip" title="이 사람만 AI 끔">AI 끔</span>' : ''}
         </div>
         ${isEnded ? `<div class="ul-ended-line"><span class="tag tag-danger">기간 끝남 ${escapeHtml(acc.label.slice(5).replace('-','/'))}</span> ${endedAgo ? `${endedAgo}일 지남` : '오늘 끝남'} ${reportPledgeTag(u)}</div>` : ''}
-        ${u.email ? `<div class="admin-sub admin-email" title="로그인 아이디 ${escapeHtml(u.email)}">${escapeHtml(u.email)}</div>` : ''}
+        ${u.email ? `<div class="admin-sub admin-email" title="로그인 아이디 ${escapeHtml(u.email)}">${escapeHtml(LoginId.label(u.email))}</div>` : ''}
         ${u.phone ? `<div class="admin-sub admin-phone">${escapeHtml(u.phone)}</div>` : '<div class="admin-sub up-none">휴대폰 번호 없음</div>'}
         ${u.is_admin ? '' : `<div class="up-state">${isStaff ? '<span class="tag tag-staff" title="관리자가 직원으로 지정한 계정 · 현황 통계에서 빠져요">직원</span>' : acc.expired ? '' : allowedFields.length ? (acc.until && acc.daysLeft <= 3 ? '<span class="tag tag-warn">만료 임박</span>' : '<span class="tag tag-ok">이용 중</span>') : '<span class="tag tag-warn">권한 대기</span>'}${(state.apSubmitted||{})[u.id] && !allowedFields.length ? ` <button type="button" class="tag tag-ok ap-proof-chip" onclick="adminGo('approvals')" title="서류 합격 증빙을 올렸어요 · 누르면 승인 요청 화면">증빙 제출함</button>` : ''}<span class="up-state-txt">준비 단계 · ${escapeHtml(status)}</span></div>`}
       </div>
@@ -27078,15 +27123,15 @@ function fillSignupDepts(){
 }
 function openSignup(){
   document.getElementById('signup-name').value='';
-  document.getElementById('signup-id').value='';
   document.getElementById('signup-pw').value='';
   document.getElementById('modal-signup').classList.add('active');
-  ['signup-name','signup-id','signup-phone','signup-pw','signup-pw2','signup-sid','signup-college','signup-dept'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.value=''; el.classList.remove('invalid'); } });
+  ['signup-name','signup-email','signup-phone','signup-pw','signup-pw2','signup-sid','signup-college','signup-dept'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.value=''; el.classList.remove('invalid'); } });
   fillSignupColleges(); { const ue = document.getElementById('signup-univ-err'); if(ue) ue.textContent = ''; }
   { const e2 = document.getElementById('signup-pw2-err'); if(e2){ e2.textContent = ''; e2.classList.remove('ok'); } toggleSignupPwVisible(false); }
   const consent=document.getElementById('signup-consent'); if(consent){ consent.checked=false; validateSignupField('consent'); }
   const pledge=document.getElementById('signup-pledge'); if(pledge){ pledge.checked=false; validateSignupField('pledge'); }
   const pe=document.getElementById('signup-phone-err'); if(pe) pe.textContent='';
+  const ee=document.getElementById('signup-email-err'); if(ee) ee.textContent='';
   document.querySelectorAll('#signup-pw-rules [data-rule]').forEach(el=>el.classList.remove('ok','bad'));
 }
 function closeSignup(){
@@ -27102,6 +27147,7 @@ function formatPhone(v){
   return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7);
 }
 function isValidPhone(v){ return /^01[016789]\d{7,8}$/.test(phoneDigits(v)); }
+function isValidEmail(v){ v = String(v||'').trim(); return v.length <= 120 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
 
 function checkPassword(pw){
   const r = { len: (pw||'').length >= 8, alpha: /[A-Za-z]/.test(pw||''), digit: /\d/.test(pw||'') };
@@ -27145,6 +27191,11 @@ function validateSignupField(which, force){
     const msg = force && !c.value ? '소속 단과대학을 골라 주세요' : force && !d.value ? '학과를 골라 주세요' : sidBad ? '학번을 숫자로 정확히 입력해 주세요' : '';
     c.classList.toggle('invalid', !!force && !c.value); d.classList.toggle('invalid', !!force && !!c.value && !d.value); s.classList.toggle('invalid', sidBad);
     document.getElementById('signup-univ-err').textContent = msg;
+  }else if(which === 'email'){
+    const input = document.getElementById('signup-email'), err = document.getElementById('signup-email-err'); if(!input) return;
+    const v = input.value.trim();
+    const msg = !v ? (force ? '비밀번호 찾기에 쓸 이메일을 입력해 주세요' : '') : (!isValidEmail(v) && (force || /@.+\./.test(v))) ? '이메일 주소를 정확히 입력해 주세요 (예: name@example.com)' : '';
+    if(err) err.textContent = msg; input.classList.toggle('invalid', !!msg);
   }else if(which === 'consent'){
     const c = document.getElementById('signup-consent');
     const bad = !c.checked && !!force;
@@ -27165,22 +27216,23 @@ function agreePrivacy(){ const c=document.getElementById('signup-consent'); if(c
 const DEMO_AUTO_APPROVE = true;
 async function submitSignup(){
   const name = document.getElementById('signup-name').value.trim();
-  const email = document.getElementById('signup-id').value.trim();
   const pw = document.getElementById('signup-pw').value.trim();
   const college = document.getElementById('signup-college').value, dept = document.getElementById('signup-dept').value;
   const sid = document.getElementById('signup-sid').value.trim();
-  const note = college && dept ? `한림대학교 ${college} ${dept}` : '';   // 학번은 연동 전이라 저장하지 않음
+  const note = college && dept ? `한림대학교 ${college} ${dept}` : '';   // 2026-11-09b 학번은 로그인 아이디로만 씀 (학적 연동 전)
   const phone = formatPhone(document.getElementById('signup-phone').value);
-  if(!name || !email){
-    showToast('이름과 이메일을 입력해 주세요');
+  if(!name){
+    document.getElementById('signup-name').focus();
+    showToast('이름을 입력해 주세요');
     return;
   }
   if(!college || !dept || !/^\d{6,10}$/.test(sid)){
     validateSignupField('univ', true);
     document.getElementById(!college ? 'signup-college' : !dept ? 'signup-dept' : 'signup-sid').focus();
-    showToast('소속 단과대학·학과와 학번을 입력해 주세요');
+    showToast('학번과 소속 단과대학·학과를 입력해 주세요');
     return;
   }
+  const email = LoginId.toEmail(sid);   // 2026-11-09b 학번이 로그인 아이디
   if(!phone){
     validateSignupField('phone', true);
     document.getElementById('signup-phone').focus();
@@ -27191,6 +27243,13 @@ async function submitSignup(){
     validateSignupField('phone', true);
     document.getElementById('signup-phone').focus();
     showToast('휴대폰 번호를 010-1234-5678 형식으로 정확히 입력해 주세요');
+    return;
+  }
+  const contactEmail = (document.getElementById('signup-email').value || '').trim().toLowerCase();
+  if(!isValidEmail(contactEmail)){
+    validateSignupField('email', true);
+    document.getElementById('signup-email').focus();
+    showToast(contactEmail ? '이메일 주소를 정확히 입력해 주세요' : '비밀번호 찾기에 쓸 이메일을 입력해 주세요');
     return;
   }
   const pwCheck = checkPassword(pw);
@@ -27224,7 +27283,7 @@ async function submitSignup(){
     if(/이미 가입된/.test(msg)){
       // 이미 계정이 있으면 가입창을 닫고 로그인칸에 이메일을 채워 둠
       closeSignup();
-      const loginId = document.getElementById('login-id'); if(loginId){ loginId.value = email; }
+      LoginId.set(false); const loginId = document.getElementById('login-id'); if(loginId){ loginId.value = sid; }
       const loginPw = document.getElementById('login-pw'); if(loginPw){ loginPw.value = ''; loginPw.focus(); }
     }
     return;
@@ -27235,8 +27294,10 @@ async function submitSignup(){
     showToast('가입 요청은 보냈지만 계정 정보를 받지 못했어요. 잠시 후 다시 시도해 주세요.');
     return;
   }
-  const profileRow = { id: userId, name, phone, note: note || '서류 결과 확인 중', is_admin:false, allowed_fields: DEMO_AUTO_APPROVE ? FIELDS.map(f => f.id) : [], privacy_agreed_at: new Date().toISOString(), report_pledge_at: new Date().toISOString() };
+  const profileRow = { id: userId, name, phone, contact_email: contactEmail, college: college || null, dept: dept || null, note: note || '서류 결과 확인 중', is_admin:false, allowed_fields: DEMO_AUTO_APPROVE ? FIELDS.map(f => f.id) : [], privacy_agreed_at: new Date().toISOString(), report_pledge_at: new Date().toISOString() };
   let { error: insertErr } = await sb.from('profiles').insert(profileRow);
+  // profiles.contact_email·college·dept 컬럼이 아직 없으면(SQL 024 미적용) 빼고 저장
+  if(insertErr && /contact_email|college|dept/i.test(insertErr.message||'')){ console.warn('[profiles 컬럼 없음] supabase/clone/024_profiles_contact_email.sql'); delete profileRow.contact_email; delete profileRow.college; delete profileRow.dept; ({ error: insertErr } = await sb.from('profiles').insert(profileRow)); }
   // profiles.report_pledge_at 컬럼이 아직 없으면(SQL step38 미적용) 빼고 저장
   if(insertErr && /report_pledge_at/i.test(insertErr.message||'')){ console.warn('[profiles.report_pledge_at 컬럼 없음] sql/step38_report_pledge_2026-10-27.sql'); delete profileRow.report_pledge_at; ({ error: insertErr } = await sb.from('profiles').insert(profileRow)); }
   // profiles.privacy_agreed_at 컬럼이 아직 없으면(SQL 미적용) 동의 시각만 빼고 저장
