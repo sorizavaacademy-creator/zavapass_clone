@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09k';
+var APP_VERSION = '2026-11-09l';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -4435,7 +4435,7 @@ body.hs-mobile #pc-qr-card{display:none !important;}
 
 
 /* ---- 관리자 위쪽 메뉴 (2026-10-20o): 관리자는 연습하지 않으므로 면접 연습·리포트·내 성장만 숨김 (홈 화면은 그대로) ---- */
-body.is-admin-ui .d3-nav a[data-go="practice"], body.is-admin-ui .d3-nav a[data-go="reports"], body.is-admin-ui .d3-nav a[data-go="growth"], body.is-admin-ui .d3-nav a[data-go="debate"]{ display:none !important; }
+body.is-admin-ui .d3-nav a[data-go="practice"], body.is-admin-ui .d3-nav a[data-go="reports"], body.is-admin-ui .d3-nav a[data-go="growth"], body.is-admin-ui .d3-nav a[data-go="debate"]{ display:none !important; }   /* 2026-11-09l 관리자도 토론 연습을 쓰지만 위 메뉴엔 안 두고 홈의 '토론 시작' 버튼으로 들어감 */
 /* 2026-10-20o: 관리자 메뉴에 공지사항·관리자 화면을 홈 옆에 꺼내고, 이름 메뉴에서는 같은 항목·카카오톡 문의를 뺌 */
 .d3-nav a.adm-only{ display:none; }
 body.is-admin-ui .d3-nav a.adm-only{ display:inline-flex; }
@@ -12170,7 +12170,6 @@ function setDashView(view){
 /* 2026-11-09f 토론 연습 전용 화면 — 면접 흐름과 따로, 홈의 '토론·발표 면접' 버튼과 위 메뉴 '토론 연습'으로 들어옴 */
 function openDebateScreen(tid){
   if(!state.currentUser){ showToast('먼저 로그인해 주세요.'); return; }
-  if(state.currentUser.isAdmin){ showToast('토론 연습은 면접자 계정에서 할 수 있어요.'); return; }
   try{ PracticeKit.close(); }catch(_){}
   const act = document.querySelector('.screen.active');
   if(!act || act.id !== 'screen-dashboard'){ stopLiveRefresh(); showScreen('screen-dashboard'); Activity.setPresence('dashboard'); }
