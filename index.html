@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09l';
+var APP_VERSION = '2026-11-09m';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6423,6 +6423,28 @@ body.is-admin-ui #d3-home #d3-stats .as-go{margin-top:10px;min-height:40px;}
   #d3-home .hm-tiles{flex:0 0 auto;margin-top:clamp(14px, 2vh, 20px);}
   #d3-home .hm-tile{padding:clamp(12px, 2vh, 20px) 16px;gap:clamp(2px, .4vh, 5px);}
 }
+/* 2026-11-09m 토론 연습 팝업 (면접 준비 창과 같은 틀) */
+html.dbm-open{overflow:hidden;}
+html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
+.dbm{position:fixed;top:0;left:0;right:0;height:100vh;height:100dvh;z-index:3200;display:flex;align-items:center;justify-content:center;padding:16px;}
+.dbm[hidden]{display:none !important;}
+.dbm-bg{position:absolute;inset:0;background:rgba(15,23,42,.5);}
+.dbm-box{position:relative;width:min(1080px,100%);height:calc(100dvh - 32px);max-height:900px;display:flex;flex-direction:column;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);color:#172033;}
+.dbm .fl-top{flex:none;}
+.dbm-scroll{flex:1 1 auto;overflow:auto;padding:20px 24px 24px;}
+.dbm-head{margin-bottom:14px;} .dbm-head h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em;} .dbm-head p{margin:4px 0 0;font-size:13.5px;color:#6b6b72;}
+.dbm .dbp-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start;}
+.dbm .dbp-main{padding:0;border:0;background:none;}
+.dbm .dbp-b{padding:0;}
+.dbm-card{background:#F7F6F3;border-radius:14px;padding:16px 18px;} .dbm-card + .dbm-card{margin-top:12px;}
+.dbm-card h3{margin:0 0 8px;font-size:15px;font-weight:800;}
+.dbm .dbp-f{flex:none;display:flex;gap:10px;justify-content:space-between;padding:14px 24px 18px;border-top:1px solid #EEEDEA;background:#fff;}
+.dbm .dbp-f:empty{display:none;}
+.dbm .dbp-f .pk-btn{flex:1 1 0;min-height:52px;font-size:16px;border-radius:10px;border:1.5px solid #D5D2CC;color:#1c1c1e;background:#fff;}
+.dbm .dbp-f .pk-btn.ghost{border-color:#D5D2CC;}
+.dbm .dbp-f .pk-btn.pri{background:#c8441c;border-color:#c8441c;color:#fff;}
+@media(max-width:820px){ .dbm .dbp-grid{grid-template-columns:1fr;} }
+@media(max-width:640px){ .dbm{padding:0;} .dbm-box{height:100dvh;max-height:none;border-radius:0;} .dbm-scroll{padding:16px 14px 20px;} .dbm-head h2{font-size:19px;} .dbm .dbp-f{padding:12px 14px calc(12px + env(safe-area-inset-bottom));} .dbm .dbp-f .pk-btn{min-height:48px;font-size:15px;} .dbm .fl-steps b span{display:none;} .dbm .fl-steps b.on span{display:inline;} }
 </style>
 </head>
 <body>
@@ -7067,30 +7089,31 @@ body.is-admin-ui #d3-home #d3-stats .as-go{margin-top:10px;min-height:40px;}
   </main>
 
   <!-- 2026-11-09f 토론 연습 전용 화면 (면접과 따로) -->
-  <main class="d3-page" id="d3-debate" hidden>
-    <div class="gw-head">
-      <div><p class="gw-scope">공공기관 토론·토의·발표 면접 대비</p><h1 class="gw-title">토론 연습</h1></div>
-    </div>
-    <ol class="dbp-steps" id="dbp-steps" aria-label="진행 순서"><li data-k="pick">주제 고르기</li><li data-k="prep">준비 1분</li><li data-k="s1">내 입장 말하기</li><li data-k="s2">반론에 답하기</li><li data-k="fb">피드백</li></ol>
-    <div class="dbp-grid">
-      <section class="d3-card dbp-main" aria-live="polite">
-        <div class="dbp-mh"><h2 id="dbt-ptitle">주제 고르기</h2></div>
-        <div class="dbp-b" id="dbt-b"><div class="pk-wait"><i></i>주제를 불러오고 있어요</div></div>
-        <footer class="dbp-f" id="dbt-f"></footer>
-      </section>
-      <aside class="dbp-side">
-        <section class="d3-card d3-panel">
-          <div class="d3-panel-head"><h3 class="d3-panel-title">토론·토의·발표 면접</h3></div>
+  <!-- 2026-11-09m 토론 연습: 면접 준비 창처럼 팝업 (위 단계 표시·✕, 가운데 내용, 아래 버튼 고정) -->
+  <div class="dbm" id="d3-debate" hidden role="dialog" aria-modal="true" aria-label="토론·토의·발표 면접 연습">
+    <div class="dbm-bg" onclick="closeDebateScreen()"></div>
+    <section class="dbm-box">
+      <div class="fl-top"><div class="fl-steps" id="dbp-steps" aria-label="진행 순서"></div><button type="button" class="fl-x" onclick="closeDebateScreen()" aria-label="닫기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="dbm-scroll">
+        <div class="dbm-head"><h2 id="dbt-ptitle">주제 고르기</h2><p>공공기관 토론·토의·발표 면접 대비 · 실제 면접 후기에 나온 주제로 연습해요</p></div>
+        <div class="dbp-grid">
+          <section class="dbp-main" aria-live="polite"><div class="dbp-b" id="dbt-b"><div class="pk-wait"><i></i>주제를 불러오고 있어요</div></div></section>
+          <aside class="dbp-side">
+            <section class="dbm-card">
+              <h3>토론·토의·발표 면접</h3>
           <dl class="dbp-guide"><dt>토론 (찬반)</dt><dd>주제에 대해 찬성·반대 입장을 정하고, 이유와 예시로 설득해요. 상대(AI)의 반론을 받아 인정할 건 인정하고 차분히 답하는 것이 핵심이에요.</dd><dt>토의 (여럿이)</dt><dd>실제 면접처럼 여러 지원자(AI 3명)와 함께 해결 방안을 하나로 정해요. 남의 말을 잘 듣고, 의견을 모아 정리하는 사람이 점수를 받아요.</dd><dt>발표(PT)</dt><dd>문제 → 원인 → 해결 방안 → 기대 효과 순서로 2분 안팎 발표하고, 면접관 질문에 답해요.</dd></dl>
           <p class="hx-fine">주제는 한림대 권역 공공기관 면접 후기를 AI가 다시 쓴 문장이에요. 병원 면접은 인성·직무 질문 위주라 토론·발표가 거의 없어요.</p>
-        </section>
-        <section class="d3-card d3-panel">
-          <div class="d3-panel-head"><h3 class="d3-panel-title">내 토론 기록</h3></div>
-          <div id="dbt-hist"><p class="hx-fine">불러오는 중…</p></div>
-        </section>
-      </aside>
-    </div>
-  </main>
+            </section>
+            <section class="dbm-card">
+              <h3>내 토론 기록</h3>
+              <div id="dbt-hist"><p class="hx-fine">불러오는 중…</p></div>
+            </section>
+          </aside>
+        </div>
+      </div>
+      <footer class="dbp-f" id="dbt-f"></footer>
+    </section>
+  </div>
 
   <!-- 내 성장 (2026-10-14 확정 시안) -->
   <main class="d3-page" id="d3-growth" hidden>
@@ -12161,9 +12184,8 @@ function navGo(where){
 function setDashView(view){
   const home = document.getElementById('d3-home'), gw = document.getElementById('d3-growth'), db = document.getElementById('d3-debate');
   if(!home || !gw) return;
-  const v = view === 'growth' || (view === 'debate' && db) ? view : 'home';   // 2026-11-09f 토론 연습 화면
-  home.hidden = v !== 'home'; gw.hidden = v !== 'growth'; if(db) db.hidden = v !== 'debate';
-  if(v !== 'debate'){ try{ Debate.stopTimer(); PracticeKit.stopMic(); }catch(_){} }
+  const v = view === 'growth' ? view : 'home';
+  home.hidden = v !== 'home'; gw.hidden = v !== 'growth'; if(db && !db.hidden) closeDebateScreen();   // 2026-11-09m 토론 연습은 팝업 — 화면을 바꾸면 닫음
   document.querySelectorAll('#screen-dashboard .d3-nav a[data-go]').forEach(a=>{ const on = a.dataset.go === v; if(on) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
   state.dashView = v;
 }
@@ -12172,11 +12194,18 @@ function openDebateScreen(tid){
   if(!state.currentUser){ showToast('먼저 로그인해 주세요.'); return; }
   try{ PracticeKit.close(); }catch(_){}
   const act = document.querySelector('.screen.active');
-  if(!act || act.id !== 'screen-dashboard'){ stopLiveRefresh(); showScreen('screen-dashboard'); Activity.setPresence('dashboard'); }
-  setDashView('debate');
-  window.scrollTo(0,0);
+  if(!act || act.id !== 'screen-dashboard'){ if(state.dashView && state.dashView !== 'home') setDashView('home'); goDashboard(); }
+  const box = document.getElementById('d3-debate'); if(!box) return;
+  box.hidden = false; document.documentElement.classList.add('dbm-open');   // 2026-11-09m 팝업으로 열림
   Debate.openPage(tid);
 }
+function closeDebateScreen(){
+  const box = document.getElementById('d3-debate'); if(!box || box.hidden) return;
+  try{ Debate.stopTimer(); PracticeKit.stopMic(); }catch(_){}
+  box.hidden = true; document.documentElement.classList.remove('dbm-open');
+  try{ Debate.loadLast(); }catch(_){}
+}
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !document.querySelector('.pk-ov.on')) closeDebateScreen(); });
 function openGrowthScreen(){
   if(!state.currentUser){ showToast('먼저 로그인해 주세요.'); return; }
   if(state.currentUser.isAdmin){ showToast('내 성장은 면접자 계정에서 볼 수 있어요.'); return; }
@@ -25785,7 +25814,7 @@ const Debate = {
   async loadLast(){ try{ const { data } = await sb.from('debate_practice').select('topic,score,kind,created_at').order('created_at', { ascending:false }).limit(1); const el = document.getElementById('dbt-last');
     if(el && data && data[0]) el.textContent = `최근 연습 ${data[0].score != null ? data[0].score + '점' : ''} · ${String(data[0].topic).slice(0, 34)}${String(data[0].topic).length > 34 ? '…' : ''}`; }catch(_){} },
   el(id){ return document.querySelector((this.page ? '#d3-debate ' : '#pk-modal ') + '#' + id); },   // 화면·작은 창 둘 다 같은 이름을 쓰므로 지금 쓰는 쪽만
-  body(html){ const b = this.el('dbt-b'); if(b){ b.innerHTML = html; b.scrollTop = 0; } if(this.page){ const m = document.querySelector('#d3-debate .dbp-main'); if(m && m.getBoundingClientRect().top < 0) m.scrollIntoView({ block:'start' }); } return b; },
+  body(html){ const b = this.el('dbt-b'); if(b){ b.innerHTML = html; b.scrollTop = 0; } if(this.page){ const sc = document.querySelector('#d3-debate .dbm-scroll'); if(sc) sc.scrollTop = 0; } return b; },
   stopTimer(){ if(this._t){ clearInterval(this._t); this._t = null; } },
   page: false,
   /* 2026-11-09f 기관 카드 등에서 부르면 토론 연습 화면으로 (면접 중에는 예전처럼 작은 창으로) */
@@ -25803,8 +25832,15 @@ const Debate = {
     this.s = { tid: tid || '', kind: 'debate', seed: Math.random() };
     this.pickView();
   },
-  step(k){ if(!this.page) return; const order = ['pick', 'prep', 's1', 's2', 'fb'], i = order.indexOf(k); document.querySelectorAll('#dbp-steps li').forEach((li, j)=>{ li.className = j < i ? 'done' : j === i ? 'on' : ''; }); },
-  stepNames(){ if(!this.s) return; const K = this.K[this.s.kind] || this.K.debate, p = this.prepSec(); const n = { prep: `준비 ${p / 60}분`, s1: K.s1, s2: K.s2 }; document.querySelectorAll('#dbp-steps li').forEach(li=>{ if(n[li.dataset.k]) li.textContent = n[li.dataset.k]; }); },
+  _stepK: 'pick',
+  step(k){ if(!this.page) return; this._stepK = k; this.paintSteps(); },
+  stepNames(){ this.paintSteps(); },
+  paintSteps(){   // 2026-11-09m 면접 준비 창과 같은 모양의 단계 표시
+    const box = document.getElementById('dbp-steps'); if(!box) return;
+    const K = (this.s && this.K[this.s.kind]) || this.K.debate, p = this.s ? this.prepSec() : 60;
+    const L = [['pick', '주제 고르기'], ['prep', `준비 ${p / 60}분`], ['s1', K.s1], ['s2', K.s2], ['fb', '피드백']], cur = L.findIndex(x=>x[0] === this._stepK);
+    box.innerHTML = L.map(([k, t], i)=>`${i ? '<span class="sep"></span>' : ''}<b class="${i < cur ? 'done' : i === cur ? 'on' : ''}"><em>${i < cur ? '✓' : i + 1}</em><span>${t}</span></b>`).join('');
+  },
   closeBtn(){ return this.page ? '' : '<button type="button" class="pk-btn ghost" onclick="Debate.close()">닫기</button>'; },
   hist: [],
   async renderHist(){
