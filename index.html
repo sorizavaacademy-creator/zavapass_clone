@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09m';
+var APP_VERSION = '2026-11-09n';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6445,6 +6445,14 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
 .dbm .dbp-f .pk-btn.pri{background:#c8441c;border-color:#c8441c;color:#fff;}
 @media(max-width:820px){ .dbm .dbp-grid{grid-template-columns:1fr;} }
 @media(max-width:640px){ .dbm{padding:0;} .dbm-box{height:100dvh;max-height:none;border-radius:0;} .dbm-scroll{padding:16px 14px 20px;} .dbm-head h2{font-size:19px;} .dbm .dbp-f{padding:12px 14px calc(12px + env(safe-area-inset-bottom));} .dbm .dbp-f .pk-btn{min-height:48px;font-size:15px;} .dbm .fl-steps b span{display:none;} .dbm .fl-steps b.on span{display:inline;} }
+/* 2026-11-09n 토론 버튼 누름 반응: 올리면 밝아지고, 누르면 주황 */
+.hm-mode.hm-debate{transition:background-color .15s, border-color .15s, box-shadow .15s, transform .12s;}
+.hm-mode.hm-debate:hover{background:#26375a;border-color:#26375a;}
+.hm-mode.hm-debate:active, .hm-mode.hm-debate[aria-pressed="true"]{background:#c8441c;border-color:#c8441c;box-shadow:0 0 0 4px rgba(200,68,28,.22);}
+.hm-mode.hm-debate:active em, .hm-mode.hm-debate[aria-pressed="true"] em{color:#FFE3D6;}
+.hm-mode.hm-debate:active i, .hm-mode.hm-debate[aria-pressed="true"] i{color:#c8441c;}
+.hm-mode.hm-debate[aria-pressed="true"]::after{background:#fff;color:#c8441c;}
+.hm-mode.hm-debate:focus-visible{outline:3px solid rgba(200,68,28,.5);outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -7016,7 +7024,7 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
         <div class="hm-modes">
           <button type="button" class="hm-mode" data-hm-kind="major" aria-pressed="false" onclick="StartFlow.pickFromHome('major')"><em>면접 목적</em><b>전공·경험 면접</b><span>수강 과목·프로젝트·활동 경험을 설명해 보는 면접</span></button>
           <button type="button" class="hm-mode" data-hm-kind="job" aria-pressed="false" onclick="StartFlow.pickFromHome('job')"><em>면접 목적</em><b>기업·직무 맞춤 면접</b><span>목표 기업·직무·채용공고에 맞춘 면접</span></button>
-          <button type="button" class="hm-mode hm-debate" onclick="navGo('debate')"><em>토론 연습</em><b>토론·토의·발표(PT) 면접</b><span>공공기관 면접 후기 주제로 준비 → 말하기 → AI 반론·다른 지원자 의견 → 피드백</span><i aria-hidden="true">토론 시작 ›</i></button>
+          <button type="button" class="hm-mode hm-debate" aria-pressed="false" onclick="pressDebateBtn(this)"><em>토론 연습</em><b>토론·토의·발표(PT) 면접</b><span>공공기관 면접 후기 주제로 준비 → 말하기 → AI 반론·다른 지원자 의견 → 피드백</span><i aria-hidden="true">토론 시작 ›</i></button>
         </div>
         <div class="hm-first" id="hm-first" hidden><b>처음이라면 이렇게 시작해 보세요</b><ol><li>위에서 면접 목적을 골라요</li><li>전공·학년과 내 경험을 확인해요</li><li>연습형으로 첫 면접을 해 봐요</li></ol></div>
         <div class="d3-banners"><div class="access-banner" id="access-banner" style="display:none;"></div><div class="access-banner perm-ready" id="perm-ready-chip" style="display:none;"></div><div class="access-banner quota" id="ai-quota-chip" style="display:none;" title="AI 즉석 꼬리질문·채점을 쓰는 라이브 면접 횟수예요. 한도가 차면 AI 없이 계속 연습할 수 있어요."></div></div>
@@ -12199,10 +12207,16 @@ function openDebateScreen(tid){
   box.hidden = false; document.documentElement.classList.add('dbm-open');   // 2026-11-09m 팝업으로 열림
   Debate.openPage(tid);
 }
+/* 2026-11-09n 홈 '토론·토의·발표 면접' 버튼: 누르면 주황으로 바뀌어 눌렸다는 걸 보여 주고, 잠깐 뒤 팝업을 엶 (팝업을 닫으면 원래 색) */
+function pressDebateBtn(btn){
+  if(btn) btn.setAttribute('aria-pressed', 'true');
+  setTimeout(()=>navGo('debate'), 180);
+}
 function closeDebateScreen(){
   const box = document.getElementById('d3-debate'); if(!box || box.hidden) return;
   try{ Debate.stopTimer(); PracticeKit.stopMic(); }catch(_){}
   box.hidden = true; document.documentElement.classList.remove('dbm-open');
+  document.querySelectorAll('.hm-mode.hm-debate').forEach(b=>b.setAttribute('aria-pressed', 'false'));
   try{ Debate.loadLast(); }catch(_){}
 }
 document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !document.querySelector('.pk-ov.on')) closeDebateScreen(); });
