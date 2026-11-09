@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09c';
+var APP_VERSION = '2026-11-09d';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5951,16 +5951,25 @@ html.ivv-dr-open{overflow:hidden;}
 .fl-co-list li{display:flex;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:14px;}
 .fl-co-list li[aria-selected="true"],.fl-co-list li:hover{background:#F3F1EC;}
 .fl-co-list li span{color:#8a8a90;font-size:12.5px;white-space:nowrap;} .fl-co-list .empty{color:#8a8a90;cursor:default;}
-.cc{border:1px solid #E3E1DB;border-radius:12px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:9px;text-align:left;}
+.cc{border:1px solid #E3E1DB;border-radius:12px;padding:16px 18px;background:#fff;display:flex;flex-direction:column;gap:12px;text-align:left;}
 .cc header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;} .cc header b{font-size:16px;font-weight:800;} .cc header span{font-size:12.5px;color:#8a8a90;}
-.cc-row{display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;align-items:start;}
-.cc-lbl{font-size:12px;font-weight:700;color:#8a8a90;padding-top:3px;}
+.cc-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:start;} .cc-row + .cc-row{border-top:1px solid #F1EFEA;padding-top:12px;}
+.cc-lbl{font-size:12px;font-weight:700;color:#8a8a90;padding-top:3px;line-height:1.5;}
+/* 2026-11-09d 기관 카드 글 정리: 설명 문단·단계 목록·항목 표·작은 안내 */
+.cc-desc{margin-top:8px !important;font-size:13px;color:#5f5f66;line-height:1.65;text-wrap:pretty;}
+.cc-steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;row-gap:4px;font-size:14px;line-height:1.5;color:#2A2A30;}
+.cc-steps li{display:inline-flex;align-items:center;white-space:normal;} .cc-steps li + li::before{content:'→';color:#b0aea8;margin:0 7px;}
+.cc-facts{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 14px;margin:10px 0 0;font-size:13px;line-height:1.5;} .cc-facts-top{margin-top:1px;}
+.cc-facts dt{color:#8a8a90;font-weight:600;white-space:nowrap;} .cc-facts dd{margin:0;color:#3A3A40;min-width:0;} .cc-facts b{font-weight:700;}
+.cc-dim{color:#8a8a90;} .cc-nw{white-space:nowrap;}
+.cc-sub{margin-top:12px !important;font-size:12.5px;font-weight:700;color:#5f5f66;}
+.cc-fine{margin-top:10px !important;font-size:12px;color:#8a8a90;line-height:1.6;display:flex;flex-direction:column;gap:2px;} .cc-fine p{margin:0;}
 .cc-kws{display:flex;flex-wrap:wrap;gap:5px;} .cc-kw{background:#FBEDE7;color:#c8441c;border-radius:6px;padding:2px 8px;font-size:13px;font-weight:600;}
 .cc p{margin:0;} .cc-stage{font-size:14px;} .cc-stage i{font-style:normal;color:#8a8a90;padding:0 3px;}
 .cc-meta{font-size:12.5px;color:#8a8a90;} .cc-none{color:#8a8a90;font-size:13.5px;}
 .cc-soft{font-size:12.5px;border-radius:8px;padding:6px 10px;background:#FBF1DC;color:#8a5a00;}
-.cc-note{font-size:12px;color:#8a8a90;border-top:1px dashed #E3E1DB;padding-top:8px;}
-.cc-kw.cc-more{background:transparent;color:#8a8a90;} .cc-past{margin:6px 0 0;padding-left:18px;font-size:13px;color:#3A3A40;line-height:1.55;} .cc-past small{color:#8a8a90;margin-left:4px;}
+.cc-note{font-size:12px;color:#8a8a90;border-top:1px dashed #E3E1DB;padding-top:10px;line-height:1.6;}
+.cc-kw.cc-more{background:transparent;color:#8a8a90;} .cc-past{margin:6px 0 0;padding-left:18px;font-size:13px;color:#3A3A40;line-height:1.55;} .cc-past li + li{margin-top:3px;} .cc-past li::marker{color:#b0aea8;} .cc-past small{color:#8a8a90;margin-left:4px;}
 .cb-co{margin-bottom:10px;}
 .cc-load{font-size:13px;color:#8a8a90;margin:0;}
 .fl-diffs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
@@ -5968,7 +5977,7 @@ html.ivv-dr-open{overflow:hidden;}
 .fl-diff b{font-size:14.5px;} .fl-diff span{font-size:12.5px;color:#4a4a52;}
 .fl-diff[aria-pressed="true"]{border-color:#c8441c;background:#FDF5F1;box-shadow:0 0 0 3px rgba(200,68,28,.13);}
 @media(min-width:700px){ #modal-flow .fl-box{max-width:880px;} .fl-people{grid-template-columns:repeat(5,minmax(0,1fr));} .fl-people .fl-person{padding:12px;} }
-@media(max-width:640px){ .fl-diffs{grid-template-columns:1fr;} .cc-row{grid-template-columns:1fr;gap:3px;} }
+@media(max-width:640px){ .fl-diffs{grid-template-columns:1fr;} .cc-row{grid-template-columns:1fr;gap:6px;} .cc{padding:14px;} }
 .iv-co{margin:0 0 10px;border:1px solid #E3E1DB;border-radius:12px;background:#FAFAF8;color:#1c1c1e;}
 .iv-co summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:13.5px;font-weight:700;}
 .iv-co summary::-webkit-details-marker{display:none;}
@@ -12110,18 +12119,36 @@ const CompanyCard = {
     return `<div class="cc-row"><span class="cc-lbl">채용 직무</span>${jobs}</div>${pq ? `<div class="cc-row"><span class="cc-lbl">면접 기출</span>${pq}</div>` : ''}`;
   },
   flat(s){ return String(s == null ? '' : s).replace(/\s+/g,' ').trim(); },
+  /** 2026-11-09d 'A · B · C' — 줄이 바뀌어도 가운뎃점이 줄 맨 앞에 오지 않게 앞 낱말에 붙임 (내용은 이미 escape된 것) */
+  dots(arr){ const a = (arr || []).filter(Boolean); return a.map((x, i)=>`<span class="cc-nw">${x}${i < a.length - 1 ? ' ·' : ''}</span>`).join(' '); },
+  /** 2026-11-09 한림대 권역 18개 기관 면접 DB: 실제 지원자 후기를 숫자로 모은 요약 (원문은 보여 주지 않음) */
+  reviewHtml(p, compact){
+    const r = p && p.reviews; if(!r || !(r.reviews >= 3)) return '';
+    const fm = (r.formats || []).filter(([k])=>!/서류|필기|인\/적성|인적성|기타/.test(k)).slice(0, 3).map(([k])=>k);
+    const df = (r.difficulty || [])[0], res = r.result || {}, done = (res['합격'] || 0) + (res['불합격'] || 0);
+    const yr = r.year_from && r.year_to ? (r.year_from === r.year_to ? `${r.year_to}년` : `${r.year_from}~${r.year_to}년`) : '';
+    const facts = [['후기', CompanyCard.dots([`${r.reviews.toLocaleString()}건${yr ? ` <span class="cc-dim">(${yr})</span>` : ''}`, r.recent ? `최근 3년 ${r.recent.toLocaleString()}건` : ''])],
+      fm.length ? ['주된 면접', CompanyCard.dots(fm.map(escapeHtml))] : null, df ? ['난이도', `<b>${escapeHtml(df[0])}</b>이 가장 많아요`] : null,
+      r.announce_days != null ? ['결과 발표', `보통 ${r.announce_days}일 뒤`] : null, done >= 5 ? ['합격 후기', `${Math.round((res['합격'] || 0) / done * 100)}%`] : null].filter(Boolean);
+    const often = !compact && (r.often || []).length ? `<p class="cc-sub">후기에 여러 번 나온 질문</p><ul class="cc-past">${r.often.slice(0, 3).map(x=>`<li>${escapeHtml(this.flat(x))}</li>`).join('')}</ul>` : '';
+    return `<div class="cc-row"><span class="cc-lbl">면접 후기</span><div><dl class="cc-facts cc-facts-top">${facts.map(([k, v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>${often}
+      <div class="cc-fine">${often ? '<p>질문은 후기를 다시 쓴 문장이고, 연습할 때는 AI가 자연스럽게 다듬어 물어요.</p>' : ''}<p>잡플래닛 면접 후기를 숫자로 모은 참고 정보예요. 지원자 기억이라 실제와 다를 수 있어요.</p></div></div></div>`;
+  },
   html(p, compact){
     const t = p.talent, pr = p.process || {}, f = this.flat;
     const kw = (t.keywords||[]).length && t.verify_status !== '미확인' ? `<div class="cc-kws">${t.keywords.slice(0,9).map(k=>`<span class="cc-kw">${escapeHtml(f(k))}</span>`).join('')}</div>` : '<span class="cc-none">공식 인재상 정보가 없어서, 직무 이해·협업·문제 해결 같은 일반 역량 질문으로 연습해요.</span>';
     const st = pr.provide_level === '미제공' || !pr.stages ? '<span class="cc-none">공식 면접 전형 정보가 없어요. 일반적인 인성·직무 면접으로 진행해요.</span>'
-      : `<div><p class="cc-stage">${escapeHtml(f(pr.stages)).split(/\s*→\s*/).join('<i>→</i>')}</p>${(pr.interview_types||[]).length ? `<p class="cc-meta">면접 유형 · ${escapeHtml(pr.interview_types.join(', '))}</p>` : ''}<p class="cc-meta">${escapeHtml(pr.base_posting||'')} 기준${pr.posted_month ? ' · ' + escapeHtml(pr.posted_month) + ' 공고' : ' · 공고일 확인 안 됨'} · 공고·직무·연도마다 달라질 수 있어요</p></div>`;
+      : `<div><ol class="cc-steps">${f(pr.stages).split(/\s*→\s*/).filter(Boolean).map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ol>
+        <dl class="cc-facts">${(pr.interview_types||[]).length ? `<dt>면접 유형</dt><dd>${CompanyCard.dots(pr.interview_types.map(escapeHtml))}</dd>` : ''}${pr.base_posting ? `<dt>기준 공고</dt><dd>${escapeHtml(f(pr.base_posting))}${pr.posted_month ? ` <span class="cc-dim">(${escapeHtml(pr.posted_month)})</span>` : ''}</dd>` : ''}</dl>
+        <p class="cc-fine">공고·직무·연도마다 달라질 수 있어요.</p></div>`;   // 2026-11-09d 단계·항목을 줄 맞춰 보여 줌
     return `<section class="cc" aria-label="${escapeHtml(t.name)} 면접 정보"><header><b>${escapeHtml(t.name)}</b><span>${escapeHtml(t.category||'')}</span></header>
-      <div class="cc-row"><span class="cc-lbl">인재상</span><div>${kw}${!compact && t.summary && t.verify_status !== '미확인' ? `<p class="cc-meta" style="margin-top:6px">${escapeHtml(t.summary)}</p>` : ''}</div></div>
-      ${t.local_note ? `<p class="cc-soft">${escapeHtml(t.local_note)}</p>` : t.verify_status === '부분확인' ? '<p class="cc-soft">그룹 공통이거나 대표 계열사 기준 인재상일 수 있어요.</p>' : ''}
+      <div class="cc-row"><span class="cc-lbl">인재상</span><div>${kw}${!compact && t.summary && t.verify_status !== '미확인' ? `<p class="cc-desc">${escapeHtml(t.summary)}</p>` : ''}</div></div>
+      ${t.local_note ? `<p class="cc-soft">${escapeHtml(t.local_note)}</p>` : t.verify_status === '부분확인' ? (t.category === '의료기관' ? '<p class="cc-soft">공고문이나 채용 안내 글에서 확인한 내용이에요. 지원 전에 최신 공고에서 한 번 더 확인하세요.</p>' : '<p class="cc-soft">그룹 공통이거나 대표 계열사 기준 인재상일 수 있어요.</p>') : ''}
       ${t.needs_review ? '<p class="cc-soft">자료를 다시 확인하고 있는 곳이에요. 인재상이 최근에 바뀌었을 수 있으니 공식 채용 페이지도 함께 확인하세요.</p>' : ''}
       ${t.merge_planned ? '<p class="cc-soft">통폐합이 예정된 기관이에요. 기관 이름과 채용 일정이 바뀔 수 있어요.</p>' : ''}
       <div class="cc-row"><span class="cc-lbl">면접 전형</span>${st}</div>
       ${this.colHtml(p, compact)}
+      ${this.reviewHtml(p, compact)}
       <p class="cc-note">기업 맞춤 예상 질문은 이 인재상을 바탕으로 만든 연습용 질문이에요. 실제 기출 질문이 아니에요.</p></section>`;
   },
 };
@@ -12134,7 +12161,7 @@ const FIELD_COS = {
   corp: { tabs:[['대기업 그룹','대기업 그룹'],['재계 그룹(31~102위)','재계 31~102위'],['시가총액 상위 기업','시가총액 상위'],['금융권','금융권'],['시총 101~200위·코스닥','중견·코스닥']] },
   startup: { tabs:[['IT·플랫폼·유니콘','IT·플랫폼·유니콘'],['시총 101~200위·코스닥','중견·코스닥']] },
   welfare: { local:['WEL-COMMON'], tabs:[['공기업','공기업'],['준정부기관','준정부기관'],['기타공공기관','기타공공기관']], only:/복지|사회보장|장애|노인|아동|청소년|보육|교육|학교|장학|인권|여성|가족|건강|보건|의료|병원|상담/, label:'교육·복지·보건 공공기관' },
-  medical: { tabs:[['의료기관','한림대 의료원'],['기타공공기관','국립대·공공병원'],['준정부기관','건강보험·보훈']], only:/의료원|병원|암센터|적십자|보훈복지의료|건강보험|심사평가/, label:'병원·의료기관' },   // 2026-11-09
+  medical: { tabs:[['의료기관','강원권 병원'],['기타공공기관','국립대·공공병원'],['준정부기관','건강보험·보훈']], only:/의료원|병원|암센터|적십자|보훈복지의료|건강보험|심사평가/, label:'병원·의료기관' },   // 2026-11-09
   gov: { local:['GOV-COMMON'], none:'공무원은 기관별 인재상 자료가 없어요. 대신 아래 공직가치 공통 기준으로 연습하거나, 목표 기관(예: ○○시청)을 직접 적어도 돼요.' },
 };
 function fieldCompanies(fid, list){ const f = FIELD_COS[fid]; if(!f) return []; const loc = (f.local || []).map(localPackItem).filter(Boolean);

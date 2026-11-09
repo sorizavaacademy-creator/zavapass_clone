@@ -17,9 +17,13 @@ export type CompanyPack = {
     group_common: boolean; secondary_source: boolean;
   } | null;
   questions: { seq: number; question: string; linked_talent: string | null; eval_point: string | null; basis: string }[];
+  // 2026-11-09 한림대 권역 18개 기관 면접 DB: 실제 지원자 후기를 숫자로 모은 요약 (원문 없음)
+  reviews?: { reviews: number; recent: number; questions: number; year_from: number | null; year_to: number | null;
+    formats: [string, number][]; difficulty: [string, number][]; result: Record<string, number>; announce_days: number | null;
+    qtypes: [string, number][]; often: string[]; data_date?: string } | null;
 };
 
-const ID_RE = /^G\d{1,2}-\d{2,3}$/;
+const ID_RE = /^(G\d{1,2}-\d{2,3}|H\d-\d{2})$/;   // 2026-11-09 의료기관(H1-01 한림대학교의료원 등)도 읽음
 
 /** 로그인한 사용자의 권한(JWT)으로 읽음. 없는 ID·형식이 틀린 ID는 null → 일반 면접으로 진행 */
 export async function loadCompanyPack(sb: SupabaseClient, companyId: unknown): Promise<CompanyPack | null> {
@@ -69,6 +73,15 @@ export function buildCompanyBlock(pack: CompanyPack, mode: 'followup' | 'grade',
     if (p.provide_level === '일부 제공' || p.group_common || p.secondary_source) L.push(`이 전형 정보는 일부만 공개됐거나 그룹 공통·2차 출처라, 실제와 다를 수 있다. 전형 이름을 지원자에게 사실처럼 단정하지 마라.`);
   } else {
     L.push(`이 회사의 공식 면접 방식은 확인되지 않았다. 일반적인 인성·직무 면접 방식으로 진행해라.`);
+  }
+
+  // ④ 2026-11-09 실제 지원자 후기 요약 — 면접 분위기·자주 묻는 흐름만 참고 (후기는 기억에 기반해 사실과 다를 수 있음)
+  const r = pack.reviews;
+  if (r && r.reviews >= 5) {
+    const fm = (r.formats || []).filter(([k]) => !/서류|필기|인\/적성|인적성|기타/.test(k)).slice(0, 3).map(([k]) => k).join(', ');
+    const df = (r.difficulty || [])[0]?.[0];
+    L.push(`이 기관 면접 후기 ${r.reviews}건(${r.year_from ?? '?'}~${r.year_to ?? '?'}년)을 보면${fm ? ` 면접은 주로 ${fm} 형태였고` : ''}${df ? ` 난이도는 '${df}'가 가장 많았다` : ''}. 지원자 기억에 기반한 요약이니 사실처럼 단정해서 말하지 말고, 질문 방식과 분위기를 맞추는 데만 참고해라.`);
+    if (mode === 'followup' && (r.often || []).length) L.push(`후기에서 여러 번 나온 질문 흐름(참고만, 그대로 읽지 말 것): ${r.often.slice(0, 4).map((x) => cut(x, 50)).join(' / ')}`);
   }
 
   // 공통 안전 규칙
