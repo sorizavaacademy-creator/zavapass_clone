@@ -27,6 +27,7 @@ const SYSTEM = (safety: string) => `너는 한국 대학생(신입 지원자)을
 - 원문에 다른 회사 이름이 있으면, [지원 회사]가 있을 때는 그 이름으로, 없을 때는 "지원하신 회사"로 바꾼다. 실존 면접관·다른 지원자 등 특정인은 언급하지 않는다. 회사를 깎아내리거나 내부 문화를 단정하지 않는다.
 - [다른 회사 제품 빼기] 원문에 [지원 회사]가 아닌 회사의 제품·서비스·브랜드·사업 이름(예: 스타일러, 그램, 갤럭시, 배달의민족, 카카오톡)이 있으면 그대로 두지 않는다. [원문 회사]가 [지원 회사]와 다르거나 알 수 없을 때는 특히 주의한다. "지원하신 회사의 주력 제품(서비스)"처럼 일반 표현으로 바꾼다(예: "스타일러의 점유율을 늘릴 전략" → "Could you suggest a strategy to grow the market share of one of our main products?"). 지원 회사의 제품 이름을 새로 지어내지 않는다. 일반 표현으로 바꾸면 질문의 핵심이 사라지면 ok=false, reason "다른회사".
 - [업종 맞추기] 원문이 [지원 회사]와 다른 업종에서만 쓰는 전문 내용(예: 게임 회사 지원자에게 PCB 제조 공정, 은행 지원자에게 반도체 공정)을 묻는다면 ok=false, reason "다른회사". 어느 회사·직무에서나 물을 수 있는 일반 질문은 그대로 다듬는다.
+- [직종 이름 그대로 쓰지 않기] [지원 직종]은 질문을 고르기 위한 분류 이름(예: 의약, 기획/경영, 금융/재무, 서비스/고객지원)이다. "의약 업무", "기획/경영 직무", "기획·경영 측면"처럼 분류 이름을 질문 문장에 넣지 않는다. 직무를 말해야 하면 원문 표현을 살리거나 "지원하신 직무"라고 쓴다. [지원 회사]가 병원이면 "병원", 공공기관이면 "기관"이라고 부르고 "지원 회사"라고 쓰지 않는다. (세부 직무)는 질문이 그 직무에 맞는지 판단할 때만 쓰고 질문 문장에 넣지 않는다. 직무·전공지식·상황대처 질문이 세부 직무와 다른 직무 전용 내용이면(예: 언어재활사에게 투약·욕창 간호 질문) ok=false, reason "직무".
 - [온라인에서 할 수 없는 질문 빼기] 이 면접은 화상·음성으로만 묻고 답한다. 눈앞의 사진·그림·물건·방 안 상황을 보고 말하라, 화이트보드·칠판·종이에 쓰거나 그리라, 손코딩이나 코딩 문제를 직접 풀라, "이 펜을 팔아 보라"처럼 실제 물건이나 자료가 있어야 하는 질문은 ok=false, reason "진행불가". 말로 답할 수 있게 바꿔도 원래 뜻이 사라지면 고치지 말고 뺀다.
 - 유형이 '영어'이면 영어로 묻는 자연스러운 영어 질문으로 쓰고 lang을 "en"으로 한다(예: "Could you briefly introduce yourself in English?"). 나머지 유형은 반드시 한국어 질문으로 쓰고 lang은 "ko". 영어 유형이 아닌데 원문이 영어로 답하라는 질문(예: "영어로 자기소개")이면 ok=false, reason "영어".
 - 유형이 '자기소개'이면 시간이 원문에 있을 때만 그 시간을 넣는다(예: 1분 자기소개). '마무리'는 면접을 끝내며 묻는 말로 다듬는다.
@@ -72,10 +73,13 @@ Deno.serve(async (req) => {
       if (co) company = co as { key: string; name: string; grp: string | null };
     }
   }
-  const grpIn = p.grp === "대기업" || p.grp === "공기업" ? p.grp as string : null;
+  const grpIn = p.grp === "대기업" || p.grp === "공기업" || p.grp === "병원" ? p.grp as string : null;   // 2026-11-09 병원·의료
   const grp = company?.grp ?? grpIn;
   const targetName = company?.name ?? (cleanText(p.company_name, 40) || null);
   const job = cleanText(p.job, 20) || null;
+  const role = cleanText(p.role, 40) || null;   // 2026-11-09 세부 직무 (병원 직무 질문을 간호·언어·청각·방사선 … 행정으로 나눠 고르기)
+  const roleWord = role ? role.split(/[\s(·,/]/)[0].replace(/(사|직)$/, "") : "";   // "간호사" → "간호"
+  const roleWordOk = roleWord.length >= 2 ? roleWord : "";
   const english = p.english === true;
   const targetKey = company?.key ?? (grp ? "grp:" + grp : "all");
 
@@ -90,7 +94,7 @@ Deno.serve(async (req) => {
   const pool: Record<string, Cand[]> = {};
   for (const t of Object.keys(need)) {
     const exclude = EXEMPT.has(t) ? used.slice() : recent.concat(used);
-    const { data, error } = await sb.rpc("qb_pick_candidates", { p_ver: ver, p_qtype: t, p_company: company?.key ?? null, p_grp: grp, p_job: job, p_exclude: exclude, p_n: need[t] + SPARE });
+    const { data, error } = await sb.rpc("qb_pick_candidates", { p_ver: ver, p_qtype: t, p_company: company?.key ?? null, p_grp: grp, p_job: job, p_exclude: exclude, p_n: need[t] + SPARE, p_role: role });
     if (error) return json({ error: "pick_failed", message: error.message }, 500);
     pool[t] = (data ?? []) as Cand[];
     pool[t].forEach((c) => used.push(c.rep_key));
@@ -119,7 +123,7 @@ Deno.serve(async (req) => {
     if (!todo.length) break;
     const lines = todo.map((s, i) => `${i}. [유형: ${s.qtype}] [원문 회사: ${s.cand!.company ?? "-"}] ${(s.cand!.question || s.cand!.rep || "").slice(0, 200)}${s.cand!.rep && s.cand!.rep !== s.cand!.question ? ` (대표 질문: ${s.cand!.rep.slice(0, 120)})` : ""}`);
     const fixed = slots.filter((s) => s.text).map((s) => `- [${s.qtype}] ${s.text}`);
-    const userMsg = `[지원 회사] ${targetName ?? "없음 (구분: " + (grp ?? "전체") + ")"}\n[지원 직종] ${job ?? "-"}\n\n[이미 정해진 질문]\n${fixed.join("\n") || "(없음)"}\n\n[질문 원문]\n${lines.join("\n")}`;
+    const userMsg = `[지원 회사] ${targetName ?? "없음 (구분: " + (grp ?? "전체") + ")"}\n[지원 직종] ${job ?? "-"}${role ? ` (세부 직무: ${role})` : ""}\n\n[이미 정해진 질문]\n${fixed.join("\n") || "(없음)"}\n\n[질문 원문]\n${lines.join("\n")}`;
     let items: { i: number; ok: boolean; text?: string; lang?: string; reason?: string }[] = [];
     try {
       const { data } = await askJson(SYSTEM(safety), userMsg, { maxTokens: 3000, timeoutMs: 35000 });
@@ -133,6 +137,9 @@ Deno.serve(async (req) => {
       const bad = !it || it.ok === false || !text || !!blockReason(text) || (s.qtype !== "영어" && (it.lang === "en" || enText)) || (s.qtype === "영어" && it.lang !== "en" && !enText);   // 영어 칸만 영어, 나머지는 한국어
       if (bad) { const next = take(s.qtype); s.cand = next; if (next) fromCache(s); return; }
       s.text = text; s.lang = it!.lang === "en" || s.qtype === "영어" ? "en" : "ko"; s.how = "AI";
+      // 세부 직무 이름(간호사 등)을 AI가 문장에 넣었으면 이번에만 쓰고 보관함에 남기지 않음 (같은 문장이 다른 직무 학생에게 나가지 않게)
+      const src = `${s.cand!.question ?? ""} ${s.cand!.rep ?? ""}`;
+      if (roleWordOk && text.includes(roleWordOk) && !src.includes(roleWordOk)) return;
       saves.push({ key: keyOf(s.cand!), rep_key: s.cand!.rep_key, target: targetKey, qtype: s.qtype, text, lang: s.lang, model: OPENAI_MODEL });
     });
     if (saves.length) await sb.from("qb_polished").upsert(saves, { onConflict: "key", ignoreDuplicates: true });

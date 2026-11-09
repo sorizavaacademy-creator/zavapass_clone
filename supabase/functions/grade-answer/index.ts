@@ -28,7 +28,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.118.0";
 import { loadCompanyPack, buildCompanyBlock } from "../_shared/company_prompt.ts";
-import { activeVer, blockReason } from "../_shared/qbank.ts";
+import { activeVer, additionInfo, blockReason } from "../_shared/qbank.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";   // 사용자 선택: Luna (가장 저렴). Secrets의 OPENAI_MODEL로 변경 가능
@@ -97,6 +97,7 @@ const FIELD_CONTEXT: Record<string, string> = {
   pubcorp: `공공기관·공기업 면접: 공공성(국민·이용자의 편익)과 기관의 설립 목적·주요 사업에 대한 이해, NCS 직업기초능력(의사소통·문제해결·조직이해·대인관계·직업윤리 등)을 봅니다. 좋은 답변은 지원 직무(행정·사무·기술)의 실제 업무와 본인 경험을 연결하고, 규정 준수와 고객 만족을 함께 고민한 사례를 상황·행동·결과로 보여 줍니다.`,
   corp: `대기업·중견기업 면접: 직무 역량, 성과, 협업을 봅니다. 좋은 답변은 지원 직무(영업·마케팅·인사·재무 등)에 필요한 역량을 경험으로 증명하고, 성과를 숫자로 말하며, 팀 안에서 본인 역할과 협업 방식을 분명히 하고, 회사·산업에 대한 이해와 입사 후 기여 방향을 담습니다.`,
   startup: `스타트업·중소기업 면접: 실행력, 학습 속도, 주도성을 봅니다. 좋은 답변은 정해진 답이 없는 문제를 스스로 찾아 실행한 경험, 데이터나 사용자 반응으로 개선한 과정, 짧은 기간에 새로 배운 것, 작은 팀에서 여러 역할을 맡은 유연함을 시도→결과→배운 점 흐름으로 담습니다.`,
+  medical: `병원·의료기관 면접: 환자 안전과 감염관리 원칙, 환자·보호자 소통, 다른 직종과의 협업, 보고 태도를 봅니다. 좋은 답변은 임상 실습·봉사에서 본인이 한 행동과 결과를 구체적으로 말하고, 안전과 관련된 상황에서는 확인→보고→기록 순서를 지키며, 실수나 위험을 숨기지 않는 태도를 보여 줍니다(2026-11-09).`,
   welfare: `교육·복지·비영리 기관 면접: 공감, 윤리, 이용자 중심 태도를 봅니다. 좋은 답변은 대상자(학생·이용자·주민)를 존중하는 구체적인 행동, 개인정보와 인권을 지키는 원칙, 봉사·멘토링·프로그램 경험에서 본인이 한 일과 대상자의 변화, 갈등이나 지치는 상황의 대처를 담습니다. 선의만 말하고 행동이 없으면 구체성 점수를 낮게 줍니다.`,
   major: `전공·경험 면접: 수강한 과목·전공 개념과 팀 프로젝트·캡스톤·연구·동아리·대외활동 경험을 깊이 이해하고 자기 말로 설명하는지 봅니다. 좋은 답변은 개념을 정확히 설명하고, 왜 그 방법을 골랐는지, 본인이 맡은 부분과 결과, 어려움과 배운 점, 지원 직무·진로와의 연결을 담습니다. 외운 정의만 있고 적용이 없으면 내용 점수를 낮게 줍니다.`,
 };
@@ -408,6 +409,7 @@ Deno.serve(async (req: Request) => {
     job_role?: string | null;
     major_dept?: string | null;
     qb_type?: string | null;       // 2026-11-05 면접 DB 5단계 (선택)
+    qb_qid?: string | null;        // 2026-11-09 한림대 추가 질문 번호 (질문 의도·평가 포인트를 피드백 참고로)
     typed?: boolean;
     prior_scores?: Record<string, number> | null;
   };
@@ -476,6 +478,7 @@ Deno.serve(async (req: Request) => {
     const W = R.weights[qbType];
     const priorRaw = payload.prior_scores && typeof payload.prior_scores === "object" ? payload.prior_scores : null;
     const prior = priorRaw && AXES.every((k) => Number(priorRaw[k]) >= 1 && Number(priorRaw[k]) <= 4) ? priorRaw as Record<string, number> : null;
+    const addInfo = isFollowup ? null : await additionInfo(cleanText(payload.qb_qid, 12));
     const aeUser = [
       context ? `[지원 분야와 직무 맥락]\n${context}` : null,
       `[질문 유형: ${qbType}] 가중치 ${AXES.map((k) => `${k} ${W.w[k]}%`).join(" · ")} · 핵심: ${W.key}`,
@@ -483,6 +486,7 @@ Deno.serve(async (req: Request) => {
       langNote ? `[주의] ${langNote} 한국어로 답했다는 이유로 감점하지 않습니다.` : null,
       `[면접 질문]${isFollowup ? " (꼬리질문)" : ""}\n${question}`,
       reference ? `[모범 답안 요지]\n${reference}` : null,
+      addInfo && (addInfo.intent || addInfo.eval_points) ? `[이 질문의 의도와 평가 포인트 — 피드백(잘한 점·고칠 점·바꿔 말하기)을 쓸 때 참고만 합니다. 점수는 위 A~E 기준과 가중치로만 매깁니다]` + (addInfo.intent ? `\n질문 의도: ${addInfo.intent}` : "") + (addInfo.eval_points ? `\n평가 포인트: ${addInfo.eval_points}` : "") : null,
       isFollowup && priorAnswer ? `[이 꼬리질문 직전의 지원자 답변 (일관성 확인용)]\n${priorAnswer}` : null,
       resumeSummary ? `[지원자 자기소개서 요약 (참고용 · 답변에 없던 내용을 있던 것처럼 보지 않음)]\n${resumeSummary}` : null,
       `[답변 방식] ${payload.typed ? "글로 답함 — E는 길이와 문장 정리만 봄" : "말로 답함(음성 인식) — E에 말 속도·군말·길이 포함"}`,

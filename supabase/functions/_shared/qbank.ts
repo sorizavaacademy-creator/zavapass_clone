@@ -51,3 +51,18 @@ export function safetyText(rules: Rule[], sections?: number[]): string {
   }
   return L.join("\n").trim();
 }
+
+/** 2026-11-09 한림대 추가 질문(ADD-·HLQ- 번호)의 질문 의도·평가 포인트·예상 꼬리질문. 없거나 못 읽으면 null (기존 질문은 지금처럼 동작) */
+export type AdditionInfo = { intent: string | null; eval_points: string | null; followups: string | null };
+export async function additionInfo(qid: string): Promise<AdditionInfo | null> {
+  if (!/^(ADD|HLQ)-\d{4}$/.test(qid || "")) return null;
+  const url = Deno.env.get("SUPABASE_URL") ?? "", key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  if (!url || !key) return null;
+  try {
+    const r = await fetch(`${url}/rest/v1/qb_additions?id=eq.${encodeURIComponent(qid)}&active=eq.true&select=intent,eval_points,followups`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}` } });
+    if (!r.ok) return null;
+    const row = (await r.json())?.[0];
+    return row ? { intent: row.intent ?? null, eval_points: row.eval_points ?? null, followups: row.followups ?? null } : null;
+  } catch { return null; }
+}

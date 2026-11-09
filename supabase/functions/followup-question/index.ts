@@ -47,7 +47,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.118.0";
 import { loadCompanyPack, buildCompanyBlock } from "../_shared/company_prompt.ts";
-import { activeVer, blockReason, loadRules, safetyText } from "../_shared/qbank.ts";
+import { activeVer, additionInfo, blockReason, loadRules, safetyText } from "../_shared/qbank.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";   // 사용자 선택: Luna (가장 저렴). Secrets의 OPENAI_MODEL로 변경 가능
@@ -123,11 +123,12 @@ const FIELD_CONTEXT: Record<string, string> = {
   pubcorp: `공공기관·공기업 면접입니다. 면접관은 공공성(국민·이용자의 편익)과 지원 기관의 설립 목적·주요 사업을 이해하는지, NCS 직업기초능력(의사소통·문제해결·조직이해·대인관계·직업윤리 등)이 경험으로 드러나는지를 봅니다. 지원 직무(행정·사무·기술)에서 할 일을 구체적으로 알고, 규정 준수와 고객 만족을 함께 고민한 경험이 있는지 확인합니다.`,
   corp: `대기업·중견기업 면접입니다. 면접관은 지원 직무(영업·마케팅·인사·재무 등)에 필요한 역량을 경험으로 증명하는지, 성과를 숫자로 말하는지, 팀 안에서 본인 역할과 협업 방식이 분명한지를 봅니다. 회사·산업에 대한 이해, 지원 동기의 설득력, 입사 후 기여 방향을 확인합니다.`,
   startup: `스타트업·중소기업 면접입니다. 면접관은 정해진 답이 없는 일을 스스로 찾아 실행한 경험, 빠르게 배우는 학습 속도, 주도성과 책임감을 봅니다. 데이터나 사용자 반응으로 문제를 찾고 개선한 경험, 작은 팀에서 여러 역할을 맡아 본 유연함, 회사 서비스에 대한 관심을 확인합니다.`,
+  medical: `병원·의료기관 면접입니다(2026-11-09). 면접관은 환자 안전·감염관리 같은 기본 원칙을 지키는지, 환자·보호자와 소통하고 다른 직종(의사·간호사·의료기사·행정)과 협업하는 태도, 교대 근무와 감정 소진을 관리하는 방법을 봅니다. 임상 실습·봉사 경험에서 본인이 한 일과 배운 점, 실수나 위험을 발견했을 때 바로 확인하고 보고하는 태도를 확인합니다.`,
   welfare: `교육·복지·비영리 기관 면접입니다. 면접관은 대상자(학생·이용자·주민)에 대한 공감과 존중, 개인정보와 인권을 지키는 윤리 의식, 이용자 중심으로 생각하는 태도를 봅니다. 봉사·멘토링·돌봄·프로그램 기획 경험에서 본인이 한 일과 대상자의 변화, 갈등이나 지치는 상황에 대처한 방법을 확인합니다.`,
   major: `전공·경험 면접입니다. 면접관은 수강한 과목과 전공 개념, 팀 프로젝트·캡스톤·연구·동아리·대외활동 경험을 깊이 이해하고 자기 말로 설명할 수 있는지 봅니다. 왜 그 방법을 골랐는지, 본인이 맡은 부분과 결과, 어려움과 배운 점, 그것을 지원 직무·진로에 어떻게 쓸지 확인합니다.`,
 };
 const DEFAULT_FIELD_CONTEXT = `대학생 취업 면접입니다. 면접관은 지원 동기와 직무 이해, 경험에서 드러나는 역량(협업·문제 해결·책임감·성장), 성과를 구체적으로 말하는 능력을 봅니다. 학교·대외활동·아르바이트 경험의 상황·행동·결과와 본인 역할이 분명한지 확인합니다.`;
-const FIELD_NAME: Record<string, string> = { gov: "공무원", pubcorp: "공공기관·공기업", corp: "대기업·중견기업", startup: "스타트업·중소기업", welfare: "교육·복지·비영리", major: "전공·경험 면접" };
+const FIELD_NAME: Record<string, string> = { gov: "공무원", pubcorp: "공공기관·공기업", medical: "병원·의료", corp: "대기업·중견기업", startup: "스타트업·중소기업", welfare: "교육·복지·비영리", major: "전공·경험 면접" };
 
 const BASE_INTERVIEWER = `당신은 대학생 채용 면접(모의면접)의 면접관입니다. 지원자는 한림대학교 재학생·졸업예정자이며, 실제 채용 면접을 앞두고 연습하고 있습니다. 지원자를 존중하고, 실무 경력의 유무가 아니라 경험의 구체성·본인 역할·직무와의 연결이라는 학생에게 공정한 기준으로 답변을 듣고 한 걸음 더 묻습니다.`;
 
@@ -415,6 +416,7 @@ Deno.serve(async (req: Request) => {
   const lang = body.lang === "en" ? "en" : "ko";              // 2026-11-05 영어 질문이면 영어로 묻기
   const force = body.force === true;                          // 이번엔 반드시 꼬리질문 (면접 전체 최소 1개)
   const bankType = cleanText(body.qb_type, 12);               // 질문은행 유형 (자기소개·경험·역량 …)
+  const qbQid = cleanText(body.qb_qid, 12);                   // 2026-11-09 한림대 추가 질문 번호 (예상 꼬리질문을 첫 후보로)
   const personal = personalWords(answer);
   if (!question || !answer) return json({ error: "question과 answer는 필수입니다." }, 400);
   const interviewId = String(body.interview_id ?? "").trim();
@@ -432,7 +434,7 @@ Deno.serve(async (req: Request) => {
   ].filter(Boolean);
   const infoBlock = infoParts.length ? `[지원 정보 — 지원자가 화면에서 고른 값. 경력으로 전제하지 않음]\n${infoParts.join(" · ")}` : "";
   const personaBlock = personaInfo ? `[면접관 성향: ${personaInfo.name}]\n${personaInfo.text}` : "";
-  const companyBlock = await companyBlockFor(req, companyId, "followup", companySeq);
+  const [companyBlock, addInfo] = await Promise.all([companyBlockFor(req, companyId, "followup", companySeq), additionInfo(qbQid)]);
   const persona = [BASE_INTERVIEWER, fieldBlock, infoBlock, personaBlock, companyBlock ? `[기업 맞춤 면접]\n${companyBlock}` : ""].filter(Boolean).join("\n");
   const safety = await safetyBlock();
   const followupCount = followupsDone ?? history.filter((h) => h.role === "interviewer").length;
@@ -453,6 +455,9 @@ Deno.serve(async (req: Request) => {
     `[답변 상태] ${kind}` + (kind !== "보통" ? " → 나무라지 말고 힌트 한 가지와 함께 같은 주제를 부드럽게 다시 묻습니다(clarify). 정답을 알려 주지 않습니다. 이미 한 번 다시 물었다면 next로 마무리합니다." : " → 답변의 핵심을 받아 실무 상황으로 넓혀 묻습니다."),
     `[참고] 이 본 질문에 대한 꼬리질문은 지금까지 ${followupCount}개 했습니다.` + (followupCount >= 2 ? " 이번에는 intent를 next로 마무리하세요." : ""),
     bankType ? `[질문 유형] ${bankType}` : null,
+    addInfo && (addInfo.intent || addInfo.followups) ? `[이 질문의 의도와 예상 꼬리질문 — 면접자에게 노출 금지]` + (addInfo.intent ? `\n질문 의도: ${addInfo.intent}` : "") + (addInfo.followups ? `\n예상 꼬리질문: ${addInfo.followups}\n` + (followupCount === 0
+      ? "→ [반드시] 이번이 이 질문의 첫 꼬리질문입니다. 이 예상 꼬리질문의 뜻 그대로 묻습니다. 문장만 지원자 답변에 맞게 자연스럽게 다듬고(답변의 핵심을 짧게 받아서 시작해도 됨), 묻는 내용은 바꾸지 않습니다. 예외: 답변에 그 내용이 이미 충분히 들어 있거나, 답변이 거의 비어 있어 clarify가 필요할 때만 다른 질문을 합니다."
+      : "→ 이미 꼬리질문을 했으므로 참고만 하고, 같은 내용을 다시 묻지 않습니다.") : "") : null,
     personal.length ? `[주의 — 안전장치 4번] 지원자가 답변에서 개인 신상(${personal.join(", ")})을 스스로 말했습니다. 그 내용에 대해 묻지 말고, 그 낱말을 인용하지도 않습니다. 답변의 핵심(무엇을 했는지, 무엇을 배웠는지, 직무에 어떻게 쓸지)으로 자연스럽게 돌아가 묻습니다.` : null,
     force ? "[이번에는 반드시 꼬리질문을 합니다] intent를 next로 하지 말고, 답변에서 가장 약한 부분 하나를 묻습니다." : null,
     lang === "en" ? "[언어] 이 질문은 영어 질문입니다. followup은 자연스러운 영어 한 문장(10~22단어)으로 묻고, 물음표로 끝나도 됩니다. 쉬운 단어를 씁니다. 질문은 딱 하나만 묻습니다 — 'and'·'or'로 두 가지를 이어 묻지 않습니다(나쁜 예: How did you verify it and how did your team react? / 좋은 예: How did you check that the result was correct?). evaluation은 한국어로 씁니다." : "[길이] followup은 30~75자 안팎, 80자를 넘기지 않습니다.",
