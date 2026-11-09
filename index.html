@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09i';
+var APP_VERSION = '2026-11-09j';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6325,7 +6325,6 @@ html.ivv-dr-open{overflow:hidden;}
 /* 2026-11-09h 홈 한 화면에: 위 칸을 촘촘하게, 아래 칸들은 버튼 한 줄 + 창(탭) */
 #d3-home .d3-today{display:none !important;}
 .hm-tiles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:14px;}
-body.is-admin-ui .hm-tiles{display:none !important;}
 .hm-tile{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border:1px solid #E6E4E0;border-radius:12px;background:#fff;font:inherit;text-align:left;cursor:pointer;color:#1c1c1e;min-width:0;transition:border-color .15s, box-shadow .15s;}
 .hm-tile:hover{border-color:#c8441c;box-shadow:0 0 0 3px rgba(200,68,28,.1);}
 .hm-tile b{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
@@ -6353,7 +6352,7 @@ html.hm-open{overflow:hidden;} html.hm-open .help-fab, html.hm-open .fb-fab, htm
   #d3-home .d3-hero{margin-top:20px;}
   #d3-home .d3-greet{padding:22px 26px;}
   #d3-home .d3-greet-meta{margin-bottom:6px;}
-  #d3-home .d3-greet h1{font-size:23px;}
+  #d3-home .d3-greet h1{font-size:22px;letter-spacing:-.025em;}
   #d3-home .d3-lead{font-size:14px;margin-top:4px;}
   #d3-home .g4-week{padding:8px 12px;min-width:0;gap:10px;} #d3-home .g4-week .ring{width:44px;height:44px;} #d3-home .g4-week .ring svg{width:44px;height:44px;}
   #d3-home .hm-modes{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px;}
@@ -6362,7 +6361,8 @@ html.hm-open{overflow:hidden;} html.hm-open .help-fab, html.hm-open .fb-fab, htm
   #d3-home .hm-mode.hm-debate{grid-column:auto;padding:12px 14px;}
   #d3-home .hm-mode.hm-debate span{display:none;}
   #d3-home .hm-mode.hm-debate i{position:static;transform:none;margin-top:auto;align-self:flex-start;padding:5px 11px;font-size:12.5px;}
-  #d3-home .hm-first{margin-top:10px;}
+  #d3-home .hm-first{display:none !important;}   /* 2026-11-09j 처음 안내 3단계는 아래 '3분 체험 면접' 카드와 겹쳐서 컴퓨터에선 숨김 (한 화면에 담기) */
+  #d3-home .g4-week{max-width:236px;} #d3-home .g4-week .wm{font-size:13.5px;line-height:1.35;}
   #d3-home .g4-reco{margin-top:14px;padding:14px 18px;}
   #d3-home .g4-reco h2{font-size:17px;margin:4px 0 2px;}
   #d3-home .g4-reco p{font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
@@ -6387,12 +6387,11 @@ html.hm-open{overflow:hidden;} html.hm-open .help-fab, html.hm-open .fb-fab, htm
   .hm-tp .g4-reports{grid-template-columns:1fr !important;}
 }
 /* 2026-11-09i 관리자 홈 '면접자 현황' 카드: 왼쪽 높이에 맞춰 늘어나며 생기던 빈 공간 없애고, 아래 숫자 4칸을 한 줄로 */
-body.is-admin-ui #d3-home .d3-stats{align-self:start;}
-body.is-admin-ui #d3-home #d3-stats .as-mini{margin-top:18px;padding-top:0;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:8px;}
-body.is-admin-ui #d3-home #d3-stats .as-mini > div{padding:10px;min-width:0;}
-body.is-admin-ui #d3-home #d3-stats .as-mini p{font-size:11.5px;line-height:1.3;word-break:keep-all;letter-spacing:-.02em;}
+body.is-admin-ui #d3-home .d3-stats{align-self:stretch;}   /* 2026-11-09j 왼쪽 칸과 아래 끝을 맞추고, 남는 높이는 숫자 4칸(2×2)이 나눠 채움 */
+body.is-admin-ui #d3-home #d3-stats .as-mini{flex:1 1 auto;margin-top:16px;padding-top:0;grid-template-columns:repeat(2,minmax(0,1fr)) !important;grid-auto-rows:1fr;gap:8px;}
+body.is-admin-ui #d3-home #d3-stats .as-mini > div{padding:12px 14px;min-width:0;display:flex;flex-direction:column;justify-content:center;}
+body.is-admin-ui #d3-home #d3-stats .as-mini p{font-size:12.5px;line-height:1.3;word-break:keep-all;}
 body.is-admin-ui #d3-home #d3-stats .as-go{margin-top:10px;min-height:40px;}
-@media(max-width:640px){ body.is-admin-ui #d3-home #d3-stats .as-mini{grid-template-columns:repeat(2,minmax(0,1fr)) !important;} }
 </style>
 </head>
 <body>
@@ -11925,7 +11924,7 @@ async function renderDashboard(){
     await Promise.all([renderReviewPanel(history), renderActivityCalendar()]);
     if(state.dashView === 'growth') { try{ renderGrowthPage(); }catch(_){} }
   }
-  if(!isAdmin) PracticeKit.renderHome().catch(e=>console.warn('[연습 도구 불러오기 실패]', e && e.message || e));   // 2026-11-04 면접 D-day · 내 질문 모음
+  PracticeKit.renderHome().catch(e=>console.warn('[연습 도구 불러오기 실패]', e && e.message || e));   // 2026-11-04 면접 D-day · 내 질문 모음
 }
 /* 대시보드 v3 보조: 분야 선택 · 시작 · 사용자 메뉴 · 선 그래프 (2026-10-01, 디자인 시안 반영) */
 function selectDashField(fieldId){
