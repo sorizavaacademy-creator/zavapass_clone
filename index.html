@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09g';
+var APP_VERSION = '2026-11-09h';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6322,6 +6322,70 @@ html.ivv-dr-open{overflow:hidden;}
   .hm-sum > div{padding:9px 10px;} .hm-sum b{font-size:18px;} .hm-sum span{font-size:11.5px;} .hm-sum small{font-size:10.5px;line-height:1.35;}
   .hm-sum-card{margin-top:12px;}
 }
+/* 2026-11-09h 홈 한 화면에: 위 칸을 촘촘하게, 아래 칸들은 버튼 한 줄 + 창(탭) */
+#d3-home .d3-today{display:none !important;}
+.hm-tiles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:14px;}
+body.is-admin-ui .hm-tiles{display:none !important;}
+.hm-tile{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border:1px solid #E6E4E0;border-radius:12px;background:#fff;font:inherit;text-align:left;cursor:pointer;color:#1c1c1e;min-width:0;transition:border-color .15s, box-shadow .15s;}
+.hm-tile:hover{border-color:#c8441c;box-shadow:0 0 0 3px rgba(200,68,28,.1);}
+.hm-tile b{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.hm-tile span{font-size:12px;color:#8a8a90;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+html.hm-open{overflow:hidden;} html.hm-open .help-fab, html.hm-open .fb-fab, html.hm-open #fb-fab{visibility:hidden;}
+.hm-sheet{position:fixed;top:0;left:0;right:0;height:100vh;height:100dvh;z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px;}
+.hm-sheet[hidden]{display:none !important;}
+.hm-sheet-bg{position:absolute;inset:0;background:rgba(15,23,42,.45);}
+.hm-more{position:relative;width:min(860px,100%);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;background:#F5F4F2;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.hm-tabs{display:flex;gap:2px;padding:10px 10px 0;border-bottom:1px solid #E6E4E0;overflow-x:auto;scrollbar-width:none;flex:none;}
+.hm-tabs::-webkit-scrollbar{display:none;}
+.hm-tabs button[data-t]{flex:none;border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;color:#6b6b72;padding:10px 13px 12px;cursor:pointer;position:relative;white-space:nowrap;border-radius:8px 8px 0 0;}
+.hm-tabs button[data-t]:hover{color:#1c1c1e;}
+.hm-tabs button[data-t].on{color:#1c1c1e;background:#fff;box-shadow:0 0 0 1px #E6E4E0;font-weight:700;}
+.hm-tabs button[data-t].on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:#fff;}
+.hm-x{margin-left:auto;flex:none;align-self:center;width:34px;height:34px;border:0;border-radius:10px;background:#E9E7E3;font-size:14px;cursor:pointer;color:#1c1c1e;}
+.hm-tp{background:#fff;padding:18px 22px 22px;min-height:220px;overflow:auto;}
+.hm-tp[hidden]{display:none !important;}
+.hm-tp > .d3-panel{min-height:0;background:transparent;padding:0;}
+.hm-tp .d3-panel-head{min-height:0;justify-content:flex-end;margin-bottom:6px;}
+.hm-tp .d3-panel-head > h3{display:none;}
+.hm-tp .hm-data{display:block;margin:0;} .hm-tp .hm-data .d3-section-title{font-size:16px;} .hm-tp .hm-data-acts{margin-top:12px;}
+.hm-tp .g4-reports{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
+@media(min-width:641px){
+  #d3-home .d3-hero{margin-top:20px;}
+  #d3-home .d3-greet{padding:22px 26px;}
+  #d3-home .d3-greet-meta{margin-bottom:6px;}
+  #d3-home .d3-greet h1{font-size:23px;}
+  #d3-home .d3-lead{font-size:14px;margin-top:4px;}
+  #d3-home .g4-week{padding:8px 12px;min-width:0;gap:10px;} #d3-home .g4-week .ring{width:44px;height:44px;} #d3-home .g4-week .ring svg{width:44px;height:44px;}
+  #d3-home .hm-modes{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px;}
+  #d3-home .hm-mode{padding:12px 14px;gap:2px;justify-content:flex-start;}
+  #d3-home .hm-mode b{font-size:16px !important;} #d3-home .hm-mode span{font-size:12.5px;line-height:1.5;} #d3-home .hm-mode em{font-size:11px;}
+  #d3-home .hm-mode.hm-debate{grid-column:auto;padding:12px 14px;}
+  #d3-home .hm-mode.hm-debate span{display:none;}
+  #d3-home .hm-mode.hm-debate i{position:static;transform:none;margin-top:auto;align-self:flex-start;padding:5px 11px;font-size:12.5px;}
+  #d3-home .hm-first{margin-top:10px;}
+  #d3-home .g4-reco{margin-top:14px;padding:14px 18px;}
+  #d3-home .g4-reco h2{font-size:17px;margin:4px 0 2px;}
+  #d3-home .g4-reco p{font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  #d3-home .g4-reco-chips{margin-top:8px;}
+  #d3-home .g4-reco-acts{padding-top:10px !important;grid-template-columns:2fr 1fr !important;}
+  #d3-home .g4-reco-acts > :first-child{grid-column:auto;}
+  #d3-home .g4-reco-acts .d3-btn, #d3-home .g4-reco-acts > button{min-height:42px !important;height:42px;}
+  #d3-home .d3-stats{padding:22px 24px;}
+  #d3-home .d3-stat-big .num{font-size:46px;}
+  #d3-home #d3-stats .as-mini{grid-template-columns:repeat(3,minmax(0,1fr)) !important;padding-top:12px;gap:8px;} #d3-home #d3-stats .as-mini > div{padding:10px 12px;}
+  #d3-home .us-chart{height:64px;margin-top:12px;} #d3-home .d3-stats-main{margin-top:14px;} #d3-home .as-go{margin-top:10px;min-height:40px;}
+  #screen-dashboard #d3-home.d3-page{padding-bottom:40px !important;}
+}
+@media(max-width:900px) and (min-width:641px){ .hm-tiles{grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media(max-width:640px){
+  .hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px;}
+  .hm-tile{padding:10px 12px;} .hm-tile b{font-size:13.5px;} .hm-tile span{font-size:11.5px;}
+  .hm-sheet{padding:0;align-items:flex-end;}
+  .hm-more{width:100%;max-height:88vh;border-radius:16px 16px 0 0;}
+  .hm-tabs{padding:8px 8px 0;} .hm-tabs button[data-t]{font-size:13px;padding:9px 10px 10px;}
+  .hm-tp{padding:14px 14px 20px;min-height:200px;}
+  .hm-tp .g4-reports{grid-template-columns:1fr !important;}
+}
 </style>
 </head>
 <body>
@@ -6908,34 +6972,30 @@ html.ivv-dr-open{overflow:hidden;}
       <section class="d3-card d3-stats" id="d3-stats"></section>
     </div>
 
-    <!-- 2026-11-02g 한림대 데모 홈: 내 경험·데이터 확인 → 지난 면접의 보완점 | 최근 면접 기록 (2026-11-02i 성장 추이는 '나의 성장' 화면에서만) -->
-    <section class="d3-card hm-data" aria-label="내 경험·데이터 확인">
-      <div class="hm-data-txt"><h2 class="d3-section-title">내 경험·데이터 확인 <span class="fl-badge">학교 데이터 미연동</span></h2><p id="hm-data-desc">커리어 인바디가 연결되기 전이라, 수강 과목·프로젝트·활동은 직접 입력해서 써요.</p></div>
-      <div class="hm-data-acts"><button type="button" class="d3-btn d3-btn-solid" onclick="ExpCoach.open({ from:'home' })">경험 정리 도우미</button><button type="button" class="d3-btn d3-btn-ghost" onclick="StartFlow.open(null,'major')">경험 입력·확인</button><button type="button" class="d3-btn-text" onclick="openMyPage()">이력서·자기소개서</button></div>
-    </section>
-    <div class="hm-row pk-home"><!-- 2026-11-04 면접 D-day · 내 질문 모음 -->
-      <section class="d3-card d3-panel" id="pk-dday-card" aria-label="면접 D-day"></section>
-      <section class="d3-card d3-panel" id="pk-bm-card" aria-label="내 질문 모음"></section>
-    </div>
-    <div class="hm-row pk-home"><!-- 2026-11-09e 토론·PT 면접 연습 · 기관별 후기 질문 -->
-      <section class="d3-card d3-panel hx-card" id="dbt-card" aria-label="토론·PT 면접 연습"></section>
-      <section class="d3-card d3-panel hx-card" id="qbr-card" aria-label="기관별 후기 질문"></section>
-    </div>
-    <div class="hm-row">
-      <section class="d3-card d3-panel">
+    <!-- 2026-11-09h 홈 정리: 아래로 이어지던 칸들을 버튼 한 줄로 줄이고, 누르면 창(탭)으로 열림. 토론 카드(위 버튼과 같음)·성장 요약('나의 기록'과 같음)은 뺌 -->
+    <nav class="hm-tiles" id="hm-tiles" aria-label="연습 도구"><button type="button" class="hm-tile" data-t="review" onclick="HomeTabs.open('review')"><b>지난 면접 보완점</b><span>낮았던 질문 다시 연습</span></button><button type="button" class="hm-tile" data-t="recent" onclick="HomeTabs.open('recent')"><b>최근 면접 기록</b><span>리포트 다시 보기</span></button><button type="button" class="hm-tile" data-t="dday" onclick="HomeTabs.open('dday')"><b>면접 D-day</b><span>날짜·오늘의 3문항</span></button><button type="button" class="hm-tile" data-t="bm" onclick="HomeTabs.open('bm')"><b>내 질문 모음</b><span>담아 둔 질문 연습</span></button><button type="button" class="hm-tile" data-t="qbr" onclick="HomeTabs.open('qbr')"><b>기관별 후기 질문</b><span>17곳 면접 후기 질문</span></button><button type="button" class="hm-tile" data-t="exp" onclick="HomeTabs.open('exp')"><b>내 경험</b><span>경험 정리·입력</span></button></nav>
+    <div class="hm-sheet" id="hm-sheet" hidden>
+      <div class="hm-sheet-bg" onclick="HomeTabs.close()"></div>
+      <section class="hm-more" id="hm-more" role="dialog" aria-modal="true" aria-label="연습 도구">
+        <div class="hm-tabs" role="tablist"><button type="button" role="tab" data-t="review" onclick="HomeTabs.go('review')">지난 면접 보완점</button><button type="button" role="tab" data-t="recent" onclick="HomeTabs.go('recent')">최근 면접 기록</button><button type="button" role="tab" data-t="dday" onclick="HomeTabs.go('dday')">면접 D-day</button><button type="button" role="tab" data-t="bm" onclick="HomeTabs.go('bm')">내 질문 모음</button><button type="button" role="tab" data-t="qbr" onclick="HomeTabs.go('qbr')">기관별 후기 질문</button><button type="button" role="tab" data-t="exp" onclick="HomeTabs.go('exp')">내 경험</button><button type="button" class="hm-x" onclick="HomeTabs.close()" aria-label="닫기">✕</button></div>
+        <div class="hm-tp" data-t="review" role="tabpanel"><section class="d3-panel">
         <div class="d3-panel-head"><h3 class="d3-panel-title">지난 면접의 보완점과 다시 연습</h3><button class="d3-btn-text" id="hm-review-btn" type="button" onclick="startReviewFromDashboard()" style="display:none;">이 질문들로 다시 연습</button></div>
         <div id="hm-review"><div class="qa-empty">면접을 한 번 마치면, 점수가 낮았던 질문을 여기에 모아 드려요.</div></div>
-      </section>
-      <section class="d3-card d3-panel">
+        </section></div>
+        <div class="hm-tp" data-t="recent" role="tabpanel"><section class="d3-panel">
         <div class="d3-panel-head"><h3 class="d3-panel-title">최근 면접 기록</h3><button class="d3-btn-text" type="button" onclick="openAllHistory()">전체 보기</button></div>
         <div id="g4-reports-sec" style="display:none;"><div class="g4-reports" id="g4-reports"></div></div>
         <div class="qa-empty hm-rep-empty">아직 면접 기록이 없어요.<br><button type="button" class="d3-btn d3-btn-ghost hm-empty-btn" onclick="StartFlow.open('practice')">첫 면접 시작하기</button></div>
+        </section></div>
+        <div class="hm-tp" data-t="dday" role="tabpanel"><section class="d3-panel" id="pk-dday-card" aria-label="면접 D-day"></section></div>
+        <div class="hm-tp" data-t="bm" role="tabpanel"><section class="d3-panel" id="pk-bm-card" aria-label="내 질문 모음"></section></div>
+        <div class="hm-tp" data-t="qbr" role="tabpanel"><section class="d3-panel hx-card" id="qbr-card" aria-label="기관별 후기 질문"></section></div>
+        <div class="hm-tp" data-t="exp" role="tabpanel"><section class="d3-panel hm-data" aria-label="내 경험·데이터 확인">
+      <div class="hm-data-txt"><h2 class="d3-section-title">내 경험·데이터 확인 <span class="fl-badge">학교 데이터 미연동</span></h2><p id="hm-data-desc">커리어 인바디가 연결되기 전이라, 수강 과목·프로젝트·활동은 직접 입력해서 써요.</p></div>
+      <div class="hm-data-acts"><button type="button" class="d3-btn d3-btn-solid" onclick="ExpCoach.open({ from:'home' })">경험 정리 도우미</button><button type="button" class="d3-btn d3-btn-ghost" onclick="StartFlow.open(null,'major')">경험 입력·확인</button><button type="button" class="d3-btn-text" onclick="openMyPage()">이력서·자기소개서</button></div>
+        </section></div>
       </section>
     </div>
-    <section class="d3-card d3-panel hm-sum-card" aria-label="성장 요약">
-      <div class="d3-panel-head"><h3 class="d3-panel-title">성장 요약</h3><button class="d3-btn-text" type="button" onclick="navGo('growth')">나의 성장에서 자세히</button></div>
-      <div id="hm-sum"><p class="qa-empty">면접을 마치면 여기에 요약이 보여요.</p></div>
-    </section>
 
     <section class="d3-card rr-card" id="rr-card" style="display:none;" aria-label="실제 면접 질문 남기기"></section>
 
@@ -25628,6 +25688,27 @@ const PracticeKit = {
     await this.loadBm(); await this.loadPlan();
   },
 };
+/* 2026-11-09h 홈 아래 버튼 한 줄 → 누르면 창 안의 탭으로 (지난 면접 보완점·최근 기록·D-day·질문 모음·후기 질문·내 경험) */
+const HomeTabs = {
+  KEEP: /editPlan|removeBm|openBmAll|check\(/,   // 이 버튼들은 창을 닫지 않음 (그 위에 작은 창이 뜨거나 제자리에서 바뀜)
+  open(t){
+    const sh = document.getElementById('hm-sheet'); if(!sh) return;
+    sh.hidden = false; document.documentElement.classList.add('hm-open'); this.go(t);
+  },
+  close(){ const sh = document.getElementById('hm-sheet'); if(sh) sh.hidden = true; document.documentElement.classList.remove('hm-open'); },
+  go(t){
+    const box = document.getElementById('hm-more'); if(!box) return;
+    if(!box.querySelector(`.hm-tp[data-t="${t}"]`)) t = 'review';
+    box.querySelectorAll('.hm-tabs [data-t]').forEach(b=>{ const on = b.dataset.t === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    box.querySelectorAll('.hm-tp').forEach(p=>{ p.hidden = p.dataset.t !== t; });
+  },
+  init(){
+    const box = document.getElementById('hm-more'); if(!box || box._init) return; box._init = true;
+    box.addEventListener('click', e=>{ const b = e.target.closest('.hm-tp button, .hm-tp a'); if(!b || b.classList.contains('pk-del')) return; if(this.KEEP.test(b.getAttribute('onclick') || '')) return; setTimeout(()=>this.close(), 0); });   // 다른 화면·창으로 가는 버튼은 이 창을 닫고 감
+    document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !document.getElementById('hm-sheet').hidden && !document.querySelector('.pk-ov.on')) this.close(); });
+  },
+};
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ()=>HomeTabs.init()); else HomeTabs.init();
 /* ---------------- 2026-11-09e 토론·PT 면접 연습 (Debate) ----------------
    한림대 권역 기관 면접 후기에서 다시 쓴 토론·발표 주제(list_review_questions p_debate=true)로
    ① 주제 고르기 → ② 준비 1분(메모) → ③ 1차 발언 → ④ AI 반론(토론)·면접관 질문(발표) → ⑤ 2차 발언 → ⑥ 피드백(주장·근거·대응·태도)
