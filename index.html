@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09b';
+var APP_VERSION = '2026-11-09c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5066,6 +5066,7 @@ body.v3-ui #screen-admin .score-pill:not(.hi):not(.mid):not(.low), body.v3-ui .r
 #screen-admin .admin-menu-btn[data-group="questions"],#screen-admin[data-ag="questions"]{--g:#7C3AED;--g-soft:#EFE7FD;--g-ink:#6D28D9;}
 #screen-admin .admin-menu-btn[data-group="talk"],#screen-admin[data-ag="talk"]{--g:#0891B2;--g-soft:#DDF3F8;--g-ink:#0E7490;}
 #screen-admin .admin-menu-btn[data-group="settings"],#screen-admin[data-ag="settings"]{--g:#D97706;--g-soft:#FCF0DA;--g-ink:#B45309;}
+#screen-admin .admin-menu-btn[data-group="ops"],#screen-admin[data-ag="ops"]{--g:#6B6F76;--g-soft:#EEEDEA;--g-ink:#4A4F56;}   /* 2026-11-09c 운영 도구 */
 #screen-admin .admin-menu-btn[data-group="roles"],#screen-admin[data-ag="roles"]{--g:#BE185D;--g-soft:#FCE7F3;--g-ink:#9D174D;}
 #screen-admin.v3 .admin-sidebar{padding:10px;}
 #screen-admin.v3 .admin-sidebar-title{font-size:12.5px;font-weight:700;color:#55555b;letter-spacing:.02em;}
@@ -8266,8 +8267,7 @@ html.ivv-dr-open{overflow:hidden;}
         <div class="pc-sec-body pc-faq">
           <details><summary>마이크가 안 돼요 / "권한이 차단되어 있어요"라고 나와요</summary><p>주소창 왼쪽 자물쇠(또는 ⓘ) 아이콘을 누르고 마이크를 <b>허용</b>으로 바꾼 뒤 새로고침하세요. 줌·팀즈처럼 마이크를 쓰는 다른 프로그램은 닫아 주세요. 윈도우 설정 → 개인 정보 → 마이크에서 "앱이 마이크에 액세스하도록 허용"도 켜져 있어야 해요.</p></details>
           <details><summary>휴대폰으로 해도 되나요?</summary><p>될 수는 있지만 PC를 권장해요. 휴대폰은 반드시 <b>크롬(안드로이드)</b> 또는 <b>사파리(아이폰)</b> 앱에서 직접 주소를 열어 주세요. 카카오톡·네이버·인스타그램 안에서 열린 창에서는 오른쪽 위 ⋮ 또는 공유 버튼 → "다른 브라우저로 열기"를 눌러 주세요.</p></details>
-          <details><summary>비밀번호를 잊었어요</summary><p>교육 담당 관리자에게 말씀하시면 임시 비밀번호를 만들어 드려요. 그 비밀번호로 로그인하면 앞으로 쓸 새 비밀번호를 한 번 정할 수 있어요.</p></details>
-          <details><summary>"승인 대기"라고 나오고 면접을 시작할 수 없어요</summary><p>서류 합격자 전용 서비스라, 담당자가 지원 기관의 서류 합격을 확인한 뒤 해당 면접 분야를 열어 줘요. 승인 대기 화면의 "카카오톡으로 승인 요청하기"로 이름·이메일·합격 기관을 보내 주세요.</p></details>
+          <details><summary>비밀번호를 잊었어요</summary><p>한림대학교 취업진로지원센터(관리자)에 말씀하시면 임시 비밀번호를 만들어 드려요. 그 비밀번호로 로그인하면 앞으로 쓸 새 비밀번호를 한 번 정할 수 있어요.</p></details>
           <details><summary>면접 기록이 안 보여요</summary><p>면접을 끝까지 마쳐야(결과 화면까지) 기록이 저장돼요. 중간에 창을 닫거나 "면접 종료"로 나가면 그때까지의 답변으로 결과가 만들어지지만, 리허설은 저장되지 않아요.</p></details>
         </div>
       </section>
@@ -8429,7 +8429,7 @@ html.ivv-dr-open{overflow:hidden;}
   <div class="modal-box">
     <div class="modal-head">
       <h2 id="perm-modal-title">권한 관리</h2>
-      <p id="perm-modal-desc">서류 합격이 확인된 기관에만 체크해 주세요. 체크되지 않은 기관은 지원자에게 잠금 상태로 보여요.</p>
+      <p id="perm-modal-desc">열어 줄 연습 분야에 체크해 주세요. 체크되지 않은 분야는 학생에게 잠금 상태로 보여요.</p>
     </div>
     <div class="modal-body">
       <div class="bulk-preset" id="perm-bulk-preset" style="display:none;">
@@ -8550,7 +8550,8 @@ html.ivv-dr-open{overflow:hidden;}
       <h3 class="mp-sec-t mp-sec-info">내 정보</h3>
       <div class="mp-info-grid">
         <div class="mp-info"><div class="mp-info-lbl">이름</div><div class="mp-info-val" id="mp-name"></div></div>
-        <div class="mp-info"><div class="mp-info-lbl">이메일</div><div class="mp-info-val" id="mp-email"></div></div>
+        <div class="mp-info"><div class="mp-info-lbl" id="mp-email-lbl">로그인 아이디</div><div class="mp-info-val" id="mp-email"></div></div>
+        <div class="mp-info" id="mp-cemail-row" hidden><div class="mp-info-lbl">비밀번호 찾기 이메일</div><div class="mp-info-val" id="mp-cemail"></div></div>
         <div class="mp-info"><div class="mp-info-lbl">휴대폰 번호</div><div class="mp-info-val" id="mp-phone"></div></div>
         <div class="mp-info"><div class="mp-info-lbl">현재 상태</div><div class="mp-info-val" id="mp-status"></div></div>
         <div class="mp-info"><div class="mp-info-lbl">연습 가능한 분야</div><div class="mp-info-val" id="mp-fields"></div></div>
@@ -8748,20 +8749,20 @@ html.ivv-dr-open{overflow:hidden;}
         </div>
       </div>
       <div class="su-agree" role="group" aria-labelledby="su-agree-t">
-        <p class="su-agree-t" id="su-agree-t">필수 동의 <small>두 가지 모두 체크해야 가입할 수 있어요</small></p>
+        <p class="su-agree-t" id="su-agree-t">동의 <small>개인정보 동의는 꼭 필요하고, 후기 약속은 선택이에요</small></p>
       <label class="consent-row" id="signup-consent-row">
         <input type="checkbox" id="signup-consent" onchange="validateSignupField('consent')">
         <span><b>[필수]</b> 개인정보 수집·이용에 동의합니다. <a onclick="event.preventDefault(); openPrivacyNotice()">내용 보기</a></span>
       </label>
       <div class="field-error" id="signup-consent-err"></div>
-      <!-- 2026-10-27b 필수: 면접 후기 작성 약속 (이 기능 전에 가입한 사람은 예외) -->
+      <!-- 2026-11-09c 한림대: 면접 후기 약속은 선택 (예전 '필수 + 불이익' 문구는 원래 유료 서비스용이라 뺌) -->
       <label class="consent-row pledge-row" id="signup-pledge-row">
         <input type="checkbox" id="signup-pledge" onchange="validateSignupField('pledge')">
-        <span class="pledge-txt"><b>[필수]</b> 면접을 본 뒤 <span class="nw"><b>면접&nbsp;후기(받은&nbsp;질문)</b>를</span> 남기겠습니다.<small>합격·불합격과 상관없이 남겨 주세요.</small></span>
+        <span class="pledge-txt"><b>[선택]</b> 면접을 본 뒤 <span class="nw"><b>면접&nbsp;후기(받은&nbsp;질문)</b>를</span> 남기겠습니다.<small>합격·불합격과 상관없이 남겨 주시면 좋아요.</small></span>
       </label>
       <ul class="pledge-note">
-        <li>후기를 남기지 않으면 새&nbsp;분야&nbsp;승인·이용&nbsp;기간&nbsp;연장 등 <b>다음 이용이 제한되는</b> <span class="nw"><b>불이익</b>이</span> 있을 수 있어요.</li>
-        <li>동의하지 않으면 회원가입을 할 수 없어요.</li>
+        <li>남겨 주신 후기는 <b>후배들이 같은 기관을 준비할 때</b> 연습 질문으로 쓰여요.</li>
+        <li>체크하지 않아도 가입할 수 있어요.</li>
       </ul>
       <div class="field-error" id="signup-pledge-err"></div>
       </div>
@@ -8788,8 +8789,7 @@ html.ivv-dr-open{overflow:hidden;}
 
 <h3>1. 받는 개인정보와 쓰는 목적</h3>
 <table class="pp-tbl pp-3"><thead><tr><th>쓰는 곳</th><th>받는 정보</th><th>목적</th></tr></thead><tbody>
-<tr><td>회원가입·계정 관리</td><td>(필수) 이름, 이메일(아이디), 비밀번호, 휴대폰 번호<br>(선택) 지원 기관, 하고 싶은 말</td><td>본인 확인, 서류 합격자 확인, 이용 기간 관리, 문의 <span class="nw">응대·공지</span></td></tr>
-<tr><td>서류 합격 확인</td><td>합격 분야, 합격 확인 캡처(사진·PDF), 면접 날짜, 남긴 말</td><td>연습 분야를 열기 위한 자격 확인</td></tr>
+<tr><td>회원가입·계정 관리</td><td>(필수) 이름, 학번(아이디), 비밀번호, 소속 단과대학·학과, 이메일(비밀번호 찾기용), 휴대폰 번호<br>(선택) 지원 기관</td><td>본인 확인, 로그인·비밀번호 찾기, 학교 담당자의 연습 현황 확인, 문의 <span class="nw">응대·공지</span></td></tr>
 <tr><td>모의면접</td><td>면접 답변(말한 내용이 바뀐 글, 직접 입력한 글), 답변 시간, 점수·피드백, 표정·시선 점수(숫자)</td><td>면접 결과·성장 기록 제공</td></tr>
 <tr><td>맞춤 질문·1분 자기소개 코치 (선택)</td><td>자기소개서·이력서 파일과 그 내용, 직접 해 본 자기소개</td><td>서류에 맞춘 면접 질문, 자기소개 대본 만들기</td></tr>
 <tr><td>면접 후기 (선택)</td><td>실제 면접에서 받은 질문, 기관, 면접 날짜, 결과</td><td>이름을 뺀 채 다음 지원자의 연습 문항으로 활용</td></tr>
@@ -8804,7 +8804,6 @@ html.ivv-dr-open{overflow:hidden;}
 <h3>2. 보관 기간</h3>
 <ul class="pp-list">
 <li>회원 탈퇴(계정 삭제 요청) 때까지 보관합니다.</li>
-<li>이용 기간이 끝난 계정도 탈퇴 요청 전까지 보관합니다.<br>새 분야 승인과 면접 후기 확인에 필요하기 때문입니다.</li>
 <li>면접 후기로 남긴 질문은 이름을 뺀 연습 문항이 되어, 탈퇴 뒤에도 계속 쓰일 수 있습니다.</li>
 <li>법령에서 보관하라고 정한 정보는 그 기간 동안 보관합니다.</li>
 </ul>
@@ -8868,7 +8867,7 @@ html.ivv-dr-open{overflow:hidden;}
       <table class="privacy-table">
         <tr><th>수집 항목</th><td>이름, 학번(로그인 아이디), 소속 단과대학·학과, 이메일(비밀번호 찾기용), 휴대폰 번호, 지원 기관(선택), 자기소개서·이력서 파일 내용(선택), 면접 답변 원문·점수·피드백, 연습 일시, 표정·시선 숫자 요약(카메라 사용 시), 서류 합격 확인 캡처(승인 요청 시 · 확인 뒤 담당자가 삭제), 실제 면접 후기·받은 질문(남긴 경우)</td></tr>
         <tr><th>이용 목적</th><td>회원 식별과 로그인·비밀번호 찾기, 면접 연습 기록 저장·결과 제공, 관리자의 연습 현황 확인과 면접 일정 안내 연락, 자기소개서·이력서 기반 맞춤 질문과 AI 꼬리질문 생성, 서류 합격 확인(승인), 남긴 면접 질문을 다른 지원자의 연습 문항으로 활용(이름 없이)</td></tr>
-        <tr><th>보유 기간</th><td>회원 탈퇴(계정 삭제) 또는 본인의 삭제 요청 시까지 보관해요. 이용 기간이 끝나면 면접 연습이 막히고(면접 후기 남기기만 가능) 기록은 지워지지 않아요. 삭제를 요청하면 지체 없이 파기해요.</td></tr>
+        <tr><th>보유 기간</th><td>회원 탈퇴(계정 삭제) 또는 본인의 삭제 요청 시까지 보관해요. 삭제를 요청하면 지체 없이 파기해요.</td></tr>
         <tr><th>동의 거부</th><td>동의하지 않을 권리가 있으나, 필수 항목에 동의하지 않으면 서비스 이용(회원가입)이 불가합니다.</td></tr>
       </table>
       <p class="privacy-note">카메라 영상과 답변 녹음은 서버로 보내거나 저장하지 않아요. "내 모습 다시 보기"·"내 답변 다시 듣기"용 녹화는 이 기기 브라우저에만 잠시 남고 화면을 닫으면 사라져요. 카메라를 켠 경우 표정·시선은 숫자 요약만 면접 기록에 저장돼요.</p>
@@ -9012,6 +9011,8 @@ const HALLYM_FIELDS = [
     examples:['도움이 필요한 사람을 대할 때 가장 중요하게 생각하는 태도는 무엇인가요?']},
 ];
 const DEMO_HALLYM_FIELDS = true;
+/* 2026-11-09c 한림대 모드: 원래 유료 서비스용 '이용 기간' 설정 칸과 국회 베타 프리셋을 숨김 (학교는 재학 기간 동안 씀) */
+try{ if(DEMO_HALLYM_FIELDS){ document.documentElement.classList.add('hallym'); document.head.insertAdjacentHTML('beforeend', '<style id="hallym-hide">html.hallym #modal-permission .until-block, html.hallym #perm-bulk-preset, html.hallym .au-edit-row:has(#au-until), html.hallym .mp-info:has(#mp-until){display:none !important;} #screen-admin .admin-menu-btn.amb-ops{opacity:.72;} #screen-admin .admin-menu-btn.amb-ops.active{opacity:1;}</style>'); } }catch(_){}
 const FIELDS = DEMO_HALLYM_FIELDS ? HALLYM_FIELDS : STENO_FIELDS;
 /* 면접자 계정 및 기관별 권한은 이제 Supabase profiles 테이블에 저장됩니다.
    state.adminUsers 에 관리자 화면에서 불러온 목록을 캐싱해 둡니다. */
@@ -9570,7 +9571,8 @@ let accessWatchTimer = null;
  * 관리자가 연습 분야(allowed_fields)를 하나도 열어 주지 않은 수강생은 로그인 후 "승인 대기" 화면만 봄.
  * 홈·면접·자기소개 코치·내 성장·사용 안내는 막고, 할 수 있는 것은 승인 확인 / 서류 미리 올리기 / 의견 보내기 / 로그아웃.
  * AI 기능 서버(followup-question·grade-answer·set-review·intro-coach·speak-text)도 같은 기준으로 요청을 거절함. */
-function isPendingUser(u){ u = u || state.currentUser; return !!(u && !u.isAdmin && !(u.role === 'staff' || u.role === 'dept') && !((u.allowed || []).filter(Boolean).length)); }
+/* 2026-11-09c 한림대: '승인 대기' 화면을 쓰지 않음 — 분야가 모두 잠긴 학생도 홈으로 가고, 분야를 누르면 취업진로지원센터 문의 안내 */
+function isPendingUser(u){ if(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS) return false; u = u || state.currentUser; return !!(u && !u.isAdmin && !(u.role === 'staff' || u.role === 'dept') && !((u.allowed || []).filter(Boolean).length)); }
 // 2026-10-23e: 분야가 비어 있어도(관리자가 분야를 뺀 경우) 기간이 지났으면 같은 '기간 종료' 화면(새 분야 승인 요청 포함)으로
 function isClosedExpired(u){ u = u || state.currentUser; return !!(u && !u.isAdmin && isAccessExpired(u)); }
 function renderPendingScreen(){
@@ -9865,6 +9867,7 @@ async function handleLogin(){
     allowed: profile.allowed_fields || [],
     status: profile.status || '준비 중',
     phone: profile.phone || '',
+    contactEmail: profile.contact_email || '',   // 2026-11-09c 비밀번호 찾기용 이메일
     accessUntil: profile.access_until || null,
     aiOverride: profile.ai_override || null,
     role: profile.role || (profile.is_admin ? 'admin' : profile.is_staff ? 'staff' : 'student'), scopeDepts: profile.scope_depts || [], college: profile.college || '', dept: profile.dept || '',   // 2026-11-03d 학교 관리 화면
@@ -10042,6 +10045,7 @@ async function tryRestoreSession(){
     allowed: profile.allowed_fields || [],
     status: profile.status || '준비 중',
     phone: profile.phone || '',
+    contactEmail: profile.contact_email || '',   // 2026-11-09c 비밀번호 찾기용 이메일
     accessUntil: profile.access_until || null,
     aiOverride: profile.ai_override || null,
     role: profile.role || (profile.is_admin ? 'admin' : profile.is_staff ? 'staff' : 'student'), scopeDepts: profile.scope_depts || [], college: profile.college || '', dept: profile.dept || '',   // 2026-11-03d 학교 관리 화면
@@ -10132,7 +10136,7 @@ const RealReport = {
     let kicker = '결과와 상관없이 남겨 주세요', title = '', desc = '', acts = '';
     const pledgeLine = (state.currentUser && state.currentUser.pledgeAt && (ph === 'none' || ph === 'after' || ph === 'planned'))
       ? (where === 'closed'
-        ? `<p class="rr-pledge">가입할 때 약속한 <span class="nw"><b>면접&nbsp;후기</b>를</span> 아직 남기지&nbsp;않았어요. 남기지 않으면 새&nbsp;분야&nbsp;승인·기간&nbsp;연장이 제한될 수 있어요.</p>`
+        ? `<p class="rr-pledge">가입할 때 <span class="nw"><b>면접&nbsp;후기</b>를</span> 남기기로 했어요. 면접을 봤다면 후기를 남겨 주세요. 후배들에게 큰 도움이 돼요.</p>`
         : `<p class="rr-pledge">가입할 때 <span class="nw"><b>면접&nbsp;후기</b>를</span> 남기기로 약속했어요. 면접을 본 뒤 꼭 남겨&nbsp;주세요.</p>`) : '';
     if(ph === 'none'){
       title = '면접에서 받은 질문을 남겨 주세요';
@@ -11520,7 +11524,7 @@ async function renderDashboard(){
   const startBtn = document.getElementById('d3-start-btn'), startLbl = document.getElementById('d3-start-label'), startHint = document.getElementById('d3-start-hint');
   if(startBtn){
     if(expired){ startBtn.disabled = true; startLbl.textContent = '이용 기간 종료'; startHint.textContent = '연장은 담당자에게 문의해 주세요'; }
-    else if(!selField){ startBtn.disabled = true; startLbl.textContent = '면접 시작'; startHint.textContent = '서류 합격 확인 후 관리자가 분야를 열어드려요'; }
+    else if(!selField){ startBtn.disabled = true; startLbl.textContent = '면접 시작'; startHint.textContent = '담당자가 분야를 열어 주면 연습할 수 있어요'; }
     else { startBtn.disabled = false; startLbl.textContent = `${selField.name} 면접 시작`; startHint.textContent = allowedIds.length > 1 ? '분야는 아래에서 바꿀 수 있어요' : '리허설 2문항 → 라이브 면접 순서로 진행돼요'; }
   }
 
@@ -11688,7 +11692,7 @@ function selectDashField(fieldId){
   const allowed = (state.currentUser && state.currentUser.allowed) || [];
   const acc = accessInfo(state.currentUser && state.currentUser.accessUntil);
   if(!isAdmin && acc.expired){ showToast('이용 기간이 종료되었어요. 연장은 담당자에게 문의해 주세요.'); return; }
-  if(!isAdmin && !allowed.includes(fieldId)){ showToast('이 분야는 아직 권한이 없어요. 서류 합격 확인 후 관리자에게 문의해 주세요.'); return; }
+  if(!isAdmin && !allowed.includes(fieldId)){ showToast('이 분야는 아직 열리지 않았어요. 취업진로지원센터에 문의해 주세요.'); return; }
   if(state.dashField === fieldId) return;
   state.dashField = fieldId;
   const f = FIELDS.find(x=>x.id===fieldId);
@@ -12602,6 +12606,39 @@ const SC_CAN = [
   ['면접관 목소리 · AI 설정', '✓', '–', '–', '–'],
   ['면접 연습', '✓', '✓', '✓', '✓'],
 ];
+/* 2026-11-09c 보고서 모양 — 화면과 인쇄 창(rpPrint)에 같이 씀 */
+const RP_CSS = `
+.rp-doc{font-family:Pretendard,'Pretendard Variable',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#1f2329;background:#fff;border:1px solid #e6e3dd;border-radius:14px;padding:32px 36px;max-width:980px;margin:0 auto;box-shadow:0 1px 2px rgba(0,0,0,.03);font-size:13.5px;line-height:1.55;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.rp-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid #1f2329;padding-bottom:14px;margin-bottom:18px;}
+.rp-brand{margin:0 0 4px;font-size:12px;font-weight:700;color:#c8441c;letter-spacing:.02em;}
+.rp-top h1{margin:0;font-size:22px;letter-spacing:-.01em;}
+.rp-meta{margin:6px 0 0;font-size:12px;color:#6b6f76;}
+.rp-made{margin:0;font-size:11.5px;color:#6b6f76;text-align:right;white-space:nowrap;}
+.rp-note{background:#fff7e6;color:#8a5a00;border-radius:8px;padding:8px 12px;font-size:12.5px;}
+.rp-sec{margin:0 0 20px;} .rp-sec h2{break-after:avoid;page-break-after:avoid;} .rp-kpis,.rp-sum,.rp-bands,.rp-grow,.rp-t tr,.rp-top{break-inside:avoid;page-break-inside:avoid;}
+.rp-sec h2{font-size:14.5px;margin:0 0 10px;padding-left:9px;border-left:3px solid #c8441c;}
+.rp-sum{background:#f7f6f3;border-radius:10px;padding:12px 16px;margin-bottom:12px;}
+.rp-sum p{margin:3px 0;} .rp-sum b{color:#1f2329;}
+.rp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.rp-kpi{border:1px solid #e6e3dd;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;}
+.rp-kpi span{font-size:11.5px;color:#6b6f76;} .rp-kpi b{font-size:21px;letter-spacing:-.01em;} .rp-kpi small{font-size:11px;color:#6b6f76;}
+.rp-d{font-size:11.5px;font-weight:700;white-space:nowrap;} .rp-d.up{color:#1f7a45;} .rp-d.down{color:#c0392b;} .rp-d.same{color:#8a8f96;font-weight:500;}
+.rp-t{width:100%;border-collapse:collapse;font-size:12.5px;}
+.rp-t th{background:#f3f2ef;font-weight:600;color:#4a4f56;text-align:left;padding:7px 8px;border-bottom:1px solid #dcd9d3;white-space:nowrap;}
+.rp-t td{padding:7px 8px;border-bottom:1px solid #eeece8;vertical-align:middle;}
+.rp-t .r{text-align:right;} .rp-t td .rp-d{margin-left:4px;}
+.rp-t tr.rp-total td{font-weight:700;background:#faf9f7;border-top:1px solid #cfccc6;}
+.rp-two{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.rp-bands{list-style:none;margin:0;padding:0;display:grid;gap:7px;}
+.rp-bands li{display:grid;grid-template-columns:72px 1fr 44px 38px;align-items:center;gap:8px;font-size:12.5px;}
+.rp-bands i{display:block;height:10px;background:#f0eeea;border-radius:5px;overflow:hidden;} .rp-bands em{display:block;height:100%;background:#c8441c;border-radius:5px;}
+.rp-bands b{text-align:right;font-weight:600;} .rp-bands small{color:#8a8f96;text-align:right;}
+.rp-grow{margin:12px 0 0;font-size:12.5px;background:#f2f8f4;color:#1f4d33;border-radius:8px;padding:8px 12px;}
+.rp-empty{color:#8a8f96;font-size:12.5px;margin:4px 0;}
+.rp-foot{margin-top:6px;padding-top:10px;border-top:1px solid #e6e3dd;font-size:11px;color:#8a8f96;}
+@media(max-width:760px){ .rp-doc{padding:20px 16px;} .rp-top{flex-direction:column;} .rp-made{text-align:left;} .rp-kpis{grid-template-columns:repeat(2,1fr);} .rp-two{grid-template-columns:1fr;} .rp-t{font-size:12px;} .rp-sec{overflow-x:auto;} }
+`;
+try{ document.head.insertAdjacentHTML('beforeend', '<style id="rp-css">' + RP_CSS + '\n.rp-wrap{margin-top:4px;} .rp-ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;} .rp-ctl select{height:36px;border:1px solid var(--c-line-strong,#d3d0ca);border-radius:8px;padding:0 10px;font:inherit;background:#fff;}</style>'); }catch(_){}
 const School = {
   view:'overview', d:null, hideTest: (()=>{ try{ return localStorage.getItem('zp_hide_test') === '1'; }catch(_){ return false; } })(), f:{ q:'', college:'', dept:'', chip:'' }, rf:{ days:30, field:'', dept:'', q:'', shown:200 }, sel:null, fb:null, nt:null, fbAll:false, rl:null, rlf:'', edit:null,
   G(id){ return document.getElementById(id); },
@@ -12614,18 +12651,23 @@ const School = {
   adaptAdmin(){
     const G = ADMIN_GROUPS;
     if(!this._adapted){ this._adapted = true;
-      G.today.label = '현황'; G.today.views = [['sch-overview','현황'],['overview','할 일 · 요약'],['live','지금 접속 · 접속 기록']];
-      G.users.label = '학생'; G.users.views = [['sch-students','학생'],['users','계정 관리'],['expired','기간 끝난 사람'],['beta','연습 진행표']];   // 한림대는 가입하면 바로 열려서 '서류 합격 승인' 없음
+      G.today.label = '현황'; G.today.views = [['sch-overview','현황'],['sch-report','보고서'],['overview','할 일 · 요약'],['live','지금 접속 · 접속 기록']];
+      G.users.label = '학생'; G.users.views = [['sch-students','학생'],['users','계정 관리'],['beta','연습 진행표']];   // 2026-11-09c '기간 끝난 사람'도 뺌 (학교는 이용 기간 없음)   // 한림대는 가입하면 바로 열려서 '서류 합격 승인' 없음
       G.questions.views = G.questions.views.filter(([v])=>v !== 'reportcall' && v !== 'sttfix');   // '후기 부탁할 사람' 빼고, '음성 인식 바로잡기'는 AI · 비용으로
       G.results.views = [['sch-records','연습 기록'],['records','면접 기록 (자세히)'],['realset','실전 세트 · 자기소개'],['hardq','점수 낮은 질문'],['export','엑셀로 내려받기 (전체)']];
       G.talk.views = [['sch-talk','의견 · 공지'],['feedback','의견 · 오류 신고 (자세히)'],['notices','공지 보내기 (자세히)']];
       const st = G.settings; delete G.settings; G.roles = { label:'권한 관리', views:[['sch-roles','권한 관리']] }; G.settings = st;
       { const k = st.views.findIndex(([v])=>v === 'devtest'); st.views.splice(k < 0 ? st.views.length : k, 0, ['sttfix','음성 인식 바로잡기']); }
+      // 2026-11-09c 개발·운영사용 메뉴(크레딧·즉석 문장·기본 목소리·문제 확인)는 '운영 도구'로 따로 접어 둠
+      { const OPS = ['tccredit','ttslive','voice','devtest']; G.ops = { label:'운영 도구', views: st.views.filter(([v])=>OPS.includes(v)) }; st.views = st.views.filter(([v])=>!OPS.includes(v)); st.label = 'AI 설정'; }
       const side = document.querySelector('#screen-admin .admin-sidebar'), talk = side && side.querySelector('[data-group="talk"]'), set = side && side.querySelector('[data-group="settings"]');
       if(talk && set && !side.querySelector('[data-group="roles"]')){ const b = talk.cloneNode(true); b.dataset.group = 'roles'; b.classList.remove('active'); b.querySelectorAll('.menu-badge').forEach(x=>x.remove());
         const svg = b.querySelector('svg'); if(svg) svg.innerHTML = '<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'; side.insertBefore(b, set); }
+      if(set && !side.querySelector('[data-group="ops"]')){ const b = set.cloneNode(true); b.dataset.group = 'ops'; b.classList.remove('active'); b.classList.add('amb-ops'); b.querySelectorAll('.menu-badge').forEach(x=>x.remove());
+        const svg = b.querySelector('svg'); if(svg) svg.innerHTML = '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-2.5z"/>'; set.after(b);
+        { const tb = set.querySelector('#tts-nav-badge'), nm = b.querySelector('.amb-name'); if(tb && nm) nm.appendChild(tb); } }   // 즉석 문장 숫자는 운영 도구로
     }
-    const TXT = !this.can('admin') ? { today:['현황','학과별 이용 · 연습 추이'], users:['학생','점수 추이 · 상담 메모 · 서류'], results:['연습 결과','기록 목록 · 엑셀 내려받기'], talk:['소통','학생 의견 답장 · 공지'] } : { today:['현황','학과별 이용 · 할 일 · 접속'], users:['학생','학생 상세 · 계정<br>기간 · 진행표'], results:['연습 결과','연습 기록 · 실전 세트 · 엑셀'], questions:['질문','질문 · 녹음 · 실제 후기'], talk:['소통','의견 · 공지'], roles:['권한 관리','관리자 · 교직원 · 학과 담당'], settings:['AI · 비용','AI · 크레딧<br>면접관 목소리 · 음성 인식'] };
+    const TXT = !this.can('admin') ? { today:['현황','학과별 이용 · 보고서'], users:['학생','점수 추이 · 상담 메모 · 서류'], results:['연습 결과','기록 목록 · 엑셀 내려받기'], talk:['소통','학생 의견 답장 · 공지'] } : { today:['현황','학과별 이용 · 보고서 · 할 일'], users:['학생','학생 상세 · 계정<br>연습 진행표'], results:['연습 결과','연습 기록 · 실전 세트 · 엑셀'], questions:['질문','질문 · 녹음 · 실제 후기'], talk:['소통','의견 · 공지'], roles:['권한 관리','관리자 · 교직원 · 학과 담당'], settings:['AI 설정','AI 켜기 · 횟수<br>면접관 목소리 · 음성 인식'], ops:['운영 도구','크레딧 · 개발용<br>학교 담당자는 안 써도 돼요'] };
     document.querySelectorAll('#screen-admin .admin-menu-btn[data-group]').forEach(b=>{ const g = G[b.dataset.group], vs = g ? g.views.filter(([v])=>this.allowView(v)) : [];
       b.hidden = !vs.length; if(vs.length) b.onclick = ()=>showAdminView(vs[0][0]);
       const t = TXT[b.dataset.group], nm = b.querySelector('.amb-name'), ds = b.querySelector('.amb-desc'); if(t && nm && nm.firstChild && nm.firstChild.nodeType === 3) nm.firstChild.nodeValue = t[0] + ' '; if(t && ds) ds.innerHTML = t[1]; });
@@ -12643,7 +12685,7 @@ const School = {
     showToast('이용이 중지된 계정이에요. 학교 담당자에게 문의해 주세요.', 'warn'); return true;
   },
   views(){
-    const v = [['overview','현황','학과별 이용 · 연습 추이 · 많이 고른 기업'],['students','학생','점수 추이 · 상담 메모 · 서류·인바디'],['records','연습 기록','기록 목록 · 엑셀 내려받기']];
+    const v = [['overview','현황','학과별 이용 · 연습 추이 · 많이 고른 기업'],['report','보고서','기간별 이용 보고서 · 인쇄 · 엑셀'],['students','학생','점수 추이 · 상담 메모 · 서류·인바디'],['records','연습 기록','기록 목록 · 엑셀 내려받기']];
     if(this.can('manage')) v.push(['talk','의견·공지','학생 의견 답장 · 공지 보내기']);
     if(this.can('admin')) v.push(['roles','권한 관리','관리자·교직원·학과 담당 지정'], ['voice','면접관 목소리','10명 목소리 · AI 설정 (관리 도구)']);
     return v;
@@ -12710,7 +12752,7 @@ const School = {
   async loadFbCount(){ try{ const r = await sb.from('feedback').select('id', { count:'exact', head:true }).eq('status', '새 글'); this.fbNew = r.count || 0; this.paintSide(); }catch(_){} },
   render(){
     const main = this.G('schl-main'); if(!main || !this.d) return;
-    const fn = { overview:'vOverview', students:'vStudents', records:'vRecords', talk:'vTalk', roles:'vRoles' }[this.view] || 'vOverview';
+    const fn = { overview:'vOverview', report:'vReport', students:'vStudents', records:'vRecords', talk:'vTalk', roles:'vRoles' }[this.view] || 'vOverview';
     main.innerHTML = (this.d.errs.length ? `<p class="schl-warn">일부 자료를 읽지 못했어요 (${escapeHtml(this.d.errs.join(' · '))}). supabase/clone/007~010 적용을 확인해 주세요.</p>` : '') + this[fn]();
     this.bind(main);
     if(this.view === 'talk') this.loadTalk();
@@ -12956,6 +12998,120 @@ const School = {
     box.innerHTML = (r.data || []).length ? `<ul class="schl-log">${r.data.map(l=>`<li><time>${formatDateFull(l.created_at)}</time><span><b>${escapeHtml(nm(l.user_id))}</b> ${escapeHtml(SC_ROLE[l.old_role] || l.old_role || '')} → <b>${escapeHtml(SC_ROLE[l.new_role] || l.new_role || '')}</b>${(l.new_scope || []).length ? ` (${escapeHtml(l.new_scope.join(', '))})` : ''}${l.old_status !== l.new_status ? ` · ${escapeHtml(l.new_status === '이용 중지' ? '이용 중지' : '이용 중으로')}` : ''}${l.reason ? ` <em>“${escapeHtml(l.reason)}”</em>` : ''}</span><small>바꾼 사람 ${escapeHtml(nm(l.changed_by))}</small></li>`).join('')}</ul>` : '<p class="schl-dim">아직 바꾼 기록이 없어요.</p>';
   },
   /* ── 이벤트 ── */
+  /* ── 2026-11-09c 보고서: 취업진로지원센터에 내는 기간별 이용 보고서 (인쇄·PDF 저장, 엑셀) ──
+     기간을 고르면 그 기간과 바로 앞 같은 길이 기간을 비교. 숫자는 학생 계정만 (관리자·교직원·학과 담당 연습 빠짐).
+     학과 담당은 DB 권한 때문에 맡은 학과 학생만 들어옴 → 보고서도 그 학과만 */
+  rp: 'm0',
+  rpPeriod(){
+    const k = this.rp || 'm0', now = new Date(), D = 86400000; let s, e, label, ps, pe, plabel;
+    if(k[0] === 'm'){ const i = +k.slice(1); s = new Date(now.getFullYear(), now.getMonth() - i, 1); e = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+      ps = new Date(s.getFullYear(), s.getMonth() - 1, 1); pe = s; label = `${s.getFullYear()}년 ${s.getMonth() + 1}월`; plabel = `${ps.getMonth() + 1}월`; }
+    else if(k === 'sem'){ const y = now.getFullYear(), m = now.getMonth();
+      if(m >= 2 && m <= 7){ s = new Date(y, 2, 1); e = new Date(y, 8, 1); label = `${y}학년도 1학기 (3~8월)`; ps = new Date(y - 1, 8, 1); }
+      else { const y0 = m >= 8 ? y : y - 1; s = new Date(y0, 8, 1); e = new Date(y0 + 1, 2, 1); label = `${y0}학년도 2학기 (9~2월)`; ps = new Date(y0, 2, 1); }
+      pe = s; plabel = '지난 학기'; }
+    else { const n = k === 'd90' ? 90 : 30; e = new Date(now.getTime() + 1000); s = new Date(e.getTime() - n * D); pe = s; ps = new Date(s.getTime() - n * D); label = `최근 ${n}일`; plabel = `그 전 ${n}일`; }
+    const fmt = d=>`${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+    const end = new Date(Math.min(e.getTime(), now.getTime()) - 1);
+    return { s, e, ps, pe, label, plabel, range: `${fmt(s)} ~ ${fmt(end)}`, prange: `${fmt(ps)} ~ ${fmt(new Date(pe.getTime() - 1))}`, future: s > now };
+  },
+  rpOptions(){
+    const now = new Date(), o = [['m0', `이번 달 (${now.getMonth() + 1}월)`]];
+    for(let i = 1; i < 12; i++){ const d = new Date(now.getFullYear(), now.getMonth() - i, 1); o.push(['m' + i, `${d.getFullYear()}년 ${d.getMonth() + 1}월`]); }
+    return [['sem', '이번 학기'], ['d30', '최근 30일'], ['d90', '최근 90일']].concat(o);
+  },
+  /** 기간 [s, e) 숫자 */
+  rpStats(s, e){
+    const { students, recs } = this.d, t0 = s.getTime(), t1 = e.getTime();
+    const R = recs.filter(r=>{ const t = new Date(r.created_at).getTime(); return t >= t0 && t < t1; });
+    const sc = R.filter(r=>r.score != null).map(r=>r.score), avg = a=>a.length ? Math.round(a.reduce((x, y)=>x + y, 0) / a.length) : null;
+    const reg = students.filter(p=>new Date(p.created_at).getTime() < t1), joined = students.filter(p=>{ const t = new Date(p.created_at).getTime(); return t >= t0 && t < t1; });
+    const users = new Set(R.map(r=>r.user_id));
+    const dept = {}; reg.forEach(p=>{ const k = p.dept || '(학과 미입력)'; const o = dept[k] = dept[k] || { c: p.college || '', d: k, reg:0, act:0, n:0, sc:[] }; o.reg++; });
+    R.forEach(r=>{ const p = this.d.sMap[r.user_id]; if(!p) return; const k = p.dept || '(학과 미입력)'; const o = dept[k] = dept[k] || { c: p.college || '', d: k, reg:0, act:0, n:0, sc:[] }; o.n++; if(r.score != null) o.sc.push(r.score); });
+    Object.values(dept).forEach(o=>{ o.act = new Set(R.filter(r=>{ const p = this.d.sMap[r.user_id]; return p && (p.dept || '(학과 미입력)') === o.d; }).map(r=>r.user_id)).size; o.avg = avg(o.sc); });
+    const fld = {}; R.forEach(r=>{ const k = r.field_name || this.fName(r.field_id) || '기타'; const o = fld[k] = fld[k] || { n:0, sc:[], u:new Set() }; o.n++; o.u.add(r.user_id); if(r.score != null) o.sc.push(r.score); });
+    const co = {}; R.forEach(r=>{ if(!r.company_name) return; const o = co[r.company_name] = co[r.company_name] || { n:0, sc:[], u:new Set() }; o.n++; o.u.add(r.user_id); if(r.score != null) o.sc.push(r.score); });
+    // 기간 안에서 두 번 이상 점수가 있는 학생: 첫 연습 → 마지막 연습
+    const per = {}; R.slice().sort((a, b)=>new Date(a.created_at) - new Date(b.created_at)).forEach(r=>{ if(r.score == null) return; (per[r.user_id] = per[r.user_id] || []).push(r.score); });
+    const multi = Object.values(per).filter(a=>a.length >= 2), first = avg(multi.map(a=>a[0])), lastS = avg(multi.map(a=>a[a.length - 1])), up = multi.filter(a=>a[a.length - 1] > a[0]).length;
+    const bands = [['90점 이상', x=>x >= 90], ['80~89점', x=>x >= 80 && x < 90], ['70~79점', x=>x >= 70 && x < 80], ['60~69점', x=>x >= 60 && x < 70], ['60점 미만', x=>x < 60]].map(([l, f])=>[l, sc.filter(f).length]);
+    return { R, n: R.length, users: users.size, reg: reg.length, joined: joined.length, avg: avg(sc), scN: sc.length, dept, fld, co, multi: multi.length, first, lastS, up, bands, avgF: avg };
+  },
+  rpDelta(cur, prev, unit){ if(cur == null || prev == null || (!prev && unit !== '점')) return '';   // 비교 기간에 기록이 없으면 늘어난 양을 보이지 않음
+    const d = cur - prev; if(!d) return `<span class="rp-d same">같음</span>`;
+    return `<span class="rp-d ${d > 0 ? 'up' : 'down'}">${d > 0 ? '▲' : '▼'} ${Math.abs(d)}${unit || ''}</span>`; },
+  rpBuild(){
+    const P = this.rpPeriod(), A = this.rpStats(P.s, P.e), B = this.rpStats(P.ps, P.pe), sc = this.inScope(), u = state.currentUser || {};
+    const pct = (a, b)=>b ? Math.round(a / b * 100) : 0, esc = escapeHtml;
+    const scope = sc ? `맡은 학과 (${[...sc].join(', ')})` : '전체 학과';
+    const growN = B.n ? Math.round((A.n - B.n) / B.n * 100) : null;
+    const sum = [];
+    if(!A.n) sum.push(`이 기간에는 연습 기록이 없어요.`);
+    else {
+      sum.push(`이 기간 학생 <b>${A.users}명</b>이 AI 모의면접을 <b>${A.n}회</b> 연습했어요 (가입 학생의 ${pct(A.users, A.reg)}%).`);
+      if(B.n) sum.push(`${P.plabel}보다 연습 횟수가 ${growN === 0 ? '같아요' : `<b>${Math.abs(growN)}% ${growN > 0 ? '늘었어요' : '줄었어요'}</b>`}${A.avg != null && B.avg != null ? `, 평균 점수는 ${A.avg === B.avg ? '같아요' : `<b>${Math.abs(A.avg - B.avg)}점 ${A.avg > B.avg ? '올랐어요' : '내렸어요'}</b>`}` : ''}.`);
+      if(A.multi) sum.push(`두 번 이상 연습한 학생 ${A.multi}명은 첫 연습 평균 ${A.first}점에서 마지막 연습 평균 <b>${A.lastS}점</b>으로 바뀌었고, ${A.up}명(${pct(A.up, A.multi)}%)의 점수가 올랐어요.`);
+      const topCo = Object.entries(A.co).sort((a, b)=>b[1].n - a[1].n)[0]; if(topCo) sum.push(`가장 많이 연습한 기관은 <b>${esc(topCo[0])}</b>(${topCo[1].n}회)예요.`);
+    }
+    const kpi = (l, v, d, s)=>`<div class="rp-kpi"><span>${l}</span><b>${v}</b>${d || ''}${s ? `<small>${s}</small>` : ''}</div>`;
+    const deptRows = Object.values(A.dept).filter(o=>o.reg || o.n).sort((a, b)=>(a.c || '').localeCompare(b.c || '', 'ko') || b.reg - a.reg || a.d.localeCompare(b.d, 'ko'));
+    const bAll = Object.keys(B.fld).length || Object.keys(B.co).length;
+    const fldRows = Object.entries(A.fld).sort((a, b)=>b[1].n - a[1].n), coRows = Object.entries(A.co).sort((a, b)=>b[1].n - a[1].n).slice(0, 10);
+    const bandMax = Math.max(1, ...A.bands.map(x=>x[1]));
+    const now = new Date();
+    return `<article class="rp-doc" id="rp-doc">
+      <header class="rp-top"><div><p class="rp-brand">ZAVAPASS × 한림대학교 · AI 모의면접</p><h1>이용 보고서 · ${esc(P.label)}</h1>
+        <p class="rp-meta">기간 ${P.range} · 비교 ${esc(P.plabel)} (${P.prange}) · 범위 ${esc(scope)}${this.hideTest ? ' · 테스트 계정 제외' : ' · 테스트 계정 포함'}</p></div>
+        <p class="rp-made">만든 날 ${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}<br>만든 사람 ${esc(u.name || '')}</p></header>
+      ${P.future ? '<p class="rp-note">아직 시작하지 않은 기간이에요.</p>' : ''}
+      <section class="rp-sec"><h2>한눈에 보기</h2><div class="rp-sum">${sum.map(x=>`<p>${x}</p>`).join('')}</div>
+        <div class="rp-kpis">
+          ${kpi('가입 학생', `${A.reg}명`, '', A.joined ? `이 기간 새로 가입 ${A.joined}명` : '이 기간 새로 가입 없음')}
+          ${kpi('연습한 학생', `${A.users}명`, this.rpDelta(A.users, B.users, '명'), `이용률 ${pct(A.users, A.reg)}%`)}
+          ${kpi('연습 횟수', `${A.n}회`, this.rpDelta(A.n, B.n, '회'), A.users ? `1인당 ${(A.n / A.users).toFixed(1)}회` : '')}
+          ${kpi('평균 점수', A.avg != null ? `${A.avg}점` : '–', this.rpDelta(A.avg, B.avg, '점'), A.scN ? `점수가 나온 연습 ${A.scN}회` : '')}
+        </div></section>
+      <section class="rp-sec"><h2>학과별 이용</h2>${deptRows.length ? `<table class="rp-t"><thead><tr><th>단과대학</th><th>학과</th><th class="r">가입</th><th class="r">연습한 학생</th><th class="r">이용률</th><th class="r">연습 횟수</th><th class="r">${esc(P.plabel)} 대비</th><th class="r">평균 점수</th></tr></thead><tbody>
+        ${deptRows.map(o=>{ const b = B.dept[o.d]; return `<tr><td>${esc(o.c)}</td><td><b>${esc(o.d)}</b></td><td class="r">${o.reg}</td><td class="r">${o.act}</td><td class="r">${pct(o.act, o.reg)}%</td><td class="r">${o.n}</td><td class="r">${this.rpDelta(o.n, b ? b.n : 0, '회') || '–'}</td><td class="r">${o.avg != null ? o.avg + '점' : '–'}</td></tr>`; }).join('')}
+        <tr class="rp-total"><td colspan="2">합계</td><td class="r">${A.reg}</td><td class="r">${A.users}</td><td class="r">${pct(A.users, A.reg)}%</td><td class="r">${A.n}</td><td class="r">${this.rpDelta(A.n, B.n, '회') || '–'}</td><td class="r">${A.avg != null ? A.avg + '점' : '–'}</td></tr></tbody></table>` : '<p class="rp-empty">학과 정보가 있는 학생이 없어요.</p>'}</section>
+      <div class="rp-two">
+        <section class="rp-sec"><h2>분야별 연습</h2>${fldRows.length ? `<table class="rp-t"><thead><tr><th>분야</th><th class="r">횟수</th><th class="r">학생</th><th class="r">평균</th></tr></thead><tbody>${fldRows.map(([k, o])=>`<tr><td>${esc(k)}</td><td class="r">${o.n}${bAll ? ` ${this.rpDelta(o.n, B.fld[k] ? B.fld[k].n : 0, '')}` : ''}</td><td class="r">${o.u.size}</td><td class="r">${A.avgF(o.sc) != null ? A.avgF(o.sc) + '점' : '–'}</td></tr>`).join('')}</tbody></table>` : '<p class="rp-empty">기록 없음</p>'}</section>
+        <section class="rp-sec"><h2>점수 분포</h2>${A.scN ? `<ul class="rp-bands">${A.bands.map(([l, n])=>`<li><span>${l}</span><i><em style="width:${Math.round(n / bandMax * 100)}%"></em></i><b>${n}회</b><small>${pct(n, A.scN)}%</small></li>`).join('')}</ul>` : '<p class="rp-empty">점수가 나온 연습이 없어요.</p>'}
+          ${A.multi ? `<p class="rp-grow">두 번 이상 연습한 학생 <b>${A.multi}명</b> · 첫 연습 평균 ${A.first}점 → 마지막 연습 평균 <b>${A.lastS}점</b> (${A.lastS - A.first >= 0 ? '+' : ''}${A.lastS - A.first}점) · 점수 오른 학생 ${A.up}명</p>` : ''}</section>
+      </div>
+      <section class="rp-sec"><h2>많이 연습한 기업·기관 TOP 10</h2>${coRows.length ? `<table class="rp-t"><thead><tr><th class="r" style="width:36px">순위</th><th>기업·기관</th><th class="r">횟수</th><th class="r">학생</th><th class="r">평균 점수</th></tr></thead><tbody>${coRows.map(([k, o], i)=>`<tr><td class="r">${i + 1}</td><td>${esc(k)}</td><td class="r">${o.n}</td><td class="r">${o.u.size}</td><td class="r">${A.avgF(o.sc) != null ? A.avgF(o.sc) + '점' : '–'}</td></tr>`).join('')}</tbody></table>` : '<p class="rp-empty">기업·직무 맞춤 면접 기록이 없어요.</p>'}</section>
+      <footer class="rp-foot">학생 계정의 연습만 셌어요 (관리자·교직원·학과 담당 연습 제외). 점수는 AI 채점 100점 기준이고, 점수가 나오지 않은 연습은 평균에서 빠져요. 이용률 = 연습한 학생 ÷ 기간 끝까지 가입한 학생.</footer>
+    </article>`;
+  },
+  vReport(){
+    const opts = this.rpOptions();
+    return `<div class="schl-head"><div><h2>보고서</h2><p>기간을 고르면 취업진로지원센터에 낼 이용 보고서가 만들어져요. 인쇄하거나 PDF로 저장할 수 있어요.</p></div>
+      <div class="schl-headr rp-ctl"><label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 빼고 보기</label>
+        <select id="rp-period" aria-label="보고서 기간">${opts.map(([k, l])=>`<option value="${k}"${k === this.rp ? ' selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select>
+        <button type="button" class="schl-btn ghost" data-rpcsv>엑셀로 내려받기</button><button type="button" class="schl-btn" data-rpprint>인쇄 · PDF 저장</button></div></div>
+      <div class="rp-wrap">${this.rpBuild()}</div>`;
+  },
+  rpPrint(){
+    const doc = this.G('rp-doc'); if(!doc) return;
+    const w = window.open('', '_blank'); if(!w){ showToast('팝업이 막혀 있어요. 주소창 오른쪽에서 팝업을 허용한 뒤 다시 눌러 주세요.', 'warn'); return; }
+    w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>${escapeHtml(doc.querySelector('h1').textContent)}</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"><style>${RP_CSS} body{margin:0;background:#fff;} .rp-doc{box-shadow:none;border:0;margin:0 auto;max-width:none;padding:0;font-size:12px;} @page{size:A4;margin:14mm 12mm;} .rp-doc .rp-top{flex-direction:row !important;} .rp-doc .rp-made{text-align:right !important;} .rp-doc .rp-kpis{grid-template-columns:repeat(4,1fr) !important;} .rp-doc .rp-two{grid-template-columns:1fr 1fr !important;} .rp-doc .rp-sec{overflow:visible !important;} .rp-doc .rp-t{font-size:11px !important;} .rp-doc .rp-t th,.rp-doc .rp-t td{padding:5px 6px !important;} .rp-doc .rp-kpi b{font-size:18px;} .rp-doc .rp-top h1{font-size:19px;}</style></head><body>${doc.outerHTML}<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script></body></html>`);
+    w.document.close();
+  },
+  rpCsv(){
+    const P = this.rpPeriod(), A = this.rpStats(P.s, P.e), B = this.rpStats(P.ps, P.pe), avg = A.avgF, rows = [];
+    rows.push(['ZAVAPASS × 한림대학교 AI 모의면접 이용 보고서'], ['기간', P.label, P.range], ['비교 기간', P.plabel, P.prange], ['테스트 계정', this.hideTest ? '제외' : '포함'], []);
+    rows.push(['항목', '이번 기간', '비교 기간'], ['가입 학생', A.reg, B.reg], ['연습한 학생', A.users, B.users], ['연습 횟수', A.n, B.n], ['평균 점수', A.avg == null ? '' : A.avg, B.avg == null ? '' : B.avg], ['새로 가입', A.joined, B.joined], []);
+    rows.push(['학과별'], ['단과대학', '학과', '가입', '연습한 학생', '이용률(%)', '연습 횟수', '비교 기간 연습 횟수', '평균 점수']);
+    Object.values(A.dept).filter(o=>o.reg || o.n).sort((a, b)=>(a.c || '').localeCompare(b.c || '', 'ko') || b.reg - a.reg).forEach(o=>rows.push([o.c, o.d, o.reg, o.act, o.reg ? Math.round(o.act / o.reg * 100) : 0, o.n, B.dept[o.d] ? B.dept[o.d].n : 0, o.avg == null ? '' : o.avg]));
+    rows.push([], ['분야별'], ['분야', '횟수', '학생', '평균 점수']);
+    Object.entries(A.fld).sort((a, b)=>b[1].n - a[1].n).forEach(([k, o])=>rows.push([k, o.n, o.u.size, avg(o.sc) == null ? '' : avg(o.sc)]));
+    rows.push([], ['많이 연습한 기업·기관'], ['기업·기관', '횟수', '학생', '평균 점수']);
+    Object.entries(A.co).sort((a, b)=>b[1].n - a[1].n).forEach(([k, o])=>rows.push([k, o.n, o.u.size, avg(o.sc) == null ? '' : avg(o.sc)]));
+    rows.push([], ['점수 분포'], ['구간', '횟수']); A.bands.forEach(b=>rows.push(b));
+    if(A.multi) rows.push([], ['두 번 이상 연습한 학생', A.multi], ['첫 연습 평균', A.first], ['마지막 연습 평균', A.lastS], ['점수 오른 학생', A.up]);
+    downloadCsv(`한림대_AI모의면접_보고서_${P.label.replace(/[^\w가-힣]+/g, '_')}.csv`, rows);
+  },
   bind(main){
     const on = (sel, ev, fn)=>main.querySelectorAll(sel).forEach(el=>el.addEventListener(ev, fn));
     on('[data-reload]', 'click', async ()=>{ this.d = null; await this.load(); });
@@ -12973,6 +13129,8 @@ const School = {
     const rq = this.G('schl-rq'); if(rq) rq.oninput = ()=>{ clearTimeout(this._t); this._t = setTimeout(()=>{ const pos = rq.selectionStart; this.rf.q = rq.value; this.rf.shown = 200; this.render(); const n = this.G('schl-rq'); n.focus(); try{ n.setSelectionRange(pos, pos); }catch(_){} }, 200); };
     on('[data-more]', 'click', ()=>{ this.rf.shown += 200; this.render(); });
     on('[data-csv]', 'click', ()=>this.csv());
+    on('[data-rpcsv]', 'click', ()=>this.rpCsv()); on('[data-rpprint]', 'click', ()=>this.rpPrint());
+    { const rp = this.G('rp-period'); if(rp) rp.onchange = ()=>{ this.rp = rp.value; this.render(); }; }
     const fa = this.G('schl-fball'); if(fa) fa.onchange = ()=>{ this.fbAll = fa.checked; this.loadTalk(); };
     on('[data-ntadd]', 'click', ()=>this.addNotice());
     on('[data-rlf]', 'click', e=>{ this.rlf = e.currentTarget.dataset.rlf; this.render(); });
@@ -13566,6 +13724,7 @@ const AdminFind = {
     tccredit:'타입캐스트 크레딧 남은 요금제 충전 안전장치 1인 한도 사람별 사용량 typecast',
     ttslive:'즉석 읽은 문장 꼬리질문 음성 녹음본 저장 대신읽음 새문장',
     'sch-overview':'현황 학과별 이용 연습 추이 주별 많이 고른 기업 도움이 필요한 학생 평균 점수',
+    'sch-report':'보고서 월간 학기 이용 보고서 인쇄 PDF 엑셀 취업진로지원센터 학과별 분야별 점수 분포',
     'sch-students':'학생 상세 점수 추이 상담 메모 서류 자기소개서 이력서 인바디 학점 어학',
     'sch-records':'연습 기록 엑셀 csv 내려받기 기간 분야 학과',
     'sch-talk':'의견 답장 공지 올리기',
@@ -16239,7 +16398,8 @@ async function openMyPage(){
   const u = state.currentUser;
   if(!u) return;
   document.getElementById('mp-name').textContent = u.name || '';
-  document.getElementById('mp-email').textContent = u.email || '';
+  document.getElementById('mp-email').textContent = LoginId.label(u.email || '');   // 2026-11-09c 학번 계정은 '학번 20231234'
+  { const r = document.getElementById('mp-cemail-row'), v = document.getElementById('mp-cemail'); if(r && v){ r.hidden = !u.contactEmail; v.textContent = u.contactEmail || ''; } }
   document.getElementById('mp-phone').textContent = u.phone || '등록된 번호 없음';
   const fieldNames = (u.allowed || []).map(id=>{ const f=FIELDS.find(x=>x.id===id); return f?f.name:id; });
   document.getElementById('mp-fields').textContent = u.isAdmin ? '관리자 (전체)' : (fieldNames.length ? fieldNames.join(', ') : '아직 없음 (관리자 확인 후 열립니다)');
@@ -27017,7 +27177,7 @@ function openPermissionModal(userId){
   state.bulkPermissionMode = false;
   state.editingUserId = userId;
   document.getElementById('perm-modal-title').textContent = `${user.name} 권한 관리`;
-  document.getElementById('perm-modal-desc').textContent = '서류 합격이 확인된 기관에만 체크해 주세요. 체크되지 않은 기관은 지원자에게 잠금 상태로 보여요.';
+  document.getElementById('perm-modal-desc').textContent = '열어 줄 연습 분야에 체크해 주세요. 체크되지 않은 분야는 학생에게 잠금 상태로 보여요.';
   buildPermChecklist('perm-checklist', user.allowed_fields || []);
   document.getElementById('perm-until').value = user.access_until ? String(user.access_until).slice(0,10) : '';
   document.getElementById('perm-until-keep-row').style.display = 'none';
@@ -27203,9 +27363,9 @@ function validateSignupField(which, force){
     document.getElementById('signup-consent-err').textContent = bad ? '가입하려면 개인정보 수집·이용에 동의해 주세요' : '';
   }else if(which === 'pledge'){
     const c = document.getElementById('signup-pledge'); if(!c) return;
-    const bad = !c.checked && !!force;
+    const bad = false;
     document.getElementById('signup-pledge-row').classList.toggle('invalid', bad);
-    document.getElementById('signup-pledge-err').textContent = bad ? '면접 후기를 남기기로 동의해야 가입할 수 있어요' : '';
+    document.getElementById('signup-pledge-err').textContent = '';   // 2026-11-09c 선택 항목이라 오류 없음
   }
 }
 function openPrivacyNotice(){ document.getElementById('modal-privacy').classList.add('active'); }
@@ -27266,12 +27426,7 @@ async function submitSignup(){
     showToast('개인정보 수집·이용에 동의해야 가입할 수 있어요');
     return;
   }
-  if(!document.getElementById('signup-pledge').checked){   // 2026-10-27b
-    validateSignupField('pledge', true);
-    try{ document.getElementById('signup-pledge-row').scrollIntoView({ block:'center', behavior:'smooth' }); }catch(_){}
-    showToast('면접 후기를 남기기로 동의해야 가입할 수 있어요');
-    return;
-  }
+  const pledged = !!document.getElementById('signup-pledge').checked;   // 2026-11-09c 후기 약속은 선택
   const signupBtn = document.querySelector('#modal-signup .btn-solid'); if(signupBtn){ signupBtn.disabled = true; signupBtn.textContent = '가입 중…'; }
   const restoreBtn = ()=>{ if(signupBtn){ signupBtn.disabled = false; signupBtn.textContent = '가입하기'; } };
   let signRes; try{ signRes = await sb.auth.signUp({ email, password: pw }); }catch(e){ restoreBtn(); showToast('회원가입 요청에 실패했어요. 인터넷 연결을 확인해 주세요.'); return; }
@@ -27294,7 +27449,7 @@ async function submitSignup(){
     showToast('가입 요청은 보냈지만 계정 정보를 받지 못했어요. 잠시 후 다시 시도해 주세요.');
     return;
   }
-  const profileRow = { id: userId, name, phone, contact_email: contactEmail, college: college || null, dept: dept || null, note: note || '서류 결과 확인 중', is_admin:false, allowed_fields: DEMO_AUTO_APPROVE ? FIELDS.map(f => f.id) : [], privacy_agreed_at: new Date().toISOString(), report_pledge_at: new Date().toISOString() };
+  const profileRow = { id: userId, name, phone, contact_email: contactEmail, college: college || null, dept: dept || null, note: note || '서류 결과 확인 중', is_admin:false, allowed_fields: DEMO_AUTO_APPROVE ? FIELDS.map(f => f.id) : [], privacy_agreed_at: new Date().toISOString(), report_pledge_at: pledged ? new Date().toISOString() : null };
   let { error: insertErr } = await sb.from('profiles').insert(profileRow);
   // profiles.contact_email·college·dept 컬럼이 아직 없으면(SQL 024 미적용) 빼고 저장
   if(insertErr && /contact_email|college|dept/i.test(insertErr.message||'')){ console.warn('[profiles 컬럼 없음] supabase/clone/024_profiles_contact_email.sql'); delete profileRow.contact_email; delete profileRow.college; delete profileRow.dept; ({ error: insertErr } = await sb.from('profiles').insert(profileRow)); }
