@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-10g';
+var APP_VERSION = '2026-11-10h';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5955,6 +5955,7 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-mypage .doc-share{margin-top:14px;}
 .pr-src{font-size:13.5px;line-height:1.6;} .pr-src small{display:block;margin-top:2px;font-size:12px;color:#8a8a90;}
 .pr-fu{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:2px;}
+.pr-moreq{margin-top:8px;width:100%;text-align:left;border:1.5px solid #C9D6F5;background:#F7F9FF;color:#2346A0;border-radius:12px;padding:11px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;} .pr-moreq:hover{background:#EEF3FF;}
 .pr-nodoc{margin:0;padding:10px 12px;border:1px dashed #E3E1DB;border-radius:10px;font-size:13px;color:#6b6b72;background:#FAFAF8;}
 @media(max-width:640px){ .fl-doc-row{grid-template-columns:1fr;} }
 .pr-tabs{display:flex;gap:4px;flex-wrap:wrap;}
@@ -6468,12 +6469,12 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
 .dbt-mem.speaking .dbt-av{box-shadow:0 0 0 3px rgba(35,70,160,.3);}
 @media (prefers-reduced-motion: reduce){ .dbt-wave i{animation:none;height:10px;} }
 /* 2026-11-10 홈 버튼 8개 · NEW · 10분 마무리 · 답변 노트 */
-#d3-home .hm-tiles{grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;}
+#d3-home .hm-tiles{grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;}
 #d3-home .hm-tile{padding-left:12px !important;padding-right:12px !important;}
 #d3-home .hm-tile b{font-size:13.5px;} #d3-home .hm-tile span{font-size:11.5px;}
 .hm-tile.hm-fin{background:#FFF4EE;border-color:#F2C2AD;} .hm-tile.hm-fin b{color:#a8381a;}
 @media(max-width:1100px) and (min-width:641px){ #d3-home .hm-tiles{grid-template-columns:repeat(4,minmax(0,1fr));} }
-@media(max-width:640px){ #d3-home .hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media(max-width:640px){ #d3-home .hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr));} #d3-home .hm-tiles > :last-child:nth-child(odd){grid-column:1/-1;} }
 .pk-fin{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:#FFF4EE;border:1.5px solid #F2C2AD;margin-bottom:14px;}
 .pk-fin > div{flex:1;min-width:0;} .pk-fin b{display:block;font-size:15px;color:#a8381a;} .pk-fin span{display:block;font-size:13px;color:#6b6b72;margin-top:2px;line-height:1.5;}
 .pk-fin button{flex:none;height:42px;padding:0 16px;border:0;border-radius:10px;background:#c8441c;color:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer;}
@@ -7163,7 +7164,7 @@ html.sv-open{overflow:hidden;}
         <div class="hm-modes">
           <button type="button" class="hm-mode" data-hm-kind="major" aria-pressed="false" onclick="StartFlow.pickFromHome('major')"><em>AI 모의면접</em><b>전공·경험 면접</b><span>수강 과목·프로젝트·활동 경험을 설명해 보는 면접</span></button>
           <button type="button" class="hm-mode" data-hm-kind="job" aria-pressed="false" onclick="StartFlow.pickFromHome('job')"><em>AI 모의면접</em><b>기업·직무 맞춤 면접</b><span>목표 기업·직무·채용공고에 맞춘 면접</span></button>
-          <button type="button" class="hm-mode hm-debate" aria-pressed="false" onclick="pressDebateBtn(this)"><em>AI 모의면접</em><b>토론·토의·발표(PT) 면접</b><span>공공기관 면접 후기 주제로 준비 → 말하기 → AI 반론·다른 지원자 의견 → 피드백</span><i aria-hidden="true">토론 시작 ›</i></button>
+          <button type="button" class="hm-mode hm-debate" aria-pressed="false" onclick="pressDebateBtn(this)"><em>AI 모의면접</em><b>토론·토의·발표(PT) 면접</b><span>공공기관 면접에 나오는 주제로 준비 → 말하기 → AI 반론·다른 지원자 의견 → 피드백</span><i aria-hidden="true">토론 시작 ›</i></button>
         </div>
         <div class="hm-first" id="hm-first" hidden><b>처음이라면 이렇게 시작해 보세요</b><ol><li>위에서 면접 목적을 골라요</li><li>전공·학년과 내 경험을 확인해요</li><li>연습형으로 첫 면접을 해 봐요</li></ol></div>
         <div class="d3-banners"><div class="access-banner" id="access-banner" style="display:none;"></div><div class="access-banner perm-ready" id="perm-ready-chip" style="display:none;"></div><div class="access-banner quota" id="ai-quota-chip" style="display:none;" title="AI 즉석 꼬리질문·채점을 쓰는 라이브 면접 횟수예요. 한도가 차면 AI 없이 계속 연습할 수 있어요."></div></div>
@@ -7179,11 +7180,11 @@ html.sv-open{overflow:hidden;}
     </div>
 
     <!-- 2026-11-09h 홈 정리: 아래로 이어지던 칸들을 버튼 한 줄로 줄이고, 누르면 창(탭)으로 열림. 토론 카드(위 버튼과 같음)·성장 요약('나의 기록'과 같음)은 뺌 -->
-    <nav class="hm-tiles" id="hm-tiles" aria-label="연습 도구"><button type="button" class="hm-tile hm-fin" data-t="dday" onclick="HomeTabs.open('dday')"><b>면접 D-day</b><span>전날·당일·다녀온 뒤</span></button><button type="button" class="hm-tile" data-t="review" onclick="HomeTabs.open('review')"><b>지난 면접 보완점</b><span>낮았던 질문 다시 연습</span></button><button type="button" class="hm-tile" data-t="qbr" onclick="HomeTabs.open('qbr')"><b>기관별 후기 질문</b><span>17곳 면접 후기 질문</span></button><button type="button" class="hm-tile" data-k="note" onclick="AnswerNote.open()"><b>답변 노트</b><span>유형별 내 최고 답변</span></button><button type="button" class="hm-tile" data-t="bm" onclick="HomeTabs.open('bm')"><b>내 질문 모음</b><span>담아 둔 질문 연습</span></button><button type="button" class="hm-tile" data-k="study" onclick="Study.open()"><b>친구와 함께 연습</b><span>친구가 링크로 면접관</span></button><button type="button" class="hm-tile" data-t="exp" onclick="HomeTabs.open('exp')"><b>내 경험</b><span>경험 정리·입력</span></button><button type="button" class="hm-tile" data-t="recent" onclick="HomeTabs.open('recent')"><b>최근 면접 기록</b><span>리포트 다시 보기</span></button></nav>
+    <nav class="hm-tiles" id="hm-tiles" aria-label="연습 도구"><button type="button" class="hm-tile hm-fin" data-t="dday" onclick="HomeTabs.open('dday')"><b>면접 D-day</b><span>전날·당일·다녀온 뒤</span></button><button type="button" class="hm-tile" data-t="review" onclick="HomeTabs.open('review')"><b>지난 면접 보완점</b><span>낮았던 질문 다시 연습</span></button><button type="button" class="hm-tile" data-k="note" onclick="AnswerNote.open()"><b>답변 노트</b><span>유형별 내 최고 답변</span></button><button type="button" class="hm-tile" data-t="bm" onclick="HomeTabs.open('bm')"><b>내 질문 모음</b><span>담아 둔 질문 연습</span></button><button type="button" class="hm-tile" data-k="study" onclick="Study.open()"><b>친구와 함께 연습</b><span>친구가 링크로 면접관</span></button><button type="button" class="hm-tile" data-t="exp" onclick="HomeTabs.open('exp')"><b>내 경험</b><span>경험 정리·입력</span></button><button type="button" class="hm-tile" data-t="recent" onclick="HomeTabs.open('recent')"><b>최근 면접 기록</b><span>리포트 다시 보기</span></button></nav>
     <div class="hm-sheet" id="hm-sheet" hidden>
       <div class="hm-sheet-bg" onclick="HomeTabs.close()"></div>
       <section class="hm-more" id="hm-more" role="dialog" aria-modal="true" aria-label="연습 도구">
-        <div class="hm-tabs" role="tablist"><button type="button" role="tab" data-t="dday" onclick="HomeTabs.go('dday')">면접 D-day</button><button type="button" role="tab" data-t="review" onclick="HomeTabs.go('review')">지난 면접 보완점</button><button type="button" role="tab" data-t="qbr" onclick="HomeTabs.go('qbr')">기관별 후기 질문</button><button type="button" role="tab" data-t="bm" onclick="HomeTabs.go('bm')">내 질문 모음</button><button type="button" role="tab" data-t="exp" onclick="HomeTabs.go('exp')">내 경험</button><button type="button" role="tab" data-t="recent" onclick="HomeTabs.go('recent')">최근 면접 기록</button><button type="button" class="hm-x" onclick="HomeTabs.close()" aria-label="닫기">✕</button></div>
+        <div class="hm-tabs" role="tablist"><button type="button" role="tab" data-t="dday" onclick="HomeTabs.go('dday')">면접 D-day</button><button type="button" role="tab" data-t="review" onclick="HomeTabs.go('review')">지난 면접 보완점</button><button type="button" role="tab" data-t="bm" onclick="HomeTabs.go('bm')">내 질문 모음</button><button type="button" role="tab" data-t="exp" onclick="HomeTabs.go('exp')">내 경험</button><button type="button" role="tab" data-t="recent" onclick="HomeTabs.go('recent')">최근 면접 기록</button><button type="button" class="hm-x" onclick="HomeTabs.close()" aria-label="닫기">✕</button></div>
         <div class="hm-tp" data-t="review" role="tabpanel"><section class="d3-panel">
         <div class="d3-panel-head"><h3 class="d3-panel-title">지난 면접의 보완점과 다시 연습</h3><button class="d3-btn-text" id="hm-review-btn" type="button" onclick="startReviewFromDashboard()" style="display:none;">이 질문들로 다시 연습</button></div>
         <div id="hm-review"><div class="qa-empty">면접을 한 번 마치면, 점수가 낮았던 질문을 여기에 모아 드려요.</div></div>
@@ -7195,7 +7196,6 @@ html.sv-open{overflow:hidden;}
         </section></div>
         <div class="hm-tp" data-t="dday" role="tabpanel"><section class="d3-panel" id="pk-dday-card" aria-label="면접 D-day"></section></div>
         <div class="hm-tp" data-t="bm" role="tabpanel"><section class="d3-panel" id="pk-bm-card" aria-label="내 질문 모음"></section></div>
-        <div class="hm-tp" data-t="qbr" role="tabpanel"><section class="d3-panel hx-card" id="qbr-card" aria-label="기관별 후기 질문"></section></div>
         <div class="hm-tp" data-t="exp" role="tabpanel"><section class="d3-panel hm-data" aria-label="내 경험·데이터 확인">
       <div class="hm-data-txt"><h2 class="d3-section-title">내 경험·데이터 확인 <span class="fl-badge">학교 데이터 미연동</span></h2><p id="hm-data-desc">커리어 인바디가 연결되기 전이라, 수강 과목·프로젝트·활동은 직접 입력해서 써요.</p></div>
       <div class="hm-data-acts"><button type="button" class="d3-btn d3-btn-solid" onclick="ExpCoach.open({ from:'home' })">경험 정리 도우미</button><button type="button" class="d3-btn d3-btn-ghost" onclick="StartFlow.open(null,'major')">경험 입력·확인</button><button type="button" class="d3-btn-text" onclick="openMyPage()">이력서·자기소개서</button></div>
@@ -7242,14 +7242,14 @@ html.sv-open{overflow:hidden;}
     <section class="dbm-box">
       <div class="fl-top"><div class="fl-steps" id="dbp-steps" aria-label="진행 순서"></div><button type="button" class="fl-x" onclick="closeDebateScreen()" aria-label="닫기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
       <div class="dbm-scroll">
-        <div class="dbm-head"><h2 id="dbt-ptitle">주제 고르기</h2><p>공공기관 토론·토의·발표 면접 대비 · 실제 면접 후기에 나온 주제로 연습해요</p></div>
+        <div class="dbm-head"><h2 id="dbt-ptitle">주제 고르기</h2><p>공공기관 토론·토의·발표 면접 대비 · 예상 주제로 연습해요</p></div>
         <div class="dbp-grid">
           <section class="dbp-main" aria-live="polite"><div class="dbp-b" id="dbt-b"><div class="pk-wait"><i></i>주제를 불러오고 있어요</div></div></section>
           <aside class="dbp-side">
             <section class="dbm-card">
               <h3>토론·토의·발표 면접</h3>
           <dl class="dbp-guide"><dt>토론 (찬반)</dt><dd>주제에 대해 찬성·반대 입장을 정하고, 이유와 예시로 설득해요. 상대(AI)의 반론을 받아 인정할 건 인정하고 차분히 답하는 것이 핵심이에요.</dd><dt>토의 (여럿이)</dt><dd>실제 면접처럼 여러 지원자(AI 3명)와 함께 해결 방안을 하나로 정해요. 남의 말을 잘 듣고, 의견을 모아 정리하는 사람이 점수를 받아요.</dd><dt>발표(PT)</dt><dd>문제 → 원인 → 해결 방안 → 기대 효과 순서로 2분 안팎 발표하고, 면접관 질문에 답해요.</dd></dl>
-          <p class="hx-fine">주제는 한림대 권역 공공기관 면접 후기를 AI가 다시 쓴 문장이에요. 병원 면접은 인성·직무 질문 위주라 토론·발표가 거의 없어요.</p>
+          <p class="hx-fine">주제는 연습용 예상 주제예요. 병원 면접은 인성·직무 질문 위주라 토론·발표가 거의 없어요.</p>
             </section>
             <section class="dbm-card">
               <h3>내 토론 기록</h3>
@@ -12590,8 +12590,8 @@ const CompanyCard = {
     const tn = c.target && c.target.name && f(c.target.name) !== f(p.talent.name) ? f(c.target.name) : '';
     const jobs = roles.length ? `<div><div class="cc-kws">${roles.slice(0, max).map(r=>`<span class="cc-kw" title="${escapeHtml([r.division, r.detail].filter(Boolean).join(' · '))}">${escapeHtml(r.name)}</span>`).join('')}${roles.length > max ? `<span class="cc-kw cc-more">+${roles.length - max}</span>` : ''}</div>${tn ? `<p class="cc-soft">${escapeHtml(tn)} 채용 공고 기준이에요.</p>` : ''}</div>`
       : '<span class="cc-none">채용 직무 정보가 없어요.</span>';
-    const pq = past.length ? `<div><p class="cc-meta"><b>${PastQ.years(p)} 면접 기출 ${past.length}문항</b> · 면접 후기를 요약한 질문이에요. 질문 미리 연습에서 모두 볼 수 있고, 본 면접에 1개 나올 수 있어요.</p>${compact ? '' : `<ul class="cc-past">${past.slice(0, 3).map(x=>`<li>${escapeHtml(PastQ.speak(x.question))} <small>${escapeHtml(PastQ.when(x))}</small></li>`).join('')}</ul>`}</div>` : '';
-    return `<div class="cc-row"><span class="cc-lbl">채용 직무</span>${jobs}</div>${pq ? `<div class="cc-row"><span class="cc-lbl">면접 기출</span>${pq}</div>` : ''}`;
+    const pq = past.length ? `<div><p class="cc-meta"><b>예상 질문 ${past.length}문항</b> · 질문 미리 연습에서 모두 볼 수 있고, 본 면접에 1개 나올 수 있어요.</p>${compact ? '' : `<ul class="cc-past">${past.slice(0, 3).map(x=>`<li>${escapeHtml(PastQ.speak(x.question))} <small>${escapeHtml(PastQ.when(x))}</small></li>`).join('')}</ul>`}</div>` : '';
+    return `<div class="cc-row"><span class="cc-lbl">채용 직무</span>${jobs}</div>${pq ? `<div class="cc-row"><span class="cc-lbl">예상 질문</span>${pq}</div>` : ''}`;
   },
   flat(s){ return String(s == null ? '' : s).replace(/\s+/g,' ').trim(); },
   /** 2026-11-09d 'A · B · C' — 줄이 바뀌어도 가운뎃점이 줄 맨 앞에 오지 않게 앞 낱말에 붙임 (내용은 이미 escape된 것) */
@@ -12602,14 +12602,13 @@ const CompanyCard = {
     const fm = (r.formats || []).filter(([k])=>!/서류|필기|인\/적성|인적성|기타/.test(k)).slice(0, 3).map(([k])=>k);
     const df = (r.difficulty || [])[0], res = r.result || {}, done = (res['합격'] || 0) + (res['불합격'] || 0);
     const yr = r.year_from && r.year_to ? (r.year_from === r.year_to ? `${r.year_to}년` : `${r.year_from}~${r.year_to}년`) : '';
-    const facts = [['후기', CompanyCard.dots([`${r.reviews.toLocaleString()}건${yr ? ` <span class="cc-dim">(${yr})</span>` : ''}`, r.recent ? `최근 3년 ${r.recent.toLocaleString()}건` : ''])],
-      fm.length ? ['주된 면접', CompanyCard.dots(fm.map(escapeHtml))] : null, df ? ['난이도', `<b>${escapeHtml(df[0])}</b>이 가장 많아요`] : null,
-      r.announce_days != null ? ['결과 발표', `보통 ${r.announce_days}일 뒤`] : null, done >= 5 ? ['합격 후기', `${Math.round((res['합격'] || 0) / done * 100)}%`] : null].filter(Boolean);
-    const often = !compact && (r.often || []).length ? `<p class="cc-sub">후기에 여러 번 나온 질문</p><ul class="cc-past">${r.often.slice(0, 3).map(x=>`<li>${escapeHtml(this.flat(x))}</li>`).join('')}</ul>` : '';
+    const facts = [fm.length ? ['주된 면접', CompanyCard.dots(fm.map(escapeHtml))] : null, df ? ['난이도', `<b>${escapeHtml(df[0])}</b>이 가장 많아요`] : null,
+      r.announce_days != null ? ['결과 발표', `보통 ${r.announce_days}일 뒤`] : null].filter(Boolean);
+    const often = !compact && (r.often || []).length ? `<p class="cc-sub">자주 나오는 예상 질문</p><ul class="cc-past">${r.often.slice(0, 3).map(x=>`<li>${escapeHtml(this.flat(x))}</li>`).join('')}</ul>` : '';
     const tid = p.talent && p.talent.id && /^[GH]\d/.test(p.talent.id) ? p.talent.id : '';
-    const acts = !compact && tid ? `<div class="cc-acts"><button type="button" class="cc-btn" onclick="QBrowse.open('${tid}')">후기 질문 ${r.questions ? r.questions.toLocaleString() + '개 ' : ''}골라 연습</button><button type="button" class="cc-btn" onclick="Debate.open('${tid}')">토론·PT 연습</button></div>` : '';
-    return `<div class="cc-row"><span class="cc-lbl">면접 후기</span><div><dl class="cc-facts cc-facts-top">${facts.map(([k, v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>${often}${acts}
-      <div class="cc-fine">${often ? '<p>질문은 후기를 다시 쓴 문장이고, 연습할 때는 AI가 자연스럽게 다듬어 물어요.</p>' : ''}<p>잡플래닛 면접 후기를 숫자로 모은 참고 정보예요. 지원자 기억이라 실제와 다를 수 있어요.</p></div></div></div>`;
+    const acts = !compact && tid ? `<div class="cc-acts"><button type="button" class="cc-btn" onclick="QBrowse.open('${tid}')">예상 질문 ${(()=>{ const o = (Debate.orgs || []).find(x=>x.talent_id === tid); return o && o.questions ? o.questions.toLocaleString() + '개 ' : ''; })()}골라 연습</button><button type="button" class="cc-btn" onclick="Debate.open('${tid}')">토론·PT 연습</button></div>` : '';
+    return `<div class="cc-row"><span class="cc-lbl">면접 정보</span><div>${facts.length ? `<dl class="cc-facts cc-facts-top">${facts.map(([k, v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>` : ''}${often}${acts}
+      <div class="cc-fine"><p>연습용 참고 정보예요. 연습할 때는 AI가 질문을 자연스럽게 다듬어 물어요. 공고·연도마다 다를 수 있어요.</p></div></div></div>`;
   },
   html(p, compact){
     const t = p.talent, pr = p.process || {}, f = this.flat;
@@ -12626,7 +12625,7 @@ const CompanyCard = {
       <div class="cc-row"><span class="cc-lbl">면접 전형</span>${st}</div>
       ${this.colHtml(p, compact)}
       ${this.reviewHtml(p, compact)}
-      <p class="cc-note">기업 맞춤 예상 질문은 이 인재상을 바탕으로 만든 연습용 질문이에요. 실제 기출 질문이 아니에요.</p></section>`;
+      <p class="cc-note">예상 질문은 연습용이에요. 실제 면접에서는 표현이 다를 수 있어요.</p></section>`;
   },
 };
 /** 2026-11-02y 지원 분야별 목표 직무 (직군 → 직무). 직접 입력도 됨 */
@@ -12699,6 +12698,7 @@ const PrepRoom = {
     const pack = c.companyId ? await CompanyData.pack(c.companyId) : null;
     try{ await DocBox.ensure(); }catch(_){}
     try{ await Inbody.ensure(); }catch(_){}
+    if(pack){ try{ await Debate.loadOrgs(); }catch(_){} }   // 2026-11-10 예상 질문 '모두 보기' 버튼용
     if(!document.getElementById('pr-body')) return;   // 그사이 다른 단계로 넘어감
     this.pack = pack;
     const items = [];
@@ -12779,7 +12779,6 @@ const PrepRoom = {
     return `<dl class="pr-ref">
       <dt>보는 것</dt><dd>${escapeHtml(it.co ? it.co.ev : (this.LOOK[it.type] || this.LOOK.general))}</dd>
       ${it.co ? `<dt>인재상</dt><dd>${tal}</dd>` : ''}
-      ${it.past ? `<dt>면접 기출</dt><dd class="pr-src">${escapeHtml(it.past.when)} 면접 후기${it.past.job ? ` · ${escapeHtml(it.past.job)}` : ''}<small>후기를 요약한 질문이에요</small></dd>` : ''}
       ${(()=>{ const ev = hallymEval(it.q); return ev ? `<dt>평가 요소</dt><dd><ol class="pr-flow">${ev.map(e=>`<li>${escapeHtml(e[0])}</li>`).join('')}</ol></dd>` : `<dt>구성</dt><dd><ol class="pr-flow">${info.check.map(k=>`<li>${escapeHtml(this.tx(k.label).replace(/\(.*?\)/g, ''))}</li>`).join('')}</ol></dd>`; })()}
       ${it.ib ? `<dt>내 이력</dt><dd class="pr-src">${escapeHtml(it.ib.why)}<small>마이페이지 커리어 인바디</small></dd><dt>답변 방향</dt><dd>${escapeHtml(it.ib.tip)}</dd>` : ''}
       ${it.doc ? `<dt>내 서류</dt><dd class="pr-src">“${escapeHtml(String(it.doc.src || '').slice(0, 180))}”<small>${it.doc.doc === 'cv' ? '이력서' : '자기소개서'}${it.doc.section && it.doc.doc !== 'cv' ? ` · ${escapeHtml(it.doc.section)}` : ''}</small></dd>${(it.doc.follow || []).length ? `<dt>이어질 질문</dt><dd><ul class="pr-fu">${it.doc.follow.map(f=>`<li>${escapeHtml(f)}</li>`).join('')}</ul></dd>` : ''}` : ''}
@@ -12790,20 +12789,21 @@ const PrepRoom = {
   },
   render(){
     const d = this.load(), all = this.items, done = all.filter(it=>d[it.id] && d[it.id].done).length;
-    const show = all.filter(it=>this.tab === 'all' || (this.tab === 'co' && it.grp === 'co') || (this.tab === 'past' && it.grp === 'past') || (this.tab === 'doc' && (it.grp === 'doc' || it.grp === 'ib')) || (this.tab === 'field' && (it.grp === 'field' || it.grp === 'base' || it.grp === 'role')) || (this.tab === 'common' && it.grp === 'common') || (this.tab === 'todo' && !(d[it.id] && d[it.id].done)));
+    const show = all.filter(it=>this.tab === 'all' || (this.tab === 'co' && (it.grp === 'co' || it.grp === 'past')) || (this.tab === 'doc' && (it.grp === 'doc' || it.grp === 'ib')) || (this.tab === 'field' && (it.grp === 'field' || it.grp === 'base' || it.grp === 'role')) || (this.tab === 'common' && it.grp === 'common') || (this.tab === 'todo' && !(d[it.id] && d[it.id].done)));
     const pack = this.pack, c = this._c;
-    const group = (g, title, note)=>{ const L = show.filter(it=>it.grp === g); if(!L.length) return '';
-      return `<section class="pr-sec"><h3>${title}<small>${note}</small></h3><div class="pr-list">${L.map(it=>this.card(it, all.indexOf(it) + 1, d[it.id] || {})).join('')}</div></section>`; };
+    const group = (g, title, note, extra)=>{ const G = [].concat(g), L = show.filter(it=>G.includes(it.grp)); if(!L.length) return '';
+      return `<section class="pr-sec"><h3>${title}<small>${note}</small></h3><div class="pr-list">${L.map(it=>this.card(it, all.indexOf(it) + 1, d[it.id] || {})).join('')}</div>${extra || ''}</section>`; };
+    const ro = pack && (Debate.orgs || []).find(o=>o.talent_id === pack.talent.id && o.questions > 0);
+    const more = ro ? `<button type="button" class="pr-moreq" onclick="QBrowse.open('${escapeHtml(ro.talent_id)}')">${escapeHtml(pack.talent.name)} 예상 질문 <b>${ro.questions.toLocaleString()}개</b> 모두 보기 · 골라서 답해 보기 →</button>` : '';
     document.getElementById('pr-body').innerHTML = `
       <h2 class="fl-h">질문 미리 연습</h2>
       <p class="fl-lead">본 면접에 나올 수 있는 질문이에요. 연습은 선택이라, 바로 '다음'으로 넘어가도 돼요.</p>
       <ol class="pr-how"><li><b>1</b>질문을 눌러 참고 보기</li><li><b>2</b>말할 거리 키워드 메모</li><li><b>3</b>소리 내어 시간 재기</li></ol>
       <div class="pr-tools">
-        <div class="pr-tabs" role="group" aria-label="질문 보기">${[['all','전체'],['co','기업 맞춤'],['past','면접 기출'],['doc','내 서류·이력'],['field', c.kind === 'major' ? '전공·경험' : '직무'],['common','공통'],['todo','남은 질문']].filter(([k])=>(k !== 'co' || pack) && (k !== 'past' || all.some(it=>it.grp === 'past')) && (k !== 'doc' || all.some(it=>it.grp === 'doc' || it.grp === 'ib'))).map(([k,l])=>`<button type="button" class="pr-tab" data-tab="${k}" aria-pressed="${this.tab === k}">${l}</button>`).join('')}</div>
+        <div class="pr-tabs" role="group" aria-label="질문 보기">${[['all','전체'],['co','기업 예상 질문'],['doc','내 서류·이력'],['field', c.kind === 'major' ? '전공·경험' : '직무'],['common','공통'],['todo','남은 질문']].filter(([k])=>(k !== 'co' || pack) && (k !== 'doc' || all.some(it=>it.grp === 'doc' || it.grp === 'ib'))).map(([k,l])=>`<button type="button" class="pr-tab" data-tab="${k}" aria-pressed="${this.tab === k}">${l}</button>`).join('')}</div>
         <div class="pr-bar"><span class="pr-cnt">연습 ${done}/${all.length}</span><div class="pr-prog"><i style="width:${all.length ? Math.round(done / all.length * 100) : 0}%"></i></div></div>
       </div>
-      ${group('co', pack ? `${escapeHtml(pack.talent.name)} 예상 질문` : '', '6개 중 2개 출제')}
-      ${group('past', pack ? `${escapeHtml(pack.talent.name)} 면접 기출` : '', `${PastQ.years(pack)} 면접 후기를 요약한 질문 · 본 면접에 1개 나올 수 있어요`)}
+      ${group(['co', 'past'], pack ? `${escapeHtml(pack.talent.name)} 예상 질문` : '', '본 면접에 2~3개 나올 수 있어요', more)}
       ${pack && show.some(it=>it.grp === 'co') ? `<details class="pr-co"><summary>${escapeHtml(pack.talent.name)} 인재상·면접 전형</summary>${CompanyCard.html(pack, false)}</details>` : ''}
       ${group('doc', '내 서류에서 나온 질문', '본 면접에 1~2개 나와요')}
       ${group('ib', '내 이력(인바디)에서 나올 질문', '마이페이지에 적은 학점·어학·자격·경험 기준')}
@@ -12813,7 +12813,7 @@ const PrepRoom = {
       ${group('field', c.kind === 'major' ? '전공·경험 질문' : `${escapeHtml(c.field.name)} 질문`, '난이도에 맞춰 일부 출제')}
       ${group('common', '공통 질문', '난이도에 맞춰 일부 출제')}
       ${!show.length ? '<p class="cc-load">남은 질문이 없어요. 모두 연습했어요!</p>' : ''}
-      <p class="pr-foot">${pack ? '예상 질문은 인재상을 바탕으로 만든 연습용 질문이에요(실제 기출 아님). ' : ''}${PastQ.list(pack).length ? '면접 기출은 실제 면접 후기를 요약한 질문이라 표현이 조금 다를 수 있어요. ' : ''}메모와 연습 기록은 내 계정에 저장돼 다른 기기에서도 이어서 볼 수 있어요.</p>`;
+      <p class="pr-foot">${pack ? '예상 질문은 연습용이라 실제 면접에서는 표현이 다를 수 있어요. ' : ''}메모와 연습 기록은 내 계정에 저장돼 다른 기기에서도 이어서 볼 수 있어요.</p>`;
     this.bind();
   },
   card(it, no, rec){
@@ -13897,7 +13897,7 @@ const StartFlow = {
     if(s.kind === 'major') return `<h2 class="fl-h">전공·경험 면접 준비</h2><p class="fl-lead">전공 시험이 아니라, 내 경험을 얼마나 깊이 이해하고 설명하는지 확인하는 면접이에요.</p>${this.vProfile()}${this.vExps('수강 과목·프로젝트·활동')}${this.vDocs()}${this.vSummary()}`;
     const j = s.job, f = this.field(j.field);
     return `<h2 class="fl-h">기업·직무 맞춤 면접 준비</h2><p class="fl-lead">기업 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vProfile()}
-    <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}${QBank.applies(x.id) ? '<em class="fl-qb-tag">후기 질문 8문항</em>' : ''}</span><span class="d">${escapeHtml((hallymRoles(x.id).length ? hallymRoles(x.id) : (x.roles||[])).slice(0,3).join('·'))} 외</span></button>`).join('')}</div></div>
+    <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}${QBank.applies(x.id) ? '<em class="fl-qb-tag">예상 질문 8문항</em>' : ''}</span><span class="d">${escapeHtml((hallymRoles(x.id).length ? hallymRoles(x.id) : (x.roles||[])).slice(0,3).join('·'))} 외</span></button>`).join('')}</div></div>
     <div class="fl-grid"><div class="fl-f"><label for="fl-company">목표 기업·기관 <span class="fl-opt">(선택)</span></label><div class="fl-co"><input id="fl-company" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fl-co-list" autocomplete="off" value="${escapeHtml(j.company)}" placeholder="이름으로 검색하거나 아래 목록에서 고르세요"><ul id="fl-co-list" class="fl-co-list" role="listbox" hidden></ul></div></div>
     <div class="fl-f"><label for="fl-role">목표 직무 <span class="req">*</span></label><input id="fl-role" list="fl-role-list" value="${escapeHtml(j.role)}" placeholder="아래에서 고르거나 직접 입력 (예: ${escapeHtml(hallymRoles(j.field)[0] || '영업')})"><datalist id="fl-role-list">${hallymRoles(j.field).map(r=>`<option value="${escapeHtml(r)}">`).join('')}</datalist></div>
     <div class="fl-f wide" id="fl-co-browse"></div>
@@ -13951,7 +13951,7 @@ const StartFlow = {
   vStart(){ const s = this.s, u = this.usedExps();
     const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${s.major.grade}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.role)}${s.job.post ? ' · 채용공고 반영' : ''}`;
     const qbOn = s.kind === 'job' && QBank.applies(s.job.field);
-    const co = s.kind === 'job' ? (qbOn ? (s.job.companyId ? `<b>${escapeHtml(s.job.company)}</b> · 이 회사 면접 후기 질문으로 출제 (부족하면 같은 ${QBank.FIELDS[s.job.field]} 질문)` : `선택 안 함 · ${QBank.FIELDS[s.job.field]} 전체 면접 후기 질문으로 출제`)
+    const co = s.kind === 'job' ? (qbOn ? (s.job.companyId ? `<b>${escapeHtml(s.job.company)}</b> · 이 회사 예상 질문으로 출제 (부족하면 같은 ${QBank.FIELDS[s.job.field]} 질문)` : `선택 안 함 · ${QBank.FIELDS[s.job.field]} 전체 예상 질문으로 출제`)
       : (s.job.companyId ? `<b>${escapeHtml(s.job.company)}</b> · 기업 맞춤 질문 2개 포함 (2·3번)` : escapeHtml(s.job.company ? s.job.company + ' (목록에 없어 직무 일반 질문)' : '선택 안 함 (직무 일반 질문)'))) : '';
     const qbLine = qbOn ? `<dt>질문</dt><dd>8개 · 직종 ${escapeHtml(s.job.jobcat || QBank.guessJob(s.job.role))}${s.job.eng ? ' · 영어 질문 1개 포함' : ''} · 꼬리질문 면접 전체 1~3개</dd>` : '';
     return `<h2 class="fl-h">이렇게 면접을 준비했어요</h2><p class="fl-lead">'다음'을 누르면 카메라·마이크를 점검하는 창으로 넘어가요.</p>
@@ -18743,7 +18743,7 @@ const Rubric = {
     // 실제 면접 후기에서 감점으로 이어졌다는 답 방식
     const rType = isFu ? rootType : type;
     const rflags = (g === 'ok' || g === 'short') ? REAL_IV.flags.filter(f=>f.types.test(rType) && f.re.test(text) && !f.unless(ctx)) : [];
-    rflags.forEach(f=>{ att -= 6; attNotes.unshift(f.note); });
+    rflags.forEach(f=>{ att -= 6; attNotes.unshift(String(f.note).replace(/^실제 면접 후기:\s*/, '')); });
     if(rflags.length && content.score) content.score = Math.max(20, content.score - Math.min(10, 5*rflags.length));
     xHits.forEach(x=>{ att -= 8; attNotes.unshift(x.n); });
     if(ctx.cons){
@@ -18818,7 +18818,7 @@ const Rubric = {
         S.push(`"${quote}"로 답을 마치면 면접관은 준비가 부족하다고 받아들여요.`);
         S.push('모를 때는 ① 솔직히 인정하고 ② 아는 범위의 한 가지라도 말한 뒤 ③ "면접 후 꼭 확인해 익히겠습니다"처럼 배우려는 자세를 덧붙이면 오히려 좋은 인상을 줄 수 있어요.');
         if(keyPoint) S.push(`이 질문의 핵심은 "${keyPoint}"예요.`);
-        S.push('실제 합격 후기에서도 "정확히는 모르지만 꼭 익히겠습니다"처럼 인정하고 배우겠다고 한 답이 좋게 평가됐어요.');
+        S.push('"정확히는 모르지만 꼭 익히겠습니다"처럼 인정하고 배우겠다고 하는 답이 좋게 평가받아요.');
         out.strengths = /(죄송|솔직)/.test(text) ? ['솔직하게 인정'] : [];
         out.improvements = ['아는 범위부터 말하기', '확인·학습 의지 덧붙이기'];
       }else if(g === 'confused'){
@@ -25580,7 +25580,7 @@ const PracticeKit = {
   /* ── ① 이 질문 다시 답하기 ── */
   openRetry(k, prefill){
     const o = typeof k === 'string' ? this.items.get(k) : k; if(!o) return; this.cur = o;
-    this.modal(this.head(o.title ? escapeHtml(o.title) : o.fresh ? (o.companyName ? escapeHtml(o.companyName) + ' · 후기 질문' : '후기 질문 연습') : '이 질문 다시 답하기', escapeHtml(o.q)) + `<div class="pk-b">
+    this.modal(this.head(o.title ? escapeHtml(o.title) : o.fresh ? (o.companyName ? escapeHtml(o.companyName) + ' · 예상 질문' : '예상 질문 연습') : '이 질문 다시 답하기', escapeHtml(o.q)) + `<div class="pk-b">
         ${o.answer ? `<details class="pk-prev"><summary>${escapeHtml(o.prevLabel || '이전 답변 보기')} ${o.score != null ? `<span class="pk-sc">${o.score}점</span>` : ''}</summary><p>${escapeHtml(o.answer)}</p>${o.feedback ? `<p class="pk-prev-fb"><b>그때 피드백</b> ${escapeHtml(this.fbBody(o.feedback))}</p>` : ''}</details>` : ''}
         <p class="pk-tip">${o.fresh ? '실제 면접이라고 생각하고 답해 보세요. 결론을 먼저 말하고 경험 하나를 붙이면 좋아요.' : '피드백에서 짚은 점을 넣어 다시 답해 보세요.'} <b>말로 답하거나 직접 써도</b> 돼요.</p>
         <textarea id="pk-ans" rows="6" placeholder="여기에 답변을 쓰거나, 아래 '말로 답하기'를 누르세요" autofocus>${escapeHtml(prefill || '')}</textarea>
@@ -26141,7 +26141,7 @@ const Finish10 = {
     const peek = n ? ['intro', 'motive'].map(k=>{ const c = AnswerNote.cur(k); return c ? `<details class="f10-peek"><summary>내 노트의 ${k === 'intro' ? '1분 자기소개' : '지원동기'} 먼저 보기</summary><p>${esc(c.a)}</p></details>` : ''; }).join('') : '';
     this.body(`<p class="f10-lead">면접장 들어가기 전, <b>10분 동안 4문항</b>을 실전처럼 말해 봐요. 질문을 목소리로 읽어 주고 시간을 재요. 시간이 끝나면 다음 질문으로 넘어가요.</p>
       <label class="dbt-sel f10-org"><span>목표 기관</span><select id="f10-org"><option value="">공통 질문으로</option>${s.orgs.map(o=>`<option value="${esc(o.talent_id)}"${o.talent_id === s.tid ? ' selected' : ''}>${esc(o.name)}</option>`).join('')}</select></label>
-      <ol class="f10-qs">${s.qs.map((x, i)=>`<li><span class="f10-no">${i + 1}</span><div><p>${esc(x.q)}</p><small>${x.sec}초${x.real ? ' · 실제 면접 후기 질문' : i > 1 ? ' · 공통 예상 질문' : ''}</small></div></li>`).join('')}</ol>
+      <ol class="f10-qs">${s.qs.map((x, i)=>`<li><span class="f10-no">${i + 1}</span><div><p>${esc(x.q)}</p><small>${x.sec}초${x.real ? ' · 기관 예상 질문' : i > 1 ? ' · 공통 예상 질문' : ''}</small></div></li>`).join('')}</ol>
       ${peek}
       <p class="hx-fine">마이크를 허용하면 말한 내용이 글로 받아써져요. 직접 써도 돼요.</p>`);
     this.foot(`<button type="button" class="pk-btn ghost" onclick="Finish10.stop();PracticeKit.close()">닫기</button><button type="button" class="pk-btn" onclick="Finish10.reroll()">↻ 다른 질문</button><button type="button" class="pk-btn pri" onclick="Finish10.run(0)">▶ 시작하기</button>`);
@@ -26617,12 +26617,12 @@ const OrgSheet = {
     return `<header class="os-h"><div><small>목표 기관 한 장 요약${dd ? ` · 면접 ${esc(dd)}` : ''}</small><h2>${esc(t.name)}</h2>${t.category ? `<span>${esc(t.category)}</span>` : ''}</div></header>
       <section><h3>인재상</h3>${kws.length ? `<p class="os-kw">${kws.map(k=>`<i>${esc(k)}</i>`).join('')}</p>` : '<p class="os-dim">공식 인재상 자료가 없어요. 공공기관 공통 가치(공정·책임·소통)로 준비하세요.</p>'}${t.summary && kws.length ? `<p class="os-dim">${esc(f(t.summary))}</p>` : ''}</section>
       <section><h3>면접 전형</h3>${stages.length ? `<p>${stages.map(esc).join(' → ')}</p>` : '<p class="os-dim">공식 전형 정보가 없어요.</p>'}${(pr.interview_types || []).length ? `<p class="os-dim">면접 유형: ${pr.interview_types.map(esc).join(' · ')}</p>` : ''}
-        ${rv.reviews >= 3 ? `<p class="os-dim">면접 후기 ${rv.reviews.toLocaleString()}건 기준${fm.length ? ` · 주된 면접 ${fm.map(esc).join('·')}` : ''}${(rv.difficulty || [])[0] ? ` · 난이도 '${esc(rv.difficulty[0][0])}'가 가장 많음` : ''}${rv.announce_days != null ? ` · 결과 발표 보통 ${rv.announce_days}일 뒤` : ''}</p>` : ''}</section>
-      <section><h3>자주 나온 질문 ${top.length ? `TOP ${top.length}` : ''}</h3>${top.length ? `<ol class="os-q">${top.map(x=>`<li><span>${esc(x.k)}</span>${esc(x.q)}</li>`).join('')}</ol>` : often.length ? `<ol class="os-q">${often.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>` : '<p class="os-dim">후기 질문이 없어요.</p>'}</section>
+        ${rv.reviews >= 3 ? `<p class="os-dim">참고${fm.length ? ` · 주된 면접 ${fm.map(esc).join('·')}` : ''}${(rv.difficulty || [])[0] ? ` · 난이도 '${esc(rv.difficulty[0][0])}'가 가장 많음` : ''}${rv.announce_days != null ? ` · 결과 발표 보통 ${rv.announce_days}일 뒤` : ''}</p>` : ''}</section>
+      <section><h3>자주 나오는 예상 질문 ${top.length ? `TOP ${top.length}` : ''}</h3>${top.length ? `<ol class="os-q">${top.map(x=>`<li><span>${esc(x.k)}</span>${esc(x.q)}</li>`).join('')}</ol>` : often.length ? `<ol class="os-q">${often.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>` : '<p class="os-dim">예상 질문이 없어요.</p>'}</section>
       ${topics.length ? `<section><h3>토론·발표 주제 예시</h3><ul class="os-t">${topics.slice(0, 3).map(q=>`<li>${esc(q)}</li>`).join('')}</ul></section>` : ''}
       <section><h3>내 답 핵심</h3>${motive ? `<p><b>지원동기</b> ${esc(motive.a.slice(0, 220))}${motive.a.length > 220 ? '…' : ''}</p>` : '<p class="os-dim">답변 노트에 지원동기가 없어요. 10분 마무리로 먼저 말해 보세요.</p>'}${intro ? `<p><b>1분 자기소개 핵심 문장</b> ${esc((()=>{ const S = intro.a.split(/([.!?。])\s+/).reduce((acc, x, i, arr)=>{ if(i % 2 === 0) acc.push(x + (arr[i + 1] || '')); return acc; }, []).map(x=>x.trim()).filter(Boolean); const first = S.find(x=>x.length >= 15 && !/^안녕하(세요|십니까)/.test(x)) || S[0] || intro.a; return first.slice(0, 140); })())}</p>` : ''}</section>
       ${checks.length ? `<section><h3>당일 점검</h3><ul class="os-c">${checks.map(c=>`<li>☐ ${esc(c)}</li>`).join('')}</ul></section>` : ''}
-      <p class="os-fine">인재상·전형은 공개 자료, 질문·숫자는 실제 면접 후기를 다시 쓰고 모은 참고 정보예요. 최신 채용 공고도 함께 확인하세요.</p>`;
+      <p class="os-fine">인재상·전형은 공개 자료, 예상 질문과 숫자는 연습용 참고 정보예요. 최신 채용 공고도 함께 확인하세요.</p>`;
   },
   print(){
     if(!this.html) return; const w = window.open('', '_blank'); if(!w) return showToast('팝업이 막혀 있어요. 주소창 오른쪽에서 팝업을 허용한 뒤 다시 눌러 주세요.', 'warn');
@@ -26660,7 +26660,7 @@ const Debate = {
   renderHome(){
     const box = document.getElementById('dbt-card'); if(!box) return;
     box.innerHTML = `<div class="d3-panel-head"><h3 class="d3-panel-title">토론·토의·발표 면접 연습</h3></div>
-      <p class="hx-lead">공공기관 면접에 자주 나오는 토론·토의·발표 면접을 연습해요. 실제 후기에 나온 주제로 <b>준비 → 말하기 → AI 반론·다른 지원자 의견 → 다시 말하기 → 피드백</b> 순서예요.</p>
+      <p class="hx-lead">공공기관 면접에 자주 나오는 토론·토의·발표 면접을 연습해요. 예상 주제로 <b>준비 → 말하기 → AI 반론·다른 지원자 의견 → 다시 말하기 → 피드백</b> 순서예요.</p>
       <div class="hx-acts"><button type="button" class="d3-btn d3-btn-primary" onclick="navGo('debate')">토론 연습 시작하기</button></div><p class="hx-last" id="dbt-last"></p>`;
     this.loadLast();
   },
@@ -26740,7 +26740,7 @@ const Debate = {
     if(s.kind !== 'pt' && pool.some(t=>!t.pt)) pool = pool.filter(t=>!t.pt);   // 토론·토의를 고르면 발표 주제는 빼고
     let x = Math.floor(s.seed * 1e6); pool.sort((a, b)=>(s.kind === 'pt' ? (b.pt - a.pt) : 0) || ((a.id.charCodeAt(a.id.length - 1) * 31 + x) % 97) - ((b.id.charCodeAt(b.id.length - 1) * 31 + x) % 97));   // 발표를 고르면 발표 주제 먼저
     const list = pool.slice(0, 8);
-    const note = s.tid && !mine.length ? `<p class="dbt-note">${me && me.grp === '병원' ? `${escapeHtml(me.name)} 등 병원 면접 후기에는 토론·발표 주제가 거의 없어요. 병원은 인성·직무 면접 위주라, 이 연습은 공공기관을 준비할 때 더 도움이 돼요. 아래는 공공기관 주제예요.` : `${escapeHtml(me ? me.name : '고른 기관')}은 토론·발표 주제 후기가 아직 없어서, 다른 공공기관 주제를 보여 드려요.`}</p>` : '';
+    const note = s.tid && !mine.length ? `<p class="dbt-note">${me && me.grp === '병원' ? `${escapeHtml(me.name)} 등 병원 면접에는 토론·발표 주제가 거의 없어요. 병원은 인성·직무 면접 위주라, 이 연습은 공공기관을 준비할 때 더 도움이 돼요. 아래는 공공기관 주제예요.` : `${escapeHtml(me ? me.name : '고른 기관')}은 토론·발표 주제 후기가 아직 없어서, 다른 공공기관 주제를 보여 드려요.`}</p>` : '';
     const how = {
       debate: '<b>토론</b> — 입장(찬성·반대)을 정하고 <b>입장 → 이유 두 가지 → 예시</b> 순서로 1분 안팎 말해요. 끝나면 AI가 반대 입장에서 반론을 해요.',
       group: '<b>토의</b> — 다른 지원자 3명(AI)과 함께 <b>해결 방안을 하나로 정하는</b> 면접이에요. 다른 사람 의견을 짚으며 내 의견을 말하고, 마지막에 의견을 모아 정리해요. 이기는 것보다 <b>잘 듣고 잘 모으는 것</b>이 점수예요.',
@@ -26892,7 +26892,7 @@ const Debate = {
       ${(d.improvements || []).length ? `<div class="pk-fb"><b>고칠 점</b><ul>${d.improvements.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>` : ''}
       ${d.better_start ? `<div class="dbt-ex"><b>이렇게 시작해 보세요</b><p>${escapeHtml(d.better_start)}</p></div>` : ''}
       <details class="dbt-log"><summary>${s.kind === 'group' ? '토의 내용 다시 보기' : `내 발언과 ${pt ? '질문' : '반론'} 다시 보기`}</summary><dl>${s.rounds.map(r=>`<dt>${r.role === 'ai' ? (s.kind === 'group' ? escapeHtml(r.who || '다른 지원자') : pt ? '면접관 질문' : 'AI 반론') : '나'}</dt><dd>${escapeHtml(r.text)}</dd>`).join('')}</dl></details>
-      <p class="hx-fine">AI 피드백은 연습용 참고예요. 주제는 면접 후기를 다시 쓴 문장이에요.</p>`);
+      <p class="hx-fine">AI 피드백은 연습용 참고예요. 주제는 연습용 예상 주제예요.</p>`);
     this.foot(`${this.closeBtn()}<button type="button" class="pk-btn" onclick="Debate.pickView()">다른 주제</button>${s.topic.id ? `<button type="button" class="pk-btn pri" onclick="Debate.prep('${s.topic.id}')">같은 주제 다시</button>` : ''}`);
     if(old) return;
     sb.from('debate_practice').insert({ talent_id: s.topic.tid || null, org: s.topic.org, kind: s.kind, topic: s.topic.q.slice(0, 300), rounds: s.rounds, feedback: d, score: d.score })
@@ -26909,28 +26909,26 @@ const QBrowse = {
   ORDER: ['경험·역량', '인성·가치관', '상황대처', '직무·전공지식', '기업·산업', '지원동기', '입사후포부', '시사·이슈', '자기소개', '마무리', '영어'],
   renderHome(){
     const box = document.getElementById('qbr-card'); if(!box) return;
-    box.innerHTML = `<div class="d3-panel-head"><h3 class="d3-panel-title">기관별 후기 질문</h3></div>
-      <p class="hx-lead">강원권 병원과 원주 공공기관 등 <b>17곳</b>의 면접 후기에 나온 질문을 유형별로 보고, 골라서 바로 답해 볼 수 있어요.</p>
-      <div class="hx-acts"><button type="button" class="d3-btn d3-btn-primary" onclick="QBrowse.open()">기관 고르기</button></div>`;
+    box.innerHTML = '';
   },
   body(html){ const b = document.getElementById('qbr-b'); if(b) b.innerHTML = html; return b; },
   async open(tid){
     Debate.stopTimer();
-    PracticeKit.modal(PracticeKit.head('기관별 후기 질문', '기관 고르기') + `<div class="pk-b" id="qbr-b"><div class="pk-wait"><i></i>불러오고 있어요</div></div><footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button></footer>`, 'wide');
+    PracticeKit.modal(PracticeKit.head('예상 질문', '불러오는 중') + `<div class="pk-b" id="qbr-b"><div class="pk-wait"><i></i>불러오고 있어요</div></div><footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button></footer>`, 'wide');
     try{ await Debate.loadOrgs(); }catch(e){ this.body(`<p class="pk-tip">기관 목록을 불러오지 못했어요. (${escapeHtml(e.message || e)})</p>`); return; }
     if(tid) return this.list(tid);
     this.pick();
   },
   title(t){ const h = document.querySelector('#pk-modal .pk-h h3'); if(h) h.textContent = t; },
   pick(){
-    this.title('기관 고르기');
+    this.title('예상 질문 · 기관 고르기');
     const os = (Debate.orgs || []).filter(o=>o.questions > 0), grp = g=>os.filter(o=>(g === '병원') === (o.grp === '병원'));
     const sec = (t, L)=>L.length ? `<h4 class="qbr-h">${t}</h4><ul class="qbr-orgs">${L.map(o=>`<li><button type="button" onclick="QBrowse.list('${escapeHtml(o.talent_id)}')"><b>${escapeHtml(o.name)}</b><span>${o.questions.toLocaleString()}개</span></button></li>`).join('')}</ul>` : '';
     this.body(sec('병원', grp('병원')) + sec('공공기관', grp('공기업')));
   },
   async list(tid){
     const o = (Debate.orgs || []).find(x=>x.talent_id === tid) || { talent_id: tid, name: '', grp: '' };
-    this.title(o.name || '후기 질문');
+    this.title(o.name ? o.name + ' 예상 질문' : '예상 질문');
     if(!this.cache.has(tid)){
       this.body('<div class="pk-wait"><i></i>질문을 불러오고 있어요</div>');
       const { data, error } = await sb.rpc('list_review_questions', { p_talent_id: tid, p_debate: false });
@@ -26943,11 +26941,11 @@ const QBrowse = {
     this.st.org = o;
     const st = this.st, kw = st.q.trim();
     const L = all.filter(r=>r.qtype === st.type && (!kw || String(r.question).includes(kw)));
-    this.body(`<div class="qbr-top"><button type="button" class="qbr-back" onclick="QBrowse.pick()">← 기관 목록</button><input type="search" id="qbr-q" placeholder="낱말로 찾기 (예: 갈등, 민원)" value="${escapeHtml(st.q)}"></div>
+    this.body(`<div class="qbr-top"><input type="search" id="qbr-q" placeholder="낱말로 찾기 (예: 갈등, 민원)" value="${escapeHtml(st.q)}"></div>
       <div class="qbr-tabs" role="tablist">${types.map(t=>`<button type="button" role="tab" aria-selected="${t === st.type}" class="${t === st.type ? 'on' : ''}" onclick="QBrowse.tab('${t}')">${escapeHtml(t)} <small>${cnt[t]}</small></button>`).join('')}</div>
-      ${L.length ? `<ul class="qbr-list">${L.slice(0, st.shown).map(r=>`<li><p>${escapeHtml(r.question)}</p><div class="qbr-meta">${r.job_detail ? `<span class="qbr-tag">${escapeHtml(r.job_detail)}</span>` : ''}${r.year ? `<span>${r.year}년 후기</span>` : ''}<button type="button" class="pk-btn sm" onclick="QBrowse.practice('${escapeHtml(r.id)}')">답해 보기</button></div></li>`).join('')}</ul>
+      ${L.length ? `<ul class="qbr-list">${L.slice(0, st.shown).map(r=>`<li><p>${escapeHtml(r.question)}</p><div class="qbr-meta">${r.job_detail ? `<span class="qbr-tag">${escapeHtml(r.job_detail)}</span>` : ''}<button type="button" class="pk-btn sm" onclick="QBrowse.practice('${escapeHtml(r.id)}')">답해 보기</button></div></li>`).join('')}</ul>
         ${L.length > st.shown ? `<button type="button" class="pk-btn qbr-more" onclick="QBrowse.more()">더 보기 (${L.length - st.shown}개 남음)</button>` : ''}` : '<p class="pk-tip">찾는 질문이 없어요.</p>'}
-      <p class="hx-fine">면접 후기에 나온 질문을 뜻만 살려 다시 쓴 문장이에요. 실제 면접에서는 표현이 다를 수 있어요.</p>`);
+      <p class="hx-fine">연습용 예상 질문이에요. 실제 면접에서는 표현이 다를 수 있어요.</p>`);
     const qi = document.getElementById('qbr-q'); if(qi) qi.oninput = ()=>{ clearTimeout(this._k); this._k = setTimeout(()=>{ const p = qi.selectionStart; st.q = qi.value; st.shown = 20; this.list(tid).then(()=>{ const n = document.getElementById('qbr-q'); if(n){ n.focus(); try{ n.setSelectionRange(p, p); }catch(_){} } }); }, 250); };
   },
   tab(t){ this.st.type = t; this.st.shown = 20; this.list(this.st.tid); },
@@ -27376,7 +27374,7 @@ const QBank = {
   /** 면접 준비 창 '맞춤 준비' 칸: 직종 고르기 + 영어 질문 */
   prepHtml(j){
     if(!this.applies(j.field)) return `<div class="fl-f wide fl-qb off" id="fl-qb">
-      <p class="fl-qb-off"><b>직종 고르기 · 영어 질문 1개 넣기</b>는 실제 면접 후기 질문(8문항)을 쓰는 <b>대기업·중견기업</b>, <b>공공기관·공기업</b>, <b>병원·의료</b> 분야에서 쓸 수 있어요. 지금 고른 분야는 지금까지처럼 분야별 기본 질문으로 진행해요.</p>
+      <p class="fl-qb-off"><b>직종 고르기 · 영어 질문 1개 넣기</b>는 예상 질문(8문항)을 쓰는 <b>대기업·중견기업</b>, <b>공공기관·공기업</b>, <b>병원·의료</b> 분야에서 쓸 수 있어요. 지금 고른 분야는 지금까지처럼 분야별 기본 질문으로 진행해요.</p>
       <div class="fl-qb-go"><button type="button" class="btn btn-outline" data-qbfield="corp">대기업·중견기업으로 바꾸기</button><button type="button" class="btn btn-outline" data-qbfield="pubcorp">공공기관·공기업으로 바꾸기</button></div></div>`;
     const cur = j.jobcat || this.guessJob(j.role);
     return `<div class="fl-f wide fl-qb" id="fl-qb">
@@ -27384,7 +27382,7 @@ const QBank = {
         <select id="fl-jobcat">${QB_JOBS.map(x=>`<option value="${escapeHtml(x)}" ${x === cur ? 'selected' : ''}>${escapeHtml(x)}</option>`).join('')}</select>
         <span class="fl-sub" id="fl-jobcat-hint">${j.jobPicked ? '직접 고른 직종으로 질문을 골라요' : '목표 직무에 맞춰 골라 두었어요. 바꿔도 돼요'}</span></div>
       <label class="fl-eng"><input type="checkbox" id="fl-eng" ${j.eng ? 'checked' : ''}><span><b>영어 질문 1개 넣기</b><small>실제 면접처럼 영어로 묻는 질문이 1개 나와요. 그 질문은 영어로 답하고, 음성 인식도 영어로 바뀌어요.</small></span></label>
-      <p class="fl-qb-note"><b>질문 8개</b> · 자기소개 → 지원동기 → 경험·역량 2 → ${j.eng ? '영어' : '인성·가치관'} → 직무·전공지식 → ${j.companyId ? '기업·산업' : '직무·전공지식'} → 마무리. 실제 면접 후기에서 모은 질문을 AI가 다듬어서 물어요.</p>
+      <p class="fl-qb-note"><b>질문 8개</b> · 자기소개 → 지원동기 → 경험·역량 2 → ${j.eng ? '영어' : '인성·가치관'} → 직무·전공지식 → ${j.companyId ? '기업·산업' : '직무·전공지식'} → 마무리. 예상 질문을 AI가 자연스럽게 다듬어서 물어요.</p>
     </div>`;
   },
   bindPrep(s){
