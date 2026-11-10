@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-10f';
+var APP_VERSION = '2026-11-10g';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6562,24 +6562,25 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
 .sg-wrap{width:min(560px,100%);display:grid;gap:12px;align-self:flex-start;} .sg-main{min-width:0;} .sg-wrap .sg-box{width:100%;box-sizing:border-box;}
 .sg-start{display:grid;gap:8px;}
 .sg-ov.vid .sg-wrap{width:min(1120px,100%);grid-template-columns:minmax(0,1.25fr) minmax(320px,1fr);align-items:start;}
-.sg-vid{position:sticky;top:0;z-index:2;border-radius:18px;overflow:hidden;background:#0f141d;aspect-ratio:4/3;} .sg-vid[hidden]{display:none;}
-#sg-remote{width:100%;height:100%;object-fit:contain;display:block;background:#0f141d;}
-#sg-local{position:absolute;right:10px;bottom:10px;width:28%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:2px solid rgba(255,255,255,.75);transform:scaleX(-1);background:#222;} #sg-local[hidden]{display:none;}
+.sg-vid{position:sticky;top:0;z-index:2;border-radius:18px;overflow:hidden;background:#0f141d;height:calc(100vh - 40px);display:grid;grid-template-rows:1fr 1fr;gap:4px;} .sg-vid[hidden]{display:none;}
+.sv-tile{position:relative;min-width:0;min-height:0;overflow:hidden;background:#000;}
+.sv-tile video{width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block;}
+#sv-local,#sg-local{transform:scaleX(-1);} #sg-local[hidden]{display:none;}
+.sv-tag{position:absolute;left:10px;bottom:10px;z-index:1;font-size:12.5px;font-weight:700;color:#fff;border-radius:8px;padding:3px 9px;background:rgba(0,0,0,.55);}
 .sg-vw{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;padding:16px;color:#fff;background:#151c28;} .sg-vw[hidden]{display:none;} .sg-vw b{font-size:16px;} .sg-vw span{font-size:13px;color:#C9D1DE;line-height:1.6;max-width:360px;}
-.sg-vst{position:absolute;left:10px;top:10px;font-size:12px;font-weight:700;color:#fff;border-radius:999px;padding:3px 10px;background:rgba(0,0,0,.55);} .sg-vst.on{background:#1f7a45;} .sg-vst.warn{background:#9a6a12;} .sg-vst.bad{background:#b3261e;}
-@media(max-width:820px){ .sg-ov.vid{padding-top:0;} .sg-ov.vid .sg-wrap{grid-template-columns:1fr;} .sg-vid{aspect-ratio:auto;height:36vh;border-radius:0 0 16px 16px;margin:0 -14px;} }
+.sg-vst{position:absolute;left:10px;top:10px;z-index:3;font-size:12px;font-weight:700;color:#fff;border-radius:999px;padding:3px 10px;background:rgba(0,0,0,.55);} .sg-vst.on{background:#1f7a45;} .sg-vst.warn{background:#9a6a12;} .sg-vst.bad{background:#b3261e;}
+@media(max-width:820px){ .sg-ov.vid{padding-top:0;} .sg-ov.vid .sg-wrap{grid-template-columns:1fr;} .sg-vid{height:40vh;grid-template-rows:none;grid-template-columns:1fr 1fr;border-radius:0 0 16px 16px;margin:0 -14px;} }
 html.sv-open{overflow:hidden;}
 .sv-ov{position:fixed;inset:0;z-index:6100;background:#0f141d;color:#fff;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));}
 .sv-top{display:flex;align-items:center;gap:10px;} .sv-top b{font-size:16px;}
 .sv-st{font-size:12.5px;font-weight:700;border-radius:999px;padding:3px 10px;background:rgba(255,255,255,.14);} .sv-st.on{background:#1f7a45;} .sv-st.warn{background:#9a6a12;} .sv-st.bad{background:#b3261e;}
 .sv-end{margin-left:auto;border:0;border-radius:10px;background:#d93a2b;color:#fff;font:inherit;font-weight:800;font-size:14px;padding:9px 18px;cursor:pointer;}
-.sv-stage{position:relative;border-radius:16px;overflow:hidden;background:#000;min-height:0;}
-#sv-remote{width:100%;height:100%;object-fit:contain;display:block;background:#000;}
-#sv-local{position:absolute;right:12px;bottom:12px;width:min(24%,220px);aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:2px solid rgba(255,255,255,.75);transform:scaleX(-1);background:#222;}
+.sv-stage{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;} .sv-stage .sv-tile{border-radius:16px;}
+@media(orientation:portrait){ .sv-stage{grid-template-columns:none;grid-template-rows:1fr 1fr;} }
 .sv-wait{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;text-align:center;padding:20px;background:#151c28;} .sv-wait[hidden]{display:none;} .sv-wait b{font-size:19px;} .sv-wait p{margin:0;max-width:440px;font-size:14px;line-height:1.65;color:#C9D1DE;}
 .sv-q{background:#fff;color:#172033;border-radius:14px;padding:12px 16px;} .sv-q small{font-size:12px;color:#c8441c;font-weight:700;} .sv-q p{margin:2px 0 0;font-size:18px;font-weight:800;line-height:1.45;}
 .sv-ctl{display:flex;gap:8px;justify-content:center;} .sv-ctl button{min-height:46px;flex:0 1 210px;border:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font:inherit;font-weight:700;font-size:14.5px;cursor:pointer;} .sv-ctl button.off{background:#b3261e;}
-@media(max-width:640px){ .sv-q p{font-size:16px;} #sv-local{width:32%;} .sv-top b{font-size:15px;} }
+@media(max-width:640px){ .sv-q p{font-size:16px;} .sv-top b{font-size:15px;} }
 .os-doc{display:grid;gap:0;}
 /* 2026-11-10 D-day 창: 전날·당일·다녀온 뒤 */
 .dd-lead{margin:0 0 10px;font-size:14px;color:#4A5466;line-height:1.6;}
@@ -26468,7 +26469,7 @@ const StudyHost = {
     let ov = document.getElementById('sv-ov'); if(!ov){ ov = document.createElement('div'); ov.id = 'sv-ov'; ov.className = 'sv-ov'; document.body.appendChild(ov); }
     document.documentElement.classList.add('sv-open');
     ov.innerHTML = `<div class="sv-top"><b>친구와 영상 연습</b><span class="sv-st" id="sv-st">카메라 켜는 중…</span><button type="button" class="sv-end" onclick="StudyHost.end()">끝내기</button></div>
-      <div class="sv-stage"><video id="sv-remote" autoplay playsinline></video><div class="sv-wait" id="sv-wait"><b>친구를 기다리고 있어요</b><p>친구가 보낸 링크를 열고 <b>'영상으로 함께하기'</b>를 누르면 자동으로 연결돼요.</p><button type="button" class="pk-btn" onclick="Study.copy('${s.token}')">링크 다시 복사</button></div><video id="sv-local" autoplay playsinline muted></video></div>
+      <div class="sv-stage"><div class="sv-tile"><video id="sv-remote" autoplay playsinline></video><div class="sv-wait" id="sv-wait"><b>친구를 기다리고 있어요</b><p>친구가 보낸 링크를 열고 <b>'영상으로 함께하기'</b>를 누르면 자동으로 연결돼요.</p><button type="button" class="pk-btn" onclick="Study.copy('${s.token}')">링크 다시 복사</button></div><span class="sv-tag" id="sv-who">면접관 · 친구</span></div><div class="sv-tile"><video id="sv-local" autoplay playsinline muted></video><span class="sv-tag">나 (면접자)</span></div></div>
       <div class="sv-q" id="sv-q"><small>친구가 질문을 읽어 줄 거예요</small><p>${escapeHtml((s.questions || [])[0] || '')}</p></div>
       <div class="sv-ctl"><button type="button" id="sv-mic" onclick="StudyHost.toggle('audio')">🎙 마이크 끄기</button><button type="button" id="sv-cam" onclick="StudyHost.toggle('video')">📷 카메라 끄기</button></div>`;
     const m = await studyMedia(); const st = document.getElementById('sv-st'); if(!st) return;
@@ -26478,7 +26479,7 @@ const StudyHost = {
     this.call = new StudyCall(s.token, 'host', {
       onRemote: ms=>{ const v = document.getElementById('sv-remote'); if(v && v.srcObject !== ms){ v.srcObject = ms; v.play && v.play().catch(()=>{}); } const w = document.getElementById('sv-wait'); if(w && ms.getVideoTracks().length) w.hidden = true; },
       onState: x=>this.state(x),
-      onMsg: p=>{ if(p.t === 'q') this.showQ(p.i, p.n, p.text); else if(p.t === 'done') this.showQ(-1); else if(p.t === 'bye') this.state('bye'); },
+      onMsg: p=>{ if(p.who){ const w = document.getElementById('sv-who'); if(w) w.textContent = '면접관 · ' + String(p.who).slice(0, 20); } if(p.t === 'q') this.showQ(p.i, p.n, p.text); else if(p.t === 'done') this.showQ(-1); else if(p.t === 'bye') this.state('bye'); },
     });
     try{ await this.call.join(m.stream); this.state('waiting'); }catch(e){ this.state('error', e.message); }
   },
@@ -26521,7 +26522,7 @@ const StudyGuest = {
     const nm = document.getElementById('sg-name'); if(nm) this.rater = nm.value.trim();
     const n = escapeHtml(this.d.name || '친구'), ov = document.getElementById('sg-ov'), v = document.getElementById('sg-vid'); if(!v) return this.q(0);
     ov.classList.add('vid'); v.hidden = false;
-    v.innerHTML = `<video id="sg-remote" autoplay playsinline></video><div class="sg-vw" id="sg-vw"><b>${n} 님을 기다리는 중</b><span>${n} 님이 '친구와 함께 연습'에서 <b>📹 영상으로 시작</b>을 누르면 바로 연결돼요. 기다리는 동안 질문을 먼저 봐도 돼요.</span></div><video id="sg-local" autoplay playsinline muted></video><span class="sg-vst" id="sg-vst">카메라 켜는 중…</span>`;
+    v.innerHTML = `<div class="sv-tile"><video id="sg-remote" autoplay playsinline></video><div class="sg-vw" id="sg-vw"><b>${n} 님을 기다리는 중</b><span>${n} 님이 '친구와 함께 연습'에서 <b>📹 영상으로 시작</b>을 누르면 바로 연결돼요. 기다리는 동안 질문을 먼저 봐도 돼요.</span></div><span class="sv-tag">면접자 · ${n}</span></div><div class="sv-tile"><video id="sg-local" autoplay playsinline muted></video><span class="sv-tag">나 (면접관)</span></div><span class="sg-vst" id="sg-vst">카메라 켜는 중…</span>`;
     this.q(0);
     const m = await studyMedia(); const lv = document.getElementById('sg-local');
     if(lv){ if(m.stream) lv.srcObject = m.stream; else lv.hidden = true; }
@@ -26542,7 +26543,7 @@ const StudyGuest = {
     if(x === 'failed' && w){ w.hidden = false; w.innerHTML = `<b>영상 연결이 되지 않았어요</b><span>학교·회사 와이파이에서는 막힐 수 있어요. 휴대폰 데이터(LTE)로 바꾸거나 다른 영상통화를 켜고 진행해 주세요. 점수 매기기는 그대로 돼요.</span><button type="button" class="sg-say" onclick="StudyGuest.call && StudyGuest.call.retry()">다시 연결</button>`; }
     if(x === 'bye' && w){ w.hidden = false; w.innerHTML = `<b>${n} 님이 영상을 껐어요</b><span>점수 매기기는 그대로 이어서 할 수 있어요.</span>`; }
   },
-  sendQ(){ const Q = this.d && this.d.questions || []; if(this.call && Q[this.i] != null) this.call.send({ t: 'q', i: this.i, n: Q.length, text: Q[this.i] }); },
+  sendQ(){ const Q = this.d && this.d.questions || []; if(this.call && Q[this.i] != null) this.call.send({ t: 'q', i: this.i, n: Q.length, text: Q[this.i], who: this.rater || '' }); },
   q(i){
     const nm = document.getElementById('sg-name'); if(nm) this.rater = nm.value.trim();
     this.save(); this.i = i; clearInterval(this._tm);
