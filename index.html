@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-09n';
+var APP_VERSION = '2026-11-10a';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6453,6 +6453,20 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
 .hm-mode.hm-debate:active i, .hm-mode.hm-debate[aria-pressed="true"] i{color:#c8441c;}
 .hm-mode.hm-debate[aria-pressed="true"]::after{background:#fff;color:#c8441c;}
 .hm-mode.hm-debate:focus-visible{outline:3px solid rgba(200,68,28,.5);outline-offset:2px;}
+/* 2026-11-10 토론 실전처럼: 목소리 읽기·말할 시간 */
+.dbt-real{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1.5px solid #F2D2C4;background:#FFF7F3;border-radius:12px;cursor:pointer;}
+.dbt-real input{margin-top:3px;width:18px;height:18px;accent-color:#c8441c;flex:none;}
+.dbt-real b{display:block;font-size:14px;color:#172033;} .dbt-real small{display:block;font-size:12.5px;color:#6B7485;line-height:1.55;margin-top:2px;}
+.dbt-live{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:#F1F5FF;color:#2346A0;font-size:14px;min-height:44px;}
+.dbt-live .pk-btn{margin-left:auto;}
+.dbt-live.tm{display:grid;grid-template-columns:auto auto 1fr;gap:6px 10px;background:#F4F6FA;color:#4A5466;}
+.dbt-live.tm b{font-size:26px;color:#1c2a44;font-variant-numeric:tabular-nums;} .dbt-live.tm i{height:8px;border-radius:4px;background:#E3E7EE;overflow:hidden;} .dbt-live.tm em{display:block;height:100%;width:0;background:#1c2a44;transition:width 1s linear;}
+.dbt-live.tm.warn b{color:#c8441c;} .dbt-live.tm.warn em{background:#c8441c;} .dbt-live.tm.warn{background:#FFF2EC;}
+.dbt-wave{display:inline-flex;align-items:flex-end;gap:3px;height:16px;} .dbt-wave i{width:4px;background:#2346A0;border-radius:2px;animation:dbtWave .9s ease-in-out infinite;} .dbt-wave i:nth-child(2){animation-delay:.15s;} .dbt-wave i:nth-child(3){animation-delay:.3s;}
+@keyframes dbtWave{0%,100%{height:5px;}50%{height:16px;}}
+.dbt-mem.speaking > div, .dbt-ai.speaking{box-shadow:0 0 0 3px rgba(35,70,160,.25);border-color:#2346A0;}
+.dbt-mem.speaking .dbt-av{box-shadow:0 0 0 3px rgba(35,70,160,.3);}
+@media (prefers-reduced-motion: reduce){ .dbt-wave i{animation:none;height:10px;} }
 </style>
 </head>
 <body>
@@ -12999,6 +13013,8 @@ const RP_CSS = `
 .rp-grow{margin:12px 0 0;font-size:12.5px;background:#f2f8f4;color:#1f4d33;border-radius:8px;padding:8px 12px;}
 .rp-empty{color:#8a8f96;font-size:12.5px;margin:4px 0;}
 .rp-foot{margin-top:6px;padding-top:10px;border-top:1px solid #e6e3dd;font-size:11px;color:#8a8f96;}
+.rp-h3{margin:0 0 8px;font-size:12.5px;color:#55555c;font-weight:700;} .rp-t + .rp-h3{margin-top:14px;} .rp-sec .rp-kpis + .rp-two{margin-top:14px;}
+.rp-ax li{grid-template-columns:96px 1fr 30px 22px;}
 @media(max-width:760px){ .rp-doc{padding:20px 16px;} .rp-top{flex-direction:column;} .rp-made{text-align:left;} .rp-kpis{grid-template-columns:repeat(2,1fr);} .rp-two{grid-template-columns:1fr;} .rp-t{font-size:12px;} .rp-sec{overflow-x:auto;} }
 `;
 try{ document.head.insertAdjacentHTML('beforeend', '<style id="rp-css">' + RP_CSS + '\n.rp-wrap{margin-top:4px;} .rp-ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;} .rp-ctl select{height:36px;border:1px solid var(--c-line-strong,#d3d0ca);border-radius:8px;padding:0 10px;font:inherit;background:#fff;}</style>'); }catch(_){}
@@ -13082,7 +13098,7 @@ const School = {
     const main = this.G('schl-main'); main.innerHTML = '<p class="schl-load">학생 정보를 불러오는 중…</p>';
     const q = p=>Promise.resolve(p).then(r=>r, e=>({ error:e }));
     const since30 = new Date(Date.now() - 30 * 86400000).toISOString();
-    const [pf, em, rc, ib, rs, ps, al] = await Promise.all([
+    const [pf, em, rc, ib, rs, ps, al, db] = await Promise.all([
       q(sbAll(()=>sb.from('profiles').select('id,name,note,role,college,dept,scope_depts,status,created_at,phone,is_test').order('created_at', { ascending:false }))),
       q(sb.rpc('school_user_emails')),
       q(sbAll(()=>sb.from('interview_records').select('id,user_id,field_id,field_name,company_id,company_name,score,question_count,duration_label,created_at,mode,set_kind').order('created_at', { ascending:false }))),
@@ -13090,6 +13106,7 @@ const School = {
       q(sb.from('user_resumes').select('user_id,file_name,cv_file_name,updated_at,cv_updated_at,share_staff,share_staff_at')),
       q(sb.from('prep_state').select('user_id,experiences,prep,updated_at')),
       q(sb.from('activity_log').select('user_id,created_at').eq('event', 'login').gte('created_at', since30).order('created_at', { ascending:false }).limit(5000)),
+      q(sbAll(()=>sb.from('debate_practice').select('id,user_id,kind,org,score,feedback,created_at').order('created_at', { ascending:false }))),   // 2026-11-10 토론·토의·발표 연습 (보고서)
     ]);
     const errs = [[pf, '학생'], [rc, '연습 기록'], [ib, '인바디'], [rs, '서류'], [ps, '준비 현황']].filter(([r])=>r && r.error).map(([r, n])=>`${n}: ${r.error.message || r.error}`);
     const emails = {}; ((em && em.data) || []).forEach(x=>{ emails[x.id] = x.email; });
@@ -13108,7 +13125,8 @@ const School = {
     });
     const sid = new Set(students.map(x=>x.id)), sMap = {}; students.forEach(x=>{ sMap[x.id] = x; });
     const recs = ((rc && rc.data) || []).filter(r=>sid.has(r.user_id));
-    this.d = { people, pMap: Object.fromEntries(people.map(p=>[p.id, p])), students, sMap, recs, errs, at: Date.now() };
+    const dbs = ((db && !db.error && db.data) || []).filter(r=>sid.has(r.user_id));
+    this.d = { people, pMap: Object.fromEntries(people.map(p=>[p.id, p])), students, sMap, recs, dbs, errs, at: Date.now() };
     if(this.can('manage')) this.loadFbCount();
     this.render();
   },
@@ -13399,7 +13417,14 @@ const School = {
     const per = {}; R.slice().sort((a, b)=>new Date(a.created_at) - new Date(b.created_at)).forEach(r=>{ if(r.score == null) return; (per[r.user_id] = per[r.user_id] || []).push(r.score); });
     const multi = Object.values(per).filter(a=>a.length >= 2), first = avg(multi.map(a=>a[0])), lastS = avg(multi.map(a=>a[a.length - 1])), up = multi.filter(a=>a[a.length - 1] > a[0]).length;
     const bands = [['90점 이상', x=>x >= 90], ['80~89점', x=>x >= 80 && x < 90], ['70~79점', x=>x >= 70 && x < 80], ['60~69점', x=>x >= 60 && x < 70], ['60점 미만', x=>x < 60]].map(([l, f])=>[l, sc.filter(f).length]);
-    return { R, n: R.length, users: users.size, reg: reg.length, joined: joined.length, avg: avg(sc), scN: sc.length, dept, fld, co, multi: multi.length, first, lastS, up, bands, avgF: avg };
+    // 2026-11-10 토론·토의·발표 연습
+    const DB = (this.d.dbs || []).filter(r=>{ const t = new Date(r.created_at).getTime(); return t >= t0 && t < t1; });
+    const dsc = DB.filter(r=>r.score != null).map(r=>r.score), dk = {}, dorg = {}, dax = {};
+    DB.forEach(r=>{ const k = r.kind || 'debate', o = dk[k] = dk[k] || { n:0, u:new Set(), sc:[] }; o.n++; o.u.add(r.user_id); if(r.score != null) o.sc.push(r.score);
+      if(r.org){ const g = dorg[r.org] = dorg[r.org] || { n:0, u:new Set() }; g.n++; g.u.add(r.user_id); }
+      const ax = r.feedback && r.feedback.axes; if(ax) Object.entries(ax).forEach(([a, v])=>{ if(+v) (dax[a] = dax[a] || []).push(+v); }); });
+    const D = { n: DB.length, users: new Set(DB.map(r=>r.user_id)).size, avg: avg(dsc), kinds: dk, orgs: dorg, axes: Object.fromEntries(Object.entries(dax).map(([a, v])=>[a, Math.round(v.reduce((x, y)=>x + y, 0) / v.length * 10) / 10])) };
+    return { R, n: R.length, users: users.size, reg: reg.length, joined: joined.length, avg: avg(sc), scN: sc.length, dept, fld, co, multi: multi.length, first, lastS, up, bands, avgF: avg, D };
   },
   rpDelta(cur, prev, unit){ if(cur == null || prev == null || (!prev && unit !== '점')) return '';   // 비교 기간에 기록이 없으면 늘어난 양을 보이지 않음
     const d = cur - prev; if(!d) return `<span class="rp-d same">같음</span>`;
@@ -13417,6 +13442,7 @@ const School = {
       if(A.multi) sum.push(`두 번 이상 연습한 학생 ${A.multi}명은 첫 연습 평균 ${A.first}점에서 마지막 연습 평균 <b>${A.lastS}점</b>으로 바뀌었고, ${A.up}명(${pct(A.up, A.multi)}%)의 점수가 올랐어요.`);
       const topCo = Object.entries(A.co).sort((a, b)=>b[1].n - a[1].n)[0]; if(topCo) sum.push(`가장 많이 연습한 기관은 <b>${esc(topCo[0])}</b>(${topCo[1].n}회)예요.`);
     }
+    if(A.D.n) sum.push(`토론·토의·발표 면접 연습은 학생 <b>${A.D.users}명</b>이 <b>${A.D.n}회</b> 했고${A.D.avg != null ? `, 평균 <b>${A.D.avg}점</b>이에요` : '요'}.`);
     const kpi = (l, v, d, s)=>`<div class="rp-kpi"><span>${l}</span><b>${v}</b>${d || ''}${s ? `<small>${s}</small>` : ''}</div>`;
     const deptRows = Object.values(A.dept).filter(o=>o.reg || o.n).sort((a, b)=>(a.c || '').localeCompare(b.c || '', 'ko') || b.reg - a.reg || a.d.localeCompare(b.d, 'ko'));
     const bAll = Object.keys(B.fld).length || Object.keys(B.co).length;
@@ -13444,8 +13470,33 @@ const School = {
           ${A.multi ? `<p class="rp-grow">두 번 이상 연습한 학생 <b>${A.multi}명</b> · 첫 연습 평균 ${A.first}점 → 마지막 연습 평균 <b>${A.lastS}점</b> (${A.lastS - A.first >= 0 ? '+' : ''}${A.lastS - A.first}점) · 점수 오른 학생 ${A.up}명</p>` : ''}</section>
       </div>
       <section class="rp-sec"><h2>많이 연습한 기업·기관 TOP 10</h2>${coRows.length ? `<table class="rp-t"><thead><tr><th class="r" style="width:36px">순위</th><th>기업·기관</th><th class="r">횟수</th><th class="r">학생</th><th class="r">평균 점수</th></tr></thead><tbody>${coRows.map(([k, o], i)=>`<tr><td class="r">${i + 1}</td><td>${esc(k)}</td><td class="r">${o.n}</td><td class="r">${o.u.size}</td><td class="r">${A.avgF(o.sc) != null ? A.avgF(o.sc) + '점' : '–'}</td></tr>`).join('')}</tbody></table>` : '<p class="rp-empty">기업·직무 맞춤 면접 기록이 없어요.</p>'}</section>
-      <footer class="rp-foot">학생 계정의 연습만 셌어요 (관리자·교직원·학과 담당 연습 제외). 점수는 AI 채점 100점 기준이고, 점수가 나오지 않은 연습은 평균에서 빠져요. 이용률 = 연습한 학생 ÷ 기간 끝까지 가입한 학생.</footer>
+      ${this.rpDebate(A, B)}
+      <footer class="rp-foot">학생 계정의 연습만 셌어요 (관리자·교직원·학과 담당 연습 제외). 위 숫자(연습 횟수·평균 점수 등)는 AI 모의면접 기준이고, 토론·토의·발표 연습은 따로 셌어요. 점수는 AI 채점 100점 기준이고, 점수가 나오지 않은 연습은 평균에서 빠져요. 이용률 = 연습한 학생 ÷ 기간 끝까지 가입한 학생.</footer>
     </article>`;
+  },
+  /* 2026-11-10 보고서: 토론·토의·발표 면접 연습 */
+  DK: { debate:'토론 (찬반)', group:'토의 (여럿이)', pt:'발표 (PT)' },
+  DAX: [['claim', '주장·의견 제시'], ['evidence', '근거'], ['response', '반론·질문 대응'], ['listening', '경청'], ['coordination', '의견 조율'], ['attitude', '태도']],
+  rpDebate(A, B){
+    const D = A.D, esc = escapeHtml, avgF = A.avgF;
+    if(!D.n) return `<section class="rp-sec"><h2>토론·토의·발표 면접 연습</h2><p class="rp-empty">이 기간에는 토론·토의·발표 연습 기록이 없어요.</p></section>`;
+    const kpi = (l, v, d, sm)=>`<div class="rp-kpi"><span>${l}</span><b>${v}</b>${d || ''}${sm ? `<small>${sm}</small>` : ''}</div>`;
+    const kinds = ['debate', 'group', 'pt'].filter(k=>D.kinds[k]);
+    const ax = this.DAX.filter(([k])=>D.axes[k] != null);
+    const orgs = Object.entries(D.orgs).sort((a, b)=>b[1].n - a[1].n).slice(0, 5);
+    return `<section class="rp-sec"><h2>토론·토의·발표 면접 연습</h2>
+        <div class="rp-kpis">
+          ${kpi('연습한 학생', `${D.users}명`, this.rpDelta(D.users, B.D.users, '명'), A.reg ? `가입 학생의 ${Math.round(D.users / A.reg * 100)}%` : '')}
+          ${kpi('연습 횟수', `${D.n}회`, this.rpDelta(D.n, B.D.n, '회'), D.users ? `1인당 ${(D.n / D.users).toFixed(1)}회` : '')}
+          ${kpi('평균 점수', D.avg != null ? `${D.avg}점` : '–', this.rpDelta(D.avg, B.D.avg, '점'), 'AI 피드백 100점 기준')}
+          ${kpi('많이 한 방식', esc((this.DK[kinds.slice().sort((a, b)=>D.kinds[b].n - D.kinds[a].n)[0]] || '').replace(/ \(.*\)/, '')), '', '')}
+        </div>
+        <div class="rp-two">
+          <div><h3 class="rp-h3">방식별</h3><table class="rp-t"><thead><tr><th>방식</th><th class="r">횟수</th><th class="r">학생</th><th class="r">평균</th></tr></thead><tbody>${kinds.map(k=>{ const o = D.kinds[k]; return `<tr><td>${this.DK[k]}</td><td class="r">${o.n}</td><td class="r">${o.u.size}</td><td class="r">${avgF(o.sc) != null ? avgF(o.sc) + '점' : '–'}</td></tr>`; }).join('')}</tbody></table>
+            ${orgs.length ? `<h3 class="rp-h3">많이 연습한 기관 주제</h3><table class="rp-t"><tbody>${orgs.map(([k, o])=>`<tr><td>${esc(k)}</td><td class="r">${o.n}회</td><td class="r">${o.u.size}명</td></tr>`).join('')}</tbody></table>` : ''}</div>
+          <div><h3 class="rp-h3">항목별 평균 (5점 만점)</h3>${ax.length ? `<ul class="rp-bands rp-ax">${ax.map(([k, l])=>`<li><span>${l}</span><i><em style="width:${Math.round(D.axes[k] / 5 * 100)}%"></em></i><b>${D.axes[k]}</b><small>/5</small></li>`).join('')}</ul>
+            <p class="rp-grow">가장 낮은 항목은 <b>${ax.slice().sort((a, b)=>D.axes[a[0]] - D.axes[b[0]])[0][1]}</b>이에요. 연습 지도 때 참고하세요.</p>` : '<p class="rp-empty">항목 점수가 없어요.</p>'}</div>
+        </div></section>`;
   },
   vReport(){
     const opts = this.rpOptions();
@@ -13473,6 +13524,10 @@ const School = {
     Object.entries(A.co).sort((a, b)=>b[1].n - a[1].n).forEach(([k, o])=>rows.push([k, o.n, o.u.size, avg(o.sc) == null ? '' : avg(o.sc)]));
     rows.push([], ['점수 분포'], ['구간', '횟수']); A.bands.forEach(b=>rows.push(b));
     if(A.multi) rows.push([], ['두 번 이상 연습한 학생', A.multi], ['첫 연습 평균', A.first], ['마지막 연습 평균', A.lastS], ['점수 오른 학생', A.up]);
+    { const D = A.D, E = B.D; rows.push([], ['토론·토의·발표 면접 연습'], ['항목', '이번 기간', '비교 기간'], ['연습한 학생', D.users, E.users], ['연습 횟수', D.n, E.n], ['평균 점수', D.avg == null ? '' : D.avg, E.avg == null ? '' : E.avg]);
+      rows.push([], ['방식', '횟수', '학생', '평균 점수']); ['debate', 'group', 'pt'].forEach(k=>{ const o = D.kinds[k]; if(o) rows.push([this.DK[k], o.n, o.u.size, avg(o.sc) == null ? '' : avg(o.sc)]); });
+      rows.push([], ['항목', '평균(5점 만점)']); this.DAX.forEach(([k, l])=>{ if(D.axes[k] != null) rows.push([l, D.axes[k]]); });
+      rows.push([], ['기관 주제', '횟수', '학생']); Object.entries(D.orgs).sort((a, b)=>b[1].n - a[1].n).forEach(([k, o])=>rows.push([k, o.n, o.u.size])); }
     downloadCsv(`한림대_AI모의면접_보고서_${P.label.replace(/[^\w가-힣]+/g, '_')}.csv`, rows);
   },
   bind(main){
@@ -25805,6 +25860,17 @@ const HomeTabs = {
   },
 };
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ()=>HomeTabs.init()); else HomeTabs.init();
+/* 2026-11-10 토론 연습 목소리: 브라우저 한국어 목소리로 사람마다 높낮이·빠르기를 달리해 읽어 줌 (무료, 서버 안 씀) */
+const DebateVoice = {
+  P: { '진행자':['female', 1.0, 1.05], '면접관':['male', 0.96, 0.95], '상대 토론자':['male', 1.0, 0.88], '지원자 A':['male', 1.0, 1.0], '지원자 B':['female', 1.02, 1.12], '지원자 C':['male', 0.95, 0.82] },
+  ga(w){ const c = String(w || '').slice(-1).charCodeAt(0); return c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 ? '이' : '가'; },
+  speak(text, who, onDone){
+    const [g, rate, pitch] = this.P[who] || ['female', 1, 1];
+    let voice = null; try{ voice = IvVoice.browserVoice(g); }catch(_){}
+    try{ speakQuestion(text, onDone, { rate: 0.98 * rate, pitch, voice }); }catch(_){ if(onDone) onDone(); }
+  },
+  stop(){ try{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(_){} },
+};
 /* ---------------- 2026-11-09e 토론·PT 면접 연습 (Debate) ----------------
    한림대 권역 기관 면접 후기에서 다시 쓴 토론·발표 주제(list_review_questions p_debate=true)로
    ① 주제 고르기 → ② 준비 1분(메모) → ③ 1차 발언 → ④ AI 반론(토론)·면접관 질문(발표) → ⑤ 2차 발언 → ⑥ 피드백(주장·근거·대응·태도)
@@ -25829,7 +25895,7 @@ const Debate = {
     if(el && data && data[0]) el.textContent = `최근 연습 ${data[0].score != null ? data[0].score + '점' : ''} · ${String(data[0].topic).slice(0, 34)}${String(data[0].topic).length > 34 ? '…' : ''}`; }catch(_){} },
   el(id){ return document.querySelector((this.page ? '#d3-debate ' : '#pk-modal ') + '#' + id); },   // 화면·작은 창 둘 다 같은 이름을 쓰므로 지금 쓰는 쪽만
   body(html){ const b = this.el('dbt-b'); if(b){ b.innerHTML = html; b.scrollTop = 0; } if(this.page){ const sc = document.querySelector('#d3-debate .dbm-scroll'); if(sc) sc.scrollTop = 0; } return b; },
-  stopTimer(){ if(this._t){ clearInterval(this._t); this._t = null; } },
+  stopTimer(){ if(this._t){ clearInterval(this._t); this._t = null; } this._rseq = (this._rseq || 0) + 1; try{ DebateVoice.stop(); }catch(_){} },   // 2026-11-10 읽어 주던 목소리도 멈춤
   page: false,
   /* 2026-11-09f 기관 카드 등에서 부르면 토론 연습 화면으로 (면접 중에는 예전처럼 작은 창으로) */
   open(tid){
@@ -25843,9 +25909,10 @@ const Debate = {
     if(this.s && !tid && this.topics){ this.pickView(); return; }   // 다시 들어오면 고르던 화면 그대로
     this.body('<div class="pk-wait"><i></i>주제를 불러오고 있어요</div>'); this.foot('');
     try{ await Promise.all([this.loadOrgs(), this.loadTopics()]); }catch(e){ this.body(`<p class="pk-tip">주제를 불러오지 못했어요. 잠시 뒤 다시 열어 주세요. (${escapeHtml(e.message || e)})</p>`); return; }
-    this.s = { tid: tid || '', kind: 'debate', seed: Math.random() };
+    this.s = { tid: tid || '', kind: 'debate', seed: Math.random(), real: this.realPref() };
     this.pickView();
   },
+  realPref(){ try{ return localStorage.getItem('zp_dbt_real') !== '0'; }catch(_){ return true; } },
   _stepK: 'pick',
   step(k){ if(!this.page) return; this._stepK = k; this.paintSteps(); },
   stepNames(){ this.paintSteps(); },
@@ -25876,7 +25943,7 @@ const Debate = {
     this.stopTimer(); this.page = false; const pb = document.querySelector('#d3-debate #dbt-b'); if(pb) pb.innerHTML = '';
     PracticeKit.modal(PracticeKit.head('토론·PT 면접 연습', '주제 고르기') + `<div class="pk-b" id="dbt-b"><div class="pk-wait"><i></i>주제를 불러오고 있어요</div></div><footer class="pk-f" id="dbt-f"><button type="button" class="pk-btn ghost" onclick="Debate.close()">닫기</button></footer>`, 'wide');
     try{ await Promise.all([this.loadOrgs(), this.loadTopics()]); }catch(e){ this.body(`<p class="pk-tip">주제를 불러오지 못했어요. 잠시 뒤 다시 열어 주세요. (${escapeHtml(e.message || e)})</p>`); return; }
-    this.s = { tid: tid || '', kind: 'debate', seed: Math.random() };
+    this.s = { tid: tid || '', kind: 'debate', seed: Math.random(), real: this.realPref() };
     this.pickView();
   },
   close(){ this.stopTimer(); if(this.page){ PracticeKit.stopMic(); this.pickView(); return; } PracticeKit.close(); },
@@ -25914,12 +25981,14 @@ const Debate = {
           <label class="dbt-sel"><span>준비 시간</span><select id="dbt-prep">${[60, 180, 300, 600].map(v=>`<option value="${v}"${v === prep ? ' selected' : ''}>${v / 60}분</option>`).join('')}</select></label>
         </div>
       </div>
+      <label class="dbt-real"><input type="checkbox" id="dbt-real"${s.real !== false ? ' checked' : ''}><span><b>실전처럼 연습</b><small>진행자·상대 발언을 목소리로 읽어 주고, 말할 시간을 정해 둬요 (${s.kind === 'pt' ? '발표 2분 · 답변 1분' : '발언마다 1분'}). 시간이 끝나면 자동으로 넘어가요.</small></span></label>
       <p class="dbt-how">${how}</p>
       ${note}
       <ul class="dbt-list">${list.map(t=>`<li><button type="button" onclick="Debate.prep('${t.id}')"><span class="dbt-org">${escapeHtml(t.org)}</span><span class="dbt-q">${escapeHtml(t.q)}</span><i aria-hidden="true">›</i></button></li>`).join('')}</ul>`);
     this.foot(`${this.closeBtn()}<button type="button" class="pk-btn" onclick="Debate.shuffle()">↻ 다른 주제 보기</button>`);
     const sel = document.getElementById('dbt-org'); if(sel) sel.onchange = ()=>{ this.s.tid = sel.value; this.s.seed = Math.random(); this.pickView(); };
     const ps = document.getElementById('dbt-prep'); if(ps) ps.onchange = ()=>{ this.s.prep = +ps.value; this.stepNames(); };
+    const rl = document.getElementById('dbt-real'); if(rl) rl.onchange = ()=>{ this.s.real = rl.checked; try{ localStorage.setItem('zp_dbt_real', rl.checked ? '1' : '0'); }catch(_){} };
   },
   setKind(k){ this.s.kind = k; this.pickView(); },
   shuffle(){ this.s.seed = Math.random(); this.pickView(); },
@@ -25956,20 +26025,63 @@ const Debate = {
     }
     const lastMe = s.rounds.map(r=>r.role).lastIndexOf('me'), ais = s.rounds.slice(lastMe + 1).filter(r=>r.role === 'ai');
     const aiHtml = !ais.length ? '' : grp
-      ? `<div class="dbt-grp"><b class="dbt-grp-h">${round === 1 ? '다른 지원자들의 첫 의견' : '이어진 의견'}</b>${ais.map(r=>`<div class="dbt-mem"><span class="dbt-av" data-w="${escapeHtml((r.who || '').slice(-1))}">${escapeHtml((r.who || '').slice(-1))}</span><div><b>${escapeHtml(r.who || '다른 지원자')}${r.view ? ` <small>${escapeHtml(r.view)}</small>` : ''}</b><p>${escapeHtml(r.text)}</p></div></div>`).join('')}</div>`
-      : `<div class="dbt-ai"><b>${pt ? '면접관 질문' : 'AI 반론'}</b><p>${escapeHtml(ais[ais.length - 1].text)}</p></div>`;
+      ? `<div class="dbt-grp"><b class="dbt-grp-h">${round === 1 ? '다른 지원자들의 첫 의견' : '이어진 의견'}</b>${ais.map((r, i)=>`<div class="dbt-mem" data-i="${i}"><span class="dbt-av" data-w="${escapeHtml((r.who || '').slice(-1))}">${escapeHtml((r.who || '').slice(-1))}</span><div><b>${escapeHtml(r.who || '다른 지원자')}${r.view ? ` <small>${escapeHtml(r.view)}</small>` : ''}</b><p>${escapeHtml(r.text)}</p></div></div>`).join('')}</div>`
+      : `<div class="dbt-ai" data-i="0"><b>${pt ? '면접관 질문' : 'AI 반론'}</b><p>${escapeHtml(ais[ais.length - 1].text)}</p></div>`;
     const tip = round === 1
       ? { debate:'입장을 먼저 밝히고 1분 안팎으로 말해 보세요.', group:'다른 지원자 의견 하나를 짚고(예: "A님 말씀처럼…"), 내 의견과 이유를 1분 안팎으로 말해 보세요.', pt:'실제 발표처럼 2분 안팎으로 말해 보세요.' }[k]
       : { debate:'반론을 한 번 요약해 받고, 인정할 부분은 인정한 뒤 근거를 들어 다시 말해 보세요.', group:'나온 의견들의 공통점을 찾아 정리하고, 모두 받아들일 수 있는 방안을 제안해 보세요. (예: "정리하면 세 분 모두 …에는 동의하시니, …부터 하면 어떨까요?")', pt:'질문의 핵심에 먼저 답하고, 보완책을 덧붙여 보세요.' }[k];
     this.body(`${topicBox}
       ${s.memo.trim() ? `<details class="dbt-memo-v"><summary>내 메모 보기</summary><p>${escapeHtml(s.memo)}</p></details>` : ''}
       ${aiHtml}
+      ${s.real ? '<div class="dbt-live" id="dbt-live" aria-live="polite"></div>' : ''}
       <p class="pk-tip">${tip} 말로 하거나 직접 써도 돼요.</p>
       <textarea id="pk-ans" rows="7" placeholder="여기에 쓰거나, 아래 '말로 답하기'를 누르세요"></textarea>
       <div class="pk-row"><button type="button" class="pk-btn" id="pk-mic" onclick="PracticeKit.mic()">🎙 말로 답하기</button><span class="pk-mut" id="pk-mic-st"></span><span class="pk-cnt" id="pk-cnt">0자</span></div>`);
     const next = round === 1 ? { debate:'다 말했어요, 반론 듣기', group:'다 말했어요, 다음 의견 듣기', pt:'발표 끝, 질문 받기' }[k] : '다 말했어요, 피드백 받기';
     this.foot(`<button type="button" class="pk-btn ghost" onclick="Debate.pickView()">그만하고 주제 고르기</button><button type="button" class="pk-btn pri" id="dbt-next" onclick="Debate.submit(${round})">${next}</button>`);
     const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt'); ta.oninput = ()=>{ cnt.textContent = ta.value.trim().length + '자'; }; ta.focus();
+    if(s.real) this.realFlow(round, ais);
+  },
+  /* 2026-11-10 실전처럼: 진행자·상대 발언을 목소리로 읽고 → 말할 시간 카운트다운 (끝나면 자동으로 보냄) */
+  LIMIT: { debate:[60, 60], group:[60, 60], pt:[120, 60] },
+  realFlow(round, ais){
+    const s = this.s, k = s.kind, my = this._rseq, q = [], sec = this.LIMIT[k][round - 1];
+    if(round === 1){
+      const what = { debate:'토론', group:'토의', pt:'발표' }[k];
+      q.push({ who:'진행자', text: `${what} 주제는 ${s.topic.q.replace(/[.?]$/, '')}입니다. ${k === 'pt' ? '발표를 시작해 주세요.' : k === 'group' ? '다른 지원자 의견을 먼저 들어 보시고, 이어서 말씀해 주세요.' : '입장을 먼저 밝히고 말씀해 주세요.'}` });
+    }
+    ais.forEach((r, i)=>q.push({ who: r.who || (k === 'pt' ? '면접관' : '상대 토론자'), text: r.text, i }));
+    const live = document.getElementById('dbt-live'); if(!live) return this.realTimer(round, sec);
+    const mark = i=>document.querySelectorAll('#d3-debate [data-i]').forEach(el=>el.classList.toggle('speaking', +el.dataset.i === i));
+    const play = j=>{
+      if(my !== this._rseq) return;
+      if(j >= q.length) return this.realTimer(round, sec);
+      const it = q[j]; mark(it.i == null ? -1 : it.i);
+      live.className = 'dbt-live talk';
+      live.innerHTML = `<span class="dbt-wave" aria-hidden="true"><i></i><i></i><i></i></span><span><b>${escapeHtml(it.who)}</b>${DebateVoice.ga(it.who)} 말하고 있어요</span><button type="button" class="pk-btn sm" id="dbt-skip">건너뛰고 바로 말하기</button>`;
+      document.getElementById('dbt-skip').onclick = ()=>{ this._rseq++; DebateVoice.stop(); this.realTimer(round, sec); };
+      DebateVoice.speak(it.text, it.who, ()=>{ if(my === this._rseq) setTimeout(()=>play(j + 1), 350); });
+    };
+    play(0);
+  },
+  realTimer(round, sec){   // 건너뛰기에서 부르는 같은 카운트다운
+    const live = document.getElementById('dbt-live'); if(!live) return;
+    const my = this._rseq;
+    document.querySelectorAll('#d3-debate [data-i]').forEach(el=>el.classList.remove('speaking'));
+    let left = sec;
+    const draw = ()=>{ live.className = 'dbt-live tm' + (left <= 10 ? ' warn' : ''); live.innerHTML = `<b>${this.fmt(left)}</b><span>${left > 0 ? '말할 시간이 남았어요' : '시간이 끝났어요'}</span><i><em style="width:${100 - left / sec * 100}%"></em></i>`; };
+    draw();
+    if(StenoListener.supported() && !PracticeKit._mic) try{ PracticeKit.mic(); }catch(_){}
+    if(this._t) clearInterval(this._t);
+    this._t = setInterval(()=>{
+      if(my !== this._rseq || !document.getElementById('dbt-live')){ clearInterval(this._t); this._t = null; return; }
+      left--; draw();
+      if(left <= 0){
+        this.stopTimer(); PracticeKit.stopMic();
+        const ta = document.getElementById('pk-ans');
+        setTimeout(()=>{ if(ta && ta.value.trim().length >= 15) this.submit(round); else showToast('시간이 끝났어요. 한두 문장이라도 적거나 말한 뒤 보내 주세요.'); }, 900);
+      }
+    }, 1000);
   },
   async call(action){
     const s = this.s;
@@ -25983,7 +26095,7 @@ const Debate = {
     const ta = document.getElementById('pk-ans'), btn = document.getElementById('dbt-next'); if(!ta) return;
     const text = ta.value.trim(); if(text.length < 15) return showToast('조금 더 말해 주세요 (15자 이상)');
     if(!(await PracticeKit.aiOn())) return showToast('지금은 AI 연습이 꺼져 있어요. 담당자에게 문의해 주세요.');
-    PracticeKit.stopMic(); btn.disabled = true; btn.textContent = round === 1 ? '듣고 있어요…' : '피드백을 만드는 중…';
+    this.stopTimer(); PracticeKit.stopMic(); btn.disabled = true; btn.textContent = round === 1 ? '듣고 있어요…' : '피드백을 만드는 중…';
     this.s.rounds.push({ role: 'me', text });
     try{
       if(round === 1){
