@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-10i';
+var APP_VERSION = '2026-11-10j';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -29231,6 +29231,115 @@ if(DEMO_HIDE_APP_PROMO){ try{ document.body.classList.add('no-app-promo'); HomeA
 /* 2026-11-02j 한림대 데모: '면접에서 받은 질문을 남겨 주세요' 안내 창 끔 (속기사 실제 면접 후기용). 다시 켜려면 false */
 const DEMO_HIDE_REPORT_NUDGE = true;
 if(DEMO_HIDE_REPORT_NUDGE){ try{ RealReport.maybeNudge = ()=>{}; RealReport.maybeNudgeClosed = ()=>{}; }catch(_){} }
+/* 2026-11-10j 화면 제목 옆 ⓘ '페이지 안내' — 이 화면에서 무엇을 할 수 있는지 짧게 알려 줌.
+   제목 밑에 설명 글이 이미 있는 화면(면접 기록·학교 화면 등)에는 붙이지 않음. 아이콘 글자는 CSS로만 그려 제목 textContent에 섞이지 않음.
+   제목이 다시 쓰이면(textContent 교체) 지켜보다가 ⓘ를 다시 붙임 */
+const PageInfo = {
+  /* t: 말풍선 제목 · lead: 한 줄 설명 · items: [이름, 내용] 줄마다 한 가지 */
+  RULES: [
+    { sel:'#hero-greeting', t:'홈', lead:'오늘 할 연습을 고르는 첫 화면이에요.', items:[
+      ['면접 고르기', '전공·경험 / 기업·직무 맞춤 / 토론·토의·발표'],
+      ['짧게 연습', '오늘의 질문 · 오늘의 추천 세트'],
+      ['연습 도구', '아래 칸의 면접 D-day · 친구와 함께 연습 · 답변 노트 등'] ] },
+    { sel:'#d3-growth .gw-title', t:'내 성장', lead:'면접 점수가 어떻게 변했는지 보는 곳이에요.', items:[
+      ['기간', '30일 · 90일 · 전체 중에서 골라요'],
+      ['점수 흐름', '점을 누르면 그날 리포트가 열려요'],
+      ['약한 곳', '문항 종류별 점수 · 보완이 필요한 질문'] ] },
+    { sel:'#dbt-ptitle', t:'토론 연습', lead:'공공기관 토론·토의·발표 면접을 연습해요.', items:[
+      ['진행 순서', '주제 고르기 → 준비 → 말하기 → AI 반론 → 다시 답하기 → 피드백'],
+      ['토의', '반론 대신 다른 지원자 의견이 나와요'],
+      ['발표', '반론 대신 면접관 질문에 답해요'] ] },
+    { sel:'#rh3-title', after:true, live:{ t:'라이브 면접', lead:'AI 면접관과 실제처럼 보는 면접이에요.', items:[
+        ['답하기', '질문을 듣고 말로 답하면 \'내 답변\'에 글자로 나와요'],
+        ['다 말하면', '\'답변 완료\'를 눌러요'],
+        ['꼬리질문', '답에 따라 이어서 물어볼 수 있어요'],
+        ['끝나면', '바로 결과 리포트가 나와요'] ] },
+      t:'면접 리허설', lead:'채점 없이 미리 해 보는 연습이에요.', items:[
+        ['확인할 것', '카메라 · 마이크 · 내 모습과 목소리'] ] },
+    { sel:'#result-title', t:'결과 리포트', lead:'방금 본 면접의 결과예요.', items:[
+      ['먼저 볼 것', '맨 위 \'이번에 고칠 한 가지\''],
+      ['문항별', '펼치면 A~E 점수 · 근거 · 고칠 점 · 바꿔 말하기'],
+      ['다시 연습', '\'이 질문 다시 답하기\''],
+      ['저장', '오른쪽 위 \'인쇄 · PDF\''] ] },
+  ],
+  CSS: `.pg-i{display:inline-grid;place-items:center;box-sizing:border-box;width:18px;height:18px;margin:0 0 0 7px;padding:0;vertical-align:middle;position:relative;top:-.12em;border:1.5px solid currentColor;border-radius:50%;background:none;color:inherit;opacity:.45;cursor:pointer;font:italic 700 11px/1 Georgia,'Times New Roman',serif;transition:opacity .15s,color .15s}
+    .pg-i::before{content:"i"}
+    .pg-i:hover,.pg-i:focus-visible,.pg-i.on{opacity:1;color:#C8441C;outline:none}
+    .rh3-bar-title .pg-i{flex:none;top:0;margin:0 2px 0 0;align-self:center}
+    #pg-pop{position:fixed;z-index:99990;box-sizing:border-box;width:min(330px,calc(100vw - 24px));background:#fff;color:#1c1c1e;border:1px solid #e6e3dd;border-radius:12px;box-shadow:0 10px 28px rgba(20,24,34,.18);padding:12px 16px 14px;font:13.5px/1.55 Pretendard,system-ui,-apple-system,'Noto Sans KR',sans-serif;text-align:left;word-break:keep-all;overflow-wrap:break-word;opacity:0;transform:translateY(4px);transition:opacity .14s,transform .14s;pointer-events:none}
+    #pg-pop.show{opacity:1;transform:none;pointer-events:auto}
+    #pg-pop::before{content:"";position:absolute;top:-6px;left:var(--ax,24px);width:10px;height:10px;margin-left:-5px;background:#fff;border-left:1px solid #e6e3dd;border-top:1px solid #e6e3dd;transform:rotate(45deg)}
+    #pg-pop.up::before{top:auto;bottom:-6px;transform:rotate(225deg)}
+    #pg-pop .ph{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#8a8a90;margin-bottom:4px}
+    #pg-pop .ph i{width:15px;height:15px;box-sizing:border-box;border:1.3px solid #8a8a90;border-radius:50%;display:inline-grid;place-items:center;font:italic 700 10px/1 Georgia,serif}
+    #pg-pop .pt{display:block;font-size:15px;font-weight:800;margin:0 0 2px}
+    #pg-pop .pl{margin:0 0 10px;color:#55555c}
+    #pg-pop dl{display:grid;grid-template-columns:max-content 1fr;column-gap:12px;row-gap:7px;margin:0;padding-top:10px;border-top:1px solid #efece6}
+    #pg-pop dt{font-weight:700;color:#1c1c1e;white-space:nowrap}
+    #pg-pop dd{margin:0;color:#55555c}
+    #pg-pop .pg-c{white-space:nowrap}
+    @media print{.pg-i,#pg-pop{display:none !important}}`,
+  live(){ const s = document.getElementById('screen-interview'); return !!(s && s.classList.contains('lv3')); },
+  info(r){ return r.live && this.live() ? r.live : r; },
+  init(){
+    if(this.ok) return; this.ok = true;
+    document.head.insertAdjacentHTML('beforeend', '<style id="pg-css">' + this.CSS + '</style>');
+    const pop = this.pop = document.createElement('div'); pop.id = 'pg-pop'; pop.setAttribute('role', 'tooltip'); pop.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(pop);
+    this.hover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    pop.addEventListener('mouseenter', ()=>clearTimeout(this.ht)); pop.addEventListener('mouseleave', ()=>this.soon());
+    document.addEventListener('click', e=>{ if(this.cur && !pop.contains(e.target) && !e.target.closest('.pg-i')) this.hide(); }, true);
+    document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && this.cur) this.hide(); });
+    addEventListener('scroll', ()=>{ if(this.cur) this.place(); }, { passive:true, capture:true });
+    addEventListener('resize', ()=>{ if(this.cur) this.place(); });
+    new MutationObserver(()=>{ if(!this.q) this.q = requestAnimationFrame(()=>{ this.q = 0; this.scan(); }); }).observe(document.body, { childList:true, subtree:true });
+    this.scan();
+  },
+  scan(){
+    this.RULES.forEach(r=>{
+      const el = document.querySelector(r.sel); if(!el) return;
+      const has = r.after ? (el.nextElementSibling && el.nextElementSibling.classList.contains('pg-i')) : el.querySelector(':scope > .pg-i');
+      if(has) return;
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'pg-i';
+      b.setAttribute('aria-label', '페이지 안내'); b._r = r;
+      if(this.hover){ b.addEventListener('mouseenter', ()=>this.show(b, false)); b.addEventListener('mouseleave', ()=>this.soon()); }
+      b.addEventListener('focus', ()=>{ if(!this.pinned) this.show(b, false); });
+      b.addEventListener('blur', ()=>{ if(!this.pinned) this.hide(); });
+      b.addEventListener('click', e=>{ e.preventDefault(); e.stopPropagation(); if(this.pinned && this.cur === b) this.hide(); else this.show(b, true); });
+      if(r.after) el.after(b); else el.appendChild(b);
+    });
+  },
+  show(b, pin){
+    clearTimeout(this.ht); if(this.cur && this.cur !== b) this.cur.classList.remove('on');
+    this.cur = b; this.pinned = !!pin; b.classList.add('on');
+    const o = this.info(b._r), esc = s=>escapeHtml(String(s));
+    this.pop.innerHTML = `<div class="ph"><i>i</i>페이지 안내</div><b class="pt">${esc(o.t)}</b><p class="pl">${esc(o.lead)}</p>`
+      + `<dl>${o.items.map(([k, v])=>`<dt>${esc(k)}</dt><dd>${this.chunks(v)}</dd>`).join('')}</dl>`;
+    this.pop.classList.add('show'); this.pop.setAttribute('aria-hidden', 'false'); this.place();
+  },
+  /* ' · ', ' / ', ' → ' 로 나뉜 낱말 묶음이 줄 중간에서 끊기거나 줄 첫머리가 '·'로 시작하지 않게, 구분 기호는 앞 묶음 끝에 붙여 한 덩어리로 둠 */
+  chunks(v){
+    const parts = String(v).split(/( · | \/ | → )/); if(parts.length < 2) return escapeHtml(String(v));
+    const out = []; for(let i = 0; i < parts.length; i += 2) out.push(escapeHtml(parts[i]) + (parts[i + 1] ? escapeHtml(parts[i + 1].trimEnd()) : ''));
+    return out.map(c=>`<span class="pg-c">${c}</span>`).join(' ');
+  },
+  /* 말풍선 왼쪽 끝을 ⓘ 바로 아래에 맞추고, 꼬리(화살표)가 ⓘ 가운데를 가리키게 함 */
+  place(){
+    const b = this.cur, p = this.pop; if(!b || !b.isConnected) return this.hide();
+    const r = b.getBoundingClientRect(), m = 12; if(r.bottom < 0 || r.top > innerHeight || (!r.width && !r.height)) return this.hide();
+    p.style.left = '0px'; p.style.top = '0px';
+    const w = p.offsetWidth, h = p.offsetHeight, cx = r.left + r.width / 2;
+    const x = Math.max(m, Math.min(cx - 24, innerWidth - w - m));
+    let y = r.bottom + 10, up = false;
+    if(y + h > innerHeight - m && r.top - 10 - h > m){ y = r.top - 10 - h; up = true; }
+    p.classList.toggle('up', up);
+    p.style.setProperty('--ax', Math.max(16, Math.min(cx - x, w - 16)) + 'px');
+    p.style.left = x + 'px'; p.style.top = y + 'px';
+  },
+  soon(){ if(!this.pinned){ clearTimeout(this.ht); this.ht = setTimeout(()=>this.hide(), 160); } },
+  hide(){ if(this.pop){ this.pop.classList.remove('show'); this.pop.setAttribute('aria-hidden', 'true'); } if(this.cur) this.cur.classList.remove('on'); this.cur = null; this.pinned = false; }
+};
+try{ PageInfo.init(); }catch(e){ console.warn('PageInfo', e); }
 try{ HomeApp.init(); }catch(e){ console.warn('HomeApp', e); }
 
 loadRememberedEmail();
