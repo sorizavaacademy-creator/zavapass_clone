@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-10a';
+var APP_VERSION = '2026-11-10b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6467,6 +6467,44 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
 .dbt-mem.speaking > div, .dbt-ai.speaking{box-shadow:0 0 0 3px rgba(35,70,160,.25);border-color:#2346A0;}
 .dbt-mem.speaking .dbt-av{box-shadow:0 0 0 3px rgba(35,70,160,.3);}
 @media (prefers-reduced-motion: reduce){ .dbt-wave i{animation:none;height:10px;} }
+/* 2026-11-10 홈 버튼 8개 · NEW · 10분 마무리 · 답변 노트 */
+#d3-home .hm-tiles{grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;}
+#d3-home .hm-tile{padding-left:12px !important;padding-right:12px !important;}
+#d3-home .hm-tile b{font-size:13.5px;} #d3-home .hm-tile span{font-size:11.5px;}
+.hm-tile.hm-new{position:relative;} .hm-tile.hm-new::after{content:"NEW";position:absolute;top:-7px;right:8px;font-size:10px;font-weight:800;color:#fff;background:#c8441c;border-radius:999px;padding:1px 7px;}
+.hm-tile.hm-fin{background:#FFF4EE;border-color:#F2C2AD;} .hm-tile.hm-fin b{color:#a8381a;}
+@media(max-width:1100px) and (min-width:641px){ #d3-home .hm-tiles{grid-template-columns:repeat(4,minmax(0,1fr));} }
+@media(max-width:640px){ #d3-home .hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr));} }
+.pk-fin{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:#FFF4EE;border:1.5px solid #F2C2AD;margin-bottom:14px;}
+.pk-fin > div{flex:1;min-width:0;} .pk-fin b{display:block;font-size:15px;color:#a8381a;} .pk-fin span{display:block;font-size:13px;color:#6b6b72;margin-top:2px;line-height:1.5;}
+.pk-fin button{flex:none;height:42px;padding:0 16px;border:0;border-radius:10px;background:#c8441c;color:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer;}
+@media(max-width:640px){ .pk-fin{flex-direction:column;align-items:stretch;} }
+.an-b{gap:12px;} .an-lead{margin:0;font-size:13.5px;color:#4A5466;line-height:1.6;} .an-n{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:#EEF3FF;color:#2f5bd3;font-size:12px;font-weight:700;}
+.an-list{display:grid;gap:10px;}
+.an-card{border:1px solid #E6EAF0;border-radius:12px;padding:12px 14px;background:#fff;} .an-card.empty{background:#FAFBFC;}
+.an-card header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;} .an-card header b{font-size:14.5px;color:#172033;}
+.an-src{font-size:12px;color:#6B7485;background:#F4F6FA;border-radius:999px;padding:1px 8px;} .an-src.fix{background:#E3F3E9;color:#21633C;font-weight:700;}
+.an-q{margin:6px 0 0;font-size:13px;color:#6B7485;font-weight:600;} .an-a{margin:6px 0 0;font-size:14px;line-height:1.7;color:#172033;white-space:pre-wrap;} .an-empty{margin:6px 0 0;font-size:13px;color:#8a8a90;}
+.an-card textarea{width:100%;box-sizing:border-box;margin-top:8px;padding:10px 12px;border:1.5px solid #CFD7E3;border-radius:10px;font:inherit;font-size:14px;line-height:1.65;resize:vertical;}
+.an-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.an-rw{margin-top:8px;border-left:3px solid #2346A0;background:#F1F5FF;border-radius:0 10px 10px 0;padding:8px 12px;} .an-rw summary{cursor:pointer;font-size:13px;font-weight:700;color:#2346A0;} .an-rw p{margin:6px 0 8px;font-size:13.5px;line-height:1.7;white-space:pre-wrap;}
+.an-check{border:1.5px solid #C9D6F5;background:#F7F9FF;border-radius:12px;padding:12px 14px;} .an-check header b{font-size:14.5px;color:#2346A0;} .an-check header p{margin:4px 0 0;font-size:13.5px;}
+.an-check h4{margin:10px 0 6px;font-size:13px;color:#172033;} .an-ok{margin:8px 0 0;font-size:13.5px;color:#21633C;}
+.an-mm,.an-ms{list-style:none;margin:0;padding:0;display:grid;gap:8px;} .an-mm li{display:flex;gap:8px;align-items:flex-start;background:#fff;border-radius:10px;padding:8px 10px;}
+.an-mm p{margin:0;font-size:13px;line-height:1.6;} .an-mm em{font-style:normal;font-weight:700;color:#6B7485;margin-right:6px;} .an-tip{color:#2346A0 !important;}
+.an-ms li{background:#fff;border-radius:10px;padding:8px 10px;font-size:13.5px;} .an-ms p{margin:4px 0 0;font-size:13px;color:#4A5466;}
+.an-tag{flex:none;font-size:11.5px;font-weight:700;color:#a8381a;background:#FBEDE7;border-radius:999px;padding:1px 8px;white-space:nowrap;}
+.f10-lead{margin:0;font-size:14px;line-height:1.65;color:#4A5466;} .f10-org select{max-width:320px;}
+.f10-qs{list-style:none;margin:0;padding:0;display:grid;gap:8px;} .f10-qs li{display:flex;gap:10px;align-items:flex-start;border:1px solid #E6EAF0;border-radius:12px;padding:10px 12px;}
+.f10-qs p{margin:0;font-size:14.5px;font-weight:600;color:#172033;line-height:1.5;} .f10-qs small{font-size:12px;color:#8a8a90;}
+.f10-no{flex:none;width:24px;height:24px;border-radius:50%;background:#1c2a44;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800;}
+.f10-peek{border:1px solid #E6EAF0;border-radius:10px;padding:8px 12px;} .f10-peek summary{cursor:pointer;font-size:13px;font-weight:700;color:#4A5466;} .f10-peek p{margin:6px 0 0;font-size:13.5px;line-height:1.7;white-space:pre-wrap;}
+.f10-prog{display:flex;align-items:center;gap:6px;} .f10-prog i{flex:1;height:6px;border-radius:3px;background:#EEF1F5;} .f10-prog i.done{background:#1f7a45;} .f10-prog i.on{background:#c8441c;} .f10-prog span{font-size:12.5px;color:#6B7485;margin-left:6px;}
+.f10-tips{background:#FFF4EE;border:1.5px solid #F2C2AD;border-radius:12px;padding:12px 14px;} .f10-tips b{color:#a8381a;font-size:14.5px;} .f10-tips ol{margin:6px 0 0;padding-left:20px;font-size:14px;line-height:1.7;} .f10-tips small{color:#8a8a90;}
+.f10-res{list-style:none;margin:0;padding:0;display:grid;gap:10px;} .f10-res li{border:1px solid #E6EAF0;border-radius:12px;padding:10px 12px;}
+.f10-res header{display:flex;gap:10px;align-items:flex-start;} .f10-res header p{flex:1;margin:0;font-size:14px;font-weight:600;line-height:1.5;} .f10-res header b{color:#c8441c;font-size:15px;white-space:nowrap;}
+.f10-fb em{font-style:normal;font-weight:800;margin-right:6px;} .f10-fb.good{color:#1f7a45 !important;} .f10-fb b{font-weight:700;}
+.f10-a{margin:8px 0 0;font-size:13.5px;line-height:1.7;color:#4A5466;white-space:pre-wrap;} .f10-fb{margin:6px 0 8px;font-size:13px;line-height:1.6;color:#2346A0;}
 </style>
 </head>
 <body>
@@ -7054,7 +7092,7 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
     </div>
 
     <!-- 2026-11-09h 홈 정리: 아래로 이어지던 칸들을 버튼 한 줄로 줄이고, 누르면 창(탭)으로 열림. 토론 카드(위 버튼과 같음)·성장 요약('나의 기록'과 같음)은 뺌 -->
-    <nav class="hm-tiles" id="hm-tiles" aria-label="연습 도구"><button type="button" class="hm-tile" data-t="review" onclick="HomeTabs.open('review')"><b>지난 면접 보완점</b><span>낮았던 질문 다시 연습</span></button><button type="button" class="hm-tile" data-t="recent" onclick="HomeTabs.open('recent')"><b>최근 면접 기록</b><span>리포트 다시 보기</span></button><button type="button" class="hm-tile" data-t="dday" onclick="HomeTabs.open('dday')"><b>면접 D-day</b><span>날짜·오늘의 3문항</span></button><button type="button" class="hm-tile" data-t="bm" onclick="HomeTabs.open('bm')"><b>내 질문 모음</b><span>담아 둔 질문 연습</span></button><button type="button" class="hm-tile" data-t="qbr" onclick="HomeTabs.open('qbr')"><b>기관별 후기 질문</b><span>17곳 면접 후기 질문</span></button><button type="button" class="hm-tile" data-t="exp" onclick="HomeTabs.open('exp')"><b>내 경험</b><span>경험 정리·입력</span></button></nav>
+    <nav class="hm-tiles" id="hm-tiles" aria-label="연습 도구"><button type="button" class="hm-tile" data-t="review" onclick="HomeTabs.open('review')"><b>지난 면접 보완점</b><span>낮았던 질문 다시 연습</span></button><button type="button" class="hm-tile" data-t="recent" onclick="HomeTabs.open('recent')"><b>최근 면접 기록</b><span>리포트 다시 보기</span></button><button type="button" class="hm-tile" data-t="dday" onclick="HomeTabs.open('dday')"><b>면접 D-day</b><span>날짜·오늘의 3문항</span></button><button type="button" class="hm-tile hm-fin" data-k="finish10" onclick="HomeNew.seen('finish10');Finish10.open()"><b>10분 마무리</b><span>면접 직전 실전 연습</span></button><button type="button" class="hm-tile" data-t="bm" onclick="HomeTabs.open('bm')"><b>내 질문 모음</b><span>담아 둔 질문 연습</span></button><button type="button" class="hm-tile" data-k="note" onclick="HomeNew.seen('note');AnswerNote.open()"><b>답변 노트</b><span>유형별 내 최고 답변</span></button><button type="button" class="hm-tile" data-t="qbr" onclick="HomeTabs.open('qbr')"><b>기관별 후기 질문</b><span>17곳 면접 후기 질문</span></button><button type="button" class="hm-tile" data-t="exp" onclick="HomeTabs.open('exp')"><b>내 경험</b><span>경험 정리·입력</span></button></nav>
     <div class="hm-sheet" id="hm-sheet" hidden>
       <div class="hm-sheet-bg" onclick="HomeTabs.close()"></div>
       <section class="hm-more" id="hm-more" role="dialog" aria-modal="true" aria-label="연습 도구">
@@ -12230,6 +12268,7 @@ function closeDebateScreen(){
   const box = document.getElementById('d3-debate'); if(!box || box.hidden) return;
   try{ Debate.stopTimer(); PracticeKit.stopMic(); }catch(_){}
   box.hidden = true; document.documentElement.classList.remove('dbm-open');
+  { const b = box.querySelector('#dbt-b'); if(b) b.innerHTML = ''; }   // 2026-11-10 숨긴 창의 입력칸(pk-ans 등)이 다른 창과 겹치지 않게 비움
   document.querySelectorAll('.hm-mode.hm-debate').forEach(b=>b.setAttribute('aria-pressed', 'false'));
   try{ Debate.loadLast(); }catch(_){}
 }
@@ -25390,7 +25429,7 @@ const PracticeKit = {
     const f = m.querySelector('[autofocus]'); if(f) setTimeout(()=>f.focus(), 30);
     return m;
   },
-  close(){ this.stopMic(); const m = document.getElementById('pk-modal'); if(m){ m.classList.remove('on'); m.innerHTML = ''; } document.documentElement.classList.remove('pk-open'); },
+  close(){ this.stopMic(); try{ if(typeof Finish10 !== 'undefined') Finish10.stop(); }catch(_){} const m = document.getElementById('pk-modal'); if(m){ m.classList.remove('on'); m.innerHTML = ''; } document.documentElement.classList.remove('pk-open'); },
   head(sub, title){ return `<header class="pk-h"><div><small>${sub}</small><h3>${title}</h3></div><button type="button" class="pk-x" onclick="PracticeKit.close()" aria-label="닫기">✕</button></header>`; },
 
   /* ── ④ 내 질문 모음 ── */
@@ -25780,13 +25819,13 @@ const PracticeKit = {
   renderPlan(){
     const box = document.getElementById('pk-dday-card'); if(!box) return;
     const p = this.plan;
-    if(!p){ box.innerHTML = `<div class="d3-panel-head"><h3 class="d3-panel-title">면접 D-day</h3></div>
+    if(!p){ box.innerHTML = this.finHtml() + `<div class="d3-panel-head"><h3 class="d3-panel-title">면접 D-day</h3></div>
       <div class="pk-dd-empty"><p>면접 날짜와 기업을 넣으면 <b>남은 날</b>, <b>오늘 연습할 3문항</b>, <b>전날 점검표</b>를 챙겨 드려요.</p><button type="button" class="d3-btn d3-btn-solid" onclick="PracticeKit.editPlan()">면접 날짜 넣기</button></div>`; return; }
     const d = this.dleft(), cl = this.checks(), done = cl.filter(([k])=>p.checklist && p.checklist[k]).length, tq = this.todays();
     const t = this._pack && this._pack.talent, kws = t && t.verify_status !== '미확인' ? (t.keywords || []).slice(0, 5) : [];
     const dLabel = d > 0 ? `D-${d}` : d === 0 ? 'D-DAY' : `D+${-d}`, dt = new Date(p.target_date + 'T00:00:00');
     const near = d != null && d <= 3 && d >= 0;
-    box.innerHTML = `<div class="d3-panel-head"><h3 class="d3-panel-title">면접 D-day</h3><button type="button" class="d3-btn-text" onclick="PracticeKit.editPlan()">바꾸기</button></div>
+    box.innerHTML = this.finHtml() + `<div class="d3-panel-head"><h3 class="d3-panel-title">면접 D-day</h3><button type="button" class="d3-btn-text" onclick="PracticeKit.editPlan()">바꾸기</button></div>
       <div class="pk-dd-top"><b class="pk-dd-d ${d < 0 ? 'past' : near ? 'near' : ''}">${dLabel}</b><div><b>${escapeHtml(p.company_name || '면접')}</b>${p.job ? ` · ${escapeHtml(p.job)}` : ''}<small>${dt.getMonth() + 1}월 ${dt.getDate()}일 (${'일월화수목금토'[dt.getDay()]})${p.format && p.format !== '모름' ? ' · ' + escapeHtml(p.format) + ' 면접' : ''}</small></div></div>
       ${d < 0 ? `<p class="pk-mut">면접이 끝났어요. 수고 많으셨어요! 다음 면접 날짜를 넣으면 다시 준비를 도와드려요.</p>` : `
       ${kws.length ? `<div class="pk-kw"><span>인재상</span>${kws.map(k=>`<i>${escapeHtml(CompanyCard.flat(k))}</i>`).join('')}</div>` : ''}
@@ -25796,6 +25835,7 @@ const PracticeKit = {
         <ul>${cl.map(([k, l])=>`<li><label><input type="checkbox" ${p.checklist && p.checklist[k] ? 'checked' : ''} onchange="PracticeKit.check('${k}', this.checked)"><span>${escapeHtml(l)}${k === 'talent' && kws.length ? `<small>${kws.map(x=>escapeHtml(CompanyCard.flat(x))).join(' · ')}</small>` : ''}</span></label></li>`).join('')}</ul></details>`}`;
   },
   practiceToday(){ this.startReview(this.todays()); },
+  finHtml(){ const p = this.plan, d = this.dleft(); return `<div class="pk-fin"><div><b>면접 당일 10분 마무리</b><span>1분 자기소개 → 지원동기 → ${p && p.company_name && d != null && d >= 0 ? escapeHtml(p.company_name) + ' ' : '목표 기관 '}예상 질문 2개. 질문을 목소리로 읽어 주고 시간을 재요.</span></div><button type="button" onclick="Finish10.open()">▶ 10분 마무리 시작</button></div>`; },   // 2026-11-10
   async check(k, on){
     if(!this.plan) return; const c = Object.assign({}, this.plan.checklist || {}); if(on) c[k] = true; else delete c[k];
     this.plan.checklist = c; this.renderPlan();
@@ -25860,6 +25900,223 @@ const HomeTabs = {
   },
 };
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ()=>HomeTabs.init()); else HomeTabs.init();
+/* ---------------- 2026-11-10 나만의 답변 노트 (AnswerNote) ----------------
+   그동안 한 답(면접 답변·다시 답하기·AI가 고친 답·직접 쓴 답·10분 마무리)을 질문 유형 7칸으로 모아, 칸마다 가장 좋은 답 하나를 보여 줌
+   학생이 '이 답으로 정하기'·고쳐 쓰기로 고정하면 answer_notes에 저장. '자소서와 맞춰 보기'는 note-check 서버 함수 */
+const AnswerNote = {
+  CATS: [['intro', '1분 자기소개'], ['motive', '지원동기'], ['pers', '장단점·성격'], ['exp', '경험 (갈등·협업·실패)'], ['sit', '상황 대처'], ['plan', '입사 후 포부'], ['job', '직무·가치관']],
+  SRC: { interview:'면접 답변', retry:'다시 답하기', rewrite:'AI가 고친 답', mine:'직접 쓴 답', finish10:'10분 마무리' },
+  data: null, check: null, edit: null,
+  TYPE: { intro:'intro', motive:'motive', personality:'pers', experience:'exp', situation:'sit', plan:'plan', closing:null },
+  catOf(q){ let t = 'general'; try{ t = Rubric.detectType(q); }catch(_){} return t in this.TYPE ? this.TYPE[t] : 'job'; },   // 마무리 말은 노트에 안 넣음
+  async load(){
+    const uid = PracticeKit.uid(); if(!uid) return null;
+    const q = p=>Promise.resolve(p).then(r=>r && !r.error ? (r.data || []) : [], ()=>[]);
+    const recs = await q(sb.from('interview_records').select('id,created_at').eq('user_id', uid).order('created_at', { ascending:false }).limit(60));
+    const ids = recs.map(r=>r.id), rAt = Object.fromEntries(recs.map(r=>[r.id, r.created_at]));
+    const [ans, ret, rw, mine, saved] = await Promise.all([
+      ids.length ? q(sb.from('interview_answers').select('record_id,question_text,answer_text,answer_raw,score,created_at').in('record_id', ids).limit(800)) : [],
+      q(sb.from('answer_retries').select('question,answer,score,created_at').eq('user_id', uid).order('created_at', { ascending:false }).limit(300)),
+      q(sb.from('answer_rewrites').select('question,rewrite,created_at').eq('user_id', uid).order('created_at', { ascending:false }).limit(200)),
+      q(sb.from('practice_notes').select('q_text,my_answer,updated_at').eq('user_id', uid).limit(300)),
+      q(sb.from('answer_notes').select('*').eq('user_id', uid)),
+    ]);
+    const C = []; const add = (src, qq, a, sc, at)=>{ a = String(a || '').trim(); qq = String(qq || '').trim(); if(a.length < 30 || !qq) return; const cat = this.catOf(qq); if(cat) C.push({ cat, q: qq, a, score: sc == null ? null : +sc, src, at }); };
+    ans.forEach(r=>add('interview', r.question_text, r.answer_text || r.answer_raw, r.score, rAt[r.record_id] || r.created_at));
+    ret.forEach(r=>add('retry', r.question, r.answer, r.score, r.created_at));
+    mine.forEach(r=>add('mine', r.q_text, r.my_answer, null, r.updated_at));
+    const RW = rw.map(r=>({ cat: this.catOf(r.question), q: r.question, a: String(r.rewrite || '').trim(), at: r.created_at })).filter(r=>r.cat && r.a.length >= 30);
+    const best = {}, rew = {}, cnt = {};
+    this.CATS.forEach(([k])=>{
+      const L = C.filter(c=>c.cat === k); cnt[k] = L.length;
+      best[k] = L.slice().sort((a, b)=>((b.score == null ? 55 : b.score) - (a.score == null ? 55 : a.score)) || (new Date(b.at) - new Date(a.at)))[0] || null;   // 점수 없는 직접 쓴 답은 55점으로 보고 비교
+      const R = RW.filter(r=>r.cat === k); rew[k] = (best[k] && R.find(r=>r.q === best[k].q)) || R[0] || null;
+    });
+    this.data = { best, rew, cnt, saved: Object.fromEntries(saved.map(s=>[s.cat, s])) };
+    return this.data;
+  },
+  cur(k){ const d = this.data, s = d.saved[k]; if(s) return { q: s.question, a: s.answer, score: s.score, src: s.source || 'mine', fixed: true, at: s.updated_at }; const b = d.best[k]; return b ? Object.assign({ fixed:false }, b) : null; },
+  async open(){
+    PracticeKit.modal(PracticeKit.head('면접 전날 훑어보기', '나만의 답변 노트') + `<div class="pk-b an-b" id="an-b"><div class="pk-wait"><i></i>그동안 한 답을 모으고 있어요</div></div>
+      <footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button><button type="button" class="pk-btn" onclick="AnswerNote.print()">인쇄 · PDF</button><button type="button" class="pk-btn pri" id="an-chk" onclick="AnswerNote.runCheck()">자소서와 맞춰 보기</button></footer>`, 'wide');
+    try{ await this.load(); }catch(e){ const b = document.getElementById('an-b'); if(b) b.innerHTML = `<p class="pk-err">노트를 불러오지 못했어요. (${escapeHtml(e.message || e)})</p>`; return; }
+    this.check = null; this.edit = null; this.render();
+  },
+  render(){
+    const b = document.getElementById('an-b'); if(!b || !this.data) return;
+    const filled = this.CATS.filter(([k])=>this.cur(k)).length;
+    const ck = this.check;
+    b.innerHTML = `<p class="an-lead">그동안 한 답 중 <b>유형마다 점수가 가장 높은 답</b>을 모았어요. 마음에 드는 답으로 정하거나 고쳐 쓰면 그 답이 노트에 남아요. <span class="an-n">${filled}/7칸 채움</span></p>
+      ${ck ? this.checkHtml(ck) : ''}
+      <div class="an-list">${this.CATS.map(([k, l])=>this.cardHtml(k, l)).join('')}</div>`;
+  },
+  cardHtml(k, l){
+    const c = this.cur(k), r = this.data.rew[k], ed = this.edit === k, esc = escapeHtml;
+    const dt = c && c.at ? new Date(c.at) : null;
+    const meta = c ? `<span class="an-src ${c.fixed ? 'fix' : ''}">${c.fixed ? '✓ 내가 정한 답' : esc(this.SRC[c.src] || '')}${c.score != null ? ` · ${c.score}점` : ''}${dt ? ` · ${dt.getMonth() + 1}.${dt.getDate()}` : ''}</span>` : '';
+    return `<section class="an-card${c ? '' : ' empty'}" id="an-${k}">
+      <header><b>${l}</b>${meta}</header>
+      ${c ? `<p class="an-q">Q. ${esc(c.q)}</p>` : ''}
+      ${ed ? `<textarea id="an-ta" rows="6">${esc(c ? c.a : '')}</textarea><div class="an-acts"><button type="button" class="pk-btn sm ghost" onclick="AnswerNote.edit=null;AnswerNote.render()">취소</button><button type="button" class="pk-btn sm pri" onclick="AnswerNote.saveEdit('${k}')">저장</button></div>`
+        : c ? `<p class="an-a">${esc(c.a)}</p>` : `<p class="an-empty">아직 이 유형의 답이 없어요. 면접이나 '10분 마무리'에서 답하면 여기에 모여요.</p>`}
+      ${!ed && r && (!c || r.a !== c.a) ? `<details class="an-rw"><summary>AI가 고친 답 보기</summary><p>${esc(r.a)}</p><button type="button" class="pk-btn sm" onclick="AnswerNote.useRewrite('${k}')">이 답으로 정하기</button></details>` : ''}
+      ${!ed ? `<div class="an-acts">${c && !c.fixed ? `<button type="button" class="pk-btn sm" onclick="AnswerNote.fix('${k}')">이 답으로 정하기</button>` : ''}<button type="button" class="pk-btn sm ghost" onclick="AnswerNote.edit='${k}';AnswerNote.render()">${c ? '고쳐 쓰기' : '직접 쓰기'}</button>${c && c.fixed ? `<button type="button" class="pk-btn sm ghost" onclick="AnswerNote.unfix('${k}')">자동으로 고르기</button>` : ''}</div>` : ''}
+    </section>`;
+  },
+  async save(k, row){
+    const { error } = await sb.from('answer_notes').upsert(Object.assign({ user_id: PracticeKit.uid(), cat: k, updated_at: new Date().toISOString() }, row));
+    if(error){ showToast('저장하지 못했어요. ' + friendlyErr(error), 'warn'); return false; }
+    this.data.saved[k] = Object.assign({ cat: k, updated_at: new Date().toISOString() }, row); return true;
+  },
+  async fix(k){ const c = this.cur(k); if(!c) return; if(await this.save(k, { question: c.q, answer: c.a, source: c.src, score: c.score })){ showToast('노트에 이 답을 정했어요'); this.render(); } },
+  async useRewrite(k){ const r = this.data.rew[k]; if(!r) return; if(await this.save(k, { question: r.q, answer: r.a, source: 'rewrite', score: null })){ showToast('AI가 고친 답으로 정했어요'); this.render(); } },
+  async saveEdit(k){ const ta = document.getElementById('an-ta'); const a = ta ? ta.value.trim() : ''; if(a.length < 20) return showToast('조금 더 써 주세요 (20자 이상)'); const c = this.cur(k);
+    const q = c ? c.q : ({ intro:'1분 동안 자기소개를 해 주세요.', motive:'지원 동기를 말씀해 주세요.', pers:'본인의 장점과 단점을 말씀해 주세요.', exp:'갈등이나 어려움을 해결한 경험을 말씀해 주세요.', sit:'예상하지 못한 상황에 어떻게 대처하시겠어요?', plan:'입사 후 포부를 말씀해 주세요.', job:'이 직무에 필요한 역량은 무엇이라고 생각하나요?' })[k];
+    if(await this.save(k, { question: q, answer: a, source: 'mine', score: null })){ this.edit = null; showToast('저장했어요'); this.render(); } },
+  async unfix(k){ const { error } = await sb.from('answer_notes').delete().eq('user_id', PracticeKit.uid()).eq('cat', k); if(error) return showToast('바꾸지 못했어요. ' + friendlyErr(error), 'warn'); delete this.data.saved[k]; this.render(); },
+  async runCheck(){
+    const notes = this.CATS.map(([k])=>{ const c = this.cur(k); return c ? { cat: k, question: c.q, answer: c.a } : null; }).filter(Boolean);
+    if(!notes.length) return showToast('노트에 답이 아직 없어요');
+    if(!(await PracticeKit.aiOn())) return showToast('지금은 AI 기능이 꺼져 있어요. 담당자에게 문의해 주세요.');
+    const btn = document.getElementById('an-chk'); if(btn){ btn.disabled = true; btn.textContent = '서류와 맞춰 보는 중…'; }
+    try{
+      const { data, error } = await Promise.race([sb.functions.invoke('note-check', { body: { notes } }), new Promise((_, rej)=>setTimeout(()=>rej(new Error('AI 응답이 늦어요. 잠시 뒤 다시 눌러 주세요.')), 60000))]);
+      let d = data;
+      if(error){ let msg = error.message || ''; try{ const j = await error.context.json(); if(j && j.error === 'limit') msg = '오늘 쓸 수 있는 AI 횟수를 다 썼어요. 내일 다시 해 주세요.'; else if(j && j.message) msg = j.message; }catch(_){} throw new Error(msg || 'AI가 답하지 못했어요'); }
+      if(!d || d.error) throw new Error((d && (d.message || d.error)) || 'AI가 답하지 못했어요');
+      this.check = d; this.render(); const b = document.getElementById('an-b'); if(b) b.scrollTop = 0;
+    }catch(e){ showToast(e.message || '맞춰 보지 못했어요', 'warn'); }
+    if(btn){ btn.disabled = false; btn.textContent = '자소서와 맞춰 보기'; }
+  },
+  checkHtml(d){
+    const esc = escapeHtml, L = Object.fromEntries(this.CATS);
+    return `<section class="an-check"><header><b>자소서와 맞춰 본 결과</b>${d.summary ? `<p>${esc(d.summary)}</p>` : ''}</header>
+      ${(d.mismatches || []).length ? `<h4>서로 어긋나는 곳 ${d.mismatches.length}곳</h4><ul class="an-mm">${d.mismatches.map(m=>`<li><span class="an-tag">${esc(L[m.cat] || '')}</span><div><p><em>답변</em>${esc(m.note)}</p><p><em>서류</em>${esc(m.doc)}</p><p class="an-tip">→ ${esc(m.tip)}</p></div></li>`).join('')}</ul>` : '<p class="an-ok">✓ 답변과 서류가 서로 어긋나는 곳은 없어요.</p>'}
+      ${(d.missing || []).length ? `<h4>서류에 있는데 답에서 빠진 강점</h4><ul class="an-ms">${d.missing.map(m=>`<li><b>${esc(m.strength)}</b> <span class="an-tag">${esc(L[m.where] || '')}에 넣기</span><p>${esc(m.tip)}</p></li>`).join('')}</ul>` : ''}
+    </section>`;
+  },
+  print(){
+    if(!this.data) return; const esc = escapeHtml, u = state.currentUser || {}, now = new Date();
+    const w = window.open('', '_blank'); if(!w) return showToast('팝업이 막혀 있어요. 주소창 오른쪽에서 팝업을 허용한 뒤 다시 눌러 주세요.', 'warn');
+    const body = this.CATS.map(([k, l])=>{ const c = this.cur(k); return `<section><h2>${l}</h2>${c ? `<p class="q">Q. ${esc(c.q)}</p><p class="a">${esc(c.a)}</p>` : '<p class="e">(아직 답 없음)</p>'}</section>`; }).join('');
+    w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>답변 노트 · ${esc(u.name || '')}</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"><style>body{font-family:Pretendard,system-ui,sans-serif;color:#1c1c1e;margin:0;padding:24px;font-size:13px;line-height:1.7;} h1{font-size:20px;margin:0;} .m{color:#8a8a90;font-size:12px;margin:4px 0 18px;} section{border-top:1px solid #e6e3dd;padding:12px 0;break-inside:avoid;} h2{font-size:14px;margin:0 0 4px;color:#c8441c;} .q{margin:0;color:#55555c;font-weight:600;} .a{margin:6px 0 0;white-space:pre-wrap;} .e{color:#aaa;margin:0;} @page{size:A4;margin:14mm 12mm;}</style></head><body><h1>나만의 답변 노트</h1><p class="m">${esc(u.name || '')} · ${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()} · ZAVAPASS × 한림대학교</p>${body}<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script></body></html>`);
+    w.document.close();
+  },
+};
+
+/* ---------------- 2026-11-10 면접 당일 10분 마무리 (Finish10) ----------------
+   1분 자기소개(60초) → 지원동기(60초) → 목표 기관 예상 질문 2개(각 90초). 질문을 목소리로 읽고, 카운트다운·받아쓰기 자동, 시간이 끝나면 다음 질문
+   끝나면 AI 채점(grade-answer, 다시 답하기와 같은 함수) + '면접장 들어가기 전 기억할 3가지' + 답변 노트에 담기 */
+const Finish10 = {
+  s: null, _t: null, _seq: 0,
+  COMMON: ['본인의 장점과 단점을 직무와 연결해 말씀해 주세요.', '팀으로 일하다 갈등을 해결했던 경험을 말씀해 주세요.', '입사 후 어떤 직원이 되고 싶은지 말씀해 주세요.', '예상하지 못한 문제가 생겼을 때 어떻게 대처하시겠어요?'],
+  stop(){ if(this._t){ clearInterval(this._t); this._t = null; } this._seq++; try{ DebateVoice.stop(); PracticeKit.stopMic(); }catch(_){} },
+  body(h){ const b = document.getElementById('f10-b'); if(b){ b.innerHTML = h; b.scrollTop = 0; } },
+  foot(h){ const f = document.getElementById('f10-f'); if(f) f.innerHTML = h; },
+  async open(){
+    this.stop(); try{ HomeTabs.close(); }catch(_){}
+    PracticeKit.modal(PracticeKit.head('면접 당일 10분 마무리', '실전처럼 4문항') + `<div class="pk-b" id="f10-b"><div class="pk-wait"><i></i>준비하고 있어요</div></div><footer class="pk-f" id="f10-f"></footer>`, 'wide');
+    const m = document.getElementById('pk-modal'); if(m && !m._f10){ m._f10 = true; m.addEventListener('mousedown', e=>{ if(e.target === m) this.stop(); }); }
+    let orgs = []; try{ orgs = (await Debate.loadOrgs()) || []; }catch(_){}
+    try{ if(!PracticeKit.plan) await PracticeKit.loadPlan(); }catch(_){}
+    try{ if(!AnswerNote.data) await AnswerNote.load(); }catch(_){}
+    const p = PracticeKit.plan || {}, hit = orgs.find(o=>o.talent_id === p.company_id) || orgs.find(o=>p.company_name && o.name === p.company_name);
+    this.s = { orgs, tid: hit ? hit.talent_id : '', org: hit ? hit.name : (p.company_name || ''), qs: null, i: 0, ans: [] };
+    await this.pickQs(); this.startView();
+  },
+  async pickQs(){
+    const s = this.s, org = s.org || '지원한 기관';
+    let more = [];
+    if(s.tid){ try{ const { data } = await sb.rpc('list_review_questions', { p_talent_id: s.tid, p_debate: false });
+      const L = (data || []).filter(r=>!/자기소개|지원동기|마무리|영어/.test(r.qtype || '') && String(r.question || '').length < 90);
+      const pick = []; const pool = L.slice(); while(pick.length < 2 && pool.length){ pick.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]); }
+      more = pick.map(r=>({ q: r.question, qtype: r.qtype, real: true })); }catch(_){} }
+    const cm = this.COMMON.slice().sort(()=>Math.random() - .5);
+    while(more.length < 2) more.push({ q: cm.shift(), real: false });
+    s.qs = [{ q: '1분 동안 자기소개를 해 주세요.', cat: 'intro', sec: 60 }, { q: `${org}에 지원한 동기를 말씀해 주세요.`, cat: 'motive', sec: 60 }].concat(more.map(x=>({ q: x.q, real: x.real, qtype: x.qtype, cat: AnswerNote.catOf(x.q) || 'job', sec: 90 })));
+  },
+  startView(){
+    this.stop(); const s = this.s, esc = escapeHtml, n = AnswerNote.data;
+    const peek = n ? ['intro', 'motive'].map(k=>{ const c = AnswerNote.cur(k); return c ? `<details class="f10-peek"><summary>내 노트의 ${k === 'intro' ? '1분 자기소개' : '지원동기'} 먼저 보기</summary><p>${esc(c.a)}</p></details>` : ''; }).join('') : '';
+    this.body(`<p class="f10-lead">면접장 들어가기 전, <b>10분 동안 4문항</b>을 실전처럼 말해 봐요. 질문을 목소리로 읽어 주고 시간을 재요. 시간이 끝나면 다음 질문으로 넘어가요.</p>
+      <label class="dbt-sel f10-org"><span>목표 기관</span><select id="f10-org"><option value="">공통 질문으로</option>${s.orgs.map(o=>`<option value="${esc(o.talent_id)}"${o.talent_id === s.tid ? ' selected' : ''}>${esc(o.name)}</option>`).join('')}</select></label>
+      <ol class="f10-qs">${s.qs.map((x, i)=>`<li><span class="f10-no">${i + 1}</span><div><p>${esc(x.q)}</p><small>${x.sec}초${x.real ? ' · 실제 면접 후기 질문' : i > 1 ? ' · 공통 예상 질문' : ''}</small></div></li>`).join('')}</ol>
+      ${peek}
+      <p class="hx-fine">마이크를 허용하면 말한 내용이 글로 받아써져요. 직접 써도 돼요.</p>`);
+    this.foot(`<button type="button" class="pk-btn ghost" onclick="Finish10.stop();PracticeKit.close()">닫기</button><button type="button" class="pk-btn" onclick="Finish10.reroll()">↻ 다른 질문</button><button type="button" class="pk-btn pri" onclick="Finish10.run(0)">▶ 시작하기</button>`);
+    const sel = document.getElementById('f10-org'); if(sel) sel.onchange = async ()=>{ const o = s.orgs.find(x=>x.talent_id === sel.value); s.tid = sel.value; s.org = o ? o.name : ''; await this.pickQs(); this.startView(); };
+  },
+  async reroll(){ await this.pickQs(); this.startView(); },
+  run(i){
+    this.stop(); const s = this.s, x = s.qs[i], esc = escapeHtml, my = this._seq; s.i = i;
+    this.body(`<div class="f10-prog">${s.qs.map((_, j)=>`<i class="${j < i ? 'done' : j === i ? 'on' : ''}"></i>`).join('')}<span>${i + 1} / ${s.qs.length}</span></div>
+      <div class="dbt-ai f10-q" data-i="0"><b>면접관 질문</b><p>${esc(x.q)}</p></div>
+      <div class="dbt-live" id="f10-live" aria-live="polite"></div>
+      <textarea id="pk-ans" rows="7" placeholder="말하면 여기에 받아써져요. 직접 써도 돼요"></textarea>
+      <div class="pk-row"><button type="button" class="pk-btn" id="pk-mic" onclick="PracticeKit.mic()">🎙 말로 답하기</button><span class="pk-mut" id="pk-mic-st"></span><span class="pk-cnt" id="pk-cnt">0자</span></div>`);
+    this.foot(`<button type="button" class="pk-btn ghost" onclick="Finish10.startView()">처음으로</button><button type="button" class="pk-btn pri" id="f10-next" onclick="Finish10.next()">${i < s.qs.length - 1 ? '다 말했어요, 다음 질문' : '다 말했어요, 결과 보기'}</button>`);
+    const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt'); ta.oninput = ()=>{ cnt.textContent = ta.value.trim().length + '자'; };
+    const live = document.getElementById('f10-live'), q = document.querySelector('#f10-b .f10-q');
+    live.className = 'dbt-live talk'; live.innerHTML = `<span class="dbt-wave" aria-hidden="true"><i></i><i></i><i></i></span><span><b>면접관</b>이 질문하고 있어요</span><button type="button" class="pk-btn sm" id="f10-skip">건너뛰고 바로 말하기</button>`;
+    if(q) q.classList.add('speaking');
+    const go = ()=>{ if(my !== this._seq) return; if(q) q.classList.remove('speaking'); this.timer(x.sec); };
+    document.getElementById('f10-skip').onclick = ()=>{ this._seq++; DebateVoice.stop(); if(q) q.classList.remove('speaking'); this.timer(x.sec); };
+    DebateVoice.speak(x.q, '면접관', ()=>{ setTimeout(go, 300); });
+  },
+  timer(sec){
+    const live = document.getElementById('f10-live'); if(!live) return; const my = this._seq;
+    let left = sec;
+    const draw = ()=>{ live.className = 'dbt-live tm' + (left <= 10 ? ' warn' : ''); live.innerHTML = `<b>${Debate.fmt(left)}</b><span>${left > 0 ? '말할 시간이 남았어요' : '시간이 끝났어요'}</span><i><em style="width:${100 - left / sec * 100}%"></em></i>`; };
+    draw(); try{ if(StenoListener.supported() && !PracticeKit._mic) PracticeKit.mic(); }catch(_){}
+    if(this._t) clearInterval(this._t);
+    this._t = setInterval(()=>{ if(my !== this._seq || !document.getElementById('f10-live')){ clearInterval(this._t); this._t = null; return; } left--; draw(); if(left <= 0){ clearInterval(this._t); this._t = null; PracticeKit.stopMic(); setTimeout(()=>{ if(my === this._seq) this.next(); }, 900); } }, 1000);
+  },
+  next(){
+    const s = this.s, ta = document.getElementById('pk-ans'); if(!ta) return;
+    s.ans[s.i] = ta.value.trim(); this.stop();
+    if(s.i < s.qs.length - 1) this.run(s.i + 1); else this.result();
+  },
+  async result(){
+    const s = this.s, esc = escapeHtml;
+    this.body(`<div class="pk-wait"><i></i>AI가 4개 답을 채점하고 있어요 (20~40초)</div>`); this.foot('');
+    const ai = await PracticeKit.aiOn();
+    const R = await Promise.all(s.qs.map(async (x, i)=>{ const a = s.ans[i] || ''; if(a.length < 10) return { skip: true };
+      if(!ai) return { score: null };
+      try{ return (await PracticeKit.aiGrade({ q: x.q, fieldName: '', companyName: s.org, qbType: x.qtype }, a)) || { score: null }; }catch(_){ return { score: null }; } }));
+    s.res = R;
+    const sc = R.filter(r=>r && r.score != null).map(r=>r.score), avg = sc.length ? Math.round(sc.reduce((a, b)=>a + b, 0) / sc.length) : null;
+    const tips = []; R.map((r, i)=>({ r, i })).filter(o=>o.r && o.r.score != null).sort((a, b)=>(a.r.score || 0) - (b.r.score || 0)).forEach(o=>{ const f = this.fbParts(o.r); if(tips.length < 3 && (f.fix || f.title)) tips.push({ i: o.i, t: f.title && f.fix !== f.title ? `<b>${escapeHtml(f.title)}</b> — ${escapeHtml(f.fix)}` : escapeHtml(f.fix || f.title) }); });
+    if(tips.length < 3) R.forEach((r, i)=>{ if(tips.length < 3 && r && r.skip) tips.push({ i, t: '이 질문은 거의 답하지 못했어요. 첫 문장(결론)만이라도 미리 정해 두세요.' }); });   // t는 이미 HTML
+    this.body(`<div class="dbt-score"><div><small>평균</small><b>${avg != null ? avg : '–'}</b><span>/100</span></div><p>${avg == null ? 'AI 채점이 꺼져 있거나 답이 짧아 점수를 못 냈어요. 아래 답을 한 번 더 읽어 보세요.' : avg >= 75 ? '준비가 잘 되어 있어요. 아래 3가지만 떠올리고 들어가세요.' : '아래 3가지를 먼저 고쳐서 한 번 더 말해 보세요.'}</p></div>
+      ${tips.length ? `<section class="f10-tips"><b>면접장 들어가기 전 기억할 3가지</b><ol>${tips.map(t=>`<li>${t.t} <small>(${t.i + 1}번 질문)</small></li>`).join('')}</ol></section>` : ''}
+      <ul class="f10-res">${s.qs.map((x, i)=>{ const r = R[i] || {}, a = s.ans[i] || ''; return `<li><header><span class="f10-no">${i + 1}</span><p>${esc(x.q)}</p><b>${r.skip ? '답 없음' : r.score != null ? r.score + '점' : '–'}</b></header>
+        ${a ? `<p class="f10-a">${esc(a)}</p>` : ''}${r.score != null ? (()=>{ const f = this.fbParts(r); return `${f.good ? `<p class="f10-fb good"><em>잘한 점</em>${esc(f.good)}</p>` : ''}${f.fix ? `<p class="f10-fb"><em>고칠 점</em>${f.title && f.fix !== f.title ? `<b>${esc(f.title)}</b> — ` : ''}${esc(f.fix)}</p>` : ''}`; })() : ''}
+        ${a.length >= 30 ? `<button type="button" class="pk-btn sm" onclick="Finish10.toNote(${i})">답변 노트에 담기</button>` : ''}</li>`; }).join('')}</ul>`);
+    this.foot(`<button type="button" class="pk-btn ghost" onclick="Finish10.stop();PracticeKit.close()">닫기</button><button type="button" class="pk-btn" onclick="AnswerNote.open()">답변 노트 열기</button><button type="button" class="pk-btn pri" onclick="Finish10.run(0)">↻ 한 번 더</button>`);
+  },
+  /* 채점 글(A~E 형식)에서 '잘한 점'·'고칠 점' 한 문장씩만 뽑아 쉽게 보여 줌 */
+  fbParts(r){
+    const fb = String((r && r.feedback) || '').replace(/\s+/g, ' ');
+    const cut = t=>String(t || '').replace(/\([A-E][^)]*\)/g, '').replace(/^["'“]|["'”]$/g, '').trim();
+    let good = (fb.match(/잘한 점[^:]*:\s*(?:"[^"]*"\s*[—-]\s*)?([^.。]+[.。])/) || [])[1] || (r.strengths || [])[0] || '';
+    let fix = (fb.match(/고칠 점\s*1\.\s*(.+?)(?=\s*\([A-E]|고칠 점\s*2|$)/) || [])[1] || '';
+    const title = cut((r.improvements || [])[0] || '');
+    fix = cut(fix);
+    return { good: cut(good).slice(0, 140), fix: fix ? fix.slice(0, 160) : title, title };
+  },
+  async toNote(i){
+    const s = this.s, x = s.qs[i], a = s.ans[i], r = (s.res || [])[i] || {}; if(!AnswerNote.data) await AnswerNote.load();
+    const k = x.cat || 'job';
+    if(await AnswerNote.save(k, { question: x.q, answer: a, source: 'finish10', score: r.score == null ? null : r.score })) showToast(`답변 노트의 '${(AnswerNote.CATS.find(c=>c[0] === k) || [])[1]}' 칸에 담았어요`);
+  },
+};
+/* 2026-11-10 홈 버튼 줄의 새 버튼 NEW 표시: 한 번 누르면 사라짐 */
+const HomeNew = {
+  KEYS: ['finish10', 'note'],
+  init(){ this.KEYS.forEach(k=>{ let seen = false; try{ seen = localStorage.getItem('zp_new_' + k) === '1'; }catch(_){} const b = document.querySelector(`.hm-tile[data-k="${k}"]`); if(b) b.classList.toggle('hm-new', !seen); }); },
+  seen(k){ try{ localStorage.setItem('zp_new_' + k, '1'); }catch(_){} const b = document.querySelector(`.hm-tile[data-k="${k}"]`); if(b) b.classList.remove('hm-new'); },
+};
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ()=>HomeNew.init()); else HomeNew.init();
 /* 2026-11-10 토론 연습 목소리: 브라우저 한국어 목소리로 사람마다 높낮이·빠르기를 달리해 읽어 줌 (무료, 서버 안 씀) */
 const DebateVoice = {
   P: { '진행자':['female', 1.0, 1.05], '면접관':['male', 0.96, 0.95], '상대 토론자':['male', 1.0, 0.88], '지원자 A':['male', 1.0, 1.0], '지원자 B':['female', 1.02, 1.12], '지원자 C':['male', 0.95, 0.82] },
