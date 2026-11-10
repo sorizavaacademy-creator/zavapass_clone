@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-10b';
+var APP_VERSION = '2026-11-10c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6471,7 +6471,6 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
 #d3-home .hm-tiles{grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;}
 #d3-home .hm-tile{padding-left:12px !important;padding-right:12px !important;}
 #d3-home .hm-tile b{font-size:13.5px;} #d3-home .hm-tile span{font-size:11.5px;}
-.hm-tile.hm-new{position:relative;} .hm-tile.hm-new::after{content:"NEW";position:absolute;top:-7px;right:8px;font-size:10px;font-weight:800;color:#fff;background:#c8441c;border-radius:999px;padding:1px 7px;}
 .hm-tile.hm-fin{background:#FFF4EE;border-color:#F2C2AD;} .hm-tile.hm-fin b{color:#a8381a;}
 @media(max-width:1100px) and (min-width:641px){ #d3-home .hm-tiles{grid-template-columns:repeat(4,minmax(0,1fr));} }
 @media(max-width:640px){ #d3-home .hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr));} }
@@ -7092,7 +7091,7 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
     </div>
 
     <!-- 2026-11-09h 홈 정리: 아래로 이어지던 칸들을 버튼 한 줄로 줄이고, 누르면 창(탭)으로 열림. 토론 카드(위 버튼과 같음)·성장 요약('나의 기록'과 같음)은 뺌 -->
-    <nav class="hm-tiles" id="hm-tiles" aria-label="연습 도구"><button type="button" class="hm-tile" data-t="review" onclick="HomeTabs.open('review')"><b>지난 면접 보완점</b><span>낮았던 질문 다시 연습</span></button><button type="button" class="hm-tile" data-t="recent" onclick="HomeTabs.open('recent')"><b>최근 면접 기록</b><span>리포트 다시 보기</span></button><button type="button" class="hm-tile" data-t="dday" onclick="HomeTabs.open('dday')"><b>면접 D-day</b><span>날짜·오늘의 3문항</span></button><button type="button" class="hm-tile hm-fin" data-k="finish10" onclick="HomeNew.seen('finish10');Finish10.open()"><b>10분 마무리</b><span>면접 직전 실전 연습</span></button><button type="button" class="hm-tile" data-t="bm" onclick="HomeTabs.open('bm')"><b>내 질문 모음</b><span>담아 둔 질문 연습</span></button><button type="button" class="hm-tile" data-k="note" onclick="HomeNew.seen('note');AnswerNote.open()"><b>답변 노트</b><span>유형별 내 최고 답변</span></button><button type="button" class="hm-tile" data-t="qbr" onclick="HomeTabs.open('qbr')"><b>기관별 후기 질문</b><span>17곳 면접 후기 질문</span></button><button type="button" class="hm-tile" data-t="exp" onclick="HomeTabs.open('exp')"><b>내 경험</b><span>경험 정리·입력</span></button></nav>
+    <nav class="hm-tiles" id="hm-tiles" aria-label="연습 도구"><button type="button" class="hm-tile" data-t="review" onclick="HomeTabs.open('review')"><b>지난 면접 보완점</b><span>낮았던 질문 다시 연습</span></button><button type="button" class="hm-tile" data-t="recent" onclick="HomeTabs.open('recent')"><b>최근 면접 기록</b><span>리포트 다시 보기</span></button><button type="button" class="hm-tile" data-t="dday" onclick="HomeTabs.open('dday')"><b>면접 D-day</b><span>날짜·오늘의 3문항</span></button><button type="button" class="hm-tile hm-fin" data-k="finish10" onclick="Finish10.open()"><b>10분 마무리</b><span>면접 직전 실전 연습</span></button><button type="button" class="hm-tile" data-t="bm" onclick="HomeTabs.open('bm')"><b>내 질문 모음</b><span>담아 둔 질문 연습</span></button><button type="button" class="hm-tile" data-k="note" onclick="AnswerNote.open()"><b>답변 노트</b><span>유형별 내 최고 답변</span></button><button type="button" class="hm-tile" data-t="qbr" onclick="HomeTabs.open('qbr')"><b>기관별 후기 질문</b><span>17곳 면접 후기 질문</span></button><button type="button" class="hm-tile" data-t="exp" onclick="HomeTabs.open('exp')"><b>내 경험</b><span>경험 정리·입력</span></button></nav>
     <div class="hm-sheet" id="hm-sheet" hidden>
       <div class="hm-sheet-bg" onclick="HomeTabs.close()"></div>
       <section class="hm-more" id="hm-more" role="dialog" aria-modal="true" aria-label="연습 도구">
@@ -24448,23 +24447,30 @@ const StenoLoop = {
  * 면접 중·결과 저장 전·자기소개 코치 중에는 띄우지 않고, 끝난 뒤 다음 화면에서 띄움. */
 const AppUpdate = {
   base:null, latest:null, dismissed:null, timer:null, checking:false,
+  /* 2026-11-10 클라우드플레어는 ETag·Last-Modified를 주지 않아 예전 방식(HEAD)으로는 새 버전을 알 수 없었음
+     → 같은 곳에 둔 작은 version.json({ v, note })을 읽어 이 화면의 APP_VERSION보다 새로우면 '새 버전' 띠를 띄움 (배포할 때 version.json도 함께 올림) */
   async head(){
     try{
-      if(location.protocol !== 'https:') return null;
-      const r = await fetch(location.pathname + '?vc=' + Date.now(), { method:'HEAD', cache:'no-store' });
+      const r = await fetch('version.json?t=' + Date.now(), { cache:'no-store' });
       if(!r.ok) return null;
-      return r.headers.get('last-modified') || r.headers.get('etag') || null;
+      const j = await r.json(); if(!j || !j.v) return null;
+      this.note = String(j.note || ''); return String(j.v);
     }catch(_){ return null; }
   },
   async init(){
-    this.base = await this.head(); if(!this.base) return;
-    this.timer = setInterval(()=>this.check(), 5*60*1000);
+    this.base = typeof APP_VERSION !== 'undefined' ? APP_VERSION : null; if(!this.base) return;
+    setTimeout(()=>this.check(), 20000);   // 열고 20초 뒤 한 번, 그다음 3분마다·창으로 돌아올 때마다
+    this.timer = setInterval(()=>this.check(), 3*60*1000);
     document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible') this.check(); });
   },
   async check(){
     if(!this.base || this.checking || document.visibilityState !== 'visible') return;
     this.checking = true; this.lastCheckAt = Date.now();
-    try{ const v = await this.head(); if(v && v !== this.base){ this.latest = v; this.maybeShow(); } }finally{ this.checking = false; }
+    try{ const v = await this.head(); if(v && v > this.base){ this.latest = v; this.paintBar(); this.maybeShow(); } }finally{ this.checking = false; }   // 날짜-글자 버전이라 글자 비교로 새것을 앎
+  },
+  paintBar(){
+    const bar = document.getElementById('update-bar'); if(!bar) return; const t = bar.querySelector('.ub-txt'); if(!t) return;
+    t.innerHTML = `<b>새 버전이 나왔어요</b><span>${this.note ? escapeHtml(this.note) + ' · ' : ''}새로고침하면 바로 적용돼요. 저장된 기록은 그대로예요.</span>`;
   },
   /* 2026-10-22v: 면접 준비 창을 열기 전에 새 버전이 있는지 한 번 더 확인 → 있으면 '새로고침하고 시작' 안내 (한 버전에 한 번만 물음)
      창을 오래 열어 둔 사람이 예전 화면으로 면접하다 이미 고친 문제를 다시 겪지 않게 */
@@ -26110,13 +26116,6 @@ const Finish10 = {
     if(await AnswerNote.save(k, { question: x.q, answer: a, source: 'finish10', score: r.score == null ? null : r.score })) showToast(`답변 노트의 '${(AnswerNote.CATS.find(c=>c[0] === k) || [])[1]}' 칸에 담았어요`);
   },
 };
-/* 2026-11-10 홈 버튼 줄의 새 버튼 NEW 표시: 한 번 누르면 사라짐 */
-const HomeNew = {
-  KEYS: ['finish10', 'note'],
-  init(){ this.KEYS.forEach(k=>{ let seen = false; try{ seen = localStorage.getItem('zp_new_' + k) === '1'; }catch(_){} const b = document.querySelector(`.hm-tile[data-k="${k}"]`); if(b) b.classList.toggle('hm-new', !seen); }); },
-  seen(k){ try{ localStorage.setItem('zp_new_' + k, '1'); }catch(_){} const b = document.querySelector(`.hm-tile[data-k="${k}"]`); if(b) b.classList.remove('hm-new'); },
-};
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ()=>HomeNew.init()); else HomeNew.init();
 /* 2026-11-10 토론 연습 목소리: 브라우저 한국어 목소리로 사람마다 높낮이·빠르기를 달리해 읽어 줌 (무료, 서버 안 씀) */
 const DebateVoice = {
   P: { '진행자':['female', 1.0, 1.05], '면접관':['male', 0.96, 0.95], '상대 토론자':['male', 1.0, 0.88], '지원자 A':['male', 1.0, 1.0], '지원자 B':['female', 1.02, 1.12], '지원자 C':['male', 0.95, 0.82] },
