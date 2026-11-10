@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-10e';
+var APP_VERSION = '2026-11-10f';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6555,6 +6555,31 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
 .sg-timer{display:flex;align-items:baseline;gap:8px;} .sg-timer b{font-size:24px;font-variant-numeric:tabular-nums;} .sg-timer span{font-size:12.5px;color:#8a8a90;}
 .sg-rate{display:grid;gap:6px;} .sg-rate > span{font-size:14px;font-weight:700;} .sg-rate small{font-weight:500;color:#8a8a90;font-size:12px;margin-left:4px;}
 .sg-rate > div{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;} .sg-rate button{min-height:42px;border:1.5px solid #D5D2CC;border-radius:10px;background:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer;} .sg-rate button.on{background:#1c2a44;border-color:#1c2a44;color:#fff;}
+.st-how span b{display:inline;font-size:inherit;}
+.st-acts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;} .st-top .st-acts .pk-btn{margin-left:0;}
+.st-vtip{display:grid;gap:3px;background:#F4F6FA;border-radius:12px;padding:10px 14px;} .st-vtip b{font-size:14px;} .st-vtip span{font-size:13px;line-height:1.6;color:#4A5466;}
+/* 2026-11-10 친구와 영상 연습 */
+.sg-wrap{width:min(560px,100%);display:grid;gap:12px;align-self:flex-start;} .sg-main{min-width:0;} .sg-wrap .sg-box{width:100%;box-sizing:border-box;}
+.sg-start{display:grid;gap:8px;}
+.sg-ov.vid .sg-wrap{width:min(1120px,100%);grid-template-columns:minmax(0,1.25fr) minmax(320px,1fr);align-items:start;}
+.sg-vid{position:sticky;top:0;z-index:2;border-radius:18px;overflow:hidden;background:#0f141d;aspect-ratio:4/3;} .sg-vid[hidden]{display:none;}
+#sg-remote{width:100%;height:100%;object-fit:contain;display:block;background:#0f141d;}
+#sg-local{position:absolute;right:10px;bottom:10px;width:28%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:2px solid rgba(255,255,255,.75);transform:scaleX(-1);background:#222;} #sg-local[hidden]{display:none;}
+.sg-vw{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;padding:16px;color:#fff;background:#151c28;} .sg-vw[hidden]{display:none;} .sg-vw b{font-size:16px;} .sg-vw span{font-size:13px;color:#C9D1DE;line-height:1.6;max-width:360px;}
+.sg-vst{position:absolute;left:10px;top:10px;font-size:12px;font-weight:700;color:#fff;border-radius:999px;padding:3px 10px;background:rgba(0,0,0,.55);} .sg-vst.on{background:#1f7a45;} .sg-vst.warn{background:#9a6a12;} .sg-vst.bad{background:#b3261e;}
+@media(max-width:820px){ .sg-ov.vid{padding-top:0;} .sg-ov.vid .sg-wrap{grid-template-columns:1fr;} .sg-vid{aspect-ratio:auto;height:36vh;border-radius:0 0 16px 16px;margin:0 -14px;} }
+html.sv-open{overflow:hidden;}
+.sv-ov{position:fixed;inset:0;z-index:6100;background:#0f141d;color:#fff;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));}
+.sv-top{display:flex;align-items:center;gap:10px;} .sv-top b{font-size:16px;}
+.sv-st{font-size:12.5px;font-weight:700;border-radius:999px;padding:3px 10px;background:rgba(255,255,255,.14);} .sv-st.on{background:#1f7a45;} .sv-st.warn{background:#9a6a12;} .sv-st.bad{background:#b3261e;}
+.sv-end{margin-left:auto;border:0;border-radius:10px;background:#d93a2b;color:#fff;font:inherit;font-weight:800;font-size:14px;padding:9px 18px;cursor:pointer;}
+.sv-stage{position:relative;border-radius:16px;overflow:hidden;background:#000;min-height:0;}
+#sv-remote{width:100%;height:100%;object-fit:contain;display:block;background:#000;}
+#sv-local{position:absolute;right:12px;bottom:12px;width:min(24%,220px);aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:2px solid rgba(255,255,255,.75);transform:scaleX(-1);background:#222;}
+.sv-wait{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;text-align:center;padding:20px;background:#151c28;} .sv-wait[hidden]{display:none;} .sv-wait b{font-size:19px;} .sv-wait p{margin:0;max-width:440px;font-size:14px;line-height:1.65;color:#C9D1DE;}
+.sv-q{background:#fff;color:#172033;border-radius:14px;padding:12px 16px;} .sv-q small{font-size:12px;color:#c8441c;font-weight:700;} .sv-q p{margin:2px 0 0;font-size:18px;font-weight:800;line-height:1.45;}
+.sv-ctl{display:flex;gap:8px;justify-content:center;} .sv-ctl button{min-height:46px;flex:0 1 210px;border:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font:inherit;font-weight:700;font-size:14.5px;cursor:pointer;} .sv-ctl button.off{background:#b3261e;}
+@media(max-width:640px){ .sv-q p{font-size:16px;} #sv-local{width:32%;} .sv-top b{font-size:15px;} }
 .os-doc{display:grid;gap:0;}
 /* 2026-11-10 D-day 창: 전날·당일·다녀온 뒤 */
 .dd-lead{margin:0 0 10px;font-size:14px;color:#4A5466;line-height:1.6;}
@@ -26339,9 +26364,9 @@ const Study = {
   },
   home(){
     const esc = escapeHtml, now = Date.now();
-    this.body(`<ol class="st-how"><li><b>질문 5개로 링크 만들기</b><span>내 목표 기관·자주 나오는 질문으로 골라 드려요</span></li><li><b>친구에게 링크 보내기</b><span>카카오톡 등으로. 친구는 로그인 없이 열 수 있어요</span></li><li><b>친구 앞에서 답하기</b><span>친구가 질문을 읽어 주고 내용·전달·태도 점수와 한 줄 의견을 남겨요</span></li></ol>
+    this.body(`<ol class="st-how"><li><b>질문 5개로 링크 만들기</b><span>내 목표 기관·자주 나오는 질문으로 골라 드려요</span></li><li><b>친구에게 링크 보내기</b><span>카카오톡 등으로. 친구는 로그인 없이 열 수 있어요</span></li><li><b>친구 앞에서, 또는 영상으로 답하기</b><span>친구가 질문을 읽어 주고 내용·전달·태도 점수와 한 줄 의견을 남겨요. 떨어져 있으면 <b>📹 영상으로 시작</b>을 눌러 영상통화처럼 할 수 있어요</span></li></ol>
       ${this.sessions.length ? `<h4 class="st-h">내가 만든 링크</h4><ul class="st-list">${this.sessions.map(s=>{ const F = this.fb[s.id] || [], live = new Date(s.expires_at).getTime() > now;
-        return `<li><div class="st-top"><b>${new Date(s.created_at).toLocaleDateString('ko-KR')} · 질문 ${(s.questions || []).length}개</b><span class="st-badge ${live ? 'on' : ''}">${live ? '열려 있음' : '기한 끝남'}</span>${live ? `<button type="button" class="pk-btn sm" onclick="Study.copy('${s.token}')">링크 복사</button>` : ''}</div>
+        return `<li><div class="st-top"><b>${new Date(s.created_at).toLocaleDateString('ko-KR')} · 질문 ${(s.questions || []).length}개</b><span class="st-badge ${live ? 'on' : ''}">${live ? '열려 있음' : '기한 끝남'}</span>${live ? `<span class="st-acts"><button type="button" class="pk-btn sm" onclick="Study.copy('${s.token}')">링크 복사</button><button type="button" class="pk-btn sm pri" onclick="StudyHost.open('${s.id}')">📹 영상으로 시작</button></span>` : ''}</div>
           ${F.length ? F.map(f=>this.fbHtml(s, f)).join('') : `<p class="st-none">아직 친구 의견이 없어요.</p>`}</li>`; }).join('')}</ul>` : ''}`);
     this.foot(`<button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button><button type="button" class="pk-btn pri" onclick="Study.make()">＋ 새 링크 만들기</button>`);
   },
@@ -26378,30 +26403,146 @@ const Study = {
     const url = this.link(data.token);
     this.body(`<div class="st-made"><b>링크를 만들었어요</b><p>친구에게 보내 주세요. <b>3일 동안</b> 열려 있고, 친구는 로그인 없이 열 수 있어요.</p>
       <div class="st-url"><input readonly value="${escapeHtml(url)}" id="st-url"><button type="button" class="pk-btn pri" onclick="Study.copy('${data.token}')">복사</button></div>
-      <p class="hx-fine">친구가 점수를 남기면 '친구와 함께 연습'에서 볼 수 있어요. 이름은 성을 뺀 이름만 친구에게 보여요.</p></div>`);
-    this.foot(`<button type="button" class="pk-btn ghost" onclick="Study.home()">← 목록</button><button type="button" class="pk-btn pri" onclick="Study.copy('${data.token}')">링크 복사</button>`);
+      <p class="hx-fine">친구가 점수를 남기면 '친구와 함께 연습'에서 볼 수 있어요. 이름은 성을 뺀 이름만 친구에게 보여요.</p>
+      <div class="st-vtip"><b>📹 떨어져 있다면 영상으로</b><span>링크를 보낸 뒤 <b>영상으로 시작</b>을 누르고 기다리면, 친구가 링크에서 '영상으로 함께하기'를 눌렀을 때 연결돼요. 같은 방에 있으면 소리가 울리니 영상 없이 하세요. 학교·회사 와이파이에서는 연결이 안 될 수 있어요.</span></div></div>`);
+    this.foot(`<button type="button" class="pk-btn ghost" onclick="Study.home()">← 목록</button><button type="button" class="pk-btn" onclick="Study.copy('${data.token}')">링크 복사</button><button type="button" class="pk-btn pri" onclick="StudyHost.open('${data.id}')">📹 영상으로 시작</button>`);
   },
   async copy(t){ const url = this.link(t); try{ await navigator.clipboard.writeText(url); showToast('링크를 복사했어요. 친구에게 붙여 넣어 보내세요'); }catch(_){ prompt('이 링크를 복사해 친구에게 보내세요', url); } },
 };
 
+/* ---------------- 2026-11-10 친구와 영상 연습 (StudyCall · StudyHost) ----------------
+   브라우저끼리 바로 영상·음성을 주고받음(WebRTC). 서로 찾는 신호는 Supabase 실시간 채널(study-토큰)로 주고받음
+   중계 서버(TURN)는 없음 → 집 와이파이·LTE에서는 대부분 되고, 학교·회사 와이파이 등에서는 안 될 수 있음 (그때는 영상 없이 같이 있거나 다른 영상통화로)
+   학생(host)이 먼저 카메라·마이크를 켜고 기다리면, 친구(guest)가 링크에서 '영상으로 함께하기'를 눌렀을 때 연결. 친구가 질문을 넘기면 학생 화면 질문도 같이 넘어감 */
+function StudyCall(token, role, h){ this.token = token; this.role = role; this.h = h || {}; this.id = Math.random().toString(36).slice(2); this.pending = []; this.pc = null; this.ch = null; this.stream = null; }
+StudyCall.ICE = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] }];
+StudyCall.prototype.join = async function(stream){
+  this.stream = stream || null;
+  this.ch = sb.channel('study-' + this.token, { config: { broadcast: { self: false } } });
+  this.ch.on('broadcast', { event: 'sig' }, ({ payload })=>{ this.onSig(payload).catch(e=>console.warn('[영상 연습 신호]', e && e.message || e)); });
+  await new Promise((res, rej)=>{ const t = setTimeout(()=>rej(new Error('실시간 연결이 늦어요')), 15000); this.ch.subscribe(st=>{ if(st === 'SUBSCRIBED'){ clearTimeout(t); res(); } else if(st === 'CHANNEL_ERROR' || st === 'TIMED_OUT'){ clearTimeout(t); rej(new Error('실시간 연결에 실패했어요')); } }); });
+  this.send({ t: this.role === 'host' ? 'host-ready' : 'hello' });
+};
+StudyCall.prototype.send = function(p){ try{ this.ch && this.ch.send({ type: 'broadcast', event: 'sig', payload: Object.assign({ from: this.id, role: this.role }, p) }); }catch(_){} };
+StudyCall.prototype.newPc = function(){
+  try{ if(this.pc) this.pc.close(); }catch(_){}
+  const pc = this.pc = new RTCPeerConnection({ iceServers: StudyCall.ICE }); this.pending = [];
+  const tr = this.stream ? this.stream.getTracks() : [];
+  tr.forEach(t=>pc.addTrack(t, this.stream));
+  if(!tr.some(t=>t.kind === 'video')) pc.addTransceiver('video', { direction: 'recvonly' });   // 내 카메라가 없어도 상대 영상은 받음
+  if(!tr.some(t=>t.kind === 'audio')) pc.addTransceiver('audio', { direction: 'recvonly' });
+  pc.ontrack = e=>{ if(this.h.onRemote) this.h.onRemote(e.streams[0] || new MediaStream([e.track])); };
+  pc.onicecandidate = e=>{ if(e.candidate) this.send({ t: 'ice', c: e.candidate.toJSON ? e.candidate.toJSON() : e.candidate }); };
+  pc.onconnectionstatechange = ()=>{ if(this.h.onState) this.h.onState(pc.connectionState); };
+  return pc;
+};
+StudyCall.prototype.flush = async function(){ const L = this.pending; this.pending = []; for(const c of L){ try{ await this.pc.addIceCandidate(c); }catch(_){} } };
+StudyCall.prototype.offer = async function(){ this._offT = Date.now(); const pc = this.newPc(); const o = await pc.createOffer(); await pc.setLocalDescription(o); this.send({ t: 'offer', sdp: pc.localDescription.toJSON ? pc.localDescription.toJSON() : pc.localDescription }); };
+StudyCall.prototype.onSig = async function(p){
+  if(!p || p.from === this.id || p.role === this.role) return;
+  if(p.t === 'hello' && this.role === 'host'){ if(this.pc && Date.now() - (this._offT || 0) < 4000) return; if(this.h.onState) this.h.onState('connecting'); return this.offer(); }
+  if(p.t === 'host-ready' && this.role === 'guest') return this.send({ t: 'hello' });
+  if(p.t === 'offer' && this.role === 'guest'){
+    const pc = this.newPc(); await pc.setRemoteDescription(p.sdp); const a = await pc.createAnswer(); await pc.setLocalDescription(a);
+    this.send({ t: 'answer', sdp: pc.localDescription.toJSON ? pc.localDescription.toJSON() : pc.localDescription }); return this.flush();
+  }
+  if(p.t === 'answer' && this.role === 'host' && this.pc){ await this.pc.setRemoteDescription(p.sdp); return this.flush(); }
+  if(p.t === 'ice'){ if(this.pc && this.pc.remoteDescription){ try{ await this.pc.addIceCandidate(p.c); }catch(_){} } else this.pending.push(p.c); return; }
+  if(this.h.onMsg) this.h.onMsg(p);
+};
+StudyCall.prototype.retry = function(){ if(this.role === 'host') this.offer(); else this.send({ t: 'hello' }); };
+StudyCall.prototype.close = function(){ try{ this.send({ t: 'bye' }); }catch(_){} try{ if(this.pc) this.pc.close(); }catch(_){} try{ if(this.ch) sb.removeChannel(this.ch); }catch(_){} if(this.stream) this.stream.getTracks().forEach(t=>t.stop()); this.pc = null; this.ch = null; };
+/* 카메라·마이크 켜기: 카메라가 막히면 마이크만, 둘 다 막히면 null (그래도 상대 영상은 받을 수 있음) */
+async function studyMedia(){
+  if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) return { stream: null, why: '이 브라우저는 카메라·마이크를 쓸 수 없어요' };
+  try{ return { stream: await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: { echoCancellation: true, noiseSuppression: true } }) }; }
+  catch(e1){ try{ return { stream: await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true } }), why: '카메라를 켜지 못해 목소리만 보내요' }; }catch(e2){ return { stream: null, why: '카메라·마이크가 막혀 있어요. 주소창 옆 자물쇠에서 허용해 주세요' }; } }
+}
+
+/* 학생 쪽 영상 화면 */
+const StudyHost = {
+  call: null, s: null, mic: true, cam: true,
+  async open(id){
+    const s = (Study.sessions || []).find(x=>x.id === id); if(!s) return;
+    this.s = s; try{ PracticeKit.close(); }catch(_){}
+    let ov = document.getElementById('sv-ov'); if(!ov){ ov = document.createElement('div'); ov.id = 'sv-ov'; ov.className = 'sv-ov'; document.body.appendChild(ov); }
+    document.documentElement.classList.add('sv-open');
+    ov.innerHTML = `<div class="sv-top"><b>친구와 영상 연습</b><span class="sv-st" id="sv-st">카메라 켜는 중…</span><button type="button" class="sv-end" onclick="StudyHost.end()">끝내기</button></div>
+      <div class="sv-stage"><video id="sv-remote" autoplay playsinline></video><div class="sv-wait" id="sv-wait"><b>친구를 기다리고 있어요</b><p>친구가 보낸 링크를 열고 <b>'영상으로 함께하기'</b>를 누르면 자동으로 연결돼요.</p><button type="button" class="pk-btn" onclick="Study.copy('${s.token}')">링크 다시 복사</button></div><video id="sv-local" autoplay playsinline muted></video></div>
+      <div class="sv-q" id="sv-q"><small>친구가 질문을 읽어 줄 거예요</small><p>${escapeHtml((s.questions || [])[0] || '')}</p></div>
+      <div class="sv-ctl"><button type="button" id="sv-mic" onclick="StudyHost.toggle('audio')">🎙 마이크 끄기</button><button type="button" id="sv-cam" onclick="StudyHost.toggle('video')">📷 카메라 끄기</button></div>`;
+    const m = await studyMedia(); const st = document.getElementById('sv-st'); if(!st) return;
+    if(m.stream){ const v = document.getElementById('sv-local'); v.srcObject = m.stream; }
+    if(m.why) showToast(m.why, m.stream ? '' : 'warn');
+    this.mic = !!(m.stream && m.stream.getAudioTracks().length); this.cam = !!(m.stream && m.stream.getVideoTracks().length); this.paintCtl();
+    this.call = new StudyCall(s.token, 'host', {
+      onRemote: ms=>{ const v = document.getElementById('sv-remote'); if(v && v.srcObject !== ms){ v.srcObject = ms; v.play && v.play().catch(()=>{}); } const w = document.getElementById('sv-wait'); if(w && ms.getVideoTracks().length) w.hidden = true; },
+      onState: x=>this.state(x),
+      onMsg: p=>{ if(p.t === 'q') this.showQ(p.i, p.n, p.text); else if(p.t === 'done') this.showQ(-1); else if(p.t === 'bye') this.state('bye'); },
+    });
+    try{ await this.call.join(m.stream); this.state('waiting'); }catch(e){ this.state('error', e.message); }
+  },
+  state(x, msg){
+    const st = document.getElementById('sv-st'); if(!st) return;
+    const L = { waiting: ['기다리는 중', ''], connecting: ['연결하는 중…', ''], connected: ['연결됨', 'on'], disconnected: ['연결이 잠시 끊겼어요', 'warn'], failed: ['연결하지 못했어요', 'bad'], bye: ['친구가 나갔어요', 'warn'], error: [msg || '연결 오류', 'bad'] }[x] || [x, ''];
+    st.textContent = L[0]; st.className = 'sv-st ' + L[1];
+    const w = document.getElementById('sv-wait');
+    if(x === 'connected' && w){ setTimeout(()=>{ const v = document.getElementById('sv-remote'), w2 = document.getElementById('sv-wait'); if(v && w2 && !(v.srcObject && v.srcObject.getVideoTracks().length)){ w2.hidden = false; w2.innerHTML = `<b>연결됐어요</b><p>친구 카메라가 꺼져 있어요. 목소리는 들릴 수 있어요.</p>`; } }, 2000); }
+    if(x === 'failed' && w){ w.hidden = false; w.innerHTML = `<b>영상 연결이 되지 않았어요</b><p>학교·회사 와이파이에서는 막힐 수 있어요. 휴대폰 데이터(LTE)로 바꾸거나, 같이 있거나 다른 영상통화를 켜고 진행해 주세요. 점수 매기기는 그대로 돼요.</p><button type="button" class="pk-btn" onclick="StudyHost.call && StudyHost.call.offer()">다시 연결</button>`; }
+    if(x === 'bye' && w){ w.hidden = false; w.innerHTML = `<b>친구가 연습을 마쳤어요</b><p>친구가 점수를 보내면 '친구와 함께 연습'에서 볼 수 있어요.</p><button type="button" class="pk-btn pri" onclick="StudyHost.end()">닫기</button>`; }
+  },
+  showQ(i, n, text){ const q = document.getElementById('sv-q'); if(!q) return; q.innerHTML = i < 0 ? `<small>질문 끝</small><p>친구가 마지막 한마디를 쓰고 있어요</p>` : `<small>질문 ${i + 1} / ${n}</small><p>${escapeHtml(text || '')}</p>`; },
+  toggle(kind){ const s = this.call && this.call.stream; if(!s) return; const tr = kind === 'audio' ? s.getAudioTracks() : s.getVideoTracks(); if(!tr.length) return; const on = !tr[0].enabled; tr.forEach(t=>t.enabled = on); if(kind === 'audio') this.mic = on; else this.cam = on; this.paintCtl(); },
+  paintCtl(){ const a = document.getElementById('sv-mic'), v = document.getElementById('sv-cam'); if(a){ a.textContent = this.mic ? '🎙 마이크 끄기' : '🔇 마이크 켜기'; a.classList.toggle('off', !this.mic); } if(v){ v.textContent = this.cam ? '📷 카메라 끄기' : '🚫 카메라 켜기'; v.classList.toggle('off', !this.cam); } },
+  end(){ try{ if(this.call) this.call.close(); }catch(_){} this.call = null; const ov = document.getElementById('sv-ov'); if(ov) ov.remove(); document.documentElement.classList.remove('sv-open'); Study.open(); },
+};
+try{ window.addEventListener('pagehide', ()=>{ try{ if(StudyHost.call) StudyHost.call.close(); }catch(_){} try{ if(StudyGuest.call) StudyGuest.call.close(); }catch(_){} }); }catch(_){}
+
 /* 친구용 화면 (로그인 없음): 주소에 ?study=토큰 이 있으면 로그인 화면 위에 띄움 */
 const StudyGuest = {
-  t: null, d: null, i: 0, R: [], _tm: null,
+  t: null, d: null, i: 0, R: [], _tm: null, call: null,
   async start(token){
     this.t = token;
     let ov = document.getElementById('sg-ov'); if(!ov){ ov = document.createElement('div'); ov.id = 'sg-ov'; ov.className = 'sg-ov'; document.body.appendChild(ov); }
-    ov.innerHTML = `<div class="sg-box"><div class="pk-wait"><i></i>질문을 불러오는 중</div></div>`;
+    ov.innerHTML = `<div class="sg-wrap"><div class="sg-vid" id="sg-vid" hidden></div><div class="sg-main" id="sg-main"><div class="sg-box"><div class="pk-wait"><i></i>질문을 불러오는 중</div></div></div></div>`;
     try{ const { data, error } = await sb.rpc('study_get', { p_token: token }); if(error) throw error; this.d = data; }catch(_){ this.d = null; }
     if(!this.d){ this.box(`<h2>링크가 열리지 않아요</h2><p class="sg-p">기한(3일)이 지났거나 잘못된 링크예요. 친구에게 새 링크를 달라고 해 주세요.</p>`); return; }
     this.R = (this.d.questions || []).map(()=>({})); this.intro();
   },
-  box(h){ const ov = document.getElementById('sg-ov'); if(ov) ov.innerHTML = `<div class="sg-box"><p class="sg-brand">ZAVAPASS × 한림대학교 · 친구와 함께 면접 연습</p>${h}</div>`; },
+  box(h){ const m = document.getElementById('sg-main'); if(m) m.innerHTML = `<div class="sg-box"><p class="sg-brand">ZAVAPASS × 한림대학교 · 친구와 함께 면접 연습</p>${h}</div>`; },
   intro(){
     const n = escapeHtml(this.d.name || '친구');
     this.box(`<h2>${n} 님의 면접관이 되어 주세요</h2><p class="sg-p">질문 <b>${(this.d.questions || []).length}개</b>를 차례로 읽어 주고, 답을 들은 뒤 <b>내용·전달·태도</b>를 1~5점으로 매겨 주세요. 한 줄 의견도 남길 수 있어요. 5~10분 걸려요.</p>
       <label class="sg-l">내 이름 (선택)<input id="sg-name" maxlength="20" placeholder="예: 민지"></label>
-      <button type="button" class="sg-btn" onclick="StudyGuest.q(0)">시작하기</button><p class="sg-fine">로그인 없이 쓸 수 있어요. 남긴 점수는 ${n} 님만 볼 수 있어요.</p>`);
+      <div class="sg-start"><button type="button" class="sg-btn" onclick="StudyGuest.video()">📹 영상으로 함께하기</button><button type="button" class="sg-btn ghost" onclick="StudyGuest.q(0)">같이 있어요 · 영상 없이 시작</button></div>
+      <p class="sg-fine">영상으로 하면 ${n} 님 얼굴을 보며 질문할 수 있어요. 카메라·마이크 허용을 눌러 주세요. 같은 방에 있으면 소리가 울리니 영상 없이 시작하세요.</p><p class="sg-fine">로그인 없이 쓸 수 있어요. 남긴 점수는 ${n} 님만 볼 수 있어요.</p>`);
   },
+  async video(){
+    const nm = document.getElementById('sg-name'); if(nm) this.rater = nm.value.trim();
+    const n = escapeHtml(this.d.name || '친구'), ov = document.getElementById('sg-ov'), v = document.getElementById('sg-vid'); if(!v) return this.q(0);
+    ov.classList.add('vid'); v.hidden = false;
+    v.innerHTML = `<video id="sg-remote" autoplay playsinline></video><div class="sg-vw" id="sg-vw"><b>${n} 님을 기다리는 중</b><span>${n} 님이 '친구와 함께 연습'에서 <b>📹 영상으로 시작</b>을 누르면 바로 연결돼요. 기다리는 동안 질문을 먼저 봐도 돼요.</span></div><video id="sg-local" autoplay playsinline muted></video><span class="sg-vst" id="sg-vst">카메라 켜는 중…</span>`;
+    this.q(0);
+    const m = await studyMedia(); const lv = document.getElementById('sg-local');
+    if(lv){ if(m.stream) lv.srcObject = m.stream; else lv.hidden = true; }
+    if(m.why) showToast(m.why, m.stream ? '' : 'warn');
+    this.call = new StudyCall(this.t, 'guest', {
+      onRemote: ms=>{ const r = document.getElementById('sg-remote'); if(r && r.srcObject !== ms){ r.srcObject = ms; r.play && r.play().catch(()=>{}); } const w = document.getElementById('sg-vw'); if(w && ms.getVideoTracks().length) w.hidden = true; },
+      onState: x=>this.vst(x),
+      onMsg: p=>{ if(p.t === 'bye') this.vst('bye'); },
+    });
+    try{ await this.call.join(m.stream); this.vst('wait'); }catch(e){ this.vst('error', e.message); }
+  },
+  vst(x, msg){
+    const st = document.getElementById('sg-vst'); if(!st) return;
+    const L = { wait: ['기다리는 중', ''], connecting: ['연결하는 중…', ''], connected: ['연결됨', 'on'], disconnected: ['잠시 끊겼어요', 'warn'], failed: ['연결 안 됨', 'bad'], bye: ['영상을 껐어요', 'warn'], error: [msg || '연결 오류', 'bad'] }[x] || [x, ''];
+    st.textContent = L[0]; st.className = 'sg-vst ' + L[1];
+    const w = document.getElementById('sg-vw'), n = escapeHtml(this.d.name || '친구');
+    if(x === 'connected') this.sendQ();
+    if(x === 'failed' && w){ w.hidden = false; w.innerHTML = `<b>영상 연결이 되지 않았어요</b><span>학교·회사 와이파이에서는 막힐 수 있어요. 휴대폰 데이터(LTE)로 바꾸거나 다른 영상통화를 켜고 진행해 주세요. 점수 매기기는 그대로 돼요.</span><button type="button" class="sg-say" onclick="StudyGuest.call && StudyGuest.call.retry()">다시 연결</button>`; }
+    if(x === 'bye' && w){ w.hidden = false; w.innerHTML = `<b>${n} 님이 영상을 껐어요</b><span>점수 매기기는 그대로 이어서 할 수 있어요.</span>`; }
+  },
+  sendQ(){ const Q = this.d && this.d.questions || []; if(this.call && Q[this.i] != null) this.call.send({ t: 'q', i: this.i, n: Q.length, text: Q[this.i] }); },
   q(i){
     const nm = document.getElementById('sg-name'); if(nm) this.rater = nm.value.trim();
     this.save(); this.i = i; clearInterval(this._tm);
@@ -26413,13 +26554,14 @@ const StudyGuest = {
       ${row('content', '내용 <small>질문에 맞게, 구체적으로</small>')}${row('delivery', '전달 <small>목소리·속도·또렷함</small>')}${row('attitude', '태도 <small>눈 맞춤·자세·자신감</small>')}
       <input class="sg-note" id="sg-note" maxlength="120" placeholder="한 줄 의견 (선택) 예: 예시가 구체적이라 좋았어" value="${esc(r.note || '')}">
       <div class="sg-acts">${i ? `<button type="button" class="sg-btn ghost" onclick="StudyGuest.q(${i - 1})">← 이전</button>` : ''}<button type="button" class="sg-btn" onclick="${i < Q.length - 1 ? `StudyGuest.q(${i + 1})` : 'StudyGuest.end()'}">${i < Q.length - 1 ? '다음 질문' : '마치기'}</button></div>`);
+    this.sendQ();
     let s = 0; const el = document.getElementById('sg-timer'); this._tm = setInterval(()=>{ s++; if(el && el.isConnected) el.querySelector('b').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; else clearInterval(this._tm); }, 1000);
   },
   say(){ try{ speakQuestion((this.d.questions || [])[this.i], null, { rate: 0.95 }); }catch(_){} },
   set(k, v, btn){ (this.R[this.i] = this.R[this.i] || {})[k] = v; btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b === btn)); },
   save(){ const n = document.getElementById('sg-note'); if(n && this.R[this.i]) this.R[this.i].note = n.value.trim().slice(0, 120); else if(n){ this.R[this.i] = { note: n.value.trim().slice(0, 120) }; } },
   end(){
-    this.save(); clearInterval(this._tm);
+    this.save(); clearInterval(this._tm); if(this.call) this.call.send({ t: 'done' });
     this.box(`<h2>마지막으로 한마디</h2><p class="sg-p">전체적으로 좋았던 점이나 고치면 좋을 점을 적어 주세요. (선택)</p><textarea id="sg-cm" rows="4" maxlength="600" placeholder="예: 자기소개가 자연스러웠어. 다만 지원동기는 조금 더 구체적이면 좋겠어."></textarea>
       <div class="sg-acts"><button type="button" class="sg-btn ghost" onclick="StudyGuest.q(${(this.d.questions || []).length - 1})">← 이전</button><button type="button" class="sg-btn" id="sg-send" onclick="StudyGuest.send()">보내기</button></div>`);
   },
@@ -26428,6 +26570,7 @@ const StudyGuest = {
     const ratings = this.R.map(r=>({ content: r.content || null, delivery: r.delivery || null, attitude: r.attitude || null, note: r.note || '' }));
     try{ const { data, error } = await sb.rpc('study_submit', { p_token: this.t, p_rater: this.rater || '친구', p_ratings: ratings, p_comment: ((document.getElementById('sg-cm') || {}).value || '').trim() });
       if(error || !data || !data.ok) throw new Error(data && data.error === 'full' ? '이 링크에는 의견을 더 남길 수 없어요 (최대 10번).' : data && data.error === 'expired' ? '링크 기한이 지났어요.' : '보내지 못했어요. 잠시 뒤 다시 눌러 주세요.');
+      try{ if(this.call) this.call.close(); }catch(_){} this.call = null; const ov = document.getElementById('sg-ov'), v = document.getElementById('sg-vid'); if(ov) ov.classList.remove('vid'); if(v){ v.hidden = true; v.innerHTML = ''; }
       this.box(`<h2>고마워요! 🙌</h2><p class="sg-p">${escapeHtml(this.d.name || '친구')} 님에게 점수와 의견을 보냈어요. 이 창은 닫아도 돼요.</p>`);
     }catch(e){ if(btn){ btn.disabled = false; btn.textContent = '보내기'; } alert(e.message); }
   },
