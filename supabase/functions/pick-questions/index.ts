@@ -13,7 +13,8 @@ import { activeVer, blockReason, loadRules, safetyText } from "../_shared/qbank.
 
 const EXEMPT = new Set(["자기소개", "지원동기", "마무리"]);   // 종류가 적어서 최근에 냈어도 다시 낼 수 있음
 const DAILY_LIMIT = 30;                                        // 한 사람이 하루에 뽑을 수 있는 면접 수 (남용 방지)
-const SPARE = 5;                                               // 유형마다 예비 후보 수 (다듬다가 걸리면 바꿔 씀)
+const SPARE = 5;
+const FORM_RE = /(인턴|계약직|체험형|채용형|경력직)/;   // 2026-11-10 학생에게 다른 채용 형태를 전제하지 않음                                               // 유형마다 예비 후보 수 (다듬다가 걸리면 바꿔 씀)
 
 type Cand = { id: string; company_key: string | null; company: string | null; rep: string | null; question: string | null; rep_key: string; tier: number };
 type Slot = { seq: number; qtype: string; cand?: Cand; text?: string; lang?: string; how?: string };
@@ -33,6 +34,7 @@ const SYSTEM = (safety: string) => `너는 한국 대학생(신입 지원자)을
 - 유형이 '자기소개'이면 시간이 원문에 있을 때만 그 시간을 넣는다(예: 1분 자기소개). '마무리'는 면접을 끝내며 묻는 말로 다듬는다.
 - 한 면접 안에서 뜻이 겹치면 안 된다. [이미 정해진 질문]이나 목록의 앞 번호 질문과 사실상 같은 것을 묻는 질문(예: "회사를 선택한 이유"와 "왜 입사하고 싶은지")은 ok를 false로 하고 reason을 "중복"으로 적는다.
 - 직장 경력(이직·퇴사·전 직장)을 전제로 한 질문은 학생에게 맞지 않으니 ok=false, reason "경력직".
+- [채용 형태 빼기] 원문에 인턴·체험형 인턴·채용형 인턴·계약직·무기계약직·경력직 같은 채용 형태가 있으면 빼고 일반 지원으로 다듬는다. 예: "○○공단 인턴에 지원하신 동기" → "○○공단에 지원하신 동기". 학생은 신입 정규 채용 기준으로 연습한다.
 - [유형 맞추기] 다듬은 질문이 그 칸의 [유형]에 맞아야 한다. 맞지 않으면 ok=false, reason "유형". 유형 뜻: 자기소개=자신을 소개 / 지원동기=왜 이 회사·직무인지 / 경험·역량=지난 경험에서 한 행동과 결과 / 인성·가치관=성격·가치관·태도 / 직무·전공지식=직무나 전공의 지식·개념·업무 이해(경험 회상, 가치관, 서류 내용 설명은 해당 안 됨) / 기업·산업=지원 회사·산업의 사업·시장·이슈 이해(개인 목표·인생관은 해당 안 됨) / 상황대처=가정한 상황에서의 판단 / 영어=영어로 묻는 질문 / 마무리=면접을 끝내며 하는 말.
 - [단정하지 않기] 원문이 특정 지원자의 사정을 전제하면(예: "학업 성적이 낮은 이유", "해외 인턴 경험이 없는 이유", "해당 프로젝트", "자기소개서에 쓴 ○○", "공백기가 긴 이유") 이 학생에게는 사실이 아닐 수 있다. 누구에게나 물을 수 있는 중립 질문으로 바꾼다(예: "학업 성적을 스스로 어떻게 평가하는지 말씀해 주세요.", "해외 경험이나 그에 준하는 경험이 있다면 말씀해 주세요.", "진행했던 프로젝트 하나를 골라 맡은 역할과 결과를 말씀해 주세요."). 중립으로 바꾸면 핵심이 사라지면 ok=false, reason "단정".
 - 다듬은 질문이 아래 [AI 면접관 안전장치]의 '절대 묻지 않는 질문'에 해당하거나 '질문 전 자체 점검'을 통과하지 못하면, 고치지 말고 ok를 false로 하고 reason에 분류를 적는다. 직무와 무관한 개인 신상을 묻는 질문도 ok=false.
@@ -109,7 +111,7 @@ Deno.serve(async (req) => {
   const cache = new Map<string, { text: string; lang: string }>();
   if (allKeys.length) {
     const { data } = await sb.from("qb_polished").select("key,text,lang").in("key", allKeys);
-    (data ?? []).forEach((r: { key: string; text: string; lang: string }) => { if (!blockReason(r.text)) cache.set(r.key, { text: r.text, lang: r.lang }); });
+    (data ?? []).forEach((r: { key: string; text: string; lang: string }) => { if (!blockReason(r.text) && !FORM_RE.test(r.text)) cache.set(r.key, { text: r.text, lang: r.lang }); });   // 2026-11-10 채용 형태(인턴 등)가 남은 예전 문장은 다시 다듬음
   }
   const fromCache = (s: Slot) => { const c = s.cand && cache.get(keyOf(s.cand)); if (c && (c.lang === "en") !== (s.qtype === "영어")) return false; if (c) { s.text = c.text; s.lang = c.lang; s.how = "보관함"; } return !!c; };
   slots.forEach(fromCache);
@@ -134,7 +136,7 @@ Deno.serve(async (req) => {
       const it = items.find((x) => Number(x.i) === i);
       const text = cleanText(it?.text, 200);
       const enText = /영어로|in english|[A-Za-z]{4,}\s+[A-Za-z]{3,}\s+[A-Za-z]{3,}/i.test(text);
-      const bad = !it || it.ok === false || !text || !!blockReason(text) || (s.qtype !== "영어" && (it.lang === "en" || enText)) || (s.qtype === "영어" && it.lang !== "en" && !enText);   // 영어 칸만 영어, 나머지는 한국어
+      const bad = !it || it.ok === false || !text || !!blockReason(text) || FORM_RE.test(text) || (s.qtype !== "영어" && (it.lang === "en" || enText)) || (s.qtype === "영어" && it.lang !== "en" && !enText);   // 영어 칸만 영어, 나머지는 한국어
       if (bad) { const next = take(s.qtype); s.cand = next; if (next) fromCache(s); return; }
       s.text = text; s.lang = it!.lang === "en" || s.qtype === "영어" ? "en" : "ko"; s.how = "AI";
       // 세부 직무 이름(간호사 등)을 AI가 문장에 넣었으면 이번에만 쓰고 보관함에 남기지 않음 (같은 문장이 다른 직무 학생에게 나가지 않게)

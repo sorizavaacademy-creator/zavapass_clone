@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-10h';
+var APP_VERSION = '2026-11-10i';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -21981,6 +21981,7 @@ const AeReport = {
     const parts = String(text||'').split(/\n\n+/).map(x=>x.trim()).filter(Boolean).filter(x=>!/^총점 /.test(x));
     return '<div class="q-fb-text ae-fb">' + parts.map(b=>{
       const hit = KEYS.find(([k])=>b.startsWith(k));
+      if(hit && hit[1] === 'good' && /(아직 없|내용이 아직|내용이 없)/.test(b)) return '';   // 2026-11-10 잘한 점이 없으면 칸을 숨김 (예전 기록도)
       if(!hit) return `<p class="fb-sec"><span class="fb-v">${escapeHtml(b)}</span></p>`;
       let rest = b.slice(hit[0].length), label = hit[0];
       const m = rest.match(/^(\([^)]*\))?\s*[:：]?\s*\n?/); if(m){ if(m[1]) label += ' ' + m[1]; rest = rest.slice(m[0].length); }
@@ -21993,7 +21994,7 @@ const AeReport = {
     const bars = this.AX.map(k=>{ const v = r.avg[k], pct = Math.round(v / 4 * 100);
       return `<div class="ae-bar${k === r.weakest ? ' weak' : ''}"><span class="ae-bl"><b>${k}</b> ${escapeHtml(this.name(k))}</span><div class="ae-bt"><div class="ae-bf" style="width:${pct}%"></div></div><span class="ae-bv">${this.num(v)} / 4</span></div>`; }).join('');
     return `<section class="ae-rep" aria-label="종합 리포트">
-      <div class="ae-rep-head"><div><p class="ae-rep-kicker">종합 리포트 · 면접 DB 채점 기준</p><h3>답변 평균 ${this.num(r.total)}점 <span class="ae-grade ${this.gradeCls(r.grade)}">${escapeHtml(r.grade)}</span></h3><p class="ae-rep-sub">A~E로 채점된 답변 ${r.n}개의 평균이에요${r.n < r.of ? ` (전체 ${r.of}개 중 · 나머지는 기본 채점)` : ''}. 위의 종합 점수는 여기에 표정·시선(10%)을 더한 값이에요.</p></div></div>
+      <div class="ae-rep-head"><div><p class="ae-rep-kicker">종합 리포트 · 면접 DB 채점 기준</p><h3>답변 평균 ${this.num(r.total)}점</h3><p class="ae-rep-sub">A~E로 채점된 답변 ${r.n}개만 본 평균이에요${r.n < r.of ? ` (전체 ${r.of}개 중 · 나머지는 기본 채점)` : ''}. 위의 종합 등급은 여기에 표정·시선(10%)까지 합친 결과라 점수가 조금 다를 수 있어요.</p></div></div>
       <div class="ae-rep-grid">
         <div class="ae-rep-bars"><b class="ae-rep-t">항목별 평균 점수</b>${bars}</div>
         <div class="ae-rep-side">
@@ -22302,9 +22303,11 @@ function renderResultSummary(){
   const rp = state.lastReport;
   const grade = state.aeReport ? (state.aeReport.overall || state.aeReport.grade) : rp && rp.count ? rp.grade : Rubric.grade(avg);
   let text, low=false;
-  if(avg >= 85){ text = `종합 ${grade} (${avg}점) — 내용과 구조가 모두 안정적이에요. 이 정도면 실전에서도 자신 있게 답하실 수 있겠어요.`; }
-  else if(avg >= 70){ text = `종합 ${grade} (${avg}점) — 전반적으로 잘 정리된 답변이에요. 아래 "보완할 점"의 한두 가지만 챙기면 더 좋아질 거예요.`; }
-  else if(avg >= 50){ text = `종합 ${grade} (${avg}점) — 답변 방향은 맞지만 빠진 요소가 있어요. ` + (state.aeReport ? '아래 종합 리포트의 가장 약한 항목과 문항별 "고칠 점"을 확인해 보세요.' : '문항별 "빠진 내용"과 체크리스트를 확인해 보세요.'); low = true; }
+  // 2026-11-10 A~E 채점이면 문장도 등급(우수·양호·보완 필요·재연습)과 같은 기준으로 고름 (예전에는 50점 기준이라 54점이 '재연습'인데 '보완 필요' 문장이 나왔음)
+  const band = state.aeReport ? ({ '우수':85, '양호':70, '보완 필요':50 }[grade] ?? 0) : avg;
+  if(band >= 85){ text = `종합 ${grade} (${avg}점) — 내용과 구조가 모두 안정적이에요. 이 정도면 실전에서도 자신 있게 답하실 수 있겠어요.`; }
+  else if(band >= 70){ text = `종합 ${grade} (${avg}점) — 전반적으로 잘 정리된 답변이에요. 아래 "보완할 점"의 한두 가지만 챙기면 더 좋아질 거예요.`; }
+  else if(band >= 50){ text = `종합 ${grade} (${avg}점) — 답변 방향은 맞지만 빠진 요소가 있어요. ` + (state.aeReport ? '아래 종합 리포트의 가장 약한 항목과 문항별 "고칠 점"을 확인해 보세요.' : '문항별 "빠진 내용"과 체크리스트를 확인해 보세요.'); low = true; }
   else { text = `종합 ${grade} (${avg}점) — 핵심 내용과 구조를 더 보강해야 해요. 모범답안 요지를 읽고 추천 질문으로 다시 연습해 보세요.`; low = true; }
   el.textContent = text;
   el.classList.toggle('low', low);
@@ -24330,13 +24333,16 @@ const StenoLoop = {
       // 없으면 예전 방식(질문마다 maxFollowups개). 어느 질문에 붙는지는 매번 달라져서 면접자가 패턴을 외울 수 없음.
       // 2026-11-05 면접 DB 4단계: 질문은행 면접은 꼬리질문을 면접 전체 1~3개만, 답변이 약한 질문에 (한 질문 최대 2개, 마무리 질문 제외)
       const dyn = this.opt.fuDynamic || null; let fuUsed = 0;
-      const eligible = i=>!!questions[i] && questions[i].qtype !== '마무리' && questions[i].slot !== 7;
+      // 2026-11-10 마무리 질문("마지막으로 하고 싶은 말"·"궁금한 점"·"덧붙이고 싶은 내용")은 어느 분야든 꼬리질문을 붙이지 않음 (예전에는 질문은행 면접만 알아봄)
+      const CLOSING = /(마지막으로|하고\s*싶은\s*(말|말씀)|궁금한\s*점|덧붙이고\s*싶은|면접을\s*마치며)/;
+      const isClosing = i=>{ const x = questions[i]; return !!x && (x.qtype === '마무리' || x.slot === 7 || CLOSING.test(String(x.q || x.spoken || ''))); };
+      const eligible = i=>!!questions[i] && !isClosing(i);
       this.stats.followupUsed = 0;
       const fuPlan = dyn ? null : (()=>{
         const total = Number.isFinite(this.opt.followupTotal) ? Math.max(0, this.opt.followupTotal|0) : null;
         if(total === null) return null;
         const n = Math.min(questions.length, total === 0 ? 0 : (total <= 1 ? total : total - Math.round(Math.random())));
-        const idx = questions.map((_,i)=>i).filter(i=>questions[i].slot!==7); for(let i=idx.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [idx[i],idx[j]] = [idx[j],idx[i]]; }
+        const idx = questions.map((_,i)=>i).filter(i=>!isClosing(i)); for(let i=idx.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [idx[i],idx[j]] = [idx[j],idx[i]]; }
         return new Set(idx.slice(0, n));
       })();
       this.stats.followupPlan = fuPlan ? fuPlan.size : null;
@@ -24364,7 +24370,7 @@ const StenoLoop = {
         let history = [], lastAsk = q.q;
         // 영어 질문은 꼬리질문도 영어로 (꼬리질문 문장이 한국어면 한국어로). 2026-11-05e 학생이 '한국어로 답할게요'를 누르면 그 질문은 한국어로 받아 적고 꼬리질문도 한국어로
         const langNow = ()=> this._langOverride || (q.lang === 'en' && !/[가-힣]/.test(lastAsk) ? 'en' : 'ko');
-        const fuCap = dyn ? (eligible(qi) ? dyn.perQ : 0) : (fuPlan ? (fuPlan.has(qi) ? 1 : 0) : this.opt.maxFollowups);
+        const fuCap = isClosing(qi) ? 0 : dyn ? (eligible(qi) ? dyn.perQ : 0) : (fuPlan ? (fuPlan.has(qi) ? 1 : 0) : this.opt.maxFollowups);
         for(let f=0; f<=fuCap && !this.aborted; f++){
           this._curLimit = this.opt.realMode ? realLimitMs(f===0 ? q.q : lastAsk, f>0) : this.opt.maxAnswerMs;
           this._curLang = langNow() === 'en' ? 'en-US' : 'ko-KR';   // 2026-11-05 영어로 물으면 영어로 받아 적음

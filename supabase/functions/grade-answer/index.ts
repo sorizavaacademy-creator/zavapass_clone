@@ -308,7 +308,9 @@ ${R.fb.join("\n")}
 - 실무 경력이 없다는 이유로 감점하지 않습니다. 수업·팀 프로젝트·동아리·아르바이트·봉사 경험도 같은 무게로 봅니다.
 - 음성 인식으로 받아쓴 답변이라 오탈자·띄어쓰기 오류는 감점하지도, 언급하지도 않습니다.
 - 지원자가 스스로 말한 가족·종교·건강·연애·병역 같은 개인 이야기는 피드백·예시·꼬리질문에 인용하지 않고 점수에도 반영하지 않습니다.
-- "모르겠다"·질문과 무관한 답변에서 칭찬할 점을 억지로 만들지 않습니다(good.text에 그대로 "질문에 맞는 내용이 아직 없어요"처럼 씀).
+- "모르겠다"·질문과 무관한 답변에서 칭찬할 점을 억지로 만들지 않습니다. 칭찬할 점이 없으면 good.text를 빈 문자열("")로 둡니다.
+- check에는 학생 본인·가족의 경험이나 일화(예: "할머니 병원비를 건강보험이 덜어 줬다", 봉사·아르바이트 경험)를 넣지 않습니다. 회사·기관의 사업·수치·제도·소식처럼 '그 기관에 대한 사실'만 넣습니다.
+- 답변이 지나치게 길고 장황하면(같은 말 되풀이, 배경 설명이 길어 핵심이 늦게 나옴) E 전달력·태도 또는 D 논리 구조의 고칠 점에 "1분 안으로 줄이고 결론부터 말하기"를 넣습니다.
 - 모든 글은 한국어 존댓말(~요). good·fixes·rewrite·next_q 합쳐 400자 안팎.
 
 [응답 — JSON만]
@@ -331,7 +333,7 @@ function noAnswer(answer: string): boolean {
   const a = answer.replace(/\s/g, "");
   return a.length < 6 || (/(모르겠|모릅니다|잘몰라|생각이안|기억이안|딱히없|없습니다$|idon'?tknow|notsure)/i.test(a) && a.length < 40);
 }
-function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: string, prior: Record<string, number> | null, none = false): { ae: AeOut; feedback: string } | null {
+function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: string, prior: Record<string, number> | null, none = false, answerLen = 0): { ae: AeOut; feedback: string } | null {
   const sc = {} as Record<Axis, number>;
   for (const k of AXES) { const v = Math.round(Number(p?.scores?.[k])); if (!(v >= 1 && v <= 4)) return null; sc[k] = v; }
   const w = R.weights[qtype].w;
@@ -342,6 +344,11 @@ function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: st
   let fixes = (Array.isArray(p.fixes) ? p.fixes : []).map((f: any) => ({ axis: oneLine(f?.axis, 1).toUpperCase(), why: oneLine(f?.why, 120), how: oneLine(f?.how, 140) }))
     .filter((f: any) => f.why && lost(f.axis) > 0);
   fixes = fixes.sort((a: any, b: any) => lost(b.axis) - lost(a.axis)).filter((f: any, i: number, arr: any[]) => arr.findIndex((x) => x.axis === f.axis) === i).slice(0, 2);
+  // 2026-11-10 지나치게 긴 답(300자 넘게 ≈ 1분 이상)은 '길이'를 고칠 점 첫 줄로 (이미 길이를 말한 고칠 점이 있으면 그대로)
+  if (answerLen > 300 && !fixes.some((f: any) => /길|1분|줄이|장황|간결/.test(f.why + f.how))) {
+    const ax = sc.E <= sc.D ? "E" : "D";
+    fixes = [{ axis: ax, why: `답이 ${answerLen.toLocaleString("ko-KR")}자로 길어 핵심이 묻혀요.`, how: "1분 안으로 줄이고, 결론 → 근거 → 사례 순서로 말해 보세요." }, ...fixes.filter((f: any) => f.axis !== ax)].slice(0, 2);
+  }
   const best = [...AXES].sort((a, b) => (sc[b] - sc[a]) || (w[b] - w[a]))[0];
   const g = p.good || {};
   const good = { axis: (AXES as readonly string[]).includes(oneLine(g.axis, 1).toUpperCase()) ? oneLine(g.axis, 1).toUpperCase() : best, quote: oneLine(g.quote, 40), text: oneLine(g.text, 140) };
@@ -356,7 +363,7 @@ function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: st
     E: "같은 내용을 30초 안에 핵심만 다시 말씀해 주세요.",
   };
   if (!nextQ || blockReason(nextQ)) nextQ = SAFE_NEXT[weakest];
-  const check = (Array.isArray(p.check) ? p.check : []).map((x: unknown) => oneLine(x, 80)).filter((x: string) => x && !/정답\s?키|정답 여부|전공 표기|지원 정보/.test(x)).slice(0, 3);
+  const check = (Array.isArray(p.check) ? p.check : []).map((x: unknown) => oneLine(x, 80)).filter((x: string) => x && !/정답\s?키|정답 여부|전공 표기|지원 정보/.test(x) && !/(할머니|할아버지|어머니|아버지|부모님|가족|동생|형|누나|언니|오빠|제가|저의|본인|학생|봉사|아르바이트|실습)/.test(x)).slice(0, 3);   // 2026-11-10 학생·가족 경험은 '확인 필요'에 넣지 않음
   const reasons: Record<string, string> = {}; for (const k of AXES) reasons[k] = oneLine(p?.reasons?.[k], 80);
   // 같은 질문을 다시 답했으면 좋아진 항목부터
   const improved: string[] = [];
@@ -366,7 +373,8 @@ function aeBuild(p: Record<string, any>, R: AeRules, qtype: string, langNote: st
   if (langNote) L.push(langNote);
   if (prior) L.push(improved.length ? `좋아진 항목: ${improved.join(", ")}` : "지난번보다 좋아진 항목은 아직 없어요. 아래 고칠 점부터 해 보세요.");
   if (none) { good.quote = ""; good.text = ""; L.push("잘한 점: 아직 없어요. 잘 모를 때는 아는 범위 한 가지와 \"확인해서 익히겠다\"는 말로 답해 보세요."); }
-  else L.push(`잘한 점(${label(good.axis)}): ${good.quote ? `"${good.quote}" — ` : ""}${good.text || "질문에 맞는 내용이 아직 없어요."}`);
+  else if (good.text && !/(아직 없|내용이 없|찾기 어려|해당 없)/.test(good.text)) L.push(`잘한 점(${label(good.axis)}): ${good.quote ? `"${good.quote}" — ` : ""}${good.text}`);
+  else { good.quote = ""; good.text = ""; }   // 2026-11-10 잘한 점이 없으면 칸을 만들지 않음
   if (fixes.length) L.push("고칠 점\n" + fixes.map((f: any, i: number) => `${i + 1}. ${f.why} (${label(f.axis)}) ${f.how}`).join("\n"));
   if (rewrite) L.push(`바꿔 말하기: "${rewrite}"`);
   L.push(`다음 꼬리질문: ${nextQ}`);
@@ -502,11 +510,11 @@ Deno.serve(async (req: Request) => {
         let data = await res.json();
         let content: string = data?.choices?.[0]?.message?.content ?? "";
         let parsed: any = null; try { parsed = JSON.parse(content); } catch { parsed = null; }
-        let built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer)) : null;
+        let built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer), answer.replace(/\s/g, "").length) : null;
         if (!built) {
           console.warn("[A~E 응답 형식 오류 → 한 번 더]", content.slice(0, 120));
           const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.2, 4000);
-          if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; try { parsed = JSON.parse(content); } catch { parsed = null; } built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer)) : null; }
+          if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; try { parsed = JSON.parse(content); } catch { parsed = null; } built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer), answer.replace(/\s/g, "").length) : null; }
         }
         if (built) {
           return json({

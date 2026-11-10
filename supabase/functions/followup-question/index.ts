@@ -425,14 +425,19 @@ Deno.serve(async (req: Request) => {
 
   // 2026-11-03 한림대용: 면접관 설정 = 기본 역할 + 지원 분야 맥락 + 지원 정보 + (있으면) 면접관 성향·기업 맞춤 단락
   const ctxKey = purpose === "major" ? "major" : fieldId;
+  // 2026-11-10 전공·경험 면접은 홈의 기본 분야(공공기관 등)를 붙이지 않고 전공만 기준으로 (예전: '희망 진로 분야'가 붙어 "공공기관 홍보 업무"를 물음)
   const fieldBlock = "[지원 분야 맥락]\n" + (pick(FIELD_CONTEXT, ctxKey) ?? DEFAULT_FIELD_CONTEXT)
-    + (ctxKey === "major" && fieldId !== "major" && pick(FIELD_NAME, fieldId) ? `\n희망 진로 분야: ${pick(FIELD_NAME, fieldId)}` : "");
+    + (ctxKey === "major" ? "\n이 면접은 특정 기관·분야가 아니라 전공과 경험을 묻는 면접입니다. 공공기관·기업·병원 같은 특정 분야나 업무를 전제하지 않습니다." : "");
   const infoParts = [
     purpose ? `면접 목적: ${purpose === "major" ? "전공·경험 면접" : "직무 면접"}` : "",
     jobRole ? `지원 직무: ${jobRole}` : "",
     majorDept ? `전공(학과): ${majorDept}` : "",
   ].filter(Boolean);
-  const infoBlock = infoParts.length ? `[지원 정보 — 지원자가 화면에서 고른 값. 경력으로 전제하지 않음]\n${infoParts.join(" · ")}` : "";
+  // 2026-11-10 지원 직무는 학생이 고른 값만 (기업 채용 직무 목록의 다른 직무 이름을 학생의 직무처럼 쓰던 문제)
+  const roleRule = purpose === "major" ? "직무 이름을 지어내지 않습니다. 필요하면 '희망하시는 진로'처럼 넓게 말합니다."
+    : jobRole ? `지원자의 직무를 말할 때는 '${jobRole}'만 씁니다. [기업 맞춤 면접]에 나오는 채용 직무 목록의 다른 직무(예: 해외영업·인사·마케팅)를 지원자의 직무처럼 말하지 않습니다.`
+    : "지원자의 직무 이름을 지어내지 않습니다. 필요하면 '지원하신 직무'라고만 말합니다.";
+  const infoBlock = `[지원 정보 — 지원자가 화면에서 고른 값. 경력으로 전제하지 않음]\n${infoParts.length ? infoParts.join(" · ") + "\n" : ""}${roleRule}`;
   const personaBlock = personaInfo ? `[면접관 성향: ${personaInfo.name}]\n${personaInfo.text}` : "";
   const [companyBlock, addInfo] = await Promise.all([companyBlockFor(req, companyId, "followup", companySeq), additionInfo(qbQid)]);
   const persona = [BASE_INTERVIEWER, fieldBlock, infoBlock, personaBlock, companyBlock ? `[기업 맞춤 면접]\n${companyBlock}` : ""].filter(Boolean).join("\n");
