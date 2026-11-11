@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-11d';
+var APP_VERSION = '2026-11-11e';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -182,7 +182,7 @@ var APP_VERSION = '2026-11-11d';
 
   /* ---------- layout: screens ---------- */
   .screen{display:none;min-height:100vh;}
-  .screen.active{display:block;animation:screenIn .35s ease both;}
+  .screen.active{display:block;animation:screenIn .35s ease backwards;}   /* 2026-11-11 both → backwards: 끝난 뒤 transform이 남으면 안의 고정 위치 창(연습 도구 등)이 화면 기준이 아니라 페이지 기준으로 떠서 위가 잘림 */
   @keyframes screenIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 
   /* ---------- login ---------- */
@@ -7168,10 +7168,14 @@ html.sv-open{overflow:hidden;}
       </ol>
     </section>
     <div class="hz-foot">
-      <button type="button" class="hz-more-btn" id="hz-more-btn" aria-expanded="false" aria-controls="hz-more" onclick="HomeSimple.toggle()"><i aria-hidden="true">▶</i>다른 방식으로 연습할래요</button>
+      <button type="button" class="hz-more-btn" id="hz-more-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="hz-pop" onclick="HomeSimple.toggle()">다른 방식으로 연습할래요<i aria-hidden="true"></i></button>
       <button type="button" class="hz-rec" onclick="navGo('growth')">내 연습 기록 보기</button>
     </div>
-    <div class="hz-more" id="hz-more" hidden>
+    <div class="hz-pop" id="hz-pop" hidden>
+    <div class="hz-pop-bg" onclick="HomeSimple.toggle(false)"></div>
+    <section class="hz-panel" role="dialog" aria-modal="true" aria-labelledby="hz-pop-h">
+    <div class="hz-pop-hd"><div><h2 id="hz-pop-h">다른 방식으로 연습</h2><p>짧게 연습하거나 토론·발표 면접, 연습 도구를 골라요.</p></div><button type="button" class="hz-pop-x" onclick="HomeSimple.toggle(false)" aria-label="닫기"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
+    <div class="hz-more" id="hz-more">
     <div class="d3-hero">
       <section class="d3-card d3-greet g4-greet">
         <div class="g4-top">
@@ -7205,6 +7209,7 @@ html.sv-open{overflow:hidden;}
     <!-- 2026-11-09h 홈 정리: 아래로 이어지던 칸들을 버튼 한 줄로 줄이고, 누르면 창(탭)으로 열림. 토론 카드(위 버튼과 같음)·성장 요약('나의 기록'과 같음)은 뺌 -->
     <nav class="hm-tiles" id="hm-tiles" aria-label="연습 도구"><button type="button" class="hm-tile hm-fin" data-t="dday" onclick="HomeTabs.open('dday')"><b>면접 D-day</b><span>전날·당일·다녀온 뒤</span></button><button type="button" class="hm-tile" data-t="review" onclick="HomeTabs.open('review')"><b>지난 면접 보완점</b><span>낮았던 질문 다시 연습</span></button><button type="button" class="hm-tile" data-k="note" onclick="AnswerNote.open()"><b>답변 노트</b><span>유형별 내 최고 답변</span></button><button type="button" class="hm-tile" data-t="bm" onclick="HomeTabs.open('bm')"><b>내 질문 모음</b><span>담아 둔 질문 연습</span></button><button type="button" class="hm-tile" data-k="study" onclick="Study.open()"><b>친구와 함께 연습</b><span>친구가 링크로 면접관</span></button><button type="button" class="hm-tile" data-t="exp" onclick="HomeTabs.open('exp')"><b>내 경험</b><span>경험 정리·입력</span></button><button type="button" class="hm-tile" data-t="recent" onclick="HomeTabs.open('recent')"><b>최근 면접 기록</b><span>리포트 다시 보기</span></button></nav>
     </div><!-- /#hz-more -->
+    </section></div><!-- /#hz-pop -->
     <div class="hm-sheet" id="hm-sheet" hidden>
       <div class="hm-sheet-bg" onclick="HomeTabs.close()"></div>
       <section class="hm-more" id="hm-more" role="dialog" aria-modal="true" aria-label="연습 도구">
@@ -29389,6 +29394,7 @@ try{ PageInfo.init(); }catch(e){ console.warn('PageInfo', e); }
    · 예전 홈 칸(오늘의 질문·이번 주 목표·토론·추천 세트·연습 도구)은 '다른 방식으로 연습할래요'를 누르면 펼쳐짐. 점수 그래프는 '내 연습 기록 보기'(나의 성장)
    · HOME_HEADER: 'full' = 지금 위 메뉴 그대로 · 'min' = 시안처럼 '연습 기록 · 내 정보'만 */
 const HOME_HEADER = 'full';
+const HOME_MORE = 'modal';   // '다른 방식으로 연습할래요': 'modal' = 가운데 창 · 'side' = 오른쪽 옆 패널
 const HomeSimple = {
   KEY: 'zp_home_more', open: false,
   CSS: `
@@ -29410,11 +29416,33 @@ const HomeSimple = {
 #d3-home .hz-steps span{display:block;margin-top:8px;font-size:15.5px;color:var(--c-ink-2,#45454a)}
 #d3-home .hz-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0 4px}
 #d3-home .hz-more-btn,#d3-home .hz-rec{border:0;background:none;padding:10px 4px;font:inherit;font-size:16px;font-weight:600;color:var(--c-ink,#1c1c1e);cursor:pointer;border-radius:8px}
-#d3-home .hz-more-btn i{display:inline-block;font-style:normal;font-size:11px;margin-right:9px;transition:transform .2s;transform:translateY(-1px)}
-#d3-home .hz-more-btn[aria-expanded="true"] i{transform:translateY(-1px) rotate(90deg)}
+#d3-home .hz-more-btn{display:inline-flex;align-items:center;gap:8px}
+#d3-home .hz-more-btn i{width:20px;height:20px;border-radius:50%;background:var(--c-surface,#f6f5f3);display:inline-grid;place-items:center;font-style:normal}
+#d3-home .hz-more-btn i::before{content:"+";font-size:15px;font-weight:700;line-height:1}
 #d3-home .hz-more-btn:hover,#d3-home .hz-rec:hover{color:var(--c-accent-ink,#c2401b)}
 #d3-home .hz-rec::after{content:" ›";}
-#d3-home .hz-more{padding-bottom:8px}
+#d3-home .hz-more{padding:0}
+html.hz-open{overflow:hidden}
+#d3-home .hz-pop{position:fixed;inset:0;z-index:2900;display:flex;align-items:center;justify-content:center;padding:24px}
+#d3-home .hz-pop[hidden]{display:none}
+#d3-home .hz-pop-bg{position:absolute;inset:0;background:rgba(20,22,28,.42);animation:hzFade .2s ease}
+#d3-home .hz-panel{position:relative;width:min(940px,100%);max-height:calc(100dvh - 48px);display:flex;flex-direction:column;background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.25);overflow:hidden;animation:hzUp .24s cubic-bezier(.2,.7,.2,1)}
+#d3-home .hz-pop-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px 26px 16px;border-bottom:1px solid var(--c-line,#e6e4e0)}
+#d3-home .hz-pop-hd h2{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em}
+#d3-home .hz-pop-hd p{margin:6px 0 0;font-size:14.5px;color:var(--c-ink-3,#66666c)}
+#d3-home .hz-pop-x{flex:none;width:38px;height:38px;border:1px solid var(--c-line,#e6e4e0);border-radius:10px;background:#fff;color:var(--c-ink,#1c1c1e);display:grid;place-items:center;cursor:pointer}
+#d3-home .hz-pop-x:hover{background:var(--c-surface,#f6f5f3)}
+#d3-home .hz-panel .hz-more{flex:1 1 auto;overflow:auto;padding:18px 26px 24px;overscroll-behavior:contain}
+#d3-home .hz-panel .d3-greet{padding:18px !important}
+#d3-home .hz-panel .hm-tiles{grid-template-columns:repeat(4,minmax(0,1fr)) !important;margin-top:16px}
+@keyframes hzFade{from{opacity:0}} @keyframes hzUp{from{opacity:0;transform:translateY(14px)}}
+/* 오른쪽 옆 패널 (HOME_MORE = 'side') */
+body.hz-side #d3-home .hz-pop{justify-content:flex-end;padding:0}
+body.hz-side #d3-home .hz-panel{width:min(560px,94vw);height:100dvh;max-height:none;border-radius:18px 0 0 18px;animation:hzSide .28s cubic-bezier(.2,.7,.2,1)}
+body.hz-side #d3-home .hz-panel .hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+body.hz-side #d3-home .hz-panel .g4-top{flex-direction:column;align-items:stretch}
+@keyframes hzSide{from{transform:translateX(40px);opacity:0}}
+@media(max-width:640px){ #d3-home .hz-pop{align-items:flex-end;padding:0} #d3-home .hz-panel,body.hz-side #d3-home .hz-panel{width:100%;height:auto;max-height:90dvh;border-radius:18px 18px 0 0;animation:hzUp .24s ease} #d3-home .hz-panel .hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr)) !important} #d3-home .hz-pop-hd{padding:18px 18px 12px} #d3-home .hz-panel .hz-more{padding:14px 16px 20px} }
 #d3-home .hz-more .d3-hero{display:block;flex:none;margin-top:6px}
 #d3-home .hz-more #d3-stats,#d3-home .hz-more .g4-top-txt > #d3-greet-meta,#d3-home .hz-more #hero-greeting,#d3-home .hz-more #hero-sub,#d3-home .hz-more .hm-first,#d3-home .hz-more .hm-mode[data-hm-kind]{display:none !important}
 #d3-home .hz-more .d3-greet .dq-bar{margin-top:0}
@@ -29422,6 +29450,23 @@ const HomeSimple = {
 #d3-home .hz-more .hm-modes .hm-debate{min-height:0}
 #d3-home .hz-more .d3-greet > .g4-reco{flex:none !important}
 @media(min-width:641px) and (min-height:640px){ #screen-dashboard #d3-home.d3-page{display:block;min-height:0} }
+#screen-dashboard #d3-home.d3-page[hidden]{display:none !important}
+/* 2026-11-11 화면 비율: 홈 첫 화면이 창 높이를 채우고, 하단 줄은 창 맨 아래에 */
+#screen-dashboard.active:has(#d3-home:not([hidden])){display:flex;flex-direction:column}
+#screen-dashboard.active:has(#d3-home:not([hidden])) > *{flex:none}
+#screen-dashboard.active:has(#d3-home:not([hidden])) > #d3-home{flex:1 0 auto;display:flex !important;flex-direction:column;width:100%;box-sizing:border-box;padding-bottom:12px !important}
+#screen-dashboard.active:has(#d3-home:not([hidden])) > .zp-foot{margin-top:0}
+#d3-home .hz-hero{flex:1 0 auto;align-content:center}
+@media(min-width:1800px){ #screen-dashboard .d3-hdr-inner, #screen-dashboard #d3-home.d3-page, #screen-dashboard > .zp-foot{max-width:1400px} }
+#d3-home .hz-h .pg-i{white-space:nowrap}
+@media(min-width:1280px) and (min-height:800px){
+  #d3-home .hz-h{font-size:clamp(50px,3.6vw,64px)}
+  #d3-home .hz-lead{font-size:19px}
+  #d3-home .hz-go{min-height:64px;padding:0 38px;font-size:18.5px}
+  #d3-home .hz-link{font-size:17px}
+  #d3-home .hz-steps b{font-size:23px} #d3-home .hz-steps span{font-size:16.5px}
+  #d3-home .hz-steps li{padding:clamp(24px,3.6vh,36px) 0}
+}
 @media(max-width:860px){ #d3-home .hz-hero{grid-template-columns:1fr;gap:18px;padding-top:28px} #d3-home .hz-steps li{padding:16px 0} }
 @media(max-width:640px){ #d3-home .hz-h{font-size:31px} #d3-home .hz-go{width:100%} #d3-home .hz-acts{align-items:stretch} #d3-home .hz-link{align-self:center} #d3-home .hz-foot{flex-direction:column;align-items:stretch} #d3-home .hz-more-btn,#d3-home .hz-rec{text-align:left} }
 /* 위 메뉴 줄 '시안처럼' (HOME_HEADER = 'min') */
@@ -29441,18 +29486,22 @@ body.hdr-min #screen-dashboard .d3-user-btn::before{content:"내 정보";color:v
     const ban = document.querySelector('#d3-home .d3-banners'), slot = document.getElementById('hz-ban'); if(ban && slot) slot.appendChild(ban);   // 이용 기간·권한 안내는 첫 화면에 계속 보이게
     const user = document.querySelector('#screen-dashboard .d3-user');
     if(user && !user.querySelector('.hz-mn')) user.insertAdjacentHTML('afterbegin', '<button type="button" class="hz-mn" onclick="navGo(\'reports\')">연습 기록</button>');
-    this.header(HOME_HEADER);
-    let o = false; try{ o = localStorage.getItem(this.KEY) === '1'; }catch(_){} this.toggle(o, true);
+    this.header(HOME_HEADER); this.more(HOME_MORE); this.toggle(false, true);
+    document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && this.open) this.toggle(false); });
+    const mo = document.getElementById('hz-more');   // 창 안에서 무언가를 시작하면(연습 도구·토론·오늘의 질문 등) 이 창은 닫고 그 창이 열리게
+    if(mo) mo.addEventListener('click', e=>{ const b = e.target.closest('button, a'); if(b && this.open) setTimeout(()=>this.toggle(false, true), 0); });
     this.sync(); const g = document.getElementById('hero-greeting'); if(g && window.MutationObserver) new MutationObserver(()=>this.sync()).observe(g, { childList: true, characterData: true, subtree: true });
   },
   header(kind){ document.body.classList.toggle('hdr-min', kind === 'min'); },
+  more(kind){ document.body.classList.toggle('hz-side', kind === 'side'); },
   sync(){ const e = document.getElementById('hz-eye'); if(!e) return; const n = (typeof state !== 'undefined' && state.currentUser && state.currentUser.name) || ''; e.textContent = n ? `${n}님, 반가워요` : ''; },
   toggle(force, quiet){
     this.open = typeof force === 'boolean' ? force : !this.open;
-    const m = document.getElementById('hz-more'), b = document.getElementById('hz-more-btn'); if(!m || !b) return;
+    const m = document.getElementById('hz-pop'), b = document.getElementById('hz-more-btn'); if(!m || !b) return;
     m.hidden = !this.open; b.setAttribute('aria-expanded', this.open ? 'true' : 'false');
-    try{ localStorage.setItem(this.KEY, this.open ? '1' : '0'); }catch(_){}
-    if(this.open && !quiet) setTimeout(()=>{ try{ b.scrollIntoView({ behavior: 'smooth', block: 'start' }); }catch(_){} }, 30);
+    document.documentElement.classList.toggle('hz-open', this.open);
+    if(this.open){ const x = m.querySelector('.hz-pop-x'); setTimeout(()=>{ try{ x && x.focus({ preventScroll: true }); }catch(_){} }, 30); }
+    else if(!quiet){ try{ b.focus({ preventScroll: true }); }catch(_){} }
   },
 };
 try{ HomeSimple.init(); }catch(e){ console.warn('HomeSimple', e); }
