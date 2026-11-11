@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-11e';
+var APP_VERSION = '2026-11-11f';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5462,6 +5462,20 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 .hm-sum span{font-size:12.5px;color:#6b6b72;} .hm-sum b{font-size:22px;font-variant-numeric:tabular-nums;} .hm-sum small{font-size:11.5px;color:#8a8a90;}
 .fl-person{position:relative;} .fl-person .ord{position:absolute;right:10px;top:10px;width:22px;height:22px;border-radius:50%;background:#c8441c;color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;}
 .fl-room2{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;background:#1c1c1e;}
+/* 2026-11-11 면접장 미리보기 (실제 면접장 사진) */
+.fl-r3{display:flex;flex-direction:column;gap:10px}
+.fl-r3-ph{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#e9e6e0;border:1px solid #e6e4e0}
+.fl-r3-img{position:absolute;inset:0;background-size:cover;background-position:50% 42%;transform:scale(1.03);transform-origin:var(--sx) 55%;transition:transform-origin .8s}
+.fl-r3-ph[data-n="1"] .fl-r3-img{transform:none}
+.fl-r3-shade{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse var(--sw) 85% at var(--sx) 60%,rgba(28,28,30,0) 55%,rgba(28,28,30,.34) 100%);transition:background .8s}
+.fl-r3-ph[data-n="1"] .fl-r3-shade{display:none}
+.fl-r3-tag{position:absolute;left:10px;top:10px;display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:9px;background:rgba(255,255,255,.94);font-size:12.5px;font-weight:700;color:#1c1c1e;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.fl-r3-tag i{width:7px;height:7px;border-radius:50%;background:#e8532a}
+.fl-r3-spot{position:absolute;bottom:0;height:4px;width:22%;left:calc(var(--sx) - 11%);border-radius:4px 4px 0 0;background:#e8532a;transition:left .8s cubic-bezier(.2,.7,.2,1)}
+.fl-r3-ro{display:flex;flex-wrap:wrap;gap:8px}
+.fl-r3-rp{border:1px solid #e6e4e0;background:#fff;border-radius:999px;padding:7px 13px;font:inherit;font-size:13px;font-weight:600;color:#45454a;cursor:pointer}
+.fl-r3-rp em{font-style:normal;font-size:11.5px;color:#c2401b;margin-left:2px}
+.fl-r3-rp.on{border-color:#e8532a;background:#fdf0eb;color:#1c1c1e}
 .fl-roster{display:flex;flex-wrap:wrap;gap:6px;}
 .fl-rp{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid #3a3a42;background:#26262b;color:#c9c8ce;font:inherit;font-size:12.5px;cursor:pointer;}
 .fl-rp i{width:10px;height:10px;border-radius:50%;}
@@ -13943,7 +13957,7 @@ const StartFlow = {
   vDocs(){ return '<div class="fl-f wide fl-docs" id="fl-docs">' + DocBox.html() + '</div>'; },
   vPrepQ(){ return '<div class="pr-body" id="pr-body"><p class="cc-load">질문을 불러오는 중…</p></div>'; },
   vMode(){ const s = this.s; return `<h2 class="fl-h">진행 방식을 골라 주세요</h2><p class="fl-lead">어느 목적이든 연습형과 실전형 모두 할 수 있어요.</p>
-    <div class="fl-picks"><button type="button" class="fl-pick" data-mode="practice" aria-pressed="${s.mode==='practice'}"><span class="t">연습형</span><span class="d">편하게 익히기</span><ul class="fl-ul"><li>질문 힌트</li><li>답변 후 바로 피드백</li><li>중간에 멈추고 이어 하기</li></ul></button>
+    <div class="fl-picks"><button type="button" class="fl-pick" data-mode="practice" aria-pressed="${s.mode==='practice'}"><span class="t">연습형</span><span class="d">편하게 익히기</span><ul class="fl-ul"><li>시간 제한 없음</li><li>질문 자막 · 내 답변을 글자로 보며</li><li>중간에 일시정지하고 이어 하기</li><li>끝나면 녹화 영상으로 복기</li></ul></button>
     <button type="button" class="fl-pick" data-mode="real" aria-pressed="${s.mode==='real'}"><span class="t">실전형</span><span class="d">실제 면접처럼</span><ul class="fl-ul"><li>자기소개 60초·답변 90초 제한</li><li>힌트·중간 피드백 없음</li><li>마친 뒤 종합 리포트</li></ul></button></div>`; },
   names(){ return this.s.people.map(id=>(this.PEOPLE.find(x=>x.id===id) || {}).n).filter(Boolean); },
   pressureName(){ if(this.qbOn()) return this.mood() === 'hard' ? '압박' : '일반';
@@ -13956,18 +13970,14 @@ const StartFlow = {
       <div class="fl-moods"><button type="button" class="fl-mood-b" data-mood="normal" aria-pressed="${m === 'normal'}"><b>일반</b><span>실제 면접처럼 담담하고 정중하게 물어요.</span></button>
       <button type="button" class="fl-mood-b" data-mood="hard" aria-pressed="${m === 'hard'}"><b>압박</b><span>근거가 약한 곳을 바로 짚고 "그 방법이 실패하면요?"처럼 파고들어요. 인격 모독·비웃음·반말은 하지 않아요.</span></button></div>
       <p class="fl-sub">꼬리질문은 답변이 부족한 곳에만 면접 전체 1~3개 나와요. 마무리 질문에는 붙지 않아요.</p></div>`; },
-  vRoom(){ const s = this.s; const ppl = s.people.map(id=>this.PEOPLE.find(x=>x.id===id)).filter(Boolean); if(!ppl.length) return '';
-    const k = Math.min(s.spk, ppl.length-1), cur = ppl[k];
-    const prev = (s.prevSpk != null && s.prevSpk !== k) ? ppl[s.prevSpk] : null; const fwd = prev ? (k > s.prevSpk || (s.prevSpk === ppl.length-1 && k === 0)) : true;
-    s.prevSpk = null;   // 움직임은 발언자가 바뀐 그 한 번만
-    const layer = (x, cls)=>`<div class="fl-layer ${cls}"><span class="av" style="background:${x.c}">${this.ini(x)}</span><span class="nm">${x.n}</span></div>`;
-    return `<div class="fl-room2" aria-label="면접실 배치 미리보기">
-      <div class="fl-roster" role="list">${ppl.map((x,i)=>`<button type="button" class="fl-rp${i===k?' on':''}${prev && i===k?' moved':''}" data-spk="${i}" role="listitem" aria-current="${i===k}"><i style="background:${x.c}"></i>${x.n}${i===0?' · 진행':''}<em>${i===k?'말하는 중':'대기'}</em></button>`).join('')}</div>
-      <div class="fl-stage2">
-        <div class="fl-vid iv${prev ? (fwd ? ' go-next' : ' go-prev') : ''}" aria-live="polite">${prev ? layer(prev, 'out') : ''}${layer(cur, 'in')}<span class="tag">말하는 중</span></div>
-        <div class="fl-vid me"><div class="fl-layer"><span class="av">나</span><span class="nm">나 (면접자)</span></div><span class="tag mic">답변 차례를 기다리는 중</span></div>
-      </div>
-      ${ppl.length>1?'<button type="button" class="btn btn-outline fl-spk-btn" id="fl-spk-next">발언자 바꿔 보기 (데모)</button>':''}
+  vRoom(){ const s = this.s; const ppl = s.people.map(id=>this.PEOPLE.find(x=>x.id===id)).filter(Boolean); if(!ppl.length) return '';   // 2026-11-11 실제 면접장 사진으로 미리보기 (예전 '면접실 배치 데모' 대신)
+    const k = Math.min(s.spk, ppl.length-1), n = Math.min(ppl.length, 3);
+    const P = ppl.slice(0, 3).map(x=>Imv.P(x.id)), lo = Imv.layoutFor(P), L = IMV_PHOTOS[lo.layout], c = lo.col[k], x = L.x[c] != null ? L.x[c] : 50;
+    const role = p=>p.n.replace(/\s*면접관$/, '');
+    const tag = `${n > 1 ? Imv.posFor(lo.layout, c, n) + ' 면접관 · ' : ''}${escapeHtml(role(ppl[k]))}${k === 0 && n > 1 ? ' · 진행' : ''}`;
+    return `<div class="fl-r3" aria-label="면접장 미리보기">
+      <div class="fl-r3-ph" data-n="${n}" style="--sx:${x}%;--sw:${L.sw}%"><div class="fl-r3-img" style="background-image:url('${L.src}')"></div><div class="fl-r3-shade"></div><span class="fl-r3-tag"><i></i>${tag}</span><span class="fl-r3-spot"></span></div>
+      ${n > 1 ? `<div class="fl-r3-ro" role="list">${ppl.slice(0, 3).map((p, i)=>`<button type="button" class="fl-r3-rp${i === k ? ' on' : ''}" data-spk="${i}" role="listitem" aria-pressed="${i === k}">${escapeHtml(Imv.posFor(lo.layout, lo.col[i], n))} · ${escapeHtml(role(p))}${i === 0 ? ' <em>진행</em>' : ''}</button>`).join('')}</div>` : ''}
     </div>`; },
   vSet(){ const s = this.s; const nm = this.names();
     return `<h2 class="fl-h">면접관과 설정</h2><p class="fl-lead">추천 설정으로 바로 시작하거나, '설정 변경'에서 바꿀 수 있어요.</p>
@@ -13980,8 +13990,8 @@ const StartFlow = {
     <div class="fl-f wide"><span class="fl-lbl">난이도</span><div class="fl-diffs">${Object.entries(FLOW_DIFFS).map(([k,v])=>`<button type="button" class="fl-diff" data-diff="${k}" aria-pressed="${k===s.diff}"><b>${k} · ${v.t}</b><span>${v.d}</span></button>`).join('')}</div>
       <p class="fl-sub">직무 질문은 난이도에 맞춰 뽑혀요. 기업 맞춤 질문은 난이도와 상관없이 같은 질문이 나와요.</p></div>
     <div class="fl-f wide"><span class="fl-lbl">면접 유형</span><p class="fl-sub">인성·직무 질문이 기본이에요. 서류 기반 질문은 다음 장치 점검 창에서 이력서·자기소개서를 첨부하면 함께 나와요.</p></div>` : ''}
-    <div class="fl-f"><div class="fl-row"><span class="fl-lbl">면접실 배치</span><span class="fl-badge">데모</span></div>${this.vRoom()}
-    ${s.count>1?'<p class="fl-sub">화면에는 지금 말하는 면접관 한 명과 나만 보여요. 본 질문은 진행 면접관이, 꼬리질문은 다른 면접관이 이어서 하고 화면이 그 면접관으로 바뀌어요. 면접관 구성은 면접 분위기(부드럽게·보통·압박)에도 반영돼요.</p>':''}</div>`; },
+    <div class="fl-f"><div class="fl-row"><span class="fl-lbl">면접장 미리보기</span>${s.people.length>1?'<span class="fl-sub">이름을 누르면 그 면접관이 질문할 때 모습이에요</span>':''}</div>${this.vRoom()}
+    ${s.people.length>1?'<p class="fl-sub">본 질문은 진행 면접관이, 꼬리질문은 다른 면접관이 이어서 해요. 질문하는 면접관이 밝게 강조되고 이름표가 바뀌어요. 면접관 구성은 면접 분위기(부드럽게·보통·압박)에도 반영돼요.</p>':''}</div>`; },
   vStart(){ const s = this.s, u = this.usedExps();
     const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${s.major.grade}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.role)}${s.job.post ? ' · 채용공고 반영' : ''}`;
     const qbOn = s.kind === 'job' && QBank.applies(s.job.field);
@@ -13992,7 +14002,7 @@ const StartFlow = {
     <dl class="fl-sum"><dt>면접 목적</dt><dd>${s.kind === 'major' ? '전공·경험 면접' : '기업·직무 맞춤 면접'}</dd>${co ? `<dt>목표 기업</dt><dd>${co}</dd>` : ''}<dt>내 정보</dt><dd>${info}</dd>${qbLine}
     <dt>활용할 경험</dt><dd>${u.length ? u.map(e=>escapeHtml(e.text)).join(', ') : '선택 안 함 (일반 질문)'}</dd>
     <dt>질문 연습</dt><dd>${(()=>{ const m = PrepRoom.summary(); return m ? `${m.total}개 중 ${m.done}개 연습${m.done ? '' : ' (건너뜀)'}` : '건너뜀'; })()}</dd>
-    <dt>진행 방식</dt><dd>${s.mode === 'real' ? '실전형 · 힌트·중간 피드백 없음, 마친 뒤 종합 리포트' : '연습형 · 힌트·즉시 피드백, 멈추고 이어 하기'}</dd>
+    <dt>진행 방식</dt><dd>${s.mode === 'real' ? '실전형 · 힌트·중간 피드백 없음, 마친 뒤 종합 리포트' : '연습형 · 시간 제한 없음, 질문 자막·내 답변을 보며, 일시정지하고 이어 하기'}</dd>
     <dt>시간</dt><dd>${s.mode === 'real' ? '자기소개 60초 · 답변 90초' : '시간 제한 없음'}</dd>
     <dt>면접관</dt><dd>${this.names().join(' · ')} (${s.count}명) · ${this.pressureName()} 면접</dd><dt>난이도</dt><dd>${s.diff} · ${escapeHtml((FLOW_DIFFS[s.diff] || FLOW_DIFFS['중']).d)}</dd></dl>`; },
 };
@@ -20225,7 +20235,7 @@ const SetupFlow = {
     if(alt){ alt.hidden = !!state.trialMode; alt.textContent = skip ? '리허설부터 할게요' : '리허설 없이 바로 라이브'; }
     if(typeof Imv !== 'undefined' && Imv.want()){   // 2026-11-11 실전 모드: 리허설 없이 면접장으로
       try{ imvPreload(); }catch(_){}
-      if(ft) ft.innerHTML = '<b>실전형</b> · 시작하면 전체 화면으로 바뀌고 면접관이 질문을 시작해요'; if(lbl) lbl.textContent = '면접 시작'; if(alt) alt.hidden = true; }
+      if(ft) ft.innerHTML = Imv.practice() ? '<b>연습형</b> · 시간 제한 없이, 질문 자막과 내 답변을 보며 연습해요 · 시작하면 전체 화면으로 바뀌어요' : '<b>실전형</b> · 시작하면 전체 화면으로 바뀌고 면접관이 질문을 시작해요'; if(lbl) lbl.textContent = '면접 시작'; if(alt) alt.hidden = true; }
   },
   go(){ try{ MobileAudio.unlock(); }catch(_){} if(typeof Imv !== 'undefined' && Imv.want()) return Imv.enter(); if(this.skipRh()) this.live(); else startRehearsal(); },
   alt(){ try{ MobileAudio.unlock(); }catch(_){} if(this.skipRh()) startRehearsal(); else this.live(); },
@@ -29583,7 +29593,8 @@ const ImvRec = {
 const Imv = {
   armed: false, active: false, mode: 'scene', col: null, rvAt: null, el: null, people: [], cur: -1, phaseCls: '', capOn: false, pipOn: false, lastAnswerAt: 0, _sTok: 0,
   qText: '', qid: '', ansT0: 0, timer: null, media: null, rec: null, recStart: 0, total: 0, idx: 0,
-  want(){ return state.timedMode === 'real' && !state.trialMode && !(state.selectedField && state.selectedField.id === 'review'); },
+  want(){ return !state.trialMode && !(state.selectedField && state.selectedField.id === 'review'); },   // 2026-11-11 연습형도 면접장 화면 (실전형과 차이: 시간 제한 없음 · 자막·내 답변 기본 켬 · 일시정지)
+  practice(){ return state.timedMode !== 'real'; },
   P(id){ const base = IMV_INTERVIEWERS[id] || { id, name: id, gender: 'male', role: '면접관', idleImage: '', speakingAnimation: 'glow', questionVideos: {} };
     const m = this.media && this.media[id] ? this.media[id] : {};
     let gender = base.gender; try{ const v = IvVoice.map && IvVoice.map[id]; const g = v && v.voice_meta && v.voice_meta.gender; if(g === 'male' || g === 'female') gender = g; }catch(_){}
@@ -29632,7 +29643,7 @@ const Imv = {
     el.innerHTML = `
       <div class="imv-card">
         <div class="imv-hd">
-          <div class="imv-hl"><span class="imv-kind" id="imv-kind"></span><span class="imv-status" id="imv-status"><i></i><b id="imv-status-t"></b></span></div>
+          <div class="imv-hl"><span class="imv-mode" id="imv-mode"></span><span class="imv-kind" id="imv-kind"></span><span class="imv-status" id="imv-status"><i></i><b id="imv-status-t"></b></span></div>
           <div class="imv-hr"><span class="imv-rec" id="imv-rec" hidden><i></i>녹화 중</span><span class="imv-time" id="imv-time"></span><span class="imv-prog" id="imv-prog" aria-live="polite"></span></div>
         </div>
         <div class="imv-stage" id="imv-stage">
@@ -29649,6 +29660,7 @@ const Imv = {
           <video class="imv-stagevid" id="imv-stagevid" playsinline preload="auto"></video>
           <div class="imv-tag" id="imv-tag"><span class="imv-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="imv-tag-t"></span></div>
           <div class="imv-cap" id="imv-cap" hidden></div>
+          <div class="imv-mine" id="imv-mine" hidden aria-live="polite"><span class="imv-mine-l">내 답변</span><p id="imv-mine-t"></p></div>
           <div class="imv-lang" id="imv-lang" hidden><button type="button" onclick="Imv.lang()">영어 질문 · 한국어로 답할게요</button></div>
           <div class="imv-typed" id="imv-typed" hidden><textarea id="imv-typed-ta" rows="3" placeholder="마이크를 쓸 수 없어 글로 답해 주세요"></textarea></div>
           <div class="imv-ac" id="imv-ac" hidden role="alertdialog"><p id="imv-ac-t"></p><div><button type="button" class="k" onclick="AnsConfirm.keep()">이어서 말하기</button><button type="button" class="d" onclick="AnsConfirm.done()">답변 마치기</button></div></div>
@@ -29660,8 +29672,10 @@ const Imv = {
             <div class="imv-opt-wrap"><button type="button" class="imv-opt" id="imv-opt" aria-expanded="false" onclick="Imv.optToggle(event)">화면 옵션</button>
               <div class="imv-opt-menu" id="imv-opt-menu" hidden role="menu">
                 <button type="button" role="menuitemcheckbox" id="imv-tg-cap" aria-pressed="false" onclick="Imv.toggleCap()"><span><b>질문 자막</b><small>면접관 질문을 글자로 보여 줘요</small></span><i class="sw"></i></button>
+                <button type="button" role="menuitemcheckbox" id="imv-tg-mine" aria-pressed="false" onclick="Imv.toggleMine()"><span><b>내 답변 보기</b><small>말한 내용을 글자로 보여 줘요</small></span><i class="sw"></i></button>
                 <button type="button" role="menuitemcheckbox" id="imv-tg-pip" aria-pressed="false" onclick="Imv.togglePip()"><span><b>내 화면 보기</b><small>숨겨도 녹화는 계속돼요</small></span><i class="sw"></i></button>
               </div></div>
+            <button type="button" class="imv-pause" id="imv-pause" hidden onclick="dialogPause()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>일시정지</button>
             <button type="button" class="imv-done" id="imv-done" onclick="Imv.done()" disabled>질문을 듣는 중</button>
           </div>
         </div>
@@ -29694,12 +29708,8 @@ const Imv = {
     const n = this.people.length, photo = n >= 1 && n <= 3, el = this.el;
     this.mode = photo ? 'photo' : 'scene';
     el.querySelector('#imv-photo').hidden = !photo; el.querySelector('#imv-scene').hidden = photo;
-    if(photo){   // 사진 속 자리: 0 왼쪽(여성) · 1 가운데 · 2 오른쪽. 진행 면접관(첫 번째)은 가운데, 여성 면접관은 왼쪽 자리로
-      const fem = this.people.findIndex(p=>p.gender === 'female'), col = new Array(n);
-      if(n === 3){ const free = [1, 2, 0]; if(fem >= 0){ col[fem] = 0; free.splice(free.indexOf(0), 1); } this.people.forEach((p, i)=>{ if(col[i] == null) col[i] = free.shift(); }); this.layout = '3'; }
-      else if(n === 2){ if(fem >= 0){ col[fem] = 0; col[1 - fem] = 1; this.layout = '2a'; } else { col[0] = 1; col[1] = 2; this.layout = '2b'; } }
-      else { col[0] = fem === 0 ? 0 : 1; this.layout = fem === 0 ? '1f' : '1m'; }
-      this.col = col;
+    if(photo){
+      const lo = this.layoutFor(this.people); this.layout = lo.layout; this.col = lo.col;
       const L = IMV_PHOTOS[this.layout], ph = el.querySelector('#imv-photo');
       el.querySelector('#imv-photo-img').style.backgroundImage = `url("${L.src}")`;
       ph.dataset.n = n; ph.style.setProperty('--sw', L.sw + '%');
@@ -29715,6 +29725,15 @@ const Imv = {
     el.querySelector('#imv-kind').textContent = kind;
     this.cur = -1; this.speaker(0);
   },
+  /** 사진 속 자리: 0 왼쪽(여성) · 1 가운데 · 2 오른쪽. 진행 면접관(첫 번째)은 가운데, 여성 면접관은 왼쪽 자리로 (면접 준비 창 미리보기도 같이 씀) */
+  layoutFor(people){
+    const n = people.length, fem = people.findIndex(p=>p && p.gender === 'female'), col = new Array(n); let layout;
+    if(n >= 3){ const free = [1, 2, 0]; if(fem >= 0){ col[fem] = 0; free.splice(free.indexOf(0), 1); } people.forEach((p, i)=>{ if(col[i] == null) col[i] = free.shift(); }); layout = '3'; }
+    else if(n === 2){ if(fem >= 0){ col[fem] = 0; col[1 - fem] = 1; layout = '2a'; } else { col[0] = 1; col[1] = 2; layout = '2b'; } }
+    else { col[0] = fem === 0 ? 0 : 1; layout = fem === 0 ? '1f' : '1m'; }
+    return { layout, col };
+  },
+  posFor(layout, c, n){ if(n === 1) return ''; const L = IMV_PHOTOS[layout]; if(n === 2) return (L && L.x[c] < 50) ? '왼쪽' : '오른쪽'; return this.POS[c] || ''; },
   posName(k){ const c = this.col ? this.col[k] : k, n = this.people.length; if(n === 1) return '';
     if(this.mode === 'photo' && n === 2){ const L = IMV_PHOTOS[this.layout]; return (L && L.x[c] < 50) ? '왼쪽' : '오른쪽'; }
     return this.POS[c] || ''; },
@@ -29731,9 +29750,14 @@ const Imv = {
     if(!(this.armed || this.want())) return false;
     this.armed = false; this.active = true; this.loadMedia();
     const el = this.build(); this.seats();
-    this.capOn = false; this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';
-    ['imv-tg-cap', 'imv-tg-pip'].forEach(id=>el.querySelector('#' + id).setAttribute('aria-pressed', 'false'));
-    ['#imv-cap', '#imv-pip', '#imv-typed', '#imv-ac', '#imv-lang', '#imv-opt-menu'].forEach(s=>{ el.querySelector(s).hidden = true; });
+    const pr = this.isPractice = this.practice();
+    this.capOn = pr; this.mineOn = pr; this.mineText = ''; this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';
+    ['imv-tg-cap', 'imv-tg-pip', 'imv-tg-mine'].forEach(id=>el.querySelector('#' + id).setAttribute('aria-pressed', 'false'));
+    if(pr){ el.querySelector('#imv-tg-cap').setAttribute('aria-pressed', 'true'); el.querySelector('#imv-tg-mine').setAttribute('aria-pressed', 'true'); }
+    ['#imv-cap', '#imv-mine', '#imv-pip', '#imv-typed', '#imv-ac', '#imv-lang', '#imv-opt-menu'].forEach(s=>{ el.querySelector(s).hidden = true; });
+    el.querySelector('#imv-pause').hidden = !pr; el.classList.toggle('pr', pr);
+    const md = el.querySelector('#imv-mode'); md.textContent = pr ? '연습형' : '실전형'; md.dataset.m = pr ? 'p' : 'r';
+    el.setAttribute('aria-label', pr ? '면접장 (연습형)' : '면접장 (실전형)');
     el.querySelector('#imv-prog').textContent = ''; el.querySelector('#imv-time').textContent = ''; el.querySelector('#imv-rec').hidden = true;
     el.classList.remove('live', 'out'); el.classList.add('show', 'enter', IMV_THEME === 'dark' ? 'th-dark' : 'th-bright'); document.body.classList.add('imv-on');
     this.status(); this.syncBtn();
@@ -29756,13 +29780,14 @@ const Imv = {
     if(!this.active) return;
     const el = this.el;
     if(type === 'questions'){ this.total = d.list.length; this.prog(); }
-    else if(type === 'question'){ this.idx = d.index; this.total = d.total; this.prog();
+    else if(type === 'interim'){ setTimeout(()=>this.mine((document.getElementById('steno-input') || {}).value || (d && d.text) || ''), 0); }
+    else if(type === 'question'){ this.idx = d.index; this.total = d.total; this.prog(); this.mine('');
       this.qText = d.q.q; this.qid = String((d.q.qb && d.q.qb.qid) || d.q.id || d.q.dbId || ''); ImvRec.mark(d.q.q, 'question'); el.querySelector('#imv-typed').hidden = true; }
-    else if(type === 'followup'){ this.qText = d.followup; this.qid = ''; ImvRec.mark(d.followup, 'followup'); el.querySelector('#imv-typed').hidden = true; }
+    else if(type === 'followup'){ this.mine(''); this.qText = d.followup; this.qid = ''; ImvRec.mark(d.followup, 'followup'); el.querySelector('#imv-typed').hidden = true; }
     else if(type === 'speaking'){ this.caption(d.text); this.stopTimer(); }
     else if(type === 'listening'){ this.startTimer(); el.querySelector('#imv-typed').hidden = true; }
     else if(type === 'listen-typed'){ const t = el.querySelector('#imv-typed'), ta = el.querySelector('#imv-typed-ta'); ta.value = (document.getElementById('steno-input') || {}).value || ''; t.hidden = false; setTimeout(()=>ta.focus(), 50); this.status(); this.syncBtn(); }
-    else if(type === 'answer' || type === 'skipped'){ this.stopTimer(); this.lastAnswerAt = Date.now(); el.querySelector('#imv-typed').hidden = true; }
+    else if(type === 'answer' || type === 'skipped'){ this.stopTimer(); this.lastAnswerAt = Date.now(); el.querySelector('#imv-typed').hidden = true; if(type === 'answer' && d && d.text) this.mine(d.text); }
     else if(type === 'done' || type === 'aborted'){ this.end(); }
   },
   prog(){ const p = this.el.querySelector('#imv-prog'); p.textContent = this.idx ? `${this.idx} / ${this.total || '–'}` : ''; },
@@ -29782,6 +29807,7 @@ const Imv = {
     if(!this.el) return; const t = this.el.querySelector('#imv-status-t'), st = this.el.querySelector('#imv-status');
     const who = this.who(this.cur), cls = this.phaseCls;
     st.dataset.p = cls || 'idle';
+    if(state.dialogPaused){ t.textContent = '일시정지 중이에요'; return; }
     t.textContent = cls === 'speaking' ? `${who}이 질문하고 있어요` : cls === 'listening' ? (StenoLoop.typedWait ? '답변을 글로 입력해 주세요' : '답변을 듣고 있어요') : cls === 'thinking' ? `${who}이 답변을 듣고 생각하고 있어요` : this.idx ? '잠시 후 다음 질문이 이어져요' : '면접관이 곧 인사를 건넬 거예요';
   },
   phase(cls){
@@ -29789,11 +29815,16 @@ const Imv = {
     this.el.querySelectorAll('.imv-seat').forEach((s, i)=>{ const me = i === this.cur; s.classList.toggle('talk', me && cls === 'speaking'); s.classList.toggle('think', me && cls === 'thinking'); s.classList.toggle('listen', cls === 'listening'); });
     this.el.dataset.phase = this.phaseCls || 'idle';
     if(cls !== 'speaking') this.level(0);
-    this.status(); this.syncBtn();
+    this.status(); this.syncBtn(); this.mine(this.mineText);
   },
   level(v){ if(!this.el || !this.active) return; v = Math.max(0, Math.min(1, v || 0)).toFixed(3); this.el.style.setProperty('--lv', v); const s = this.el.querySelector(`.imv-seat[data-k="${this.cur}"]`); if(s) s.style.setProperty('--lv', v); },
   caption(t){ this.capText = t || ''; const c = this.el.querySelector('#imv-cap'); c.textContent = this.capText; c.hidden = !(this.capOn && this.capText); },
   voiceFail(){ if(this.capForced) return; this.capForced = true; this.capOn = true; this.el.querySelector('#imv-tg-cap').setAttribute('aria-pressed', 'true'); this.caption(this.capText); showToast('면접관 음성을 재생할 수 없어 질문을 자막으로 보여 드려요.', 'info'); },
+  mine(t){ if(!this.el) return; this.mineText = String(t || '').trim(); const b = this.el.querySelector('#imv-mine'), p = this.el.querySelector('#imv-mine-t');
+    p.textContent = this.mineText || '말하면 여기에 글자로 나와요'; p.classList.toggle('ph', !this.mineText); p.scrollTop = p.scrollHeight;
+    b.hidden = !(this.mineOn && (this.mineText || this.phaseCls === 'listening')) || !!StenoLoop.typedWait;
+    const st = this.el.querySelector('#imv-stage'); if(st) st.style.setProperty('--mineH', b.hidden ? '0px' : (b.offsetHeight + 12) + 'px'); },
+  toggleMine(){ this.mineOn = !this.mineOn; this.el.querySelector('#imv-tg-mine').setAttribute('aria-pressed', String(this.mineOn)); this.mine(this.mineText); },
   toggleCap(){ this.capOn = !this.capOn; this.el.querySelector('#imv-tg-cap').setAttribute('aria-pressed', String(this.capOn)); this.caption(this.capText); },
   togglePip(){
     const st = state.cameraStream, has = !!(st && st.getVideoTracks().some(t=>t.readyState === 'live'));
@@ -30045,6 +30076,19 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv[data-phase="thinking"] .imv-wave i{background:#d8a23a;animation:imvDot 1.2s ease-in-out infinite}#imv[data-phase="thinking"] .imv-wave i:nth-child(2){animation-delay:.15s}#imv[data-phase="thinking"] .imv-wave i:nth-child(3){animation-delay:.3s}
 #imv .imv-cap{position:absolute;left:50%;bottom:clamp(16px,3cqh,34px);transform:translateX(-50%);width:max-content;max-width:min(80cqw,1100px);padding:11px 22px;border-radius:12px;background:rgba(20,20,22,.78);color:#fff;font-size:clamp(16px,1.25vw,21px);font-weight:500;line-height:1.5;text-align:center}
 #imv .imv-lang{position:absolute;left:50%;bottom:clamp(16px,3cqh,34px);transform:translateX(-50%)}
+#imv .imv-cap{transition:bottom .25s ease} #imv .imv-stage{--mineH:0px} #imv .imv-stage .imv-cap{bottom:calc(clamp(16px,3cqh,34px) + var(--mineH))}
+#imv .imv-mine{position:absolute;left:50%;bottom:clamp(14px,2.6cqh,30px);transform:translateX(-50%);width:min(860px,80cqw);box-sizing:border-box;padding:12px 18px 14px;border-radius:14px;background:rgba(255,255,255,.95);border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.14);color:var(--ink)}
+#imv .imv-mine-l{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--acc-ink)}
+#imv[data-phase="listening"] .imv-mine-l::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc);animation:imvBlink 1.2s ease-in-out infinite}
+#imv .imv-mine p{margin:6px 0 0;max-height:4.8em;overflow:auto;font-size:clamp(15px,1.1vw,17.5px);line-height:1.6;user-select:text}
+#imv .imv-mine p.ph{color:var(--ink3)}
+@keyframes imvBlink{50%{opacity:.25}}
+#imv .imv-mode{display:inline-flex;align-items:center;height:24px;padding:0 9px;margin-right:10px;border-radius:999px;font-size:12.5px;font-weight:700;background:var(--acc-soft);color:var(--acc-ink)}
+#imv .imv-mode[data-m="r"]{background:#1c1c1e;color:#fff}
+#imv .imv-pause{display:inline-flex;align-items:center;gap:7px;height:clamp(48px,6vh,58px);padding:0 18px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:clamp(14px,1.05vw,17px);font-weight:600;cursor:pointer}
+#imv .imv-pause:hover{background:var(--surf)}
+#imv .imv-pause[hidden]{display:none}
+@media (max-width:640px){ #imv .imv-mine{width:calc(100% - 20px)} #imv .imv-pause{padding:0 12px} }
 #imv .imv-cap:not([hidden]) ~ .imv-lang{bottom:calc(clamp(16px,3cqh,34px) + 64px)}
 #imv .imv-lang button{border:0;background:#fff;color:var(--ink);font:inherit;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.14)}
 #imv .imv-typed{position:absolute;left:50%;bottom:clamp(14px,2.6cqh,30px);transform:translateX(-50%);width:min(760px,72cqw)}
