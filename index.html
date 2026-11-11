@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-11b';
+var APP_VERSION = '2026-11-11c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -20195,6 +20195,7 @@ const SetupFlow = {
     if(lbl) lbl.textContent = state.trialMode ? '체험 면접 시작' : skip ? '라이브 면접 시작' : '리허설 시작하기';
     if(alt){ alt.hidden = !!state.trialMode; alt.textContent = skip ? '리허설부터 할게요' : '리허설 없이 바로 라이브'; }
     if(typeof Imv !== 'undefined' && Imv.want()){   // 2026-11-11 실전 모드: 리허설 없이 면접장으로
+      try{ imvPreload(); }catch(_){}
       if(ft) ft.innerHTML = '<b>실전형</b> · 시작하면 전체 화면으로 바뀌고 면접관이 질문을 시작해요'; if(lbl) lbl.textContent = '면접 시작'; if(alt) alt.hidden = true; }
   },
   go(){ try{ MobileAudio.unlock(); }catch(_){} if(typeof Imv !== 'undefined' && Imv.want()) return Imv.enter(); if(this.skipRh()) this.live(); else startRehearsal(); },
@@ -29369,7 +29370,7 @@ try{ PageInfo.init(); }catch(e){ console.warn('PageInfo', e); }
 /* 면접관 데이터 — 나중에 립싱크 영상을 넣을 곳
    idleImage: 대기 그림 주소(비우면 자리표시용 그림), speakingAnimation: 'glow'(음성 크기에 반응하는 발광·미세한 움직임)
    questionVideos: { 질문ID: 영상 주소 } — 질문ID는 면접 DB 질문 번호(qb.qid). 'greeting'(첫인사)·'closing'(끝인사) 키도 쓸 수 있음
-   같은 형식의 interviewers/media.json 이 있으면 시작할 때 읽어서 덮어씀 (코드 수정 없이 파일만 올리면 됨) */
+   같은 형식의 imv-media.json(맨 위 폴더) 이 있으면 시작할 때 읽어서 덮어씀 (코드 수정 없이 파일만 올리면 됨) */
 const IMV_INTERVIEWERS = {
   hr:     { id:'hr',     name:'인사팀장',       gender:'female', role:'인사팀장',   idleImage:'', speakingAnimation:'glow', questionVideos:{} },
   lead:   { id:'lead',   name:'현업 팀장',      gender:'male',   role:'현업 팀장',  idleImage:'', speakingAnimation:'glow', questionVideos:{} },
@@ -29382,9 +29383,19 @@ const IMV_INTERVIEWERS = {
   quiet:  { id:'quiet',  name:'무반응형 면접관', gender:'male',  role:'면접관',     idleImage:'', speakingAnimation:'glow', questionVideos:{} },
   ethics: { id:'ethics', name:'공공·청렴형',    gender:'female', role:'면접관',     idleImage:'', speakingAnimation:'glow', questionVideos:{} },
 };
-const IMV_MEDIA_URL = 'interviewers/media.json';
+const IMV_MEDIA_URL = 'imv-media.json';   // 사진·영상 파일은 맨 위 폴더에 둠 (클라우드플레어는 하위 폴더 파일을 올리지 않음)
 const IMV_THEME = 'bright';
-const IMV_PANEL3 = 'interviewers/panel3.jpg';   // 면접관 3명일 때 면접장 사진 (AI로 만든 예시 · 실제 인물 아님) — 바꾸려면 이 파일만 교체   // 'bright' = 밝은 실제 면접실 (기본) · 'dark' = 어두운 몰입형
+/* 면접장 사진 (AI로 만든 예시 · 실제 인물 아님). 3명 사진 하나에서 1·2명용을 잘라 씀 — 바꾸려면 같은 이름 파일만 교체
+   사진 속 자리(col): 0 왼쪽 여성 · 1 가운데 진행 · 2 오른쪽. x = 그 사람의 가로 위치(%) */
+const IMV_PHOTOS = {
+  '3':  { src: 'imv-panel3.jpg',  x: { 0: 18, 1: 50, 2: 83 }, sw: 24 },
+  '2a': { src: 'imv-panel2a.jpg', x: { 0: 26, 1: 74 }, sw: 32 },
+  '2b': { src: 'imv-panel2b.jpg', x: { 1: 27, 2: 75 }, sw: 32 },
+  '1f': { src: 'imv-panel1f.jpg', x: { 0: 50 }, sw: 0 },
+  '1m': { src: 'imv-panel1m.jpg', x: { 1: 50 }, sw: 0 },
+};
+const IMV_PANEL3 = IMV_PHOTOS['3'].src;
+function imvPreload(){ if(imvPreload.done) return; imvPreload.done = true; Object.values(IMV_PHOTOS).forEach(L=>{ try{ const i = new Image(); i.src = L.src; }catch(_){} }); }   // 준비 창에서 미리 받아 둠 (입장 때 회색 화면 방지)   // 'bright' = 밝은 실제 면접실 (기본) · 'dark' = 어두운 몰입형
 
 /* 면접 전체 녹화 (이 기기 안에서만) */
 const ImvRec = {
@@ -29480,7 +29491,7 @@ const Imv = {
           <div class="imv-hr"><span class="imv-rec" id="imv-rec" hidden><i></i>녹화 중</span><span class="imv-time" id="imv-time"></span><span class="imv-prog" id="imv-prog" aria-live="polite"></span></div>
         </div>
         <div class="imv-stage" id="imv-stage">
-          <div class="imv-photo" id="imv-photo" hidden><div class="imv-photo-img" id="imv-photo-img"></div><div class="imv-shade" data-c="0"></div><div class="imv-shade" data-c="1"></div><div class="imv-shade" data-c="2"></div><div class="imv-spot" id="imv-spot"></div></div>
+          <div class="imv-photo" id="imv-photo" hidden><div class="imv-photo-img" id="imv-photo-img"></div><div class="imv-shade" id="imv-shade"></div><div class="imv-spot" id="imv-spot"></div></div>
           <div class="imv-scene" id="imv-scene" hidden>
             <div class="imv-room"><div class="imv-wall"></div><div class="imv-ceil"><i></i><i></i><i></i><i></i></div><div class="imv-panel"></div><div class="imv-window"><div class="imv-blind"></div></div>
               <svg class="imv-plant" viewBox="0 0 200 420" aria-hidden="true"><path d="M60 330h80l-10 90H70z" fill="#D9D3CA"/><path d="M60 330h80v14H60z" fill="#C9C1B6"/>
@@ -29512,7 +29523,6 @@ const Imv = {
       </div>
       <div class="imv-cd" id="imv-cd"><p>잠시 후 면접이 시작됩니다</p><b id="imv-cd-n"></b></div>`;
     document.body.appendChild(el); this.el = el;
-    el.querySelector('#imv-photo-img').style.backgroundImage = `url("${IMV_PANEL3}")`;
     const ta = el.querySelector('#imv-typed-ta'); ta.addEventListener('input', ()=>{ const s = document.getElementById('steno-input'); if(s){ s.value = ta.value; try{ updateCharCount(); }catch(_){} } });
     // 기존 화면의 '답변 완료' 버튼 상태·답변 확인 창·영어 버튼을 그대로 따라감
     const stop = document.getElementById('btn-dialog-stop-listen');
@@ -29536,15 +29546,18 @@ const Imv = {
     let ppl = []; try{ ppl = IvPanel.people(); }catch(_){}
     if(!ppl.length) ppl = [{ id: 'hr', n: '인사팀장' }, { id: 'lead', n: '현업 팀장' }];
     this.people = ppl.slice(0, 3).map(x=>this.P(x.id));
-    const photo = this.people.length === 3, el = this.el;
+    const n = this.people.length, photo = n >= 1 && n <= 3, el = this.el;
     this.mode = photo ? 'photo' : 'scene';
     el.querySelector('#imv-photo').hidden = !photo; el.querySelector('#imv-scene').hidden = photo;
     if(photo){   // 사진 속 자리: 0 왼쪽(여성) · 1 가운데 · 2 오른쪽. 진행 면접관(첫 번째)은 가운데, 여성 면접관은 왼쪽 자리로
-      const free = [1, 2, 0], col = new Array(3);
-      const fem = this.people.findIndex(p=>p.gender === 'female');
-      if(fem >= 0){ col[fem] = 0; free.splice(free.indexOf(0), 1); }
-      this.people.forEach((p, i)=>{ if(col[i] == null) col[i] = free.shift(); });
+      const fem = this.people.findIndex(p=>p.gender === 'female'), col = new Array(n);
+      if(n === 3){ const free = [1, 2, 0]; if(fem >= 0){ col[fem] = 0; free.splice(free.indexOf(0), 1); } this.people.forEach((p, i)=>{ if(col[i] == null) col[i] = free.shift(); }); this.layout = '3'; }
+      else if(n === 2){ if(fem >= 0){ col[fem] = 0; col[1 - fem] = 1; this.layout = '2a'; } else { col[0] = 1; col[1] = 2; this.layout = '2b'; } }
+      else { col[0] = fem === 0 ? 0 : 1; this.layout = fem === 0 ? '1f' : '1m'; }
       this.col = col;
+      const L = IMV_PHOTOS[this.layout], ph = el.querySelector('#imv-photo');
+      el.querySelector('#imv-photo-img').style.backgroundImage = `url("${L.src}")`;
+      ph.dataset.n = n; ph.style.setProperty('--sw', L.sw + '%');
     } else {
       const s = el.querySelector('#imv-seats'), pl = el.querySelector('#imv-plates');
       s.dataset.n = this.people.length;
@@ -29557,7 +29570,9 @@ const Imv = {
     el.querySelector('#imv-kind').textContent = kind;
     this.cur = -1; this.speaker(0);
   },
-  posName(k){ const c = this.col ? this.col[k] : k; return this.people.length === 1 ? '' : this.POS[c] || ''; },
+  posName(k){ const c = this.col ? this.col[k] : k, n = this.people.length; if(n === 1) return '';
+    if(this.mode === 'photo' && n === 2){ const L = IMV_PHOTOS[this.layout]; return (L && L.x[c] < 50) ? '왼쪽' : '오른쪽'; }
+    return this.POS[c] || ''; },
   who(k){ const p = this.people[k]; if(!p) return '면접관'; const pos = this.posName(k); return pos ? `${pos} 면접관` : `${p.role || p.name}`; },
 
   /* ── 입장 ── */
@@ -29611,11 +29626,11 @@ const Imv = {
     const el = this.el, c = this.col ? this.col[k] : k;
     el.querySelectorAll('.imv-seat').forEach((s, i)=>{ s.classList.toggle('on', i === k); s.classList.toggle('off', i !== k && this.people.length > 1); });
     el.querySelectorAll('.imv-plate').forEach((s, i)=>s.classList.toggle('on', i === k));
-    el.querySelectorAll('.imv-shade').forEach(s=>s.classList.toggle('off', +s.dataset.c !== c));
-    const ph = el.querySelector('#imv-photo'); if(ph) ph.dataset.c = c;
+    const ph = el.querySelector('#imv-photo');
+    if(ph && this.mode === 'photo'){ const L = IMV_PHOTOS[this.layout] || IMV_PHOTOS['3'], x = (L.x[c] != null ? L.x[c] : 50); ph.dataset.c = c; ph.style.setProperty('--sx', x + '%'); }
     const tag = el.querySelector('#imv-tag'); tag.dataset.c = this.mode === 'photo' ? c : (this.people.length === 1 ? 1 : c);
     const p = this.people[k];
-    el.querySelector('#imv-tag-t').textContent = this.mode === 'photo' ? `${this.posName(k)} 면접관 · ${p ? (p.role || p.name) : ''}` : (p ? (p.role || p.name) : '면접관');
+    el.querySelector('#imv-tag-t').textContent = this.mode === 'photo' && this.people.length > 1 ? `${this.posName(k)} 면접관 · ${p ? (p.role || p.name) : ''}` : (p ? (p.role || p.name) : '면접관');
     this.status();
   },
   status(){
@@ -29864,17 +29879,11 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 /* 면접관 3명: 면접장 사진 */
 #imv .imv-photo{position:absolute;inset:0;--c:1}
 #imv .imv-photo-img{position:absolute;inset:0;background-size:cover;background-position:50% 42%;transform-origin:50% 60%;transition:transform 1.1s cubic-bezier(.2,.7,.2,1);animation:imvBreathP 9s ease-in-out infinite}
-#imv .imv-photo[data-c="0"] .imv-photo-img{transform:scale(1.035);transform-origin:18% 55%}
-#imv .imv-photo[data-c="1"] .imv-photo-img{transform:scale(1.035);transform-origin:50% 55%}
-#imv .imv-photo[data-c="2"] .imv-photo-img{transform:scale(1.035);transform-origin:83% 55%}
-#imv .imv-shade{position:absolute;inset:0;opacity:0;transition:opacity .9s ease;pointer-events:none}
-#imv .imv-shade[data-c="0"]{background:radial-gradient(ellipse 24% 85% at 18% 60%,rgba(28,28,30,0) 55%,rgba(28,28,30,.34) 100%)}
-#imv .imv-shade[data-c="1"]{background:radial-gradient(ellipse 24% 85% at 50% 60%,rgba(28,28,30,0) 55%,rgba(28,28,30,.34) 100%)}
-#imv .imv-shade[data-c="2"]{background:radial-gradient(ellipse 24% 85% at 83% 60%,rgba(28,28,30,0) 55%,rgba(28,28,30,.34) 100%)}
-#imv .imv-shade:not(.off){opacity:1}
-#imv[data-phase="listening"] .imv-shade:not(.off),#imv[data-phase="idle"] .imv-shade:not(.off){opacity:.35}
-#imv .imv-spot{position:absolute;bottom:0;height:5px;width:22%;left:6%;border-radius:4px 4px 0 0;background:var(--acc);opacity:0;transition:left .8s cubic-bezier(.2,.7,.2,1),opacity .4s}
-#imv .imv-photo[data-c="1"] .imv-spot{left:39%}#imv .imv-photo[data-c="2"] .imv-spot{left:72%}
+#imv .imv-photo:not([data-n="1"]) .imv-photo-img{transform:scale(1.035);transform-origin:var(--sx,50%) 55%}
+#imv .imv-shade{position:absolute;inset:0;opacity:1;transition:opacity .9s ease,background-position .8s;pointer-events:none;background:radial-gradient(ellipse var(--sw,24%) 85% at var(--sx,50%) 60%,rgba(28,28,30,0) 55%,rgba(28,28,30,.34) 100%)}
+#imv .imv-photo[data-n="1"] .imv-shade{display:none}
+#imv[data-phase="listening"] .imv-shade,#imv[data-phase="idle"] .imv-shade{opacity:.35}
+#imv .imv-spot{position:absolute;bottom:0;height:5px;width:22%;left:calc(var(--sx,50%) - 11%);border-radius:4px 4px 0 0;background:var(--acc);opacity:0;transition:left .8s cubic-bezier(.2,.7,.2,1),opacity .4s}
 #imv[data-phase="speaking"] .imv-spot{opacity:calc(.55 + var(--lv,0) * .45)}
 /* 그림 장면 (면접관 1~2명) */
 #imv .imv-scene{position:absolute;inset:0}
