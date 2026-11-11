@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-10j';
+var APP_VERSION = '2026-11-11a';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -13743,8 +13743,13 @@ const StartFlow = {
     if(s.step === 1){ if(!String(s.major.dept).trim()) return '전공을 입력해 주세요'; if(!s.major.grade) return '학년을 골라 주세요'; if(s.kind === 'job' && !String(s.job.role).trim()) return '목표 직무를 입력해 주세요'; return ''; }
     if(s.step === 3) return s.mode ? '' : '진행 방식을 골라 주세요';
     if(s.step === 4 && s.people.length !== s.count) return `면접관을 ${s.count}명 골라 주세요`; return ''; },
-  next(){ const why = this.need(); if(why){ showToast(why); const h = document.getElementById('fl-need'); if(h) h.textContent = why; return; } if(this.s.step < 5){ this.s.step++; this.render(); return; } this.finish(); },
+  next(){ const why = this.need(); if(why){ showToast(why); const h = document.getElementById('fl-need'); if(h) h.textContent = why; return; }
+    if(this.s.step === 1){ try{ const q = this.qbCtx(); if(q) QBank.prefetch(q); }catch(e){ console.warn('[면접 질문 미리 뽑기]', e); } }   // 2026-11-11 기관·직무를 정하면 바로 질문 준비 시작 (질문 연습·설정 단계를 지나는 동안 끝나 있게)
+    if(this.s.step < 5){ this.s.step++; this.render(); return; } this.finish(); },
   usedExps(){ return this.exps.filter(e=>this.s.use.includes(e.id)); },
+  /** 2026-11-11 면접 DB 질문 뽑기 맥락 (기업·직무 맞춤 + 질문은행 분야일 때만) */
+  qbCtx(fid){ const s = this.s; fid = fid || (s.kind === 'job' ? s.job.field : null);
+    return (s.kind === 'job' && fid && QBank.applies(fid)) ? { talentId: s.job.companyId || null, companyName: s.job.company || null, grp: QBank.FIELDS[fid], job: s.job.jobcat || QBank.guessJob(s.job.role), role: (s.job.role || '').trim() || null, eng: !!s.job.eng, mood: this.mood() } : null; },
   finish(){
     const s = this.s; const fid = s.kind === 'job' ? s.job.field : (state.dashField || FIELDS[0].id);
     const ps = s.people.map(id=>(this.PEOPLE.find(p=>p.id===id) || {}).p || 'normal');
@@ -13754,7 +13759,7 @@ const StartFlow = {
       experiences: this.usedExps().map(e=>({ type: e.type, text: e.text, source: '직접 입력' })),
       job: s.kind === 'job' ? { field: fid, company: s.job.company || null, companyId: s.job.companyId || null, role: s.job.role, post: s.job.post || null } : null };
     // 2026-11-05 면접 DB: 대기업·공기업 분야 기업·직무 맞춤 면접은 질문은행 8문항 → 장치 점검하는 동안 미리 뽑아 둠
-    state.flowCtx.qbank = (s.kind === 'job' && QBank.applies(fid)) ? { talentId: s.job.companyId || null, companyName: s.job.company || null, grp: QBank.FIELDS[fid], job: s.job.jobcat || QBank.guessJob(s.job.role), role: (s.job.role || '').trim() || null, eng: !!s.job.eng, mood: this.mood() } : null;
+    state.flowCtx.qbank = this.qbCtx(fid);
     if(state.flowCtx.qbank) try{ QBank.prefetch(state.flowCtx.qbank); }catch(e){ console.warn('[면접 질문 미리 뽑기]', e); }
     CompanyData.cur = null; state.companyPackP = null; try{ PrepSync.save(); }catch(_){}
     if(s.kind === 'job' && s.job.companyId){ state.companyPackP = CompanyData.pack(s.job.companyId).then(p=>{ CompanyData.cur = p; return p; }); }
@@ -19666,7 +19671,8 @@ function ivToggleAnswerLang(){
 }
 function dialogPhase(cls, text){ const p=document.getElementById('dialog-phase'); if(!p) return; p.className='dialog-phase '+(cls||''); document.getElementById('dialog-phase-text').textContent=text;
   const li=document.getElementById('live-interviewer'); if(li){ li.classList.remove('speaking','listening','thinking'); if(cls) li.classList.add(cls); } const lt=document.getElementById('live-phase-text'); if(lt) lt.textContent=text;
-  if(typeof Persona !== 'undefined') Persona.setState(cls); }
+  if(typeof Persona !== 'undefined') Persona.setState(cls);
+  try{ if(typeof IvPanel !== 'undefined') IvPanel.phase(cls); }catch(_){} }
 /* ---------------- 내 모습 다시 보기 + 표정·시선 분석 (2026-10-12) ----------------
    - 라이브 면접에서 카메라가 켜져 있으면, 답변하는 동안의 내 모습을 답변마다 녹화 → 결과 화면에서 문항별로 다시 보기
    - 같은 시간 동안 얼굴 위치·고개 방향·시선·표정을 초당 약 3번 분석 → "표정·시선" 피드백
@@ -22900,11 +22906,15 @@ const IvPanel = {
   },
   speak(k, why){
     const ppl = this.people(); if(!ppl.length) return; k = Math.max(0, Math.min(k, ppl.length - 1));
+    this._why = why || '';
     document.querySelectorAll('#iv-roster .iv-rp').forEach((el,i)=>{ el.classList.toggle('on', i === k); const em = el.querySelector('em'); if(em) em.textContent = i === k ? ('말하는 중' + (why ? ' · ' + why : '')) : '대기'; });
     const x = ppl[k], nm = document.querySelector('#live-interviewer .lv3-li-name'); if(nm) nm.textContent = `AI 면접관 · ${x.n}`;
     if(k !== this.cur){ const tile = document.getElementById('live-interviewer'); if(tile && this.cur >= 0){ tile.classList.remove('spk-in'); void tile.offsetWidth; tile.classList.add('spk-in'); } }
     this.cur = k;
   },
+  /* 2026-11-10k 지금 차례인 면접관 표시를 면접 단계에 맞춤: 질문할 때 '말하는 중 · …', 학생 답을 들을 때 '답변 듣는 중', 꼬리질문을 만들 때 '생각 중' */
+  phase(cls){ const em = document.querySelector('#iv-roster .iv-rp.on em'); if(!em) return;
+    em.textContent = cls === 'listening' ? '답변 듣는 중' : cls === 'thinking' ? '생각 중' : cls === 'speaking' ? ('말하는 중' + (this._why ? ' · ' + this._why : '')) : em.textContent; },
   /* 2026-11-04d 질문 내용에 맞는 면접관이 말함: 질문 유형(자기소개·경험·상황·가치관 …)과 낱말(청렴·수치·인재상 …)로 고른 면접관 중 가장 어울리는 사람을 고름.
      첫 질문(자기소개)·마지막 질문은 진행 면접관. 한 사람만 계속 말하지 않게, 많이 말한 사람·방금 말한 사람은 점수를 조금 뺌 */
   FIT:{ intro:{ hr:3, senior:2, exec:1 }, closing:{ hr:3, exec:2 }, motive:{ value:3, hr:2, exec:2 }, personality:{ hr:3, senior:2, press:1 },
@@ -27352,11 +27362,12 @@ const QBank = {
     return data;
   },
   /** 면접 준비 창을 마칠 때 미리 뽑기 (장치 점검하는 동안 AI가 질문을 다듬음) */
-  prefetch(ctx){ const key = JSON.stringify(ctx); this._p = { key, p: this.pick(ctx).catch(e=>({ error: e.message || String(e) })) }; return this._p.p; },
+  ctxKey(ctx){ const c = ctx || {}; return JSON.stringify([c.talentId || null, c.companyName || null, c.grp || null, c.job || null, c.role || null, !!c.eng]); },   // 2026-11-11 뽑기에 쓰는 값만 비교
+  prefetch(ctx){ const key = this.ctxKey(ctx); if(this._p && this._p.key === key) return this._p.p; this._p = { key, p: this.pick(ctx).catch(e=>({ error: e.message || String(e) })) }; return this._p.p; },
   /** 면접 시작 때: 미리 뽑아 둔 것을 한 번만 쓰고, 없으면 새로 뽑음. 못 받으면 null (→ 예전 방식으로 진행) */
   async questions(ctx, fieldId){
     let e = this._p; this._p = null;
-    if(!e || e.key !== JSON.stringify(ctx)) e = { p: this.pick(ctx).catch(err=>({ error: err.message || String(err) })) };
+    if(!e || e.key !== this.ctxKey(ctx)) e = { p: this.pick(ctx).catch(err=>({ error: err.message || String(err) })) };
     const data = await e.p;
     const items = data && Array.isArray(data.items) ? data.items : [];
     if(!items.some(it=>it.text)){ console.warn('[면접 DB 질문 못 받음]', data && data.error); showToast('기업 면접 질문을 불러오지 못해 기본 질문으로 진행해요. ' + ((data && data.error) || ''), 'info'); return null; }

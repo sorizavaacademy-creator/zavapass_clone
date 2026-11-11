@@ -120,32 +120,37 @@ Deno.serve(async (req) => {
   let safety = "";
   try { safety = safetyText(await loadRules(sb, ver, "AI면접관안전장치"), [1, 2, 7, 8]); } catch (_) { /* 규칙을 못 읽어도 서버 낱말 검사는 함 */ }
   let aiError = "";
-  for (let round = 0; round < 3; round++) {
-    const todo = slots.filter((s) => s.cand && !s.text);
-    if (!todo.length) break;
-    const lines = todo.map((s, i) => `${i}. [유형: ${s.qtype}] [원문 회사: ${s.cand!.company ?? "-"}] ${(s.cand!.question || s.cand!.rep || "").slice(0, 200)}${s.cand!.rep && s.cand!.rep !== s.cand!.question ? ` (대표 질문: ${s.cand!.rep.slice(0, 120)})` : ""}`);
-    const fixed = slots.filter((s) => s.text).map((s) => `- [${s.qtype}] ${s.text}`);
-    const userMsg = `[지원 회사] ${targetName ?? "없음 (구분: " + (grp ?? "전체") + ")"}\n[지원 직종] ${job ?? "-"}${role ? ` (세부 직무: ${role})` : ""}\n\n[이미 정해진 질문]\n${fixed.join("\n") || "(없음)"}\n\n[질문 원문]\n${lines.join("\n")}`;
-    let items: { i: number; ok: boolean; text?: string; lang?: string; reason?: string }[] = [];
-    try {
-      const { data } = await askJson(SYSTEM(safety), userMsg, { maxTokens: 3000, timeoutMs: 35000 });
-      items = Array.isArray(data.items) ? data.items as typeof items : [];
-    } catch (e) { aiError = (e as Error).message; break; }
-    const saves: Record<string, unknown>[] = [];
-    todo.forEach((s, i) => {
-      const it = items.find((x) => Number(x.i) === i);
+  // 2026-11-11 빠르게: 8칸을 한 번에 묻지 않고 칸마다 따로 동시에 다듬음 (보통 20초 → 몇 초). 걸린 칸만 예비 후보로 바꿔 최대 3번까지 다시
+  const head = `[지원 회사] ${targetName ?? "없음 (구분: " + (grp ?? "전체") + ")"}\n[지원 직종] ${job ?? "-"}${role ? ` (세부 직무: ${role})` : ""}`;
+  const saves: Record<string, unknown>[] = [];
+  const polishOne = async (s: Slot) => {
+    for (let tries = 0; tries < 3 && s.cand && !s.text; tries++) {
+      const c = s.cand;
+      const line = `0. [유형: ${s.qtype}] [원문 회사: ${c.company ?? "-"}] ${(c.question || c.rep || "").slice(0, 200)}${c.rep && c.rep !== c.question ? ` (대표 질문: ${c.rep.slice(0, 120)})` : ""}`;
+      const fixed = slots.filter((x) => x !== s && x.text).map((x) => `- [${x.qtype}] ${x.text}`);
+      const userMsg = `${head}\n\n[이미 정해진 질문]\n${fixed.join("\n") || "(없음)"}\n\n[질문 원문]\n${line}`;
+      let it: { i: number; ok: boolean; text?: string; lang?: string; reason?: string } | undefined;
+      try {
+        const { data } = await askJson(SYSTEM(safety), userMsg, { maxTokens: 1200, timeoutMs: 25000 });
+        it = (Array.isArray(data.items) ? data.items as typeof it[] : []).find((x) => x && Number(x.i) === 0);
+      } catch (e) { aiError = (e as Error).message; return; }
       const text = cleanText(it?.text, 200);
       const enText = /영어로|in english|[A-Za-z]{4,}\s+[A-Za-z]{3,}\s+[A-Za-z]{3,}/i.test(text);
       const bad = !it || it.ok === false || !text || !!blockReason(text) || FORM_RE.test(text) || (s.qtype !== "영어" && (it.lang === "en" || enText)) || (s.qtype === "영어" && it.lang !== "en" && !enText);   // 영어 칸만 영어, 나머지는 한국어
-      if (bad) { const next = take(s.qtype); s.cand = next; if (next) fromCache(s); return; }
+      if (bad) { const next = take(s.qtype); s.cand = next; if (next) fromCache(s); continue; }
       s.text = text; s.lang = it!.lang === "en" || s.qtype === "영어" ? "en" : "ko"; s.how = "AI";
       // 세부 직무 이름(간호사 등)을 AI가 문장에 넣었으면 이번에만 쓰고 보관함에 남기지 않음 (같은 문장이 다른 직무 학생에게 나가지 않게)
-      const src = `${s.cand!.question ?? ""} ${s.cand!.rep ?? ""}`;
+      const src = `${c.question ?? ""} ${c.rep ?? ""}`;
       if (roleWordOk && text.includes(roleWordOk) && !src.includes(roleWordOk)) return;
-      saves.push({ key: keyOf(s.cand!), rep_key: s.cand!.rep_key, target: targetKey, qtype: s.qtype, text, lang: s.lang, model: OPENAI_MODEL });
-    });
-    if (saves.length) await sb.from("qb_polished").upsert(saves, { onConflict: "key", ignoreDuplicates: true });
-  }
+      saves.push({ key: keyOf(c), rep_key: c.rep_key, target: targetKey, qtype: s.qtype, text, lang: s.lang, model: OPENAI_MODEL });
+    }
+  };
+  await Promise.all(slots.filter((s) => s.cand && !s.text).map(polishOne));
+  // 같은 뜻 질문이 두 칸에 들어갔으면(동시에 다듬어 서로 못 봄) 뒤 칸은 보관함 예비 질문으로
+  const norm = (t: string) => t.replace(/[^가-힣A-Za-z0-9]/g, "");
+  const seen = new Set<string>();
+  slots.forEach((s) => { if (!s.text) return; const k = norm(s.text); if (seen.has(k)) { s.text = undefined; } else seen.add(k); });
+  if (saves.length) await sb.from("qb_polished").upsert(saves, { onConflict: "key", ignoreDuplicates: true });
   // AI가 안 되면: 남은 예비 후보 중 보관함에 있는 것으로 (원문은 절대 보내지 않음)
   slots.forEach((s) => {
     if (s.text) return;
