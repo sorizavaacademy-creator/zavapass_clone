@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12q';
+var APP_VERSION = '2026-11-12r';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6094,6 +6094,9 @@ html.ivv-dr-open{overflow:hidden;}
 #screen-result[data-rv="sum"] #rv-ae, #screen-result[data-rv="sum"] #rv-rw, #screen-result[data-rv="sum"] #rv-dv, #screen-result:not([data-rv]) #rv-ae, #screen-result:not([data-rv]) #rv-rw, #screen-result:not([data-rv]) #rv-dv{display:none !important}
 #screen-result[data-rv="sum"] #rv-proc, #screen-result[data-rv="sum"] #rv-q, #screen-result:not([data-rv]) #rv-proc, #screen-result:not([data-rv]) #rv-sum, #screen-result:not([data-rv]) #rv-q{display:none !important}
 #screen-result #rv-all #rs-next{display:none !important}
+#screen-result[data-hist] #rv-all{display:none !important}
+#screen-result .rv-histnote{margin-top:26px;padding:18px 20px;border-radius:12px;background:#f3ede7} #screen-result .rv-histnote p{margin:0;font-size:14px;line-height:1.6;color:#6a5b51} #screen-result .rv-histnote .rv-acts{margin-top:12px}
+#screen-result .rv-histfb{white-space:pre-wrap}
 #screen-result .rv-proc, #screen-result .rv-sum, #screen-result .rv-q, #screen-result .rv-ae, #screen-result .rv-rw, #screen-result .rv-dv, #screen-result .rv-rt, #screen-result .rv-cmp{color:#2b2521;max-width:960px;margin:0 auto;padding:8px 0 8px;background:none !important;border:0 !important;box-shadow:none !important;border-radius:0}
 #screen-result .rv-head{margin:6px 0 26px}
 #screen-result .rv-head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
@@ -6278,6 +6281,7 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-flow .fl-mode b{font-size:17px} #modal-flow .fl-mode span{font-size:13px;color:#6a5b51}
 #modal-flow .fl-mode[aria-pressed="true"]{background:#bd411b;border-color:#bd411b;color:#fff} #modal-flow .fl-mode[aria-pressed="true"] span{color:#fff}
 #modal-flow .fl-mode:focus-visible, #modal-flow .fl-tg:focus-visible{outline:2px solid #2b2521;outline-offset:2px}
+#modal-flow .fl-rvlist{margin:0;padding:12px 14px 12px 32px;border:1px solid #ded5ce;border-radius:8px;background:#fff;font-size:14px;line-height:1.6;color:#2b2521;display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}
 #modal-flow .fl-fixed{margin:0;padding:12px 14px;border:1px solid #ded5ce;border-radius:8px;background:#f3ede7;font-size:14.5px;color:#2b2521}
 #modal-flow .fl-tgs{display:flex;flex-direction:column;gap:8px}
 #modal-flow .fl-tg{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;border:1px solid #ded5ce;background:#fff;border-radius:10px;padding:12px 14px;cursor:pointer;font:inherit;color:#2b2521}
@@ -14190,6 +14194,16 @@ const StartFlow = {
     if(PrepSync.loaded) applySaved(); else PrepSync.pull().then(()=>{ applySaved(); if(document.getElementById('modal-flow').classList.contains('active') && this.s && this.s.step <= 2) this.render(); });
   },
   close(){ try{ PrepRoom.stop(); }catch(_){} this.devLeave(); this.myMenu(false); document.getElementById('modal-flow').classList.remove('active'); },
+  /** 2026-11-12 복습 면접(고른 질문으로)도 새 준비 화면으로: 질문이 정해져 있어 '내 경험'을 건너뛰고 '진행 방식'부터 */
+  review(){
+    const list = (state.reviewOverride && state.reviewOverride.length ? state.reviewOverride : (state.reviewCandidates || [])).slice(0, 10);
+    if(!list.length){ showToast('복습할 질문이 아직 없어요.'); return; }
+    const label = state.reviewLabel || '점수가 낮았던 질문', prev = this.s || {};
+    this.open(prev.mode || null, prev.kind || 'major'); if(!this.s) return;
+    Object.assign(this.s, { step: 2, review: { list: list.map(x=>Object.assign({}, x)), label }, qcount: list.length, fromKind: true });
+    if(prev.people && prev.people.length){ this.s.people = prev.people.slice(); this.s.count = prev.count || prev.people.length; }
+    this.render();
+  },
   /** 위 메뉴·로고를 누르면 준비 화면을 닫고 그 화면으로 */
   leave(go){ this.close(); try{ go && go(); }catch(_){} },
   myMenu(e){ const m = document.getElementById('fl-my-menu'), b = document.getElementById('fl-my-btn'); if(!m) return; const open = (e && e.stopPropagation) ? (e.stopPropagation(), m.hidden) : (e === true); m.hidden = !open; if(b) b.setAttribute('aria-expanded', String(open)); },
@@ -14204,6 +14218,7 @@ const StartFlow = {
   pickFromHome(kind){ this.markHome(kind); clearTimeout(this._pt); this._pt = setTimeout(()=>{ try{ AppUpdate.gateStart(()=>this.open(null, kind)); }catch(_){ this.open(null, kind); } }, 220); },   // 2026-11-05c 예전 화면으로 열려 있으면 새로고침부터
   markHome(kind){ document.querySelectorAll('[data-hm-kind]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.hmKind === kind))); },
   back(){ const s = this.s;
+    if(s.step === 2 && s.review){ this.close(); return; }   // 복습은 '내 경험' 단계가 없음
     if(s.step === 1 && s.sub){ s.sub = ''; this.render(); return; }
     if(s.step === 1){ this.saveNow(); if(s.fromKind){ this.close(); return; } }
     if(s.step > 0){ s.step--; this.render(); } else this.close(); },
@@ -14231,7 +14246,15 @@ const StartFlow = {
     return (s.kind === 'job' && fid && QBank.applies(fid)) ? { talentId: s.job.companyId || null, companyName: s.job.company || null, grp: QBank.FIELDS[fid], job: s.job.jobcat || QBank.guessJob(s.job.role), role: (s.job.role || '').trim() || null, eng: !!s.job.eng, mood: this.mood() } : null; },
   /** 고른 내용을 면접 맥락(state.flowCtx)으로 정리 · 질문 미리 뽑기 (예전 '확인' 다음에 하던 일) */
   prepare(){
-    const s = this.s; const fid = s.kind === 'job' ? s.job.field : (state.dashField || FIELDS[0].id);
+    const s = this.s;
+    if(s.review){   // 복습: 정해진 질문만 · 기관 질문은행·경험은 쓰지 않음
+      const ps0 = s.people.map(id=>(this.PEOPLE.find(p=>p.id===id) || {}).p || 'normal'), pr0 = ps0.includes('hard') ? 'hard' : ps0.every(x=>x === 'soft') ? 'soft' : 'normal';
+      state.flowCtx = { purpose: s.kind, review: true, mode: s.mode, interviewers: s.people.slice(), interviewerCount: s.count, pressure: pr0, diff: s.diff, major: { dept: s.major.dept, grade: s.major.grade }, experiences: [], job: null, qbank: null };
+      CompanyData.cur = null; state.companyPackP = null; state.flReview = true;
+      try{ IvVoice.loadMap(); }catch(_){}
+      this._press = pr0; return { fid: 'review', pressure: pr0 }; }
+    state.flReview = false;
+    const fid = s.kind === 'job' ? s.job.field : (state.dashField || FIELDS[0].id);
     const ps = s.people.map(id=>(this.PEOPLE.find(p=>p.id===id) || {}).p || 'normal');
     const pressure = this.qbOn() ? this.mood() : ps.includes('hard') ? 'hard' : ps.every(x=>x === 'soft') ? 'soft' : 'normal';   // 2026-11-05 질문은행 면접은 고른 분위기
     // 질문 생성에 넘길 맥락: 이름·학번 같은 식별정보는 넣지 않음
@@ -14263,7 +14286,7 @@ const StartFlow = {
   render(){
     const s = this.s, body = document.getElementById('fl-body');
     const prevStep = this._shown; this._shown = s.step + ':' + (s.sub || '');
-    document.getElementById('fl-steps').innerHTML = s.step ? this.STEPS.map((t,i)=>`<b class="${i+1<s.step?'done':i+1===s.step?'on':''}"${i+1===s.step?' aria-current="step"':''}>${i+1}. ${t}</b>`).join('') : '';
+    document.getElementById('fl-steps').innerHTML = s.step ? (s.review ? ['복습 질문'].concat(this.STEPS.slice(1)) : this.STEPS).map((t,i)=>`<b class="${i+1<s.step?'done':i+1===s.step?'on':''}"${i+1===s.step?' aria-current="step"':''}>${i+1}. ${t}</b>`).join('') : '';
     try{ PrepRoom.stop(); }catch(_){}
     if(s.step !== 3) this.devLeave();
     const views = [()=>this.vKind() + `<div class="fl-cta"><button type="button" class="btn btn-solid" data-next>다음</button></div>`, ()=>(s.sub === 'prepq' ? this.vPrepQPage() : this.vExp()), ()=>this.vMode2(), ()=>this.vDev()];
@@ -14491,10 +14514,11 @@ const StartFlow = {
   /** 2단계 · 진행 방식 (시안 09) */
   vMode2(){ const s = this.s, qb = this.qbOn();
     const card = (k, t, d)=>`<button type="button" class="fl-mode" data-mode="${k}" aria-pressed="${s.mode === k}"><b>${t}</b><span>${d}</span></button>`;
-    const count = qb ? `<div class="fl-f"><span class="fl-lbl">질문 수</span><p class="fl-fixed">8문항 · 이 면접은 질문 순서가 정해져 있어요</p></div>`
+    const count = s.review ? `<div class="fl-f"><span class="fl-lbl">복습할 질문 · ${s.review.list.length}개</span><ol class="fl-rvlist">${s.review.list.map(x=>`<li>${escapeHtml(x.q)}</li>`).join('')}</ol><p class="fl-hint">${escapeHtml(s.review.label)}이에요. 결과는 '복습 면접' 기록으로 따로 저장돼요.</p></div>`
+      : qb ? `<div class="fl-f"><span class="fl-lbl">질문 수</span><p class="fl-fixed">8문항 · 이 면접은 질문 순서가 정해져 있어요</p></div>`
       : `<div class="fl-f"><label for="fl-qcount">질문 수</label><select id="fl-qcount">${[3,5,10].map(n=>`<option value="${n}"${n === s.qcount ? ' selected' : ''}>${n}문항</option>`).join('')}</select></div>`;
     const tg = (k, t, d)=>`<button type="button" class="fl-tg" data-tg="${k}" role="switch" aria-checked="${!!s[k]}" aria-pressed="${!!s[k]}"><span><b>${t}</b><small>${d}</small></span><i class="sw" aria-hidden="true"></i></button>`;
-    return `${this.vHead('어떻게 연습할까요?', '목적과 진행 방식은 각각 선택해요.')}
+    return `${this.vHead(s.review ? '복습 면접, 어떻게 연습할까요?' : '어떻게 연습할까요?', s.review ? '고른 질문으로 다시 면접해요. 진행 방식만 고르면 돼요.' : '목적과 진행 방식은 각각 선택해요.')}
     <div class="fl-2col">
       <div class="fl-col">
         <div class="fl-modes">${card('practice', '연습형', '중단·재개 가능 · 도움은 필요할 때')}${card('real', '실전형', '면접에 집중 · 끝난 뒤 평가')}</div>
@@ -14508,6 +14532,11 @@ const StartFlow = {
     <div class="fl-cta"><button type="button" class="btn btn-solid" data-next>장치 점검으로</button></div>`; },
   /** 2단계 오른쪽 '이번 면접' (예전 '확인' 단계 내용) */
   vSumPanel(){ const s = this.s, u = this.usedExps(), qb = this.qbOn();
+    if(s.review){ const mode0 = s.mode === 'real' ? '실전형' : s.mode === 'practice' ? '연습형' : '진행 방식 고르기 전';
+      return `<aside class="fl-panel fl-sumbox" aria-label="이번 면접 요약"><b class="fl-panel-t">이번 면접</b>
+        <ul class="fl-sumlist"><li>복습 면접</li><li>${mode0} · ${s.review.list.length}문항</li><li>면접관 ${s.count}명</li></ul>
+        <dl class="fl-sum2"><dt>질문</dt><dd>${escapeHtml(s.review.label)}</dd><dt>시간</dt><dd>${s.mode === 'real' ? '자기소개 60초 · 답변 90초' : '시간 제한 없음'}</dd><dt>화면</dt><dd>${[s.pip ? '내 얼굴 보기' : '', s.cap ? '자막' : ''].filter(Boolean).join(' · ') || '내 얼굴·자막 끔'}</dd></dl>
+        <p class="fl-panel-note">원래 면접 기록은 그대로 두고, 복습 결과는 새 기록으로 저장돼요.</p></aside>`; }
     const kind = s.kind === 'major' ? '전공·경험' : '기관·직무';
     const mode = s.mode === 'real' ? '실전형' : s.mode === 'practice' ? '연습형' : '진행 방식 고르기 전';
     const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${escapeHtml(s.major.grade)}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.role)}`;
@@ -14544,6 +14573,7 @@ const StartFlow = {
   /** 3단계를 열 때: 기존 준비 창을 보이지 않게 열어 마이크·카메라 점검을 시작 (이미 열려 있으면 칸만 다시 붙임) */
   devOpen(){ const s = this.s;
     if(!state.flEmbed){ const { fid } = this.prepare(); state.flEmbed = true; this._mic = ''; this._devKey = ''; this._camN = undefined;
+      if(s.review){ state.reviewOverride = s.review.list.map(x=>Object.assign({}, x)); state.reviewLabel = s.review.label; }   // openSetup('review')가 이 목록을 씀 (이전·다음으로 오가도 같은 질문)
       try{ openSetup(fid); }catch(e){ console.warn('[장치 점검 열기]', e); }
       clearTimeout(this._devT); this._devT = setTimeout(()=>{ const m = document.getElementById('modal-setup');
         if(state.flEmbed && this.s && this.s.step === 3 && !(m && m.classList.contains('active')) && !document.querySelector('.modal-overlay.active:not(#modal-flow):not(#modal-setup)')){ state.flEmbed = false; this.s.step = 2; this.render(); } }, 1800);   // 열리지 않았으면(이용 기간·열리지 않은 분야 등 안내가 이미 나옴) 2단계로
@@ -15408,6 +15438,11 @@ function startReviewFromDashboard(){
     showToast('복습할 질문이 아직 없어요.');
     return;
   }
+  openReviewFlow();
+}
+/** 2026-11-12 복습 면접 시작: 한림대 학생은 새 준비 화면(진행 방식 → 장치 점검 → 면접장), 관리자 등은 예전 준비 창 */
+function openReviewFlow(){
+  if(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS && !(state.currentUser && state.currentUser.isAdmin)){ StartFlow.review(); return; }
   openSetup('review');
 }
 
@@ -15486,7 +15521,12 @@ function openAllHistory(){
   document.getElementById('modal-record').classList.add('active');
 }
 
+/** 2026-11-12 학생이 내 지난 면접을 열면 새 결과 화면으로 (관리자·학교 담당자·저장 전 결과가 남아 있을 때는 예전 기록 창) */
 async function openRecordDetail(recordId, fromList){
+  try{ if(await ResultView.openRecord(recordId, fromList)) return; }catch(e){ console.warn('[지난 결과 새 화면]', e); }
+  return openRecordDetailOld(recordId, fromList);
+}
+async function openRecordDetailOld(recordId, fromList){
   const rec = (state.historyRecords || []).find(h=>String(h.id)===String(recordId));
   const body = document.getElementById('record-modal-body');
   document.getElementById('record-modal-title').textContent = rec ? `${rec.fieldName} 모의면접` : '면접 기록';
@@ -15871,7 +15911,7 @@ function openSetup(fieldId){   // 2026-10-22v: 새 버전 확인 뒤 준비 창 
   if(!openSetup._ios && IosSafariGate.check(()=>{ openSetup._ios = true; try{ openSetup(fieldId); }finally{ openSetup._ios = false; } })) return;   // 2026-10-28b
   if(typeof AppUpdate !== 'undefined' && AppUpdate.gateStart && !openSetup._gated){ AppUpdate.gateStart(()=>{ openSetup._gated = true; try{ openSetup(fieldId); }finally{ openSetup._gated = false; } }); return; }
   state.demoResult = false;
-  if(!state.flEmbed){ state.imvPrefs = null; state.recPref = undefined; state.flTyped = false; }   // 2026-11-12 내 얼굴·자막·녹화 설정은 새 준비 화면(3단계)에서 들어갈 때만
+  if(!state.flEmbed){ state.imvPrefs = null; state.recPref = undefined; state.flTyped = false; state.flReview = false; }   // 2026-11-12 내 얼굴·자막·녹화 설정은 새 준비 화면(3단계)에서 들어갈 때만
   setTimeout(()=>{ try{ const m = document.getElementById('modal-setup'); if(m && m.classList.contains('active') && !m.classList.contains('fl-embed')) MicGuard.precheck('setup'); }catch(_){} }, 350);   // 새 준비 화면은 3단계 안에 막힘 안내를 보여 줌
   micCheck.srTested = false; micCheck.srBlocked = false;   // 환경 점검을 열 때마다 음성 인식 검사 다시
   const isReview = fieldId === 'review';
@@ -17286,7 +17326,7 @@ const PNotes = {
     try{ Activity.log('star_practice', { count: pick.length }); }catch(_){}
     if(uniq.length > 10) showToast(`체크한 질문 ${uniq.length}개 중 10개를 골라 연습해요.`, 'info');
     showScreen('screen-dashboard'); renderDashboard();
-    openSetup('review');
+    openReviewFlow();
   },
   /** 관리자: 면접자 상세에 체크한 질문·내 답변 */
   async adminHtml(userId){
@@ -18821,6 +18861,7 @@ async function gradeAnswerWithAI(question, refText, answerText, fieldName, extra
 }
 
 function buildFeedbackText(analysis){
+  if(analysis && analysis.hist) return analysis.aiFeedback || '';   // 2026-11-12 지난 면접 다시 보기: 저장된 피드백 글 그대로
   if(analysis.empty){
     return '답변 내용이 기록되지 않았습니다.';
   }
@@ -21284,6 +21325,18 @@ function countFillers(text){
   const top = Object.entries(found).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([w,n])=>`'${w}' ${n}회`);
   return { total, top };
 }
+/** 2026-11-12 음량 요약 (말한 구간만): 끝부분이 처음보다 작아졌는지 · 아주 작게 들어온 시간. 마이크·거리마다 달라 점수로 쓰지 않고 같은 답변 안에서만 비교 */
+function volSummary(vs, th){
+  if(!vs) return null; const b = vs.b.slice(); if(vs.n) b.push(vs.sum / vs.n); if(b.length < 8) return null;
+  const avg = a=>a.reduce((x, y)=>x + y, 0) / Math.max(1, a.length);
+  const first = avg(b.slice(0, Math.ceil(b.length / 2))), last = avg(b.slice(-Math.max(2, Math.floor(b.length / 4))));
+  const low = b.filter(x=>x < (th || 0.045) * 1.4).length;
+  return { n: b.length, endDrop: first > 0 ? Math.max(0, Math.round((1 - last / first) * 100)) : 0, lowPct: Math.round(low / b.length * 100) };
+}
+function volLabel(v){ if(!v) return null;
+  const drop = v.endDrop >= 30, low = v.lowPct >= 40;
+  return { label: drop && low ? '작고 끝이 작아짐' : drop ? '끝부분이 작아짐' : low ? '작게 들어옴' : '고름',
+    note: drop ? `답변 끝부분이 처음보다 ${v.endDrop}% 작아졌어요. 마지막 문장까지 같은 크기로 또렷하게 맺어 보세요.` : low ? `말한 시간의 ${v.lowPct}%는 소리가 아주 작게 들어왔어요. 마이크에 조금 더 가까이, 한 톤 크게 말해 보세요.` : '처음부터 끝까지 비슷한 크기로 말했어요.' }; }
 function computeDelivery(text, timing, endAt){
   const t = timing || {};
   if(!t.firstSpeech){
@@ -21326,9 +21379,11 @@ function computeDelivery(text, timing, endAt){
     else if(hesSec > 4){ score -= 8; notes.push('말을 시작하기까지 조금 머뭇거렸어요.'); }
   }
   score = Math.max(30, Math.min(100, Math.round(score)));
+  const vol = t.vol ? Object.assign({}, t.vol, volLabel(t.vol)) : null;   // 음량은 점수에 넣지 않음
+  if(vol && vol.label !== '고름') notes.push(vol.note);
   if(!notes.length) notes.push('속도·군말·답변 시간 모두 안정적이었어요.');
-  const summary = `말하기 속도 ${rate}자/분(${rateLabel}) · 군말 ${fillerLabel} · 답변 ${durSec}초(${timeLabel}) · 머뭇거림 ${hesLabel}`;
-  return { measured:true, score, rate, rateLabel, fillers:fillers.total, fillerTop:fillers.top, fillerLabel, durSec, timeLabel, hesSec, hesLabel, notes, summary };
+  const summary = `말하기 속도 ${rate}자/분(${rateLabel}) · 군말 ${fillerLabel} · 답변 ${durSec}초(${timeLabel}) · 머뭇거림 ${hesLabel}${vol ? ` · 음량 ${vol.label}` : ''}`;
+  return { measured:true, score, rate, rateLabel, fillers:fillers.total, fillerTop:fillers.top, fillerLabel, durSec, timeLabel, hesSec, hesLabel, notes, summary, vol };
 }
 
 /* 음성 인식이 자주 잘못 알아듣는 속기·면접 용어를 바로잡습니다.
@@ -22132,6 +22187,7 @@ async function endInterview(){
   }catch(e){}
 
   // 아직 끝나지 않은 AI 채점이 있으면 잠시 기다립니다 (최대 AI_GRADING_TIMEOUT_MS, 실패해도 로컬 채점 결과로 진행)
+  try{ ResultView.histOff(); }catch(_){}   // 2026-11-12 지난 면접 보기에서 나와 새 결과
   let rvProc = false;
   if(state.pendingGrades && state.pendingGrades.length){
     rvProc = true; try{ ResultView.procStart(state.pendingGrades); }catch(e){ console.warn('[분석 중 화면]', e); showToast('AI가 답변을 채점하고 있어요. 잠시만 기다려 주세요…'); }   // 2026-11-12 시안 20 '답변을 정리하고 있어요'
@@ -22754,7 +22810,7 @@ function startRecommendedReview(){
   if(!state.recoQuestions || !state.recoQuestions.length) return;
   state.reviewOverride = state.recoQuestions.map(q=>Object.assign({}, q)); state.reviewLabel = '추천 질문';
   showScreen('screen-dashboard'); renderDashboard();
-  openSetup('review');
+  openReviewFlow();
 }
 /** 결과 화면 맨 위: 오늘 챙길 것 3가지 + 가장 약한 문항 + 점수 기준 */
 function weakResultItems(){
@@ -22773,7 +22829,7 @@ function startWeakReview(){
   state.reviewOverride = w.map(x=>({ q:x.q, ref:x.ref, hint:x.hint, diff:x.diff, review:true })); state.reviewLabel = '이번 면접에서 점수가 낮았던 질문';
   try{ Activity.log('weak_review', { count: w.length }); }catch(_){}
   showScreen('screen-dashboard'); renderDashboard();
-  openSetup('review');
+  openReviewFlow();
 }
 function openResultCard(i){
   const g = document.querySelector(`#result-bars .q-result-group[data-qi="${i}"]`); if(!g) return;
@@ -23008,7 +23064,7 @@ const ResultView = {
   scr(){ return document.getElementById('screen-result'); },
   aiOn(){ return !!(typeof AI_GRADING_ENABLED !== 'undefined' && AI_GRADING_ENABLED && typeof AiSwitch !== 'undefined' && AiSwitch.on('ai_grading')); },
   /** AI 분석을 마치지 못한 답변 (답이 있는데 AI 채점 결과가 없는 문항) */
-  failed(){ if(!this.aiOn()) return []; const n = state.currentQ || 0, out = [];
+  failed(){ if(!this.aiOn() || state.histView) return []; const n = state.currentQ || 0, out = [];
     for(let i = 0; i < n; i++){ const t = String((state.answerTexts || [])[i] || '').trim(); const a = (state.answerFeedback || [])[i]; if(t && !(a && a.ai)) out.push(i); }
     return out; },
   show(mode, qi){ this.mode = mode; if(qi != null) this.qi = qi; const sc = this.scr(); if(!sc) return; sc.dataset.rv = mode;
@@ -23080,27 +23136,72 @@ const ResultView = {
     const s = (best.a.strengths || []).filter(Boolean)[0]; if(s) return s;
     const keys = ['content','structure','detail','length','attitude']; let ax = keys[0]; keys.forEach(k=>{ if(best.rb.axes[k] && best.rb.axes[k].score > best.rb.axes[ax].score) ax = k; });
     return `질문 ${best.i + 1}에서 '${Rubric.AXIS_LABELS[ax]}' 점수가 가장 높았어요.`; },
+  /* ── 지난 면접 다시 보기: 저장된 기록(질문·답변·점수·A~E·전달력 요약)으로 같은 화면을 그림. 다시 채점하지 않음 ── */
+  async openRecord(id, fromList){
+    const u = state.currentUser; if(!u || u.isAdmin) return false;
+    if(state.saveInFlight || (state.savePayload && !state.saveDone)) return false;   // 막 끝난 결과를 아직 저장하는 중이면 그 화면을 지키려고 예전 창
+    const [rr, ar] = await Promise.all([sb.from('interview_records').select('*').eq('id', id).maybeSingle(), sb.from('interview_answers').select('*').eq('record_id', id).order('question_index', { ascending:true })]);
+    const rec = rr && !rr.error ? rr.data : null, ans = ar && !ar.error ? (ar.data || []) : [];
+    if(!rec || rec.user_id !== u.id || !ans.length) return false;
+    try{ await Promise.race([AeReport.load(), new Promise(r=>setTimeout(r, 3000))]); }catch(_){}
+    const KEY = Object.fromEntries(Object.entries(Rubric.AXIS_LABELS).map(([k, v])=>[v, k]));
+    const VOL = { '고름':'처음부터 끝까지 비슷한 크기로 말했어요.', '끝부분이 작아짐':'답변 끝부분이 처음보다 작아졌어요. 마지막 문장까지 또렷하게 맺어 보세요.', '작게 들어옴':'소리가 아주 작게 들어온 시간이 많았어요. 마이크에 조금 더 가까이 말해 보세요.', '작고 끝이 작아짐':'소리가 작게 들어오고 끝부분이 더 작아졌어요. 한 톤 크게, 마지막까지 또렷하게 말해 보세요.' };
+    const parse = a=>{ const fb = String(a.feedback || ''), cut = fb.indexOf('\n['), body = (cut >= 0 ? fb.slice(0, cut) : fb).trim();
+      let ae = null; try{ ae = AeReport.fromTag(fb); if(ae){ const w = (AeReport.ref.weights || {})[ae.qtype]; ae.weights = w || null; ae.reasons = null; ae.check = []; } }catch(_){}
+      const ax = axesFromFeedback(fb) || {}, g = (fb.match(/\[리포트 ([^·\]]+)·/) || [])[1];
+      const keys = ['content','structure','detail','length','attitude'], has = keys.some(k=>ax[Rubric.AXIS_LABELS[k]] != null);
+      const rubric = has ? { empty:false, total: a.score != null ? a.score : 0, grade: (g || '').trim() || (ae ? ae.grade : ''), axes: Object.assign(Object.fromEntries(keys.map(k=>[k, { score: ax[Rubric.AXIS_LABELS[k]] != null ? ax[Rubric.AXIS_LABELS[k]] : null }])), { delivery:{ measured:false, score:null } }) } : { empty:true };
+      const good = (body.match(/잘한 점[^:：\n]*[:：]\s*([^\n]+)/) || [])[1], fix = (body.match(/고칠 점\s*\n?\s*1\.\s*([^\n]+)/) || [])[1];
+      return { ai: !!ae, aiFeedback: body, ae, rubric, strengths: good ? [good.replace(/\s*\([A-E][^)]*\)\s*$/, '').trim()] : [], improvements: fix ? [fix.replace(/\s*\([A-E][^)]*\)\s*$/, '').trim()] : [], rewrite: '', hist: true }; };
+    const delv = a=>{ const fb = String(a.feedback || ''), m = fb.match(/\[전달력 (\d+)점\]\s*([^\n]*)/); if(!m) return { measured:false, summary:'이 답변은 전달력을 저장하지 않았어요.' };
+      const sm = m[2] || '', x = sm.match(/말하기 속도 (\d+)자\/분\(([^)]+)\) · 군말 ([^·]+?) · 답변 (\d+)초\(([^)]+)\) · 머뭇거림 ([^·]+?)(?: · 음량 (.+))?$/);
+      if(!x) return { measured:true, score:+m[1], summary: sm, notes:[sm], rate:null };
+      const hes = parseFloat(x[6]); return { measured:true, score:+m[1], summary: sm, notes:[], rate:+x[1], rateLabel:x[2], fillerLabel:x[3].trim(), fillers: /없음/.test(x[3]) ? 0 : (parseInt(x[3], 10) || 0), durSec:+x[4], timeLabel:x[5], hesLabel:x[6].trim(), hesSec: isNaN(hes) ? null : hes,
+        vol: x[7] ? { label: x[7].trim(), note: VOL[x[7].trim()] || '', endDrop: 0 } : null }; };
+    try{ document.getElementById('modal-record').classList.remove('active'); }catch(_){}
+    const f = FIELDS.find(x=>x.id === rec.field_id);
+    state.histView = { id: rec.id, fromList: !!fromList, at: rec.created_at };
+    state.demoResult = false; state.interviewMode = rec.mode === 'classic' ? 'classic' : 'dialog'; state.dialogRealSet = false; state.trialMode = false;
+    state.selectedField = f || { id: rec.field_id || 'review', name: rec.field_name || '모의면접' };
+    state.interviewQuestions = ans.map(a=>({ q: a.question_text || '', followup: a.kind === 'followup', ref: null }));
+    state.answerTexts = ans.map(a=>a.answer_text || ''); state.answerScores = ans.map(a=>a.score);
+    state.answerFeedback = ans.map(parse); state.answerDelivery = ans.map(delv);
+    const nv = rec.nonverbal && Array.isArray(rec.nonverbal.items) ? rec.nonverbal.items : [];
+    state.answerFace = ans.map((a, i)=>{ const it = nv.find(x=>x.i === (a.question_index != null ? a.question_index : i)); return it && (it.facePct || 0) >= 20 ? Object.assign({ frames: 9 }, it) : null; });   // 얼굴이 거의 안 잡힌 답변은 '측정 안 됨'
+    state.currentQ = ans.length; state.questionCount = ans.length; state.startTime = new Date(rec.created_at).getTime(); state.flowCtx = null;
+    state.lastAverageScore = rec.score || 0; state.savedRecordId = rec.id; state.saveDone = true; state.savePayload = null; state.pendingGrades = [];
+    const d = new Date(rec.created_at), title = rec.company_name ? `${rec.company_name} 맞춤 면접 결과` : `${rec.field_name || '모의면접'} 결과`;
+    const set = (k, v)=>{ const e = document.getElementById(k); if(e) e.textContent = v; };
+    set('result-title', title); set('rs-time', rec.duration_label ? durText(rec.duration_label) : ''); set('rs-grade', state.answerFeedback.some(a=>a.ae) ? AeReport.grade(rec.score || 0) : Rubric.grade(rec.score || 0)); set('rs-content', (rec.score || 0) + '점');
+    this.histDate = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+    const sc = this.scr(); if(sc) sc.dataset.hist = '1';
+    this.rts = {}; this.rtDraft = {}; this.drafts = {};
+    showScreen('screen-result'); this.show('sum');
+    try{ Activity.log('record_view_new', { id: rec.id }); }catch(_){}
+    return true; },
+  histOff(){ state.histView = null; const sc = this.scr(); if(sc) delete sc.dataset.hist; },
   /* ── 21 결과 요약 ── */
   renderSum(){
     const box = document.getElementById('rv-sum'); if(!box) return;
     const p = (()=>{ try{ return PracticeKit.pickNext(); }catch(_){ return null; } })();
     const n = state.currentQ || 0, fails = this.failed();
     const grade = this.txt('rs-grade'), score = this.txt('rs-content');
-    const meta = [this.txt('result-title'), n ? n + '문항' : '', this.txt('rs-time'), state.demoResult ? '시연용 샘플 · 저장 안 함' : ''].filter(Boolean).join(' · ');
+    const meta = [state.histView ? '지난 면접 · ' + (this.histDate || '') : '', this.txt('result-title'), n ? n + '문항' : '', this.txt('rs-time'), state.demoResult ? '시연용 샘플 · 저장 안 함' : ''].filter(Boolean).join(' · ');
     const allGood = p && p.rb.total >= 85;
     const kick = !p ? '이번 면접 결과예요' : allGood ? '이번 면접, 잘 해냈어요. 한 가지만 더 다듬어요' : '이번 면접, 한 가지만 더 좋아져요';
+    const kick2 = state.histView ? kick.replace(/^이번 면접/, '이 면접') : kick;
     const head = p ? p.tip.t : (n ? '답이 짧아 고칠 점을 고르지 못했어요' : '기록된 답변이 없어요');
     const good = this.goodLine();
     const fix = p ? (p.why || p.tip.ex) : (n ? '답변을 조금 더 길게 말하면 질문별 피드백을 받을 수 있어요.' : '');
     const k = p ? this.key(p.i) : '';
     const canRw = p && String((state.answerTexts || [])[p.i] || '').trim().length >= 5 && PracticeKit.uid();
     const rec = this.rec(), vid = !!(rec && rec.url), cam = this.hasSelfCam();
-    const recTxt = vid ? '면접 녹화 영상과 답변 내용을 함께 확인해요. 실제로 녹화·분석된 항목만 보여 줘요.'
+    const recTxt = state.histView ? '지난 면접은 녹화 영상을 서버에 저장하지 않아 다시 볼 수 없어요. 그때 잰 말 빠르기·군말·답변 시간은 볼 수 있어요.' : vid ? '면접 녹화 영상과 답변 내용을 함께 확인해요. 실제로 녹화·분석된 항목만 보여 줘요.'
       : cam ? '답변할 때 녹화된 내 모습과 말하기 방식을 확인해요. 실제로 녹화·분석된 항목만 보여 줘요.'
       : (state.recPref === false ? "이번 면접은 '내 모습 녹화하기'를 꺼서 영상이 없어요." : '이번 면접은 녹화 영상이 없어요 (카메라를 끄거나 녹화를 지원하지 않는 브라우저).') + ' 말 빠르기·군말·답변 시간은 볼 수 있어요.';
     box.innerHTML = `${fails.length ? `<div class="rv-warn" role="status"><p><b>답변 ${fails.length}개는 AI 분석을 마치지 못해 기본 채점으로 보여요.</b> 답변 기록은 그대로 있어요.</p><button type="button" class="btn btn-outline" onclick="ResultView.retry()">분석 다시 시도</button></div>` : ''}
       <div class="rv-save" data-slot="save"></div>
-      <div class="rv-head"><p class="rv-kick">${escapeHtml(kick)}</p><p class="rv-meta">${escapeHtml(meta)}</p></div>
+      <div class="rv-head"><p class="rv-kick">${escapeHtml(kick2)}</p><p class="rv-meta">${escapeHtml(meta)}</p></div>
       <div class="rv-2col">
         <div class="rv-main">
           <h1 class="rv-big">${escapeHtml(head)}</h1>
@@ -23118,7 +23219,8 @@ const ResultView = {
         <button type="button" class="btn btn-outline" onclick="AnswerNote.open()">답변 노트에 정리</button>
         <button type="button" class="btn btn-outline" onclick="ResultView.show('ae', ${p ? p.i : 0})"${n ? '' : ' disabled'}>A~E 점수·비중·근거</button>
         ${canRw ? `<button type="button" class="btn btn-outline" onclick="ResultView.show('rw', ${p.i})">원본과 수정안 비교</button>` : ''}
-      </div>`;
+      </div>
+      ${state.histView ? `<div class="rv-histnote"><p>저장된 기록으로 보여 줘요. 영상과 질문의 근거는 저장하지 않아서 이 화면에서는 볼 수 없어요.</p><div class="rv-acts">${state.histView.fromList ? '<button type="button" class="btn btn-outline" onclick="openAllHistory()">기록 목록으로</button>' : ''}<button type="button" class="btn btn-outline" onclick="openRecordDetailOld(${JSON.stringify(String(state.histView.id)).replace(/"/g, '&quot;')}, false)">예전 기록 창으로 보기</button></div></div>` : ''}`;
     const sv = document.getElementById('save-banner'), slot = box.querySelector('[data-slot="save"]'); if(sv && slot) slot.appendChild(sv);
   },
   /* ── 22 질문별 답변 분석 ── */
@@ -23131,7 +23233,7 @@ const ResultView = {
     if(root.hint) parts.push(`<p><b>질문 의도</b> ${escapeHtml(root.hint)}</p>`);
     const ex = (state.flowCtx && Array.isArray(state.flowCtx.experiences)) ? state.flowCtx.experiences : [];
     if(ex.length) parts.push(`<p><b>이번 면접에 고른 내 경험</b></p><ul>${ex.map(e=>`<li>${escapeHtml(e.text)}</li>`).join('')}</ul><p class="rv-dim">질문마다 어떤 경험을 썼는지는 따로 기록하지 않아요.</p>`);
-    if(!parts.length) parts.push('<p>기본 질문이라 연결된 내 경험이나 서류가 없어요.</p>');
+    if(!parts.length) parts.push(state.histView ? '<p>지난 면접은 질문의 근거(고른 경험·서류)를 따로 저장하지 않아 보여 줄 수 없어요.</p>' : '<p>기본 질문이라 연결된 내 경험이나 서류가 없어요.</p>');
     return parts.join(''); },
   renderQ(i){
     const box = document.getElementById('rv-q'); if(!box) return; const n = state.currentQ || 0; if(!n){ box.innerHTML = ''; return; }
@@ -23149,13 +23251,15 @@ const ResultView = {
         <div class="rv-main">
           <h2 class="rv-qt">${item.followup ? '<span class="rv-fu">꼬리질문</span>' : ''}${escapeHtml(item.q || '')}</h2>
           <div class="rv-ans"><span class="rv-ans-l">내 답변${a.fixed ? ' · 받아쓴 말을 고친 답' : ''}</span><p>${ans.trim() ? escapeHtml(ans) : '<span class="rv-dim">기록된 답변이 없어요.</span>'}</p></div>
-          ${ans.trim() ? `<button type="button" class="rv-link" onclick="ResultView.fixText(${i})">음성 인식이 잘못 받아 적었나요? 받아쓴 말 고치기</button>` : ''}
+          ${ans.trim() && !state.histView ? `<button type="button" class="rv-link" onclick="ResultView.fixText(${i})">음성 인식이 잘못 받아 적었나요? 받아쓴 말 고치기</button>` : ''}
           <details class="rv-fold"><summary>질문의 근거가 된 내 경험</summary><div class="rv-fold-in">${this.basisHtml(i)}</div></details>
         </div>
         <div class="rv-side">
           <h3 class="rv-side-t">피드백과 근거</h3>
-          <div class="rv-fb"><b>좋았던 점</b>${S.length ? `<ul>${S.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : `<p class="rv-dim">${ans.trim() ? '이 답변에서 따로 짚은 잘한 점은 없어요.' : '답변이 없어 평가하지 않았어요.'}</p>`}</div>
-          <div class="rv-fb"><b>보완할 점</b>${I.length ? `<ul>${I.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : tip && tip.ex ? `<p>${escapeHtml(tip.ex)}</p>` : '<p class="rv-dim">따로 짚은 보완할 점은 없어요.</p>'}</div>
+          ${a.hist && a.aiFeedback ? `<div class="rv-fb"><b>그때 받은 피드백</b><p class="rv-histfb">${escapeHtml(a.aiFeedback)}</p></div>` : ''}
+          ${a.hist ? '' : `<div class="rv-fb"><b>좋았던 점</b>${S.length ? `<ul>${S.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : `<p class="rv-dim">${ans.trim() ? '이 답변에서 따로 짚은 잘한 점은 없어요.' : '답변이 없어 평가하지 않았어요.'}</p>`}</div>
+          <div class="rv-fb"><b>보완할 점</b>${I.length ? `<ul>${I.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : tip && tip.ex ? `<p>${escapeHtml(tip.ex)}</p>` : '<p class="rv-dim">따로 짚은 보완할 점은 없어요.</p>'}</div>`}
+          ${a.hist && tip && tip.ex ? `<div class="rv-fb"><b>다음에 해 볼 것</b><p>${escapeHtml(tip.ex)}</p></div>` : ''}
           ${a.docNotes && a.docNotes.length ? `<div class="rv-fb"><b>서류와 맞춰 보세요</b><p>${a.docNotes.map(escapeHtml).join(' ')}</p></div>` : ''}
           <details class="rv-fold"><summary>바꿔 말하기 예시</summary><div class="rv-fold-in">${rw ? `<p class="rv-dim">${a.ai ? 'AI가' : '채점 규칙으로'} 다듬은 예시예요. 내 원래 답변은 그대로 남아 있어요.</p><p class="rv-rwtxt">${escapeHtml(rw)}</p>` : '<p class="rv-dim">이 답변은 바꿔 말하기 예시가 없어요.</p>'}</div></details>
           <div class="rv-acts">${ans.trim() || item.q ? `<button type="button" class="btn btn-solid" onclick="ResultView.show('rt', ${i})">이 질문 다시 연습</button>` : ''}<button type="button" class="btn btn-outline" onclick="ResultView.show('dv', ${i})">전달 방식 보기</button>${ans.trim().length >= 30 && PracticeKit.uid() && !state.demoResult ? `<button type="button" class="btn btn-outline" onclick="ResultView.toNote(${i})">답변 노트에 담기</button>` : ''}</div>
@@ -23271,7 +23375,7 @@ const ResultView = {
     const W = ae && ae.weights ? ae.weights : null;
     const rows = AeReport.AX.map(k=>{ const ref = AeReport.ref.axes[k] || {};
       return `<tr><th scope="row"><b>${k}</b> · ${escapeHtml(AeReport.name(k))}</th><td class="rv-num">${ae ? `${AeReport.dots(ae.scores[k])} ${ae.scores[k]} / 4` : '— / 4'} · ${W && W[k] != null ? W[k] + '%' : '— %'}</td><td>${ae && ae.reasons && ae.reasons[k] ? escapeHtml(ae.reasons[k]) : `<span class="rv-dim">${escapeHtml(ref.looks || '')}</span>`}</td></tr>`; }).join('');
-    const status = ae ? `총점은 A~E 점수(1~4점)를 이 질문 유형(${escapeHtml(ae.qtype || '')})의 비중대로 계산한 값이에요 → <b>${AeReport.num(ae.total)}점 · ${escapeHtml(ae.grade)}</b>`
+    const status = ae ? `총점은 A~E 점수(1~4점)를 이 질문 유형(${escapeHtml(ae.qtype || '')})의 비중대로 계산한 값이에요 → <b>${AeReport.num(ae.total)}점 · ${escapeHtml(ae.grade)}</b>${state.histView ? '<br><span class="rv-dim">지난 면접은 기준별 근거 글을 저장하지 않아, 각 기준이 보는 내용을 대신 보여 줘요.</span>' : ''}`
       : !ans ? '답변이 없어 A~E로 채점하지 않았어요.'
       : fails ? 'AI 분석을 마치지 못해 이 답변은 아직 A~E로 채점하지 않았어요. 기본 채점 결과는 \'질문별 답변 분석\'에서 볼 수 있어요.'
       : '이 답변은 A~E 기준으로 채점하지 않았어요 (AI 채점이 꺼져 있었어요). 점수 자리는 비워 두고, 각 기준이 보는 내용만 보여 줘요.';
@@ -23340,6 +23444,7 @@ const ResultView = {
     try{ if(SelfCam.has && SelfCam.has(i)) return { url: SelfCam.clips[i].url, kind: 'video', at: 0, whole: false }; }catch(_){}
     return null; },
   dvWhy(){ if(state.demoResult) return '시연용 샘플 결과라 녹화 영상이 없어요.';
+    if(state.histView) return '녹화 영상은 면접한 그 기기 안에서만 보관하고 서버에 올리지 않아서, 지난 면접은 다시 볼 수 없어요.';
     if(state.recPref === false) return "준비 화면에서 '내 모습 녹화하기'를 꺼서 이번 면접은 녹화하지 않았어요.";
     if(typeof window.MediaRecorder === 'undefined') return '이 브라우저는 녹화를 지원하지 않아 영상이 없어요. 크롬이나 엣지에서는 녹화돼요.';
     if(state.camPref === false || state.camOn === false) return '카메라를 끄고 면접해서 영상이 없어요. 마이크까지 쓸 수 없어 소리 녹음도 남지 않았어요.';
@@ -23354,17 +23459,17 @@ const ResultView = {
       ['time', '답변 시간', m ? `${d.durSec}초 · ${d.timeLabel}` : null, m ? (/짧음/.test(d.timeLabel) ? '경험 한 가지와 결과를 덧붙여 30초~1분으로 말해 보세요.' : /김/.test(d.timeLabel) ? '경험은 하나만 골라 결론 → 내가 한 일 → 결과 순서로 줄여 보세요.' : '알맞은 길이로 답했어요.') : ''],
       ['gaze', '시선 (카메라 정면)', fm ? `정면 ${f.frontPct}% · 아래 ${f.downPct || 0}%` : null, fm ? (fx(/시선|아래|정면|카메라/) || '카메라 쪽을 보며 답했어요.') : ''],
       ['pose', '자세 (고개 움직임)', fm ? `크게 움직인 시간 ${f.movePct || 0}%` : null, fm ? (fx(/움직|자세|고개|손/) || '자세가 안정적이었어요.') : ''],
-      ['vol', '음량', null, ''],
+      ['vol', '음량', m && d.vol ? (d.vol.endDrop >= 30 ? `끝부분이 ${d.vol.endDrop}% 작아짐` : d.vol.label) : null, m && d.vol ? d.vol.note : ''],
       ['tone', '목소리 톤·말투', null, ''],
-    ].map(([k, n, v, t])=>({ k, n, v, t, pre: k === 'vol' || k === 'tone', na: v == null })); },
+    ].map(([k, n, v, t])=>({ k, n, v, t, pre: k === 'tone', na: v == null })); },
   renderDv(i){ const box = document.getElementById('rv-dv'); if(!box) return; const n = state.currentQ || 0;
     i = Math.max(0, Math.min(n - 1, i || 0)); this.qi = i;
     const md = this.dvMedia(i), L = this.dvItems(i), cur = L.find(x=>x.k === this.dvItem) || L[0];
     const fmt = t=>t == null ? '' : `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
     const camOff = state.camPref === false || state.camOn === false;
-    const val = cur.pre ? `<p class="rv-dv-v"><b>분석 전</b></p><p class="rv-dim">${cur.k === 'vol' ? '목소리 크기는 아직 분석하지 않아요. 답변이 끝났는지 알아보는 데에만 쓰고 점수로 만들지 않아요.' : '목소리 높낮이·말투는 아직 분석하지 않아요. 존댓말 같은 표현은 답변 글로 \'태도\' 항목에서 봐요.'}</p>`
-      : cur.na ? `<p class="rv-dv-v"><b>측정 안 됨</b></p><p class="rv-dim">${['gaze','pose'].includes(cur.k) ? (camOff ? '카메라를 끄고 면접해서 시선·자세는 보지 않았어요.' : '얼굴이 충분히 잡히지 않았거나 이 답변은 분석하지 못했어요.') : '이 답변은 소리 기록이 없어 측정하지 못했어요.'}</p>`
-      : `<p class="rv-dv-v">${escapeHtml(cur.v)}</p><p>${escapeHtml(cur.t)}</p>`;
+    const val = cur.pre ? `<p class="rv-dv-v"><b>분석 전</b></p><p class="rv-dim">목소리 높낮이·말투는 아직 분석하지 않아요. 존댓말 같은 표현은 답변 글로 '태도' 항목에서 봐요.</p>`
+      : cur.na ? `<p class="rv-dv-v"><b>측정 안 됨</b></p><p class="rv-dim">${['gaze','pose'].includes(cur.k) ? (camOff ? '카메라를 끄고 면접해서 시선·자세는 보지 않았어요.' : '얼굴이 충분히 잡히지 않았거나 이 답변은 분석하지 못했어요.') : cur.k === 'vol' ? '이 답변은 말한 시간이 짧거나 소리 크기를 잴 수 없는 환경(일부 휴대폰·글로 답한 경우)이라 음량을 재지 못했어요.' : '이 답변은 소리 기록이 없어 측정하지 못했어요.'}</p>`
+      : `<p class="rv-dv-v">${escapeHtml(cur.v)}</p><p>${escapeHtml(cur.t)}</p>${cur.k === 'vol' ? '<p class="rv-dim">마이크·거리에 따라 달라지는 값이라 점수로 만들지 않고, 같은 답변 안에서 처음과 끝을 비교했어요.</p>' : ''}`;
     box.innerHTML = `${this.headRow('말하는 모습과 목소리를 돌아봐요', '실제로 녹화·측정한 항목만 보여 주고, 개선할 점을 장면과 함께 알려 줘요.')}
       ${this.qSel('dv', i)}
       <div class="rv-2col">
@@ -23408,7 +23513,7 @@ function retryPractice(){ openSetupFromResult(); }
 function openSetupFromResult(){
   showScreen('screen-dashboard');
   renderDashboard();
-  if(state.selectedField && state.selectedField.id === 'review'){ openSetup('review'); return; }
+  if(state.selectedField && state.selectedField.id === 'review'){ openReviewFlow(); return; }
   if(hallymFlowGate(true)) return;   // 2026-11-02v 한림대: 다시 연습도 준비 흐름으로
   if(state.interviewMode === 'dialog'){ openSetup(state.selectedField.id); return; }
   openPractice(state.selectedField.id);
@@ -24287,7 +24392,7 @@ const StenoListener = {
     this.cb = cb || {}; this.opt = Object.assign({}, this.defaults, opt || {});
     this.transcript=''; this.interim=''; this.spokeAt=0; this.firstSpeechAt=0; this.level=0; this.lastVoiceAt=0; this.silenceSince=0;
     this._pauseHint = false; this._waitHint = false; this._voiceAt = 0; this._srRestarted = false; this._nosrFired = false; this.failKind = ''; this._peak = 0; this._spk = 0; this._quietHint = false; this._loudMs = 0;
-    this.startedAt = Date.now(); this.active = true;
+    this.startedAt = Date.now(); this.active = true; this._vs = null;   // 2026-11-12 음량: 말하는 동안 0.25초마다 평균 소리 크기
     if(!this.supported()){ this._fail('이 브라우저는 음성 인식을 지원하지 않아요. 크롬 또는 엣지를 사용해 주세요.'); return false; }
 
     // 1) 실제 음량 측정 (실패해도 음성 인식만으로 진행) — 공용 마이크 스트림을 같이 씀 (2026-10-14)
@@ -24307,7 +24412,8 @@ const StenoListener = {
         this.level = Math.sqrt(sum/buf.length);
         if(this.cb.onLevel) this.cb.onLevel(Math.min(1, this.level*4));
         const now = Date.now();
-        if(this.level > this.opt.levelThreshold){ this.lastVoiceAt = now; if(!this.firstSpeechAt) this.firstSpeechAt = now; if(!this._voiceAt) this._voiceAt = now; this._state('speaking'); }
+        if(this.level > this.opt.levelThreshold){ this.lastVoiceAt = now; if(!this.firstSpeechAt) this.firstSpeechAt = now; if(!this._voiceAt) this._voiceAt = now; this._state('speaking');
+          const vs = this._vs || (this._vs = { b:[], sum:0, n:0, t:now }); vs.sum += this.level; vs.n++; if(now - vs.t >= 250){ vs.b.push(vs.sum / vs.n); vs.sum = 0; vs.n = 0; vs.t = now; } }
         if(this.level > this.opt.levelThreshold * 2 && !this.spokeAt) this._loudMs = (this._loudMs||0) + 16;   // 글자 없이 또렷한 소리만 쌓이는 시간 (nosr 감시용)
         // 글자는 들어오는데(말하는 중) 음량이 계속 작으면 → 마이크에 가까이 말하라고 한 번 안내
         if(this.spokeAt && now - this.spokeAt < 1500){ this._peak = Math.max(this._peak||0, this.level); this._spk = (this._spk||0) + 16; if(this._spk > 4000 && !this._quietHint){ this._quietHint = true; if(this._peak < 0.03) this._state('quiet'); } }
@@ -24425,6 +24531,7 @@ const StenoListener = {
     const text = joinSpeech(this.transcript, this.interim);
     const durMs = this.firstSpeechAt ? Date.now()-this.firstSpeechAt : 0;
     const timing = { listenStart:this.startedAt, firstSpeech:this.firstSpeechAt||null, lastSpeech:Math.max(this.spokeAt, this.lastVoiceAt)||null, endAt:Date.now() };
+    try{ const v = volSummary(this._vs, this.opt.levelThreshold); if(v) timing.vol = v; }catch(_){}
     if(this.cb.onFinal) this.cb.onFinal(text);
     if(this.cb.onEnd) this.cb.onEnd({ reason: reason||'manual', text, durMs, timing, audioParts: audio ? [audio] : [] });
   },
@@ -26673,7 +26780,7 @@ const PracticeKit = {
   },
   startReview(list){
     if(!list.length) return showToast('연습할 질문이 없어요');
-    this.close(); state.reviewOverride = list.slice(0, 10).map(x=>({ q: x.q, ref: x.ref || null, review: true })); openSetup('review');
+    this.close(); state.reviewOverride = list.slice(0, 10).map(x=>({ q: x.q, ref: x.ref || null, review: true })); openReviewFlow();
   },
   practiceBm(){ this.startReview((this.bm || []).map(b=>({ q: b.question, ref: b.ref }))); },
 
@@ -30769,7 +30876,7 @@ const ImvRec = {
 const Imv = {
   armed: false, active: false, mode: 'scene', col: null, rvAt: null, el: null, people: [], cur: -1, phaseCls: '', capOn: false, pipOn: false, lastAnswerAt: 0, _sTok: 0,
   qText: '', qid: '', ansT0: 0, timer: null, media: null, rec: null, recStart: 0, total: 0, idx: 0,
-  want(){ return !state.trialMode && !(state.selectedField && state.selectedField.id === 'review'); },   // 2026-11-11 연습형도 면접장 화면 (실전형과 차이: 시간 제한 없음 · 자막·내 답변 기본 켬 · 일시정지)
+  want(){ return !state.trialMode && (!(state.selectedField && state.selectedField.id === 'review') || !!state.flReview); },   // 2026-11-12 새 준비 화면에서 시작한 복습 면접도 면접장으로   // 2026-11-11 연습형도 면접장 화면 (실전형과 차이: 시간 제한 없음 · 자막·내 답변 기본 켬 · 일시정지)
   practice(){ return state.timedMode !== 'real'; },
   P(id){ const base = IMV_INTERVIEWERS[id] || { id, name: id, gender: 'male', role: '면접관', idleImage: '', speakingAnimation: 'glow', questionVideos: {} };
     const m = this.media && this.media[id] ? this.media[id] : {};
@@ -30900,7 +31007,7 @@ const Imv = {
       pl.innerHTML = this.people.map((p, i)=>`<div class="imv-plate" data-k="${i}"><b>${escapeHtml(p.role || p.name)}</b></div>`).join('');
       this.col = this.people.length === 1 ? [1] : [0, 2];
     }
-    let kind = '모의면접'; try{ const fc = state.flowCtx || {}; kind = fc.purpose === 'major' ? '전공·경험' : fc.purpose === 'job' ? '기관·직무' : (state.selectedField ? state.selectedField.name + ' 면접' : '모의면접');
+    let kind = '모의면접'; try{ const fc = state.flowCtx || {}; kind = fc.review ? '복습 면접' : fc.purpose === 'major' ? '전공·경험' : fc.purpose === 'job' ? '기관·직무' : (state.selectedField ? state.selectedField.name + ' 면접' : '모의면접');
       const co = fc.job && fc.job.company; if(co && fc.purpose === 'job') kind += ` · ${co}`; }catch(_){}
     this.kindText = kind; el.querySelector('#imv-kind').textContent = kind + (this.isPractice ? ' · 연습형' : ' · 실전형');
     this.cur = -1; this.speaker(0);
