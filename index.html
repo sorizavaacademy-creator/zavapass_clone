@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12d';
+var APP_VERSION = '2026-11-12e';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -7362,7 +7362,7 @@ html.sv-open{overflow:hidden;}
   <!-- 내 성장 (2026-10-14 확정 시안) -->
   <main class="d3-page" id="d3-growth" hidden>
     <div class="gw-head">
-      <div><p class="gw-scope" id="gw-scope">국회 속기사</p><h1 class="gw-title">내 성장</h1><button type="button" class="gw-all" onclick="openAllHistory()">면접 기록 전체 보기 ›</button></div>
+      <div><p class="gw-scope" id="gw-scope">국회 속기사</p><h1 class="gw-title">나의 기록</h1><p class="gw-sub">점수 흐름과 보완할 질문을 한눈에 봐요.</p><button type="button" class="gw-all" onclick="openAllHistory()">면접 기록 전체 보기 ›</button></div>
       <div class="gw-range" id="gw-range" role="group" aria-label="기간"><button type="button" class="on" data-days="30" onclick="setGrowthRange(30)">30일</button><button type="button" data-days="90" onclick="setGrowthRange(90)">90일</button><button type="button" data-days="0" onclick="setGrowthRange(0)">전체</button></div>
     </div>
     <div class="gw-kpis" id="gw-kpis"></div>
@@ -12474,7 +12474,7 @@ function closeDebateScreen(){
 document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !document.querySelector('.pk-ov.on')) closeDebateScreen(); });
 function openGrowthScreen(){
   if(!state.currentUser){ showToast('먼저 로그인해 주세요.'); return; }
-  if(state.currentUser.isAdmin){ showToast('내 성장은 면접자 계정에서 볼 수 있어요.'); return; }
+  if(state.currentUser.isAdmin){ showToast('나의 기록은 면접자 계정에서 볼 수 있어요.'); return; }
   const act = document.querySelector('.screen.active');
   const onDash = act && act.id === 'screen-dashboard';
   if(!onDash){ showScreen('screen-dashboard'); Activity.setPresence('dashboard'); }
@@ -29387,7 +29387,7 @@ const PageInfo = {
       ['면접 시작', '전공·경험 면접 · 지원할 기관이 정해졌으면 기업·직무 맞춤'],
       ['다른 방식', '\'다른 방식으로 연습할래요\'를 누르면 토론·발표 · 오늘의 질문 · 추천 세트 · 연습 도구'],
       ['내 자료·기록', '\'내 자료 확인\'에 경험·서류·질문 모음, \'연습 기록 보기\'에 지난 면접'] ] },
-    { sel:'#d3-growth .gw-title', t:'내 성장', lead:'면접 점수가 어떻게 변했는지 보는 곳이에요.', items:[
+    { sel:'#d3-growth .gw-title', t:'나의 기록', lead:'면접 점수가 어떻게 변했는지 보는 곳이에요.', items:[
       ['기간', '30일 · 90일 · 전체 중에서 골라요'],
       ['점수 흐름', '점을 누르면 그날 리포트가 열려요'],
       ['약한 곳', '문항 종류별 점수 · 보완이 필요한 질문'] ] },
@@ -29616,7 +29616,18 @@ body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .d3-avatar,body:not(.is-ad
 body:not(.is-admin-ui) #screen-dashboard .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
 body:not(.is-admin-ui) #screen-dashboard .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
 body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
-.gw-all{margin-top:6px;border:0;background:none;padding:4px 0;font:inherit;font-size:14px;font-weight:600;color:#45454a;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.gw-all{margin-top:12px;min-height:40px;padding:0 16px;border:1px solid #ded5ce;border-radius:10px;background:#fff;font:inherit;font-size:14.5px;font-weight:600;color:#2b2521;cursor:pointer}
+.gw-all:hover{background:#f3ede7}
+/* 2026-11-12 나의 기록 화면도 홈과 같은 규칙 파일 색 — 내용·기능 그대로 */
+#d3-growth{--c-bg:#faf9f7;--c-surface:#f3ede7;--c-line:#ded5ce;--c-line-strong:#ded5ce;--c-ink:#2b2521;--c-ink-2:#6a5b51;--c-ink-3:#6a5b51;--c-accent:#bd411b;--c-accent-btn:#bd411b;--c-accent-btn-hover:#a63816;--c-accent-ink:#bd411b;--c-accent-soft:#f3ede7;color:#2b2521}
+#screen-dashboard.active:has(#d3-growth:not([hidden])){background:#faf9f7}
+#screen-dashboard.active:has(#d3-growth:not([hidden])) .d3-hdr{background:#faf9f7;border-bottom-color:#ded5ce}
+#screen-dashboard.active:has(#d3-growth:not([hidden])) > .zp-foot{border-top-color:#ded5ce}
+#d3-growth .gw-sub{margin:6px 0 0;font-size:15px;color:#6a5b51}
+#d3-growth .gw-kpi{background:#fff;border-color:#ded5ce}
+#d3-growth .gw-card, #d3-growth .d3-card, #d3-growth .d3-panel{background:#fff;border:1px solid #ded5ce}
+#d3-growth .gw-range button{border-color:#ded5ce;background:#fff;color:#2b2521}
+#d3-growth .gw-range button.on{background:#2b2521;border-color:#2b2521;color:#fff}
 `,
   init(){
     const st = document.createElement('style'); st.id = 'hz-css'; st.textContent = this.CSS; document.head.appendChild(st);
