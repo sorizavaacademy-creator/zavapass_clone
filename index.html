@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12w';
+var APP_VERSION = '2026-11-12x';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6337,6 +6337,60 @@ html.ivv-dr-open{overflow:hidden;}
   #pk-modal.pg .pk-b.pk-2c, #pk-modal.pg .an-pg, #pk-modal.pg .an-2, .hp-filters{grid-template-columns:1fr}
   #pk-modal.pg .pk-b.pk-2c > .pk-aside{grid-column:1;grid-row:auto;order:9}
 }
+/* ===== 2026-11-12x 시안 4단계: 토론·친구 연습 (색은 기존 토큰) ===== */
+.dbm{padding:0 !important;background:#faf9f7}
+.dbm .dbm-bg, .dbm .dbm-oldtop{display:none !important}
+.dbm .dbm-box{width:100% !important;height:100dvh !important;max-height:none !important;border-radius:0 !important;box-shadow:none !important;background:#faf9f7 !important;color:#2b2521}
+.dbm .dbm-hdr .zp-hdr{position:static}
+.dbm .dbm-scroll{padding:28px clamp(16px,4vw,40px) 40px}
+.dbm .dbm-scroll > *{max-width:1000px;margin-left:auto;margin-right:auto}
+.dbm .dbm-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
+.dbm .dbm-head h2{font-size:26px;color:#2b2521} .dbm .dbm-head p{font-size:15px;color:#6a5b51;margin-top:6px}
+.dbm .dbm-prev{flex:none;padding:10px 16px}
+.dbm .dbp-grid{grid-template-columns:minmax(0,1fr) minmax(0,.5fr) !important;gap:20px 34px}
+.dbm .dbm-card{background:#f3ede7}
+.dbm .dbp-f{max-width:1000px;margin:0 auto;width:100%;box-sizing:border-box;background:#faf9f7;border-top:1px solid #ded5ce}
+.dbp-order{margin:8px 0 0;padding-left:22px;display:grid;gap:6px;font-size:14.5px;color:#6a5b51}
+.dbp-order li.on{color:#bd411b;font-weight:700} .dbp-order li.done{color:#2b2521}
+#pk-modal.pg .st-pg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.62fr);gap:20px 34px;align-items:start;margin-bottom:18px}
+#pk-modal.pg .st-pg-main{min-width:0}
+#pk-modal.pg .st-mine{margin-top:8px;border-top:1px solid #ded5ce;padding-top:14px} #pk-modal.pg .st-mine summary{cursor:pointer;font-weight:600;color:#2b2521;padding:4px 0 10px}
+#pk-modal.pg .st-fbgo{margin:8px 0 4px}
+.st-tblw{overflow-x:auto;margin:10px 0 16px}
+.st-tbl{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.st-tbl th{background:#f3ede7;text-align:left;font-weight:600;color:#2b2521;padding:10px 12px}
+.st-tbl td{padding:12px;border-bottom:1px solid #ded5ce;vertical-align:top;color:#2b2521} .st-tbl td:nth-child(2){white-space:nowrap;font-variant-numeric:tabular-nums} .st-tbl td:nth-child(3){color:#6a5b51}
+.st-last{background:#f3ede7;border-radius:10px;padding:14px 16px;margin-bottom:10px} .st-last small{display:block;font-size:12.5px;color:#6a5b51;margin-bottom:4px} .st-last p{margin:0;font-size:14.5px;line-height:1.7}
+.st-who{margin:0 0 4px;color:#6a5b51;font-size:14px} .st-who b{color:#2b2521}
+.sv-ov{background:#faf9f7 !important;color:#2b2521 !important;grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr);grid-template-rows:auto minmax(0,1fr) auto !important;grid-template-areas:"top top" "stage q" "stage ctl";padding:20px clamp(16px,4vw,40px) calc(20px + env(safe-area-inset-bottom)) !important;gap:16px 24px !important}
+.sv-ov .sv-top{grid-area:top;border-bottom:1px solid #ded5ce;padding-bottom:14px}
+.sv-ov .sv-ttl{display:grid;gap:4px} .sv-ov .sv-ttl b{font-size:22px;font-weight:800} .sv-ov .sv-ttl small{font-size:14px;color:#6a5b51}
+.sv-ov .sv-top .sv-end{margin-left:auto;background:#fff;color:#2b2521;border:1px solid #ded5ce}
+.sv-ov .sv-stage{grid-area:stage} .sv-ov .sv-tile{color:#fff} .sv-ov .sv-q{grid-area:q;align-self:start;background:#f3ede7;color:#2b2521} .sv-ov .sv-q small{color:#bd411b}
+.sv-ov .sv-ctl{grid-area:ctl;align-self:start;justify-content:flex-start;flex-wrap:wrap} .sv-ov .sv-ctl button{background:#fff;color:#2b2521;border:1px solid #ded5ce;flex:0 1 auto;padding:0 16px}
+@media (max-width:820px){
+  .dbm .dbp-grid{grid-template-columns:1fr !important}
+  .dbm .dbm-head{flex-direction:column-reverse;gap:10px} .dbm .dbm-prev{align-self:flex-end;padding:8px 14px} .dbm .dbm-head h2{font-size:22px}
+  .dbm .dbm-scroll{padding:18px 16px 30px}
+  #pk-modal.pg .st-pg{grid-template-columns:1fr}
+  .sv-ov{grid-template-columns:1fr !important;grid-template-rows:auto minmax(0,1fr) auto auto !important;grid-template-areas:"top" "stage" "q" "ctl"}
+}
+/* 2026-11-12x 4단계 정렬 다듬기 */
+#pk-modal.pg .st-how{margin:0 0 4px;padding-left:1.25em} #pk-modal.pg .st-how li{margin-bottom:8px}
+#pk-modal.pg .st-pg-main .fl-cta{margin-top:18px}
+#pk-modal.pg .st-lead{display:none}
+#pk-modal.pg .pk-f .pk-btn.pri, #pk-modal.pg .pk-f .btn-solid{order:-1}
+#d3-debate .dbp-f{justify-content:flex-start !important;gap:8px !important;padding:14px clamp(16px,4vw,40px) 18px !important;max-width:1080px}
+#d3-debate .dbp-f .pk-btn{flex:0 0 auto !important;min-width:150px;padding:0 22px}
+#d3-debate .dbp-f .pk-btn.pri{order:-1;background:#bd411b !important;border-color:#bd411b !important}
+.sv-ov{grid-template-rows:auto auto minmax(0,1fr) !important}
+.dbp-order-m{display:none}
+@media (max-width:820px){
+  .dbp-order-m{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;margin:-8px 0 16px;padding:10px 12px;background:#f3ede7;border-radius:10px;font-size:13px;color:#6a5b51}
+  .dbp-order-m li em{font-style:normal;margin-right:4px} .dbp-order-m li.on{color:#bd411b;font-weight:700} .dbp-order-m li.done{color:#2b2521}
+  #d3-debate .dbp-f .pk-btn{flex:1 1 0 !important;min-width:0}
+  .sv-ov{grid-template-rows:auto minmax(0,1fr) auto auto !important}
+}
 #modal-flow.fl-page{z-index:90;padding:0;background:#faf9f7;align-items:stretch;justify-content:stretch}
 #modal-flow.fl-page .fl-box{max-width:none !important;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:none;margin:0;display:flex;flex-direction:column;background:#faf9f7;overflow:hidden}
 #modal-flow .fl-hdr{flex:none;border-bottom:1px solid #ded5ce;background:#faf9f7}
@@ -7814,12 +7868,15 @@ html.sv-open{overflow:hidden;}
   <div class="dbm" id="d3-debate" hidden role="dialog" aria-modal="true" aria-label="토론·토의·발표 면접 연습">
     <div class="dbm-bg" onclick="closeDebateScreen()"></div>
     <section class="dbm-box">
-      <div class="fl-top"><div class="fl-steps" id="dbp-steps" aria-label="진행 순서"></div><button type="button" class="fl-x" onclick="closeDebateScreen()" aria-label="닫기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="dbm-hdr" id="dbm-hdr"></div>
+      <div class="fl-top dbm-oldtop"><div class="fl-steps" id="dbp-steps-old" aria-hidden="true"></div><button type="button" class="fl-x" onclick="closeDebateScreen()" aria-label="닫기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
       <div class="dbm-scroll">
-        <div class="dbm-head"><h2 id="dbt-ptitle">주제 고르기</h2><p>공공기관 토론·토의·발표 면접 대비 · 예상 주제로 연습해요</p></div>
+        <div class="dbm-head"><div><h2 id="dbt-ptitle">주제 고르기</h2><p>공공기관 토론·토의·발표 면접 대비 · 각 형식의 자료와 피드백을 나눠서 보여 줘요</p></div><button type="button" class="btn btn-outline dbm-prev" onclick="closeDebateScreen()">이전으로</button></div>
+        <ol class="dbp-order-m" id="dbp-steps-m" aria-hidden="true"></ol>
         <div class="dbp-grid">
           <section class="dbp-main" aria-live="polite"><div class="dbp-b" id="dbt-b"><div class="pk-wait"><i></i>주제를 불러오고 있어요</div></div></section>
           <aside class="dbp-side">
+            <section class="dbm-card"><h3>진행 순서</h3><ol class="dbp-order" id="dbp-steps" aria-label="진행 순서"></ol></section>
             <section class="dbm-card">
               <h3>토론·토의·발표 면접</h3>
           <dl class="dbp-guide"><dt>토론 (찬반)</dt><dd>주제에 대해 찬성·반대 입장을 정하고, 이유와 예시로 설득해요. 상대(AI)의 반론을 받아 인정할 건 인정하고 차분히 답하는 것이 핵심이에요.</dd><dt>토의 (여럿이)</dt><dd>실제 면접처럼 여러 지원자(AI 3명)와 함께 해결 방안을 하나로 정해요. 남의 말을 잘 듣고, 의견을 모아 정리하는 사람이 점수를 받아요.</dd><dt>발표(PT)</dt><dd>문제 → 원인 → 해결 방안 → 기대 효과 순서로 2분 안팎 발표하고, 면접관 질문에 답해요.</dd></dl>
@@ -10336,7 +10393,7 @@ function josa(word, pair){
 function durText(v){ const m = /^(\d+):(\d{2})$/.exec(String(v||'').trim()); if(!m) return String(v||''); const mm = +m[1], ss = +m[2]; return mm ? (ss ? `${mm}분 ${ss}초` : `${mm}분`) : `${ss}초`; }
 /* 2026-11-12t 안내 상황 공통 확인 창 (브라우저 기본 확인창 대신, 디자인 토큰 색) → Promise<boolean> */
 /* 2026-11-12v 시안 공통 틀: 전체 화면 위 메뉴 (팝업을 전체 화면으로 바꾼 곳에서 씀) */
-function zpNav(where){ try{ PracticeKit.close(); }catch(_){} try{ closeCoach(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
+function zpNav(where){ try{ PracticeKit.close(); }catch(_){} try{ closeCoach(); }catch(_){} try{ closeDebateScreen(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
 function zpHdr(cur){ const a = (w, t)=>`<a href="javascript:void(0)"${w === cur ? ' aria-current="page"' : ''} onclick="zpNav('${w}')">${t}</a>`;
   return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav></div></header>`; }
 function zConfirm(o){
@@ -12998,6 +13055,7 @@ function openDebateScreen(tid){
   if(!act || act.id !== 'screen-dashboard'){ if(state.dashView && state.dashView !== 'home') setDashView('home'); goDashboard(); }
   const box = document.getElementById('d3-debate'); if(!box) return;
   box.hidden = false; document.documentElement.classList.add('dbm-open');   // 2026-11-09m 팝업으로 열림
+  { const h = document.getElementById('dbm-hdr'); if(h) h.innerHTML = zpHdr('hub'); }   // 2026-11-12x 시안 34: 전체 화면
   Debate.openPage(tid);
 }
 /* 2026-11-09n 홈 '토론·토의·발표 면접' 버튼: 누르면 주황으로 바뀌어 눌렸다는 걸 보여 주고, 잠깐 뒤 팝업을 엶 (팝업을 닫으면 원래 색) */
@@ -27947,17 +28005,33 @@ const Study = {
     if(ids.length){ const r = await sb.from('study_feedback').select('*').in('session_id', ids).order('created_at', { ascending:false }); (r.data || []).forEach(f=>{ (this.fb[f.session_id] = this.fb[f.session_id] || []).push(f); }); }
   },
   async open(){
-    PracticeKit.modal(PracticeKit.head('친구가 면접관이 되어 줘요', '친구와 함께 연습') + `<div class="pk-b" id="st-b"><div class="pk-wait"><i></i>불러오는 중</div></div><footer class="pk-f" id="st-f"></footer>`, 'wide');
+    PracticeKit.pgOpen('hub');
+    PracticeKit.modal(PracticeKit.head('친구를 면접관으로 초대해요', '영상으로 함께하거나 같은 장소에서 영상 없이 연습할 수 있어요.') + `<div class="pk-b" id="st-b"><div class="pk-wait"><i></i>불러오는 중</div></div><footer class="pk-f" id="st-f"></footer>`, 'wide');
     try{ await this.load(); }catch(_){ this.sessions = []; }
     this.home();
   },
   home(){
     const esc = escapeHtml, now = Date.now();
-    this.body(`<ol class="st-how"><li><b>질문 5개로 링크 만들기</b><span>내 목표 기관·자주 나오는 질문으로 골라 드려요</span></li><li><b>친구에게 링크 보내기</b><span>카카오톡 등으로. 친구는 로그인 없이 열 수 있어요</span></li><li><b>친구 앞에서, 또는 영상으로 답하기</b><span>친구가 질문을 읽어 주고 내용·전달·태도 점수와 한 줄 의견을 남겨요. 떨어져 있으면 <b>📹 영상으로 시작</b>을 눌러 영상통화처럼 할 수 있어요</span></li></ol>
-      ${this.sessions.length ? `<h4 class="st-h">내가 만든 링크</h4><ul class="st-list">${this.sessions.map(s=>{ const F = this.fb[s.id] || [], live = new Date(s.expires_at).getTime() > now;
+    PracticeKit.setHead('친구를 면접관으로 초대해요', '영상으로 함께하거나 같은 장소에서 영상 없이 연습할 수 있어요.');
+    this.body(`<div class="st-pg"><div class="st-pg-main"><ol class="st-how"><li><b>질문 5개로 링크 만들기</b><span>내 목표 기관·자주 나오는 질문으로 골라 드려요</span></li><li><b>친구에게 링크 보내기</b><span>카카오톡 등으로. 친구는 로그인 없이 열 수 있어요</span></li><li><b>친구 앞에서, 또는 영상으로 답하기</b><span>친구가 질문을 읽어 주고 내용·전달·태도 점수와 한 줄 의견을 남겨요. 떨어져 있으면 <b>📹 영상으로 시작</b>을 눌러 영상통화처럼 할 수 있어요</span></li></ol>
+      <div class="fl-cta"><button type="button" class="btn btn-solid" onclick="Study.make()">새 초대 만들기</button></div></div>
+      <aside class="pk-aside"><b>이번 초대가 허용하는 것</b><p>친구에게는 내가 고른 질문과 (영상으로 할 때) 내 얼굴만 보여요. 내 서류와 다른 면접 기록은 보이지 않아요.</p><p>링크는 3일 동안만 열리고, 친구는 로그인 없이 열 수 있어요.</p></aside></div>
+      ${this.sessions.length ? `<details class="st-mine" open><summary>내가 만든 초대 목록 (${this.sessions.length})</summary><ul class="st-list">${this.sessions.map(s=>{ const F = this.fb[s.id] || [], live = new Date(s.expires_at).getTime() > now;
         return `<li><div class="st-top"><b>${new Date(s.created_at).toLocaleDateString('ko-KR')} · 질문 ${(s.questions || []).length}개</b><span class="st-badge ${live ? 'on' : ''}">${live ? '열려 있음' : '기한 끝남'}</span>${live ? `<span class="st-acts"><button type="button" class="pk-btn sm" onclick="Study.copy('${s.token}')">링크 복사</button><button type="button" class="pk-btn sm pri" onclick="StudyHost.open('${s.id}')">📹 영상으로 시작</button></span>` : ''}</div>
-          ${F.length ? F.map(f=>this.fbHtml(s, f)).join('') : `<p class="st-none">아직 친구 의견이 없어요.</p>`}</li>`; }).join('')}</ul>` : ''}`);
-    this.foot(`<button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button><button type="button" class="pk-btn pri" onclick="Study.make()">＋ 새 링크 만들기</button>`);
+          ${F.length ? F.map((f, fi)=>this.fbHtml(s, f) + `<button type="button" class="btn btn-outline st-fbgo" onclick="Study.fbView('${s.id}', ${fi})">평가 보기</button>`).join('') : `<p class="st-none">아직 친구 의견이 없어요.</p>`}</li>`; }).join('')}</ul>` : ''}`);
+    this.foot('');
+  },
+  /** 2026-11-12x 시안 40: 친구 평가를 문항별 표로 */
+  fbView(sid, fi){
+    const s = (this.sessions || []).find(x=>x.id === sid), f = s && (this.fb[sid] || [])[fi]; if(!s || !f) return;
+    const esc = escapeHtml, R = Array.isArray(f.ratings) ? f.ratings : [], Q = s.questions || [];
+    PracticeKit.setHead('친구가 관찰한 점을 확인해요', '친구 점수와 한 줄 의견을 문항별로 보여 줘요.');
+    this.body(`<p class="st-who"><b>${esc(f.rater || '친구')}</b> · ${new Date(s.created_at).toLocaleDateString('ko-KR')} 초대</p>
+      <div class="st-tblw"><table class="st-tbl"><thead><tr><th>질문</th><th>내용 / 전달 / 태도</th><th>의견</th></tr></thead><tbody>${Q.map((q, i)=>{ const r = R[i] || {}; return `<tr><td>${esc(q)}</td><td>${r.content || '–'} / ${r.delivery || '–'} / ${r.attitude || '–'}</td><td>${r.note ? esc(r.note) : '의견 없음'}</td></tr>`; }).join('')}</tbody></table></div>
+      <div class="st-last"><small>마지막으로 한마디</small><p>${f.comment ? esc(f.comment) : '남긴 말이 없어요.'}</p></div>
+      <p class="hx-fine">점수는 친구가 매긴 1~5점이에요. AI 채점과 섞이지 않아요.</p>`);
+    this.foot(`<button type="button" class="btn btn-solid" onclick="PracticeKit.startReview(${JSON.stringify(Q.map(q=>({ q }))).replace(/"/g, '&quot;')})">이 질문들로 다시 연습</button><button type="button" class="btn btn-outline" onclick="Study.home()">초대 목록으로</button>`);
+    try{ document.getElementById('pk-modal').scrollTop = 0; }catch(_){}
   },
   fbHtml(s, f){
     const esc = escapeHtml, R = Array.isArray(f.ratings) ? f.ratings : [], avg = k=>{ const v = R.map(r=>+r[k]).filter(x=>x > 0); return v.length ? (v.reduce((a, b)=>a + b, 0) / v.length).toFixed(1) : '–'; };
@@ -27979,6 +28053,7 @@ const Study = {
   },
   editView(){
     const esc = escapeHtml;
+    PracticeKit.setHead('친구를 면접관으로 초대해요', '친구가 읽어 줄 질문을 골라요. 바꾸고 싶으면 글을 고치세요.');
     this.body(`<p class="st-lead">친구가 읽어 줄 질문이에요. 바꾸고 싶으면 글을 고치세요.</p><ol class="st-qs">${this.draft.map((q, i)=>`<li><input maxlength="150" value="${esc(q)}" data-i="${i}"></li>`).join('')}</ol>`);
     this.foot(`<button type="button" class="pk-btn ghost" onclick="Study.home()">← 돌아가기</button><button type="button" class="pk-btn" onclick="Study.make()">↻ 다른 질문</button><button type="button" class="pk-btn pri" onclick="Study.create()">링크 만들기</button>`);
   },
@@ -28056,7 +28131,7 @@ const StudyHost = {
     this.s = s; try{ PracticeKit.close(); }catch(_){}
     let ov = document.getElementById('sv-ov'); if(!ov){ ov = document.createElement('div'); ov.id = 'sv-ov'; ov.className = 'sv-ov'; document.body.appendChild(ov); }
     document.documentElement.classList.add('sv-open');
-    ov.innerHTML = `<div class="sv-top"><b>친구와 영상 연습</b><span class="sv-st" id="sv-st">카메라 켜는 중…</span><button type="button" class="sv-end" onclick="StudyHost.end()">끝내기</button></div>
+    ov.innerHTML = `<div class="sv-top"><div class="sv-ttl"><b>친구와 함께 연습해요</b><small>지원자 화면 · 친구가 고른 질문과 같은 질문을 확인해요.</small></div><span class="sv-st" id="sv-st">카메라 켜는 중…</span><button type="button" class="sv-end" onclick="StudyHost.end()">끝내기</button></div>
       <div class="sv-stage"><div class="sv-tile"><video id="sv-remote" autoplay playsinline></video><div class="sv-wait" id="sv-wait"><b>친구를 기다리고 있어요</b><p>친구가 보낸 링크를 열고 <b>'영상으로 함께하기'</b>를 누르면 자동으로 연결돼요.</p><button type="button" class="pk-btn" onclick="Study.copy('${s.token}')">링크 다시 복사</button></div><span class="sv-tag" id="sv-who">면접관 · 친구</span></div><div class="sv-tile"><video id="sv-local" autoplay playsinline muted></video><span class="sv-tag">나 (면접자)</span></div></div>
       <div class="sv-q" id="sv-q"><small>친구가 질문을 읽어 줄 거예요</small><p>${escapeHtml((s.questions || [])[0] || '')}</p></div>
       <div class="sv-ctl"><button type="button" id="sv-mic" onclick="StudyHost.toggle('audio')">🎙 마이크 끄기</button><button type="button" id="sv-cam" onclick="StudyHost.toggle('video')">📷 카메라 끄기</button></div>`;
@@ -28282,7 +28357,8 @@ const Debate = {
     const box = document.getElementById('dbp-steps'); if(!box) return;
     const K = (this.s && this.K[this.s.kind]) || this.K.debate, p = this.s ? this.prepSec() : 60;
     const L = [['pick', '주제 고르기'], ['prep', `준비 ${p / 60}분`], ['s1', K.s1], ['s2', K.s2], ['fb', '피드백']], cur = L.findIndex(x=>x[0] === this._stepK);
-    box.innerHTML = L.map(([k, t], i)=>`${i ? '<span class="sep"></span>' : ''}<b class="${i < cur ? 'done' : i === cur ? 'on' : ''}"><em>${i < cur ? '✓' : i + 1}</em><span>${t}</span></b>`).join('');
+    box.innerHTML = L.map(([k, t], i)=>`<li class="${i < cur ? 'done' : i === cur ? 'on' : ''}"${i === cur ? ' aria-current="step"' : ''}>${t}</li>`).join('');
+    { const m = document.getElementById('dbp-steps-m'); if(m) m.innerHTML = L.map(([k, t], i)=>`<li class="${i < cur ? 'done' : i === cur ? 'on' : ''}"><em>${i + 1}</em>${t}</li>`).join(''); }
   },
   closeBtn(){ return this.page ? '' : '<button type="button" class="pk-btn ghost" onclick="Debate.close()">닫기</button>'; },
   hist: [],
