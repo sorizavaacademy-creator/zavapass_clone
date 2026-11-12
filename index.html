@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12j';
+var APP_VERSION = '2026-11-12k';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -9950,8 +9950,9 @@ function showScreen(id){
   try{ document.body.classList.toggle('is-admin-ui', !!(state.currentUser && state.currentUser.isAdmin)); }catch(_){}   // 2026-10-20o 관리자: 면접 연습·리포트·내 성장 메뉴 숨김
   try{ AdminFb.refresh(); }catch(_){}
   try{ setTimeout(()=>AppUpdate.maybeShow(), 300); }catch(_){}
-  const fab = document.getElementById('fb-fab'); if(fab) fab.style.display = (state.currentUser && !state.currentUser.isAdmin && id !== 'screen-login' && id !== 'screen-admin') ? '' : 'none';
-  const hfab = document.getElementById('help-fab'); if(hfab) hfab.style.display = (state.currentUser && !state.currentUser.isAdmin && id === 'screen-dashboard') ? '' : 'none';
+  // 2026-11-12 관리자 계정도 학생 화면(홈 등)에서는 '의견·문제 보내기'·'사용 안내'를 보이게 (관리자 화면에서는 숨김 그대로)
+  const fab = document.getElementById('fb-fab'); if(fab) fab.style.display = (state.currentUser && id !== 'screen-login' && id !== 'screen-admin') ? '' : 'none';
+  const hfab = document.getElementById('help-fab'); if(hfab) hfab.style.display = (state.currentUser && id === 'screen-dashboard') ? '' : 'none';
   document.body.classList.toggle('fab-compact', id === 'screen-interview');
   try{ if(typeof MicStream !== 'undefined'){ if(id === 'screen-login') MicStream.close(); else MicStream.setHold(id === 'screen-interview'); } }catch(_){}
   try{ if(id !== 'screen-interview') closeMoreSheet(); }catch(_){}
@@ -10018,12 +10019,12 @@ const AdminFb = {
       if(!b){
         b = document.createElement('button'); b.type = 'button'; b.className = 'adm-fb-btn';
         b.onclick = (e)=>{ e.stopPropagation(); AdminFb.go(); };
-        b.innerHTML = '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg><span class="adm-fb-lbl">의견·문제</span><span class="adm-fb-badge" hidden></span>';
+        b.innerHTML = '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg><span class="adm-fb-lbl">받은 의견</span><span class="adm-fb-badge" hidden></span>';
         box.insertBefore(b, box.firstChild);
       }
       const bd = b.querySelector('.adm-fb-badge'); bd.textContent = n > 99 ? '99+' : String(n); bd.hidden = !n;
       b.classList.toggle('has-new', !!n);
-      b.title = n ? `새 의견·문제 ${n}건 · 눌러서 보기` : '의견·문제 보기';
+      b.title = n ? `학생이 보낸 새 의견·문제 ${n}건 · 눌러서 보기` : '학생이 보낸 의견·문제 보기';
       b.setAttribute('aria-label', b.title);
     });
   },
@@ -11941,12 +11942,18 @@ function tourSteps(){
   const acc = accessInfo(state.currentUser && state.currentUser.accessUntil);
   const until = acc.until && !acc.expired ? `이용 기간은 ${acc.label.slice(5).replace('-','월 ')}일까지예요. ` : '';
   const kakao = KAKAO_CHANNEL_URL ? '<button type="button" class="tour-kakao" onclick="openKakaoChannel()">카카오톡 채널로 문의하기</button>' : '';
+  // 2026-11-12 새 홈(시안 04·05)과 위 메뉴(홈·연습하기·나의 기록·내 자료·내 메뉴)에 맞춘 사용 안내
+  const ret = (()=>{ const r = document.getElementById('hz-ret'); return !!(r && !r.hidden); })();
+  const adm = !!(state.currentUser && state.currentUser.isAdmin);
   return [
-    { sel:'#field-grid', title:'1. 연습할 분야를 고르세요', text:'관리자가 열어 준 분야만 고를 수 있어요. 카드를 누르면 위쪽 시작 버튼이 그 분야로 바뀌어요.' },
-    { sel:'#d3-start-btn', title:'2. 면접 시작', text:'누르면 질문을 미리 볼 수 있는 화면으로 가요. "면접 준비실로 이동" → 마이크·카메라 확인 → 리허설 2문항 → 라이브 면접 순서로 진행돼요. 크롬이나 엣지에서 해 주세요.' },
-    { sel:'#d3-today', alt:'#d3-stats', title:'3. 하루 한 번', text:`하루 한 번 연습하면 초록 점이 채워지고 연속 일수가 늘어요. ${until}끝나면 결과 화면에서 내 답변을 다시 들어볼 수 있어요.` },
-    { sel:'#screen-dashboard .d3-nav', title:'4. 기록과 문의', text:'지난 결과는 "나의 기록"에서 다시 볼 수 있어요. 마이크가 안 되거나 궁금한 점은 "의견 보내기"로 알려 주세요.' + (KAKAO_CHANNEL_URL ? ' 카카오톡 채널(위 메뉴의 "카카오톡 문의")로 물어봐도 돼요.' : '') + ' 이 안내는 오른쪽 아래 "사용 안내" 버튼으로 언제든 다시 볼 수 있어요.', extra: kakao },
-  ];
+    { sel: ret ? '#hz-ret-acts' : '#hz-hero .hz-acts', alt:'#hz-ret-acts', title:'1. 면접 시작', text: ret
+      ? '지금 준비 단계에 맞는 면접을 바로 시작해요. 위의 \'현재 준비 단계\'를 바꾸면 버튼이 바뀌고, 오른쪽에는 지난 연습에서 고칠 한 가지가 나와요.'
+      : '\'전공·경험 면접 시작하기\'로 시작하거나, 지원할 기관이 정해졌다면 아래 버튼을 눌러요. 준비 창에서 경험·진행 방식(연습형/실전형)·면접관을 고른 뒤 면접장에 들어가요.' },
+    adm ? { sel:'#hz-more-btn', title:'2. 다른 연습', text:'\'다른 방식으로 연습할래요\'를 누르면 토론·토의·발표 면접, 오늘의 질문, 추천 세트, 면접 D-day 같은 연습 도구가 한 창에 모여 있어요.' } :
+    { sel:'#screen-dashboard .d3-nav a[data-go="practice"]', alt:'#hz-more-btn', title:'2. 연습하기', text:'위 메뉴 \'연습하기\'에는 토론·토의·발표 면접, 오늘의 질문, 추천 세트, 면접 D-day 같은 연습 도구가 모여 있어요.' },
+    adm ? null : { sel:'#screen-dashboard .d3-nav a[data-go="growth"]', title:'3. 나의 기록', text:`지난 면접의 점수 흐름과 보완할 질문을 봐요. 면접이 끝나면 결과 화면에서 녹화 영상으로 내 답변을 다시 볼 수 있어요. ${until}` },
+    { sel:'#d3-user-btn', title: adm ? '4. 내 메뉴' : '4. 내 자료 · 내 메뉴', text:(adm ? '경험·서류·질문 모음은 홈의 \'내 자료 확인\'에, 마이페이지·공지사항·로그아웃은 \'내 메뉴\'에 있어요.' : '경험·서류·질문 모음은 위 메뉴 \'내 자료\'에, 마이페이지·공지사항·의견 보내기·로그아웃은 \'내 메뉴\'에 있어요.') + ' 이 안내는 오른쪽 아래 \'사용 안내\'로 언제든 다시 볼 수 있어요.', extra: kakao },
+  ].filter(Boolean).map((st, k)=>Object.assign(st, { title: st.title.replace(/^\d+\./, (k + 1) + '.') }));
 }
 function tourKey(){ return 'steno.tour.' + ((state.currentUser && state.currentUser.id) || 'anon'); }
 function maybeStartTour(){
@@ -29662,11 +29669,13 @@ body.hdr-min #screen-dashboard .d3-user-btn::before{content:"내 정보";color:v
 @media(max-width:860px){ #d3-home .hz-ret-main{grid-template-columns:1fr} }
 @media(max-width:640px){ #d3-home .hz-foot{grid-template-columns:1fr 1fr;gap:12px} #d3-home .hz-foot .hz-more-btn{grid-column:1/-1} #d3-home .hz-foot > :last-child{justify-self:stretch} #d3-home .hz-acts .hz-sec{align-self:flex-start} #d3-home .hz-ret-big{font-size:30px} #d3-home .hz-ret-acts{flex-direction:column;align-items:flex-start} #d3-home .hz-ret-foot{flex-wrap:wrap;justify-content:flex-start} }
 /* 위 메뉴 '▶ 내 메뉴' (학생) */
+body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .d3-user-meta{display:none !important}
 body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .d3-avatar,body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .d3-user-name,body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .d3-caret{display:none !important}
 body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
 body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
 body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
 /* 질문 미리보기 화면도 '▶ 내 메뉴' */
+body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .d3-user-meta{display:none !important}
 body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .d3-avatar,body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .d3-user-name,body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .d3-caret{display:none !important}
 body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
 body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
