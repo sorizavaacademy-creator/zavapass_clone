@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12e';
+var APP_VERSION = '2026-11-12f';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6085,6 +6085,42 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-flow .btn-outline:hover, #modal-setup .btn-outline:hover{background:#f3ede7;border-color:#ded5ce}
 #modal-setup .setup-reco{background:#f3ede7 !important;border-color:#ded5ce !important}
 #modal-setup .setup-reco .btn-solid, #modal-setup .setup-reco button{background:#bd411b;border-color:#bd411b;color:#fff}
+/* ── 2026-11-12 학생 화면·창 전체를 홈과 같은 규칙 파일 색으로 (관리자·학교 화면 제외) — 모양만, 내용·기능 그대로 ── */
+body.v3-ui:not(.is-admin-ui), body:not(.is-admin-ui) #screen-login.v3, body:not(.is-admin-ui) #screen-practice.v3, body:not(.is-admin-ui) #screen-pending.v3, body:not(.is-admin-ui) .modal-overlay{--c-bg:#faf9f7;--c-bg-2:#f3ede7;--c-surface:#f3ede7;--c-line:#ded5ce;--c-line-strong:#ded5ce;--c-ink:#2b2521;--c-ink-2:#6a5b51;--c-ink-3:#6a5b51 !important;--c-accent:#bd411b;--c-accent-btn:#bd411b;--c-accent-btn-hover:#a63816;--c-accent-ink:#bd411b;--c-accent-soft:#f3ede7}
+body:not(.is-admin-ui) #screen-login, body:not(.is-admin-ui) #screen-practice, body:not(.is-admin-ui) #screen-pending{background:#faf9f7 !important;color:#2b2521}
+body:not(.is-admin-ui) #screen-login.v3{--c-bg-2:#faf9f7}
+body:not(.is-admin-ui):has(#screen-login.active){background:#faf9f7 !important}
+body:not(.is-admin-ui) #screen-login.v3 .lg{background:#faf9f7}
+body:not(.is-admin-ui) #screen-practice .d3-hdr, body:not(.is-admin-ui) #screen-pending .d3-hdr{background:#faf9f7;border-bottom-color:#ded5ce}
+body:not(.is-admin-ui) .modal-overlay .modal-box{background:#faf9f7;color:#2b2521}
+body:not(.is-admin-ui) .modal-overlay .modal-head, body:not(.is-admin-ui) .modal-overlay .modal-foot{border-color:#ded5ce}
+body:not(.is-admin-ui) .btn-solid{background:#bd411b;border-color:#bd411b;color:#fff;box-shadow:none} body:not(.is-admin-ui) .btn-solid:hover{background:#a63816}
+body:not(.is-admin-ui) .btn-outline{background:#fff;border-color:#ded5ce;color:#2b2521} body:not(.is-admin-ui) .btn-outline:hover{background:#f3ede7}
+body:not(.is-admin-ui) .modal-box .chip.sel{background:#2b2521;border-color:#2b2521;color:#fff}
+/* 연습 도구·내 자료 창 */
+body:not(.is-admin-ui) .hm-more{background:#faf9f7}
+body:not(.is-admin-ui) .hm-title{margin:0;padding:18px 22px 4px;font-size:20px;font-weight:800;letter-spacing:-.02em;color:#2b2521}
+body:not(.is-admin-ui) .hm-tabs{border-bottom-color:#ded5ce}
+body:not(.is-admin-ui) .hm-tabs button[data-t]{color:#6a5b51} body:not(.is-admin-ui) .hm-tabs button[data-t]:hover, body:not(.is-admin-ui) .hm-tabs button[data-t].on{color:#2b2521}
+body:not(.is-admin-ui) .hm-tabs button[data-t].on{box-shadow:0 0 0 1px #ded5ce}
+body:not(.is-admin-ui) .hm-x{background:#f3ede7;color:#2b2521}
+/* 다시 답하기·오늘의 질문·내 질문 모음·경험 정리 도우미 (PracticeKit) */
+body:not(.is-admin-ui) .pk-box{background:#faf9f7;color:#2b2521}
+body:not(.is-admin-ui) .pk-h{border-bottom-color:#ded5ce}
+body:not(.is-admin-ui) .pk-f{border-top-color:#ded5ce}
+body:not(.is-admin-ui) .pk-btn{border-color:#ded5ce;color:#2b2521;background:#fff}
+body:not(.is-admin-ui) .pk-btn.pri, body:not(.is-admin-ui) .rs-next-acts .pk-btn.pri{background:#bd411b;border-color:#bd411b;color:#fff}
+body:not(.is-admin-ui) .pk-btn.ghost{background:transparent;border-color:transparent}
+body:not(.is-admin-ui) .pk-box textarea, body:not(.is-admin-ui) .pk-box input{border-color:#ded5ce}
+body:not(.is-admin-ui) .ec-bar li, body:not(.is-admin-ui) .ec-remind, body:not(.is-admin-ui) .ec-sofar{background:#f3ede7;color:#6a5b51}
+body:not(.is-admin-ui) .ec-cat, body:not(.is-admin-ui) .ec-dot, body:not(.is-admin-ui) .ec-two section, body:not(.is-admin-ui) .ec-star, body:not(.is-admin-ui) .ec-ex{border-color:#ded5ce;color:#2b2521}
+body:not(.is-admin-ui) .ec-lead, body:not(.is-admin-ui) .ec-tip, body:not(.is-admin-ui) .ec-pts{color:#6a5b51}
+body:not(.is-admin-ui) .ec-q small{color:#bd411b}
+/* 토론·토의·발표 창 */
+body:not(.is-admin-ui) .dbp-mh h2, body:not(.is-admin-ui) .dbp-b, body:not(.is-admin-ui) .dbp-ht, body:not(.is-admin-ui) .dbp-guide dt{color:#2b2521}
+body:not(.is-admin-ui) .dbp-f{border-top-color:#ded5ce;background:#faf9f7}
+body:not(.is-admin-ui) .dbp-guide, body:not(.is-admin-ui) .dbp-empty{color:#6a5b51}
+body:not(.is-admin-ui) .dbp-sc{color:#bd411b}
 
 @media(max-width:640px){ .fl-diffs{grid-template-columns:1fr;} .cc-row{grid-template-columns:1fr;gap:6px;} .cc{padding:14px;} }
 .iv-co{margin:0 0 10px;border:1px solid #E3E1DB;border-radius:12px;background:#FAFAF8;color:#1c1c1e;}
@@ -7281,6 +7317,7 @@ html.sv-open{overflow:hidden;}
     <div class="hm-sheet" id="hm-sheet" hidden>
       <div class="hm-sheet-bg" onclick="HomeTabs.close()"></div>
       <section class="hm-more" id="hm-more" role="dialog" aria-modal="true" aria-label="연습 도구">
+        <h2 class="hm-title" id="hm-title" hidden>내 자료</h2>
         <div class="hm-tabs" role="tablist"><button type="button" role="tab" data-t="dday" onclick="HomeTabs.go('dday')">면접 D-day</button><button type="button" role="tab" data-t="review" onclick="HomeTabs.go('review')">지난 면접 보완점</button><button type="button" role="tab" data-t="bm" onclick="HomeTabs.go('bm')">내 질문 모음</button><button type="button" role="tab" data-t="exp" onclick="HomeTabs.go('exp')">내 경험</button><button type="button" role="tab" data-t="recent" onclick="HomeTabs.go('recent')">최근 면접 기록</button><button type="button" class="hm-x" onclick="HomeTabs.close()" aria-label="닫기">✕</button></div>
         <div class="hm-tp" data-t="review" role="tabpanel"><section class="d3-panel">
         <div class="d3-panel-head"><h3 class="d3-panel-title">지난 면접의 보완점과 다시 연습</h3><button class="d3-btn-text" id="hm-review-btn" type="button" onclick="startReviewFromDashboard()" style="display:none;">이 질문들로 다시 연습</button></div>
@@ -8143,10 +8180,9 @@ html.sv-open{overflow:hidden;}
       <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
       <nav class="d3-nav" aria-label="주 메뉴" data-nav="practice">
         <a href="javascript:void(0)" onclick="navGo('home')">홈</a>
-        <a href="javascript:void(0)" aria-current="page">면접 시작</a>
-        <a href="javascript:void(0)" onclick="navGo('debate')">토론 연습</a>
-        <a href="javascript:void(0)" onclick="navGo('reports')">면접 기록</a>
-        <a href="javascript:void(0)" onclick="navGo('growth')">나의 성장</a>
+        <a href="javascript:void(0)" aria-current="page" onclick="navGo('hub')">연습하기</a>
+        <a href="javascript:void(0)" onclick="navGo('growth')">나의 기록</a>
+        <a href="javascript:void(0)" onclick="navGo('materials')">내 자료</a>
         <a href="javascript:void(0)" onclick="navGo('coach')" style="display:none;">자기소개 코치</a>
       </nav>
       <nav style="display:none !important;"><a href="javascript:void(0)" class="kk-link kakao-show" onclick="openKakaoChannel()" style="display:none;"><svg class="kk-ic" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M10 3C5.6 3 2 5.8 2 9.2c0 2.2 1.5 4.1 3.7 5.2l-.8 2.9c-.1.3.2.5.4.3l3.4-2.3c.4 0 .9.1 1.3.1 4.4 0 8-2.8 8-6.2S14.4 3 10 3z"/></svg><span class="kk-full">카카오톡 문의</span><span class="kk-short">카톡 문의</span></a>
@@ -12435,7 +12471,7 @@ function navGo(where){
   if(where === 'reports'){ openAllHistory(); return; }
   if(where === 'hub' || where === 'materials'){   // 2026-11-12 연습하기 창 · 내 자료(내 경험 창) — 홈 화면 안의 창이라 홈으로 먼저
     const act = document.querySelector('.screen.active'); if(!act || act.id !== 'screen-dashboard') goDashboard(); setDashView('home');
-    setTimeout(()=>{ try{ if(where === 'hub') HomeSimple.toggle(true, false, '연습하기'); else HomeTabs.open('exp'); }catch(e){ console.warn(e); } }, 60); return; }
+    setTimeout(()=>{ try{ if(where === 'hub') HomeSimple.toggle(true, false, '연습하기'); else HomeTabs.open('exp', '내 자료'); }catch(e){ console.warn(e); } }, 60); return; }
   if(where === 'growth'){ openGrowthScreen(); return; }
   if(where === 'debate'){ openDebateScreen(); return; }
   if(where === 'coach'){ openCoach(); return; }
@@ -26130,8 +26166,9 @@ const PracticeKit = {
 /* 2026-11-09h 홈 아래 버튼 한 줄 → 누르면 창 안의 탭으로 (지난 면접 보완점·최근 기록·D-day·질문 모음·후기 질문·내 경험) */
 const HomeTabs = {
   KEEP: /editPlan|removeBm|openBmAll|check\(/,   // 이 버튼들은 창을 닫지 않음 (그 위에 작은 창이 뜨거나 제자리에서 바뀜)
-  open(t){
+  open(t, title){
     const sh = document.getElementById('hm-sheet'); if(!sh) return;
+    const ht = document.getElementById('hm-title'); if(ht){ ht.hidden = !title; ht.textContent = title || ''; }   // 2026-11-12 위 메뉴 '내 자료'로 열면 제목
     sh.hidden = false; document.documentElement.classList.add('hm-open'); this.go(t);
   },
   close(){ const sh = document.getElementById('hm-sheet'); if(sh) sh.hidden = true; document.documentElement.classList.remove('hm-open'); },
@@ -29616,6 +29653,11 @@ body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .d3-avatar,body:not(.is-ad
 body:not(.is-admin-ui) #screen-dashboard .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
 body:not(.is-admin-ui) #screen-dashboard .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
 body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
+/* 질문 미리보기 화면도 '▶ 내 메뉴' */
+body:not(.is-admin-ui) #screen-practice .d3-user-btn .d3-avatar,body:not(.is-admin-ui) #screen-practice .d3-user-btn .d3-user-name,body:not(.is-admin-ui) #screen-practice .d3-user-btn .d3-caret{display:none !important}
+body:not(.is-admin-ui) #screen-practice .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
+body:not(.is-admin-ui) #screen-practice .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
+body:not(.is-admin-ui) #screen-practice .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
 .gw-all{margin-top:12px;min-height:40px;padding:0 16px;border:1px solid #ded5ce;border-radius:10px;background:#fff;font:inherit;font-size:14.5px;font-weight:600;color:#2b2521;cursor:pointer}
 .gw-all:hover{background:#f3ede7}
 /* 2026-11-12 나의 기록 화면도 홈과 같은 규칙 파일 색 — 내용·기능 그대로 */
