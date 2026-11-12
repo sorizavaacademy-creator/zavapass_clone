@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12o';
+var APP_VERSION = '2026-11-12p';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6089,11 +6089,12 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-setup.fl-embed{display:none !important}
 /* 2026-11-12 시안 20·21·22 결과 화면 (분석 중 · 결과 요약 · 질문별 답변 분석) */
 #screen-result .r3-actions .r3-btn{display:none !important}
-#screen-result[data-rv="proc"] .result-wrap > :not(#rv-proc), #screen-result[data-rv="q"] .result-wrap > :not(#rv-q), #screen-result[data-rv="ae"] .result-wrap > :not(#rv-ae), #screen-result[data-rv="rw"] .result-wrap > :not(#rv-rw), #screen-result[data-rv="dv"] .result-wrap > :not(#rv-dv){display:none !important}
+#screen-result[data-rv="proc"] .result-wrap > :not(#rv-proc), #screen-result[data-rv="q"] .result-wrap > :not(#rv-q), #screen-result[data-rv="ae"] .result-wrap > :not(#rv-ae), #screen-result[data-rv="rw"] .result-wrap > :not(#rv-rw), #screen-result[data-rv="dv"] .result-wrap > :not(#rv-dv), #screen-result[data-rv="rt"] .result-wrap > :not(#rv-rt), #screen-result[data-rv="cmp"] .result-wrap > :not(#rv-cmp){display:none !important}
+#screen-result[data-rv="sum"] #rv-rt, #screen-result[data-rv="sum"] #rv-cmp, #screen-result:not([data-rv]) #rv-rt, #screen-result:not([data-rv]) #rv-cmp{display:none !important}
 #screen-result[data-rv="sum"] #rv-ae, #screen-result[data-rv="sum"] #rv-rw, #screen-result[data-rv="sum"] #rv-dv, #screen-result:not([data-rv]) #rv-ae, #screen-result:not([data-rv]) #rv-rw, #screen-result:not([data-rv]) #rv-dv{display:none !important}
 #screen-result[data-rv="sum"] #rv-proc, #screen-result[data-rv="sum"] #rv-q, #screen-result:not([data-rv]) #rv-proc, #screen-result:not([data-rv]) #rv-sum, #screen-result:not([data-rv]) #rv-q{display:none !important}
 #screen-result #rv-all #rs-next{display:none !important}
-#screen-result .rv-proc, #screen-result .rv-sum, #screen-result .rv-q, #screen-result .rv-ae, #screen-result .rv-rw, #screen-result .rv-dv{color:#2b2521;max-width:960px;margin:0 auto;padding:8px 0 8px;background:none !important;border:0 !important;box-shadow:none !important;border-radius:0}
+#screen-result .rv-proc, #screen-result .rv-sum, #screen-result .rv-q, #screen-result .rv-ae, #screen-result .rv-rw, #screen-result .rv-dv, #screen-result .rv-rt, #screen-result .rv-cmp{color:#2b2521;max-width:960px;margin:0 auto;padding:8px 0 8px;background:none !important;border:0 !important;box-shadow:none !important;border-radius:0}
 #screen-result .rv-head{margin:6px 0 26px}
 #screen-result .rv-head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
 #screen-result .rv-h{font-size:26px;line-height:1.35;font-weight:800;letter-spacing:-.02em;margin:0 0 8px;color:#2b2521}
@@ -6117,11 +6118,25 @@ html.ivv-dr-open{overflow:hidden;}
 #screen-result .rv-grade{font-size:14px;margin:10px 0 0;color:#2b2521} #screen-result .rv-grade span{color:#6a5b51;font-size:12.5px;margin-left:6px}
 #screen-result .rv-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 #screen-result .rv-acts .btn, #screen-result .rv-links .btn, #screen-result .rv-panel .btn, #screen-result .rv-prev, #screen-result .rv-warn .btn{width:auto;min-width:0;padding:12px 18px;font-size:15px;border-radius:8px;flex:0 0 auto}
-#screen-result .rv-ae .btn-solid, #screen-result .rv-rw .btn-solid, #screen-result .rv-dv .btn-solid, #screen-result .rv-sum .btn-solid, #screen-result .rv-q .btn-solid, #screen-result .rv-proc .btn-solid{background:#bd411b;border-color:#bd411b;color:#fff;box-shadow:none}
+#screen-result .rv-rt .btn-solid, #screen-result .rv-cmp .btn-solid, #screen-result .rv-ae .btn-solid, #screen-result .rv-rw .btn-solid, #screen-result .rv-dv .btn-solid, #screen-result .rv-sum .btn-solid, #screen-result .rv-q .btn-solid, #screen-result .rv-proc .btn-solid{background:#bd411b;border-color:#bd411b;color:#fff;box-shadow:none}
 #screen-result .rv-sum .btn-solid:hover, #screen-result .rv-q .btn-solid:hover, #screen-result .rv-proc .btn-solid:hover{background:#a63816}
-#screen-result .rv-ae .btn-outline, #screen-result .rv-rw .btn-outline, #screen-result .rv-dv .btn-outline, #screen-result .rv-sum .btn-outline, #screen-result .rv-q .btn-outline, #screen-result .rv-proc .btn-outline{background:#fff;border:1px solid #ded5ce;color:#2b2521}
+#screen-result .rv-rt .btn-outline, #screen-result .rv-cmp .btn-outline, #screen-result .rv-ae .btn-outline, #screen-result .rv-rw .btn-outline, #screen-result .rv-dv .btn-outline, #screen-result .rv-sum .btn-outline, #screen-result .rv-q .btn-outline, #screen-result .rv-proc .btn-outline{background:#fff;border:1px solid #ded5ce;color:#2b2521}
 #screen-result .rv-sum .btn-outline:hover, #screen-result .rv-q .btn-outline:hover, #screen-result .rv-proc .btn-outline:hover, #screen-result .rv-ae .btn-outline:hover, #screen-result .rv-rw .btn-outline:hover, #screen-result .rv-dv .btn-outline:hover{background:#f3ede7}
-#screen-result .rv-ae .btn:disabled, #screen-result .rv-rw .btn:disabled{opacity:.45;cursor:not-allowed}
+#screen-result .rv-ae .btn:disabled, #screen-result .rv-rw .btn:disabled, #screen-result .rv-rt .btn:disabled, #screen-result .rv-cmp .btn:disabled{opacity:.45;cursor:not-allowed}
+#screen-result .rv-rt .btn-outline:hover, #screen-result .rv-cmp .btn-outline:hover{background:#f3ede7}
+#screen-result .rv-focus{font-size:14.5px;color:#6a5b51;margin:0 0 18px} #screen-result .rv-focus b{color:#2b2521}
+#screen-result .rv-rt textarea{width:100%;box-sizing:border-box;min-height:140px;padding:14px;border:1px solid #ded5ce;border-radius:8px;background:#fff;font:inherit;font-size:15px;line-height:1.7;color:#2b2521;resize:vertical}
+#screen-result .rv-rt textarea:focus{outline:2px solid #bd411b;outline-offset:1px;border-color:#bd411b}
+#screen-result .rv-f-ta{margin-bottom:6px}
+#screen-result .rv-rt-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap} #screen-result .rv-rt-row .btn{padding:9px 14px;font-size:14px;width:auto !important;min-width:0;flex:0 0 auto !important} #screen-result .rv-cnt{margin-left:auto}
+#screen-result .rv-ctx{margin:0;padding-left:18px;font-size:14px;line-height:1.6;color:#2b2521} #screen-result .rv-panel .rv-panel-note{font-size:12.5px}
+#screen-result .rv-fold > summary em{font-style:normal;font-weight:400;font-size:13px;color:#6a5b51}
+#screen-result .rv-sub small{font-weight:400;font-size:12.5px;color:#6a5b51;margin-left:6px}
+#screen-result .rv-cmpgrid{align-items:stretch} #screen-result .rv-cmpgrid .rv-ans{height:calc(100% - 32px);box-sizing:border-box}
+#screen-result .rv-cmp-diff{margin-top:26px;padding-top:22px;border-top:1px solid #ded5ce;font-size:14.5px;line-height:1.65} #screen-result .rv-cmp-diff p{margin:0 0 6px} #screen-result .rv-cmp-diff ul{margin:0 0 8px;padding-left:20px}
+#screen-result .rv-cmp-sc{margin-top:12px !important} #screen-result .up{color:#2e6b45;font-weight:700} #screen-result .down{color:#a12e28;font-weight:700}
+#screen-result .rv-tbl-s{min-width:0;max-width:520px;margin-top:6px}
+#screen-result .rv-empty{background:#f3ede7;border-radius:12px;padding:24px;margin-top:8px} #screen-result .rv-empty b{font-size:17px;display:block;margin-bottom:6px} #screen-result .rv-empty p{margin:0;font-size:14.5px;line-height:1.6;color:#6a5b51}
 #screen-result .rv-sum .btn:disabled{opacity:.45}
 #screen-result .rv-ec{font-size:13.5px;color:#6a5b51;margin:14px 0 0} #screen-result .rv-ec button{border:0;background:none;color:#bd411b;text-decoration:underline;font:inherit;cursor:pointer;padding:0}
 #screen-result .rv-panel{background:#f3ede7;border-radius:14px;padding:24px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
@@ -8802,6 +8817,8 @@ html.sv-open{overflow:hidden;}
     <section class="rv-ae" id="rv-ae" aria-label="A~E 평가 근거"></section>
     <section class="rv-rw" id="rv-rw" aria-label="답변 다듬기·원본 비교"></section>
     <section class="rv-dv" id="rv-dv" aria-label="영상·말하기 방식 복기"></section>
+    <section class="rv-rt" id="rv-rt" aria-label="같은 질문 다시 연습"></section>
+    <section class="rv-cmp" id="rv-cmp" aria-label="다시 연습 전후 비교"></section>
     <details class="rv-all" id="rv-all"><summary><b>자세한 결과 모두 보기</b><em>종합 등급 · 7가지 항목 · A~E 종합 리포트 · 문항별 평가 · 말하기 습관 · 종합 리포트</em></summary><div class="rv-all-in">
     <div class="result-hero">
       <div class="result-hero-deco" aria-hidden="true"></div>
@@ -22995,8 +23012,8 @@ const ResultView = {
     for(let i = 0; i < n; i++){ const t = String((state.answerTexts || [])[i] || '').trim(); const a = (state.answerFeedback || [])[i]; if(t && !(a && a.ai)) out.push(i); }
     return out; },
   show(mode, qi){ this.mode = mode; if(qi != null) this.qi = qi; const sc = this.scr(); if(!sc) return; sc.dataset.rv = mode;
-    if(mode !== 'dv') this.dvStop();
-    if(mode === 'sum') this.renderSum(); else if(mode === 'q') this.renderQ(this.qi); else if(mode === 'ae') this.renderAe(this.qi); else if(mode === 'rw') this.renderRw(this.qi); else if(mode === 'dv') this.renderDv(this.qi);
+    if(mode !== 'dv') this.dvStop(); if(mode !== 'rt') this.rtMicStop();
+    if(mode === 'sum') this.renderSum(); else if(mode === 'q') this.renderQ(this.qi); else if(mode === 'ae') this.renderAe(this.qi); else if(mode === 'rw') this.renderRw(this.qi); else if(mode === 'dv') this.renderDv(this.qi); else if(mode === 'rt') this.renderRt(this.qi); else if(mode === 'cmp') this.renderCmp(this.qi);
     try{ window.scrollTo(0, 0); }catch(_){} },
   refresh(){ if(this.mode === 'sum') this.renderSum(); else if(this.mode === 'q') this.renderQ(this.qi); else if(this.mode === 'ae') this.renderAe(this.qi); else if(this.mode === 'dv') this.renderDv(this.qi); },
   /* ── 20 분석 중 ── */
@@ -23090,7 +23107,7 @@ const ResultView = {
           ${p ? `<p class="rv-ex"><b>이렇게 해 보세요</b> ${escapeHtml(p.tip.ex)}</p>` : ''}
           <ul class="rv-lines">${good ? `<li><b>잘한 점</b> ${escapeHtml(good)}</li>` : ''}${fix ? `<li><b>보완할 점</b> ${escapeHtml(fix)}</li>` : ''}</ul>
           ${grade && grade !== '–' ? `<p class="rv-grade">종합 <b>${escapeHtml(grade)}</b>${typeof state.lastAverageScore === 'number' && isFinite(state.lastAverageScore) ? ` · ${Math.round(state.lastAverageScore)}점` : ''} <span>A~E 평가 항목과 점수 계산은 그대로예요</span></p>` : ''}
-          <div class="rv-acts">${p ? `<button type="button" class="btn btn-solid" onclick="ResultView.show('q', ${p.i})">보완할 질문 보기</button><button type="button" class="btn btn-outline" onclick="PracticeKit.openRetry('${k}')">같은 질문 다시 연습</button>` : `<button type="button" class="btn btn-solid" onclick="retryPractice()">다시 연습하기</button>`}</div>
+          <div class="rv-acts">${p ? `<button type="button" class="btn btn-solid" onclick="ResultView.show('q', ${p.i})">보완할 질문 보기</button><button type="button" class="btn btn-outline" onclick="ResultView.show('rt', ${p.i})">같은 질문 다시 연습</button>` : `<button type="button" class="btn btn-solid" onclick="retryPractice()">다시 연습하기</button>`}</div>
           ${p && ['content','detail'].includes(p.ax) && !state.demoResult ? `<p class="rv-ec">말할 경험이 부족해서 답이 짧아졌나요? <button type="button" onclick="ExpCoach.open({ from:'result' })">경험 정리 도우미로 소재 찾기</button></p>` : ''}
         </div>
         <aside class="rv-panel"><b class="rv-panel-t">내 모습을 돌아볼까요?</b><p>${escapeHtml(recTxt)}</p><button type="button" class="btn btn-outline" onclick="ResultView.show('dv', ${p ? p.i : 0})">${vid || cam ? '영상·전달 방식 보기' : '전달 방식 보기'}</button></aside>
@@ -23141,7 +23158,7 @@ const ResultView = {
           <div class="rv-fb"><b>보완할 점</b>${I.length ? `<ul>${I.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : tip && tip.ex ? `<p>${escapeHtml(tip.ex)}</p>` : '<p class="rv-dim">따로 짚은 보완할 점은 없어요.</p>'}</div>
           ${a.docNotes && a.docNotes.length ? `<div class="rv-fb"><b>서류와 맞춰 보세요</b><p>${a.docNotes.map(escapeHtml).join(' ')}</p></div>` : ''}
           <details class="rv-fold"><summary>바꿔 말하기 예시</summary><div class="rv-fold-in">${rw ? `<p class="rv-dim">${a.ai ? 'AI가' : '채점 규칙으로'} 다듬은 예시예요. 내 원래 답변은 그대로 남아 있어요.</p><p class="rv-rwtxt">${escapeHtml(rw)}</p>` : '<p class="rv-dim">이 답변은 바꿔 말하기 예시가 없어요.</p>'}</div></details>
-          <div class="rv-acts">${ans.trim() || item.q ? `<button type="button" class="btn btn-solid" onclick="PracticeKit.openRetry('${k}')">이 질문 다시 연습</button>` : ''}<button type="button" class="btn btn-outline" onclick="ResultView.show('dv', ${i})">전달 방식 보기</button>${ans.trim().length >= 30 && PracticeKit.uid() && !state.demoResult ? `<button type="button" class="btn btn-outline" onclick="ResultView.toNote(${i})">답변 노트에 담기</button>` : ''}</div>
+          <div class="rv-acts">${ans.trim() || item.q ? `<button type="button" class="btn btn-solid" onclick="ResultView.show('rt', ${i})">이 질문 다시 연습</button>` : ''}<button type="button" class="btn btn-outline" onclick="ResultView.show('dv', ${i})">전달 방식 보기</button>${ans.trim().length >= 30 && PracticeKit.uid() && !state.demoResult ? `<button type="button" class="btn btn-outline" onclick="ResultView.toNote(${i})">답변 노트에 담기</button>` : ''}</div>
         </div>
       </div>
       <div class="rv-links">
@@ -23149,6 +23166,99 @@ const ResultView = {
         ${canRw ? `<button type="button" class="btn btn-outline" onclick="ResultView.show('rw', ${i})">원본과 수정안 비교</button>` : ''}
         <span class="rv-pg">${i > 0 ? `<button type="button" class="btn btn-outline" onclick="ResultView.show('q', ${i - 1})">이전 질문</button>` : ''}${i < n - 1 ? `<button type="button" class="btn btn-outline" onclick="ResultView.show('q', ${i + 1})">다음 질문</button>` : ''}</span>
       </div>`;
+  },
+  /* ── 24 같은 질문 다시 연습 (원래 기록은 그대로, 다시 답한 내용은 answer_retries에 새 기록으로) ── */
+  rts: {}, rtDraft: {},
+  rk(i){ return state.startTime + ':' + i; },
+  renderRt(i){ const box = document.getElementById('rv-rt'); if(!box) return; const n = state.currentQ || 0; if(!n){ box.innerHTML = ''; return; }
+    i = Math.max(0, Math.min(n - 1, i || 0)); this.qi = i;
+    const item = state.interviewQuestions[i] || {}, ans = String((state.answerTexts || [])[i] || '').trim(), tip = this.qTip(i), sc = this.qScore(i);
+    const focus = tip && tip.t ? tip.t : '결론을 먼저 말하고 경험 하나를 붙여 말하기';
+    const ex = (state.flowCtx && Array.isArray(state.flowCtx.experiences)) ? state.flowCtx.experiences : [];
+    const done = this.rts[this.rk(i)];
+    box.innerHTML = `${this.headRow('같은 질문에 다시 답해볼까요?', '원래 결과는 그대로 남기고, 새로운 연습으로 따로 기록해요.')}
+      ${this.qSel('rt', i)}
+      <div class="rv-2col">
+        <div class="rv-main">
+          <h2 class="rv-qt">${item.followup ? '<span class="rv-fu">꼬리질문</span>' : ''}${escapeHtml(item.q || '')}</h2>
+          <p class="rv-focus">이번에 집중할 한 가지: <b>${escapeHtml(focus)}</b></p>
+          <div class="rv-f rv-f-ta"><label for="rv-rt-ta">다시 답한 내용</label><textarea id="rv-rt-ta" rows="6" placeholder="여기에 답을 쓰거나, 아래 '말로 답하기'를 눌러 말해 보세요.">${escapeHtml(this.rtDraft[this.rk(i)] || '')}</textarea>
+            <div class="rv-rt-row"><button type="button" class="btn btn-outline" id="rv-rt-mic">말로 답하기</button><span class="rv-dim" id="rv-rt-st"></span><span class="rv-dim rv-cnt" id="rv-rt-cnt">0자</span></div></div>
+          ${ans ? `<details class="rv-fold"><summary>이전 답변 보기${sc.s ? ` <em>${escapeHtml(sc.g && sc.g !== '–' ? sc.g + ' · ' : '')}${escapeHtml(sc.s)}</em>` : ''}</summary><div class="rv-fold-in"><p>${escapeHtml(ans)}</p></div></details>` : ''}
+          <div class="rv-acts"><button type="button" class="btn btn-solid" id="rv-rt-go">채점하고 비교하기</button><button type="button" class="btn btn-outline" onclick="ResultView.show('cmp', ${i})">${done ? '방금 다시 한 답과 비교' : '이전 결과와 비교'}</button></div>
+        </div>
+        <aside class="rv-panel"><b class="rv-panel-t">이번 질문의 맥락</b>
+          <p>${ex.length ? '이전 면접에서 고른 경험을 그대로 써요.' : '이전 면접에서 고른 경험이 없어요. 생각나는 경험 하나를 넣어 말해 보세요.'}</p>
+          ${ex.length ? `<ul class="rv-ctx">${ex.map(e=>`<li>${escapeHtml(e.text)}</li>`).join('')}</ul>` : ''}
+          <p class="rv-panel-note">설정을 처음부터 다시 고르지 않아요. 말로 답하면 마이크만 다시 확인해요. ${state.demoResult ? '시연용 샘플은 기록에 저장하지 않아요.' : '다시 답한 내용은 새 연습 기록으로 저장되고, 원래 면접 기록은 바뀌지 않아요.'}</p></aside>
+      </div>`;
+    const ta = document.getElementById('rv-rt-ta'), cnt = document.getElementById('rv-rt-cnt');
+    const upd = ()=>{ cnt.textContent = ta.value.trim().length + '자'; this.rtDraft[this.rk(i)] = ta.value; }; ta.addEventListener('input', upd); upd();
+    document.getElementById('rv-rt-mic').onclick = ()=>this.rtMic();
+    document.getElementById('rv-rt-go').onclick = ()=>this.rtGrade(i); },
+  rtMic(){ const b = document.getElementById('rv-rt-mic'), st = document.getElementById('rv-rt-st'), ta = document.getElementById('rv-rt-ta'); if(!b || !ta) return;
+    if(this._rtMic){ this.rtMicStop(); return; }
+    if(!StenoListener.supported()) return showToast('이 브라우저는 음성 인식이 안 돼요. 크롬이나 엣지에서 해 주세요. 직접 써도 돼요.');
+    const base = ta.value.trim() ? ta.value.trim() + ' ' : '', fire = ()=>ta.dispatchEvent(new Event('input'));
+    this._rtMic = true; b.textContent = '■ 그만 말하기'; st.textContent = '듣고 있어요… 말을 마치면 잠시 뒤 자동으로 멈춰요';
+    const end = msg=>{ this._rtMic = false; const bb = document.getElementById('rv-rt-mic'), s2 = document.getElementById('rv-rt-st'); if(bb) bb.textContent = '말로 답하기'; if(s2) s2.textContent = msg || ''; };
+    StenoListener.start({ onInterim: t=>{ ta.value = base + t; fire(); }, onFinal: t=>{ if(t) ta.value = base + t; fire(); },
+      onEnd: ()=>end(ta.value.trim() ? "다 말했으면 '채점하고 비교하기'를 누르세요" : ''), onError: msg=>end(msg) }, { silenceMs: 2500, noSpeechMs: 10000, maxMs: 150000 }); },
+  rtMicStop(){ if(this._rtMic){ this._rtMic = false; try{ StenoListener.stop('manual'); }catch(_){} } },
+  async rtGrade(i){ const ta = document.getElementById('rv-rt-ta'), btn = document.getElementById('rv-rt-go'); if(!ta || !btn || this._rtBusy) return;
+    const ansNew = ta.value.trim(); if(ansNew.length < 10) return showToast('답변을 조금 더 길게 해 주세요 (10자 이상)');
+    this.rtMicStop(); this._rtBusy = true; btn.disabled = true; btn.textContent = '채점하는 중… (10~20초)';
+    try{
+      const o = PracticeKit.resultItem(i); let ai = null; try{ ai = await PracticeKit.aiGrade(o, ansNew); }catch(_){}
+      let rb = null; try{ rb = Rubric.evaluate({ q: o.q, ref: o.ref || null, followup: !!o.followup, fieldId: o.fieldId }, ansNew, null, ai ? ai.score : undefined); }catch(_){}
+      const score = ai ? (ai.ae ? Math.round(ai.ae.total) : ai.score) : (rb && !rb.empty ? rb.total : effortScore(ansNew));
+      const axes = rb && !rb.empty ? Object.fromEntries(['content','structure','detail','length','attitude'].map(k=>[Rubric.AXIS_LABELS[k], rb.axes[k].score])) : null;
+      const fb = ai ? ai.feedback : (rb ? Rubric.feedbackText(rb, {}) : '');
+      const r = { answer: ansNew, score, ae: ai && ai.ae ? ai.ae : null, axes, fb, by: ai ? (ai.ae ? 'ae' : 'ai') : 'local', strengths: ai ? ai.strengths : [], improvements: ai ? ai.improvements : [], at: new Date().toISOString(), saved: false };
+      if(!state.demoResult && PracticeKit.uid()){
+        try{ const { error } = await sb.from('answer_retries').insert({ record_id: state.savedRecordId || null, question: PracticeKit.qn(o.q), prev_answer: o.answer || null, prev_score: o.score != null ? o.score : null, answer: ansNew.slice(0, 4000), score, feedback: (fb || '').slice(0, 4000), axes, graded_by: ai ? 'ai' : 'local' }); r.saved = !error; }catch(_){}
+        try{ Activity.log('result_retry', { q: i, score }); }catch(_){}
+      }
+      this.rts[this.rk(i)] = r; delete this.rtDraft[this.rk(i)];
+      this.show('cmp', i);
+      showToast(r.saved ? '다시 답한 내용을 새 연습 기록으로 저장했어요. 원래 면접 기록은 그대로예요.' : state.demoResult ? '시연용 샘플이라 저장하지 않았어요.' : '채점은 했지만 기록에 저장하지 못했어요.', r.saved ? 'ok' : 'info');
+    }catch(e){ console.warn('[다시 연습]', e); showToast('채점하지 못했어요. 다시 눌러 주세요.', 'warn'); }
+    finally{ this._rtBusy = false; const b2 = document.getElementById('rv-rt-go'); if(b2){ b2.disabled = false; b2.textContent = '채점하고 비교하기'; } } },
+  /* ── 25 다시 연습 전후 비교 ── */
+  async renderCmp(i){ const box = document.getElementById('rv-cmp'); if(!box) return; const n = state.currentQ || 0; if(!n){ box.innerHTML = ''; return; }
+    i = Math.max(0, Math.min(n - 1, i || 0)); this.qi = i;
+    const item = state.interviewQuestions[i] || {}, a = (state.answerFeedback || [])[i] || {}, prev = String((state.answerTexts || [])[i] || '').trim();
+    let r = this.rts[this.rk(i)], from = 'now';
+    const head = `${this.headRow('전보다 무엇이 달라졌을까요?', '같은 질문을 다시 답한 내용을 이번 면접 답과 나란히 비교해요.', 'rt')}${this.qSel('cmp', i)}
+      <h2 class="rv-qt">${item.followup ? '<span class="rv-fu">꼬리질문</span>' : ''}${escapeHtml(item.q || '')}</h2>`;
+    if(!r && PracticeKit.uid()){ box.innerHTML = head + '<p class="rv-dim">이 질문을 다시 답한 기록을 찾는 중…</p>';
+      try{ const { data } = await sb.from('answer_retries').select('answer,score,feedback,axes,graded_by,created_at').eq('user_id', PracticeKit.uid()).eq('question', PracticeKit.qn(item.q)).order('created_at', { ascending:false }).limit(1);
+        const d = (data || [])[0]; if(d && d.answer){ const ae = AeReport.fromTag(d.feedback); r = { answer: d.answer, score: d.score, ae, axes: d.axes || null, fb: d.feedback || '', by: ae ? 'ae' : d.graded_by, at: d.created_at, saved: true }; from = 'db'; } }catch(_){}
+      if(this.mode !== 'cmp' || this.qi !== i) return; }
+    if(!r || !prev){
+      box.innerHTML = head + `<div class="rv-empty" role="status"><b>비교할 기록이 더 필요해요</b><p>${prev ? '이 질문을 아직 다시 답하지 않았어요. ' : '이번 면접에서 이 질문에 답한 기록이 없어요. '}같은 평가 기준으로 다시 답하면 무엇이 달라졌는지 볼 수 있어요.</p>
+        <div class="rv-acts"><button type="button" class="btn btn-solid" onclick="ResultView.show('rt', ${i})">한 번 더 연습</button><button type="button" class="btn btn-outline" onclick="openAllHistory()">면접 기록으로</button></div></div>`;
+      return; }
+    const sameAe = !!(a.ae && r.ae), sameRule = !a.ae && !a.ai && r.by === 'local';
+    const before = a.ae ? Math.round(a.ae.total) : (a.rubric && !a.rubric.empty ? a.rubric.total : (state.answerScores || [])[i]);
+    let scoreLine = '';
+    if(sameAe || sameRule){ const d = (r.score != null && before != null) ? r.score - before : null;
+      scoreLine = `<p class="rv-cmp-sc">${sameAe ? 'A~E 기준' : '기본 채점'} <b>${before != null ? before : '–'}점 → ${r.score != null ? r.score : '–'}점</b>${d != null ? ` <span class="${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d > 0 ? '▲' + d : d < 0 ? '▼' + (-d) : '변화 없음'}</span>` : ''}</p>`;
+      if(sameAe) scoreLine += `<div class="rv-tbl-w"><table class="rv-tbl rv-tbl-s"><thead><tr><th scope="col">기준</th><th scope="col">이전</th><th scope="col">다시</th></tr></thead><tbody>${AeReport.AX.map(k=>{ const x = a.ae.scores[k], y = r.ae.scores[k], dd = y - x; return `<tr><th scope="row"><b>${k}</b> · ${escapeHtml(AeReport.name(k))}</th><td>${x} / 4</td><td>${y} / 4 ${dd ? `<span class="${dd > 0 ? 'up' : 'down'}">${dd > 0 ? '▲' : '▼'}${Math.abs(dd)}</span>` : ''}</td></tr>`; }).join('')}</tbody></table></div>`; }
+    else scoreLine = '<p class="rv-dim">평가 기준이 달라(A~E 채점 / 기본 채점) 점수는 비교하지 않고 답변 글만 비교해요.</p>';
+    let g = null; try{ const same = sameAe || sameRule; g = PracticeKit.growth(prev, r.answer, same ? PracticeKit.resultItem(i).axes : null, same ? r.axes : null); }catch(_){}   // 기준이 다르면 항목 점수 차이는 말하지 않고 글만 비교
+    const diffTxt = g && g.head ? `<p><b>${escapeHtml(g.head)}</b></p>${g.rest && g.rest.length ? `<ul>${g.rest.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : ''}` : '<p>이전 답변과 크게 달라진 점은 아직 적어요. 숫자·본인 행동·결과 중 하나를 더 넣어 보세요.</p>';
+    const nextTxt = g && g.next && g.next.length ? `<p class="rv-dim">다음에는: ${escapeHtml(g.next[0])}</p>` : (r.improvements && r.improvements[0] ? `<p class="rv-dim">다음에는: ${escapeHtml(r.improvements[0])}</p>` : '');
+    const when = r.at ? new Date(r.at) : null, whenTxt = when ? `${when.getMonth() + 1}/${when.getDate()} ${String(when.getHours()).padStart(2, '0')}:${String(when.getMinutes()).padStart(2, '0')}` : '';
+    const cat = (()=>{ try{ return AnswerNote.catOf(item.q); }catch(_){ return null; } })();
+    box.innerHTML = head + `<div class="rv-2col rv-cmpgrid">
+        <div><h3 class="rv-sub">이전 답변 <small>이번 면접</small></h3><div class="rv-ans"><p>${escapeHtml(prev)}</p></div></div>
+        <div><h3 class="rv-sub">다시 한 답변 <small>${from === 'db' ? '지난 연습 기록 · ' : ''}${escapeHtml(whenTxt)}</small></h3><div class="rv-ans"><p>${escapeHtml(r.answer)}</p></div></div>
+      </div>
+      <div class="rv-cmp-diff"><h3 class="rv-sub">달라진 점</h3>${diffTxt}${nextTxt}${scoreLine}</div>
+      <div class="rv-acts"><button type="button" class="btn btn-solid" id="rv-cmp-note"${cat && PracticeKit.uid() && !state.demoResult ? '' : ' disabled'}>답변 노트에 정리</button><button type="button" class="btn btn-outline" onclick="openAllHistory()">면접 기록으로</button></div>
+      <p class="rv-dim">${state.demoResult ? '시연용 샘플은 답변 노트에 저장하지 않아요.' : !cat ? '마무리 말은 답변 노트에 담지 않아요.' : "'답변 노트에 정리'를 누르면 다시 한 답변이 답변 노트에 담겨요. 원래 면접 답변은 그대로예요."}</p>`;
+    const nb = document.getElementById('rv-cmp-note'); if(nb) nb.onclick = async ()=>{ nb.disabled = true; try{ if(!AnswerNote.data) await AnswerNote.load(); if(await AnswerNote.save(cat, { question: item.q, answer: r.answer, source: 'retry', score: r.score == null ? null : r.score })) showToast(`답변 노트 '${(AnswerNote.CATS.find(c=>c[0] === cat) || [])[1]}' 칸에 정리했어요`, 'ok'); }catch(e){ showToast('저장하지 못했어요. 다시 눌러 주세요.', 'warn'); } finally{ nb.disabled = false; } };
   },
   /** 공통: 돌아볼 질문 고르기 */
   qSel(mode, i){ const n = state.currentQ || 0;
@@ -23175,7 +23285,7 @@ const ResultView = {
       <div class="rv-tbl-w"><table class="rv-tbl"><thead><tr><th scope="col">기준</th><th scope="col">점수 / 비중</th><th scope="col">근거·확인할 내용</th></tr></thead><tbody>${rows}</tbody></table></div>
       ${fails ? `<div class="rv-acts"><button type="button" class="btn btn-outline" onclick="ResultView.retry()">분석 다시 시도</button></div>` : ''}
       <div class="rv-box"><b>사실 확인이 필요한 부분</b>${check}</div>
-      <div class="rv-acts">${ans.length >= 5 && PracticeKit.uid() ? `<button type="button" class="btn btn-solid" onclick="ResultView.show('rw', ${i})">개선 예시 보기</button>` : ''}<button type="button" class="btn btn-outline" onclick="PracticeKit.openRetry('${k}')">같은 질문 다시 연습</button><button type="button" class="btn btn-outline" onclick="ResultView.show('q', ${i})">질문별 답변 분석</button></div>`; },
+      <div class="rv-acts">${ans.length >= 5 && PracticeKit.uid() ? `<button type="button" class="btn btn-solid" onclick="ResultView.show('rw', ${i})">개선 예시 보기</button>` : ''}<button type="button" class="btn btn-outline" onclick="ResultView.show('cmp', ${i})">재연습 비교</button><button type="button" class="btn btn-outline" onclick="ResultView.show('q', ${i})">질문별 답변 분석</button></div>`; },
   /* ── 66 답변 다듬기·원본 비교 ── */
   drafts: {},
   async renderRw(i){ const box = document.getElementById('rv-rw'); if(!box) return; const n = state.currentQ || 0;
@@ -23268,7 +23378,7 @@ const ResultView = {
           <div class="rv-f"><label for="rv-dv-item">확인할 항목</label><select id="rv-dv-item" onchange="ResultView.dvItem = this.value; ResultView.renderDv(${i})">${L.map(x=>`<option value="${x.k}"${x.k === cur.k ? ' selected' : ''}>${escapeHtml(x.n)}${x.pre ? ' · 분석 전' : x.na ? ' · 측정 안 됨' : ''}</option>`).join('')}</select></div>
           <div class="rv-dv-box"><h3>${escapeHtml(cur.n)}</h3>${val}</div>
           <p class="rv-dim">시선·자세·음성은 관찰 지표예요. 성격·자신감·합격 가능성을 점수로 만들지 않아요.</p>
-          <div class="rv-acts"><button type="button" class="btn btn-solid" onclick="PracticeKit.openRetry('${this.key(i)}')">같은 질문 다시 연습</button></div>
+          <div class="rv-acts"><button type="button" class="btn btn-solid" onclick="ResultView.show('rt', ${i})">같은 질문 다시 연습</button></div>
         </div>
       </div>
       <h3 class="rv-sub rv-dv-allt">이 답변에서 잰 것 <small>질문 ${i + 1}</small></h3>
