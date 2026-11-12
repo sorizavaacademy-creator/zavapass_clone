@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z4';
+var APP_VERSION = '2026-11-12z5';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -7863,7 +7863,13 @@ html.sv-open{overflow:hidden;}
       </ol>
     </section>
     <div class="hz-foot" id="hz-foot1">
-      <button type="button" class="hz-more-btn" id="hz-more-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="hz-pop" onclick="HomeSimple.toggle()"><i aria-hidden="true">▶</i>다른 방식으로 연습할래요</button>
+      <button type="button" class="hz-more-btn" id="hz-more-btn" aria-expanded="false" aria-controls="hz-fold" onclick="HomeSimple.fold()"><i aria-hidden="true">▶</i>다른 방식으로 연습할래요</button>
+      <!-- 2026-11-12z5 v3 시안: 큰 창 대신 바로 아래로 펼쳐지는 버튼 3개 (예전 창의 다른 도구는 위 메뉴 '연습하기' → '연습 도구 더 보기'에 그대로) -->
+      <div class="hz-fold" id="hz-fold" hidden>
+        <button type="button" class="hz-sec" onclick="navGo('debate')">토론·발표</button>
+        <button type="button" class="hz-sec" onclick="Study.open()">친구와 연습</button>
+        <button type="button" class="hz-sec" onclick="DailyQ.open()">오늘의 한 질문</button>
+      </div>
       <button type="button" class="hz-sec" onclick="navGo('materials')">내 자료 확인</button>
       <button type="button" class="hz-sec" onclick="openAllHistory()">연습 기록 보기</button>
     </div>
@@ -12638,7 +12644,7 @@ function tourSteps(){
     { sel: ret ? '#hz-ret-acts' : '#hz-hero .hz-acts', alt:'#hz-ret-acts', title:'1. 면접 시작', text: ret
       ? '지금 준비 단계에 맞는 면접을 바로 시작해요. 위의 \'현재 준비 단계\'를 바꾸면 버튼이 바뀌고, 오른쪽에는 지난 연습에서 고칠 한 가지가 나와요.'
       : '\'전공·경험 면접 시작하기\'로 시작하거나, 지원할 기관이 정해졌다면 아래 버튼을 눌러요. 준비 창에서 경험·진행 방식(연습형/실전형)·면접관을 고른 뒤 면접장에 들어가요.' },
-    adm ? { sel:'#hz-more-btn', title:'2. 다른 연습', text:'\'다른 방식으로 연습할래요\'를 누르면 토론·토의·발표 면접, 오늘의 질문, 추천 세트, 면접 D-day 같은 연습 도구가 한 창에 모여 있어요.' } :
+    adm ? { sel:'#hz-more-btn', title:'2. 다른 연습', text:'\'다른 방식으로 연습할래요\'를 누르면 토론·발표, 친구와 연습, 오늘의 한 질문 버튼이 바로 아래에 펼쳐져요. 다른 연습 도구는 위 메뉴 \'연습하기\'에 모여 있어요.' } :
     { sel:'#screen-dashboard .d3-nav a[data-go="practice"]', alt:'#hz-more-btn', title:'2. 연습하기', text:'위 메뉴 \'연습하기\'에는 토론·토의·발표 면접, 오늘의 질문, 추천 세트, 면접 D-day 같은 연습 도구가 모여 있어요.' },
     adm ? null : { sel:'#screen-dashboard .d3-nav a[data-go="growth"]', title:'3. 나의 기록', text:`지난 면접의 점수 흐름과 보완할 질문을 봐요. 면접이 끝나면 결과 화면에서 녹화 영상으로 내 답변을 다시 볼 수 있어요. ${until}` },
     { sel:'#d3-user-btn', title: adm ? '4. 내 메뉴' : '4. 내 자료 · 내 메뉴', text:(adm ? '경험·서류·질문 모음은 홈의 \'내 자료 확인\'에, 마이페이지·공지사항·로그아웃은 \'내 메뉴\'에 있어요.' : '경험·서류·질문 모음은 위 메뉴 \'내 자료\'에, 마이페이지·공지사항·의견 보내기·로그아웃은 \'내 메뉴\'에 있어요.') + ' 이 안내는 오른쪽 아래 \'사용 안내\'로 언제든 다시 볼 수 있어요.', extra: kakao },
@@ -31416,6 +31422,12 @@ body.hdr-min #screen-dashboard .d3-user-btn::before{content:"내 정보";color:v
 #d3-home .hz-more-btn i{width:auto;height:auto;background:none;font-size:11px;margin-right:8px}
 #d3-home .hz-more-btn i::before{content:none}
 #d3-home .hz-hero[hidden],#d3-home .hz-foot[hidden],#d3-home .hz-ret[hidden],#d3-home .hz-fix[hidden]{display:none !important}
+/* 2026-11-12z5 v3 시안: '다른 방식으로 연습할래요' 아래로 펼쳐지는 버튼 3개 */
+#d3-home .hz-fold{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;gap:10px;padding:4px 0 6px} #d3-home .hz-fold[hidden]{display:none !important} #d3-home .hz-fold .hz-sec{flex:none}
+#d3-home .hz-foot .hz-more-btn{justify-self:start}   /* 글자 길이만큼만 눌리게 */
+#d3-home .hz-more-btn i{display:inline-block;width:12px;text-align:center;line-height:1;transition:transform .15s} #d3-home .hz-more-btn[aria-expanded="true"] i{transform:rotate(90deg)}   /* ▶ 하나를 돌려서 ▼ — 크기가 같아 글자가 움직이지 않음 */
+@media(max-width:640px){ #d3-home .hz-fold{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px} #d3-home .hz-fold .hz-sec{padding:0 6px;white-space:nowrap} }   /* 휴대폰: 3개를 한 줄에 같은 폭 */
+@media(max-width:380px){ #d3-home .hz-fold{gap:8px} #d3-home .hz-fold .hz-sec{font-size:14px;padding:0 4px} }
 #d3-home .hz-ret{padding:clamp(28px,5vh,56px) 0 8px}
 #d3-home .hz-ret-h{margin:0;font-size:clamp(24px,2vw,30px);font-weight:800;letter-spacing:-.02em}
 #d3-home .hz-ret-sub{margin:10px 0 0;font-size:15.5px;color:#6a5b51}
@@ -31525,13 +31537,16 @@ body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .rr-av-dot{po
     PracticeKit.openRetry({ q: f.q, ref, answer: f.answer, score: f.score, feedback: f.feedback, prevLabel: '지난 답변 보기', title: '지난 연습 다시 답하기', src: 'home' }); },
   more(kind){ document.body.classList.toggle('hz-side', kind === 'side'); },
   sync(){ const e = document.getElementById('hz-eye'); if(!e) return; const n = (typeof state !== 'undefined' && state.currentUser && state.currentUser.name) || ''; e.textContent = n ? `${n}님, 반가워요` : ''; },
+  fold(force){ const f = document.getElementById('hz-fold'), b = document.getElementById('hz-more-btn'); if(!f || !b) return;
+    const on = typeof force === 'boolean' ? force : f.hidden; f.hidden = !on; b.setAttribute('aria-expanded', on ? 'true' : 'false');
+    },
   toggle(force, quiet, title){
     this.open = typeof force === 'boolean' ? force : !this.open;
     if(this.open){ const h = document.getElementById('hz-pop-h'), pp = document.getElementById('hz-pop-p');
       if(h) h.textContent = title || '다른 방식으로 연습';
       if(pp) pp.textContent = title ? '면접 종류를 고르거나, 짧은 연습 · 토론·발표 면접 · 연습 도구를 골라요.' : '짧게 연습하거나 토론·발표 면접, 연습 도구를 골라요.'; }
     const m = document.getElementById('hz-pop'), b = document.getElementById('hz-more-btn'); if(!m || !b) return;
-    m.hidden = !this.open; b.setAttribute('aria-expanded', this.open ? 'true' : 'false');
+    m.hidden = !this.open;
     document.documentElement.classList.toggle('hz-open', this.open);
     if(this.open){ const x = m.querySelector('.hz-pop-x'); setTimeout(()=>{ try{ x && x.focus({ preventScroll: true }); }catch(_){} }, 30); }
     else if(!quiet){ try{ b.focus({ preventScroll: true }); }catch(_){} }
