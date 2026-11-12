@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-11f';
+var APP_VERSION = '2026-11-12a';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -13957,7 +13957,7 @@ const StartFlow = {
   vDocs(){ return '<div class="fl-f wide fl-docs" id="fl-docs">' + DocBox.html() + '</div>'; },
   vPrepQ(){ return '<div class="pr-body" id="pr-body"><p class="cc-load">질문을 불러오는 중…</p></div>'; },
   vMode(){ const s = this.s; return `<h2 class="fl-h">진행 방식을 골라 주세요</h2><p class="fl-lead">어느 목적이든 연습형과 실전형 모두 할 수 있어요.</p>
-    <div class="fl-picks"><button type="button" class="fl-pick" data-mode="practice" aria-pressed="${s.mode==='practice'}"><span class="t">연습형</span><span class="d">편하게 익히기</span><ul class="fl-ul"><li>시간 제한 없음</li><li>질문 자막 · 내 답변을 글자로 보며</li><li>중간에 일시정지하고 이어 하기</li><li>끝나면 녹화 영상으로 복기</li></ul></button>
+    <div class="fl-picks"><button type="button" class="fl-pick" data-mode="practice" aria-pressed="${s.mode==='practice'}"><span class="t">연습형</span><span class="d">편하게 익히기</span><ul class="fl-ul"><li>시간 제한 없음</li><li>질문 자막 · 내 답변을 켜서 볼 수 있어요</li><li>중간에 일시정지하고 이어 하기</li><li>끝나면 녹화 영상으로 복기</li></ul></button>
     <button type="button" class="fl-pick" data-mode="real" aria-pressed="${s.mode==='real'}"><span class="t">실전형</span><span class="d">실제 면접처럼</span><ul class="fl-ul"><li>자기소개 60초·답변 90초 제한</li><li>힌트·중간 피드백 없음</li><li>마친 뒤 종합 리포트</li></ul></button></div>`; },
   names(){ return this.s.people.map(id=>(this.PEOPLE.find(x=>x.id===id) || {}).n).filter(Boolean); },
   pressureName(){ if(this.qbOn()) return this.mood() === 'hard' ? '압박' : '일반';
@@ -14002,7 +14002,7 @@ const StartFlow = {
     <dl class="fl-sum"><dt>면접 목적</dt><dd>${s.kind === 'major' ? '전공·경험 면접' : '기업·직무 맞춤 면접'}</dd>${co ? `<dt>목표 기업</dt><dd>${co}</dd>` : ''}<dt>내 정보</dt><dd>${info}</dd>${qbLine}
     <dt>활용할 경험</dt><dd>${u.length ? u.map(e=>escapeHtml(e.text)).join(', ') : '선택 안 함 (일반 질문)'}</dd>
     <dt>질문 연습</dt><dd>${(()=>{ const m = PrepRoom.summary(); return m ? `${m.total}개 중 ${m.done}개 연습${m.done ? '' : ' (건너뜀)'}` : '건너뜀'; })()}</dd>
-    <dt>진행 방식</dt><dd>${s.mode === 'real' ? '실전형 · 힌트·중간 피드백 없음, 마친 뒤 종합 리포트' : '연습형 · 시간 제한 없음, 질문 자막·내 답변을 보며, 일시정지하고 이어 하기'}</dd>
+    <dt>진행 방식</dt><dd>${s.mode === 'real' ? '실전형 · 힌트·중간 피드백 없음, 마친 뒤 종합 리포트' : '연습형 · 시간 제한 없음, 질문 자막·내 답변은 켜서 보기, 일시정지하고 이어 하기'}</dd>
     <dt>시간</dt><dd>${s.mode === 'real' ? '자기소개 60초 · 답변 90초' : '시간 제한 없음'}</dd>
     <dt>면접관</dt><dd>${this.names().join(' · ')} (${s.count}명) · ${this.pressureName()} 면접</dd><dt>난이도</dt><dd>${s.diff} · ${escapeHtml((FLOW_DIFFS[s.diff] || FLOW_DIFFS['중']).d)}</dd></dl>`; },
 };
@@ -20235,7 +20235,7 @@ const SetupFlow = {
     if(alt){ alt.hidden = !!state.trialMode; alt.textContent = skip ? '리허설부터 할게요' : '리허설 없이 바로 라이브'; }
     if(typeof Imv !== 'undefined' && Imv.want()){   // 2026-11-11 실전 모드: 리허설 없이 면접장으로
       try{ imvPreload(); }catch(_){}
-      if(ft) ft.innerHTML = Imv.practice() ? '<b>연습형</b> · 시간 제한 없이, 질문 자막과 내 답변을 보며 연습해요 · 시작하면 전체 화면으로 바뀌어요' : '<b>실전형</b> · 시작하면 전체 화면으로 바뀌고 면접관이 질문을 시작해요'; if(lbl) lbl.textContent = '면접 시작'; if(alt) alt.hidden = true; }
+      if(ft) ft.innerHTML = Imv.practice() ? '<b>연습형</b> · 시간 제한 없이 연습해요 · 질문 자막·내 답변은 화면 옵션에서 켤 수 있어요' : '<b>실전형</b> · 시작하면 전체 화면으로 바뀌고 면접관이 질문을 시작해요'; if(lbl) lbl.textContent = '면접 시작'; if(alt) alt.hidden = true; }
   },
   go(){ try{ MobileAudio.unlock(); }catch(_){} if(typeof Imv !== 'undefined' && Imv.want()) return Imv.enter(); if(this.skipRh()) this.live(); else startRehearsal(); },
   alt(){ try{ MobileAudio.unlock(); }catch(_){} if(this.skipRh()) startRehearsal(); else this.live(); },
@@ -20321,7 +20321,7 @@ async function runDialogInterview(){
   let curSlotName = '';  // 실전 세트: 지금 질문의 칸 이름 (꼬리질문도 같은 칸으로 묶음)
   const opt = {
     fieldId: state.selectedField.id, count: state.questionCount, maxFollowups: 1, followupTotal: state.dialogFollowups, diff: state.difficulty, pressure: state.dialogPressure,
-    silenceMs: 1800, maxAnswerMs: 5 * 60 * 1000, recordAnswers: true, realMode: state.timedMode === 'real',
+    silenceMs: 1800, maxAnswerMs: 5 * 60 * 1000, recordAnswers: true, realMode: state.timedMode === 'real', manualStart: !!(typeof Imv !== 'undefined' && Imv.active),
     manualEnd: true,   // 2026-10-12: 말이 멈춰도 자동으로 넘기지 않고, 면접자가 "답변 완료"를 눌러야 다음 질문으로 (한 답변 안전장치 5분)
   };
   // 국회 실전 세트: 순서 고정 7문항 · 전체 15분 · 실전 시간 제한
@@ -24361,6 +24361,15 @@ const StenoLoop = {
       }, { silenceMs:this.opt.silenceMs, maxMs:(this._curLimit || this.opt.maxAnswerMs), noSpeechMs:(this.opt.realMode ? 10000 : undefined), manualEnd: !!this.opt.manualEnd, noSpeechHard: !!this.opt.realMode, record: !!this.opt.recordAnswers, lang: this._curLang || 'ko-KR' });
       this._startListen = startOnce;
       if(!this.micEnabled){ waitTyped('mic-off', ''); return; }   // 마이크를 꺼 둔 상태면 바로 직접 입력
+      if(this.opt.manualStart){   // 2026-11-12 면접장 화면: 질문이 끝나면 기다렸다가 '답변 시작하기'를 눌러야 듣기 시작 (시안 P0)
+        const gate = new Promise(r=>{ this._startGate = r; });   // 먼저 대기 상태를 만든 뒤 알림 (화면이 바로 버튼을 켤 수 있게)
+        emit('await-start');
+        await Promise.race([gate, abortPromise]);
+        this._startGate = null;
+        await waitIfPaused();
+        if(this.aborted) return res({text:'', reason:'aborted'});
+        if(!this.micEnabled){ waitTyped('mic-off', ''); return; }
+      }
       emit('listening');
       startOnce();
     });
@@ -24541,6 +24550,9 @@ const StenoLoop = {
     if(state.dialogPaused && state.pauseStartedAt) paused += Date.now() - state.pauseStartedAt;
     return this.setEndsAt + paused - Date.now();
   },
+  /** 2026-11-12 '답변 시작하기' (opt.manualStart일 때 'await-start' 뒤 화면에서 호출) */
+  beginAnswer(){ const g = this._startGate; if(!this.running || !g || this.paused) return false; this._startGate = null; g(); return true; },
+  awaitingStart(){ return !!(this.running && this._startGate); },
   /** 직접 입력 답변 제출: 'listen-typed' 이벤트 뒤 화면에서 호출. 빈 문자열이면 해당 질문 건너뛰기 */
   submitAnswer(text){
     if(!this.running || !this.typedWait) return false;
@@ -29643,7 +29655,7 @@ const Imv = {
     el.innerHTML = `
       <div class="imv-card">
         <div class="imv-hd">
-          <div class="imv-hl"><span class="imv-mode" id="imv-mode"></span><span class="imv-kind" id="imv-kind"></span><span class="imv-status" id="imv-status"><i></i><b id="imv-status-t"></b></span></div>
+          <div class="imv-hl"><span class="imv-kind" id="imv-kind"></span></div><div class="imv-hc"><span class="imv-status" id="imv-status"><i></i><b id="imv-status-t"></b></span></div>
           <div class="imv-hr"><span class="imv-rec" id="imv-rec" hidden><i></i>녹화 중</span><span class="imv-time" id="imv-time"></span><span class="imv-prog" id="imv-prog" aria-live="polite"></span></div>
         </div>
         <div class="imv-stage" id="imv-stage">
@@ -29669,14 +29681,15 @@ const Imv = {
         <div class="imv-foot">
           <button type="button" class="imv-end" onclick="Imv.endAsk()">면접 마치기</button>
           <div class="imv-fr">
+            <button type="button" class="imv-done" id="imv-done" onclick="Imv.done()" disabled>질문을 듣는 중</button>
+            <button type="button" class="imv-pause" id="imv-pause" hidden onclick="dialogPause()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>일시정지</button>
             <div class="imv-opt-wrap"><button type="button" class="imv-opt" id="imv-opt" aria-expanded="false" onclick="Imv.optToggle(event)">화면 옵션</button>
               <div class="imv-opt-menu" id="imv-opt-menu" hidden role="menu">
                 <button type="button" role="menuitemcheckbox" id="imv-tg-cap" aria-pressed="false" onclick="Imv.toggleCap()"><span><b>질문 자막</b><small>면접관 질문을 글자로 보여 줘요</small></span><i class="sw"></i></button>
                 <button type="button" role="menuitemcheckbox" id="imv-tg-mine" aria-pressed="false" onclick="Imv.toggleMine()"><span><b>내 답변 보기</b><small>말한 내용을 글자로 보여 줘요</small></span><i class="sw"></i></button>
                 <button type="button" role="menuitemcheckbox" id="imv-tg-pip" aria-pressed="false" onclick="Imv.togglePip()"><span><b>내 화면 보기</b><small>숨겨도 녹화는 계속돼요</small></span><i class="sw"></i></button>
+                <p class="imv-opt-note">면접관 사진은 AI로 만든 예시 이미지예요. 질문은 목소리로만 하고, 입 모양·영상은 아직 연결되지 않았어요.</p>
               </div></div>
-            <button type="button" class="imv-pause" id="imv-pause" hidden onclick="dialogPause()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>일시정지</button>
-            <button type="button" class="imv-done" id="imv-done" onclick="Imv.done()" disabled>질문을 듣는 중</button>
           </div>
         </div>
       </div>
@@ -29695,9 +29708,10 @@ const Imv = {
   },
   syncBtn(){
     if(!this.el) return; const stop = document.getElementById('btn-dialog-stop-listen'), done = this.el.querySelector('#imv-done');
-    const dis = !!(stop && stop.disabled) && !StenoLoop.typedWait;
-    done.disabled = dis;
-    done.textContent = StenoLoop.typedWait ? '답변 제출' : !dis ? '답변 완료' : this.phaseCls === 'thinking' ? '잠시만 기다려 주세요' : '질문을 듣는 중';
+    const ready = StenoLoop.awaitingStart && StenoLoop.awaitingStart() && !StenoLoop.typedWait;
+    const dis = !ready && !!(stop && stop.disabled) && !StenoLoop.typedWait;
+    done.disabled = dis; done.classList.toggle('go', !!ready);
+    done.textContent = ready ? '답변 시작하기' : StenoLoop.typedWait ? '답변 제출' : !dis ? '답변 완료' : this.phaseCls === 'thinking' ? '잠시만 기다려 주세요' : '질문을 듣는 중';
   },
   optToggle(e, force){ if(e) e.stopPropagation(); const m = this.el.querySelector('#imv-opt-menu'), b = this.el.querySelector('#imv-opt'); const open = force == null ? m.hidden : force; m.hidden = !open; b.setAttribute('aria-expanded', String(open)); },
   /** 면접관 자리: 3명이면 면접장 사진(왼쪽=여성, 가운데·오른쪽=남성), 그 밖에는 그림 */
@@ -29720,9 +29734,9 @@ const Imv = {
       pl.innerHTML = this.people.map((p, i)=>`<div class="imv-plate" data-k="${i}"><b>${escapeHtml(p.role || p.name)}</b></div>`).join('');
       this.col = this.people.length === 1 ? [1] : [0, 2];
     }
-    let kind = '모의면접'; try{ const fc = state.flowCtx || {}; kind = fc.purpose === 'major' ? '전공·경험 면접' : fc.purpose === 'job' ? '기업·직무 맞춤 면접' : (state.selectedField ? state.selectedField.name + ' 면접' : '모의면접');
+    let kind = '모의면접'; try{ const fc = state.flowCtx || {}; kind = fc.purpose === 'major' ? '전공·경험' : fc.purpose === 'job' ? '기관·직무' : (state.selectedField ? state.selectedField.name + ' 면접' : '모의면접');
       const co = fc.job && fc.job.company; if(co && fc.purpose === 'job') kind += ` · ${co}`; }catch(_){}
-    el.querySelector('#imv-kind').textContent = kind;
+    this.kindText = kind; el.querySelector('#imv-kind').textContent = kind + (this.isPractice ? ' · 연습형' : ' · 실전형');
     this.cur = -1; this.speaker(0);
   },
   /** 사진 속 자리: 0 왼쪽(여성) · 1 가운데 · 2 오른쪽. 진행 면접관(첫 번째)은 가운데, 여성 면접관은 왼쪽 자리로 (면접 준비 창 미리보기도 같이 씀) */
@@ -29751,12 +29765,11 @@ const Imv = {
     this.armed = false; this.active = true; this.loadMedia();
     const el = this.build(); this.seats();
     const pr = this.isPractice = this.practice();
-    this.capOn = pr; this.mineOn = pr; this.mineText = ''; this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';
+    this.capOn = false; this.mineOn = false; this.mineText = ''; this.isFu = false; this.fuPrep = false; this.noteUntil = 0;   // 2026-11-12 시안 규칙: 자막·내 답변·내 화면은 기본으로 숨기고 화면 옵션에서 켬 (연습형도 같음) this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';
     ['imv-tg-cap', 'imv-tg-pip', 'imv-tg-mine'].forEach(id=>el.querySelector('#' + id).setAttribute('aria-pressed', 'false'));
-    if(pr){ el.querySelector('#imv-tg-cap').setAttribute('aria-pressed', 'true'); el.querySelector('#imv-tg-mine').setAttribute('aria-pressed', 'true'); }
     ['#imv-cap', '#imv-mine', '#imv-pip', '#imv-typed', '#imv-ac', '#imv-lang', '#imv-opt-menu'].forEach(s=>{ el.querySelector(s).hidden = true; });
     el.querySelector('#imv-pause').hidden = !pr; el.classList.toggle('pr', pr);
-    const md = el.querySelector('#imv-mode'); md.textContent = pr ? '연습형' : '실전형'; md.dataset.m = pr ? 'p' : 'r';
+    el.querySelector('#imv-kind').textContent = (this.kindText || '모의면접') + (pr ? ' · 연습형' : ' · 실전형');
     el.setAttribute('aria-label', pr ? '면접장 (연습형)' : '면접장 (실전형)');
     el.querySelector('#imv-prog').textContent = ''; el.querySelector('#imv-time').textContent = ''; el.querySelector('#imv-rec').hidden = true;
     el.classList.remove('live', 'out'); el.classList.add('show', 'enter', IMV_THEME === 'dark' ? 'th-dark' : 'th-bright'); document.body.classList.add('imv-on');
@@ -29780,10 +29793,12 @@ const Imv = {
     if(!this.active) return;
     const el = this.el;
     if(type === 'questions'){ this.total = d.list.length; this.prog(); }
+    else if(type === 'await-start'){ this.fuPrep = false; this.phase('ready'); }
+    else if(type === 'thinking'){ this.fuPrep = true; this.status(); }
     else if(type === 'interim'){ setTimeout(()=>this.mine((document.getElementById('steno-input') || {}).value || (d && d.text) || ''), 0); }
-    else if(type === 'question'){ this.idx = d.index; this.total = d.total; this.prog(); this.mine('');
+    else if(type === 'question'){ this.idx = d.index; this.total = d.total; this.prog(); this.mine(''); if(this.fuPrep) this.noteUntil = Date.now() + 1800; this.isFu = false; this.fuPrep = false;
       this.qText = d.q.q; this.qid = String((d.q.qb && d.q.qb.qid) || d.q.id || d.q.dbId || ''); ImvRec.mark(d.q.q, 'question'); el.querySelector('#imv-typed').hidden = true; }
-    else if(type === 'followup'){ this.mine(''); this.qText = d.followup; this.qid = ''; ImvRec.mark(d.followup, 'followup'); el.querySelector('#imv-typed').hidden = true; }
+    else if(type === 'followup'){ this.mine(''); this.isFu = true; this.fuPrep = false; this.qText = d.followup; this.qid = ''; ImvRec.mark(d.followup, 'followup'); el.querySelector('#imv-typed').hidden = true; }
     else if(type === 'speaking'){ this.caption(d.text); this.stopTimer(); }
     else if(type === 'listening'){ this.startTimer(); el.querySelector('#imv-typed').hidden = true; }
     else if(type === 'listen-typed'){ const t = el.querySelector('#imv-typed'), ta = el.querySelector('#imv-typed-ta'); ta.value = (document.getElementById('steno-input') || {}).value || ''; t.hidden = false; setTimeout(()=>ta.focus(), 50); this.status(); this.syncBtn(); }
@@ -29800,7 +29815,7 @@ const Imv = {
     if(ph && this.mode === 'photo'){ const L = IMV_PHOTOS[this.layout] || IMV_PHOTOS['3'], x = (L.x[c] != null ? L.x[c] : 50); ph.dataset.c = c; ph.style.setProperty('--sx', x + '%'); }
     const tag = el.querySelector('#imv-tag'); tag.dataset.c = this.mode === 'photo' ? c : (this.people.length === 1 ? 1 : c);
     const p = this.people[k];
-    el.querySelector('#imv-tag-t').textContent = this.mode === 'photo' && this.people.length > 1 ? `${this.posName(k)} 면접관 · ${p ? (p.role || p.name) : ''}` : (p ? (p.role || p.name) : '면접관');
+    el.querySelector('#imv-tag-t').textContent = this.mode === 'photo' && this.people.length > 1 ? `${this.posName(k)} 면접관` : '면접관';   // 2026-11-12 시안: 위치만 짧게
     this.status();
   },
   status(){
@@ -29808,7 +29823,12 @@ const Imv = {
     const who = this.who(this.cur), cls = this.phaseCls;
     st.dataset.p = cls || 'idle';
     if(state.dialogPaused){ t.textContent = '일시정지 중이에요'; return; }
-    t.textContent = cls === 'speaking' ? `${who}이 질문하고 있어요` : cls === 'listening' ? (StenoLoop.typedWait ? '답변을 글로 입력해 주세요' : '답변을 듣고 있어요') : cls === 'thinking' ? `${who}이 답변을 듣고 생각하고 있어요` : this.idx ? '잠시 후 다음 질문이 이어져요' : '면접관이 곧 인사를 건넬 거예요';
+    if(this.noteUntil > Date.now()){ t.textContent = '꼬리질문 없이 다음 질문으로 넘어가요'; clearTimeout(this._noteT); this._noteT = setTimeout(()=>this.status(), this.noteUntil - Date.now() + 30); return; }
+    t.textContent = cls === 'speaking' ? (this.isFu ? `꼬리질문 · ${who}이 묻고 있어요` : `${who}이 질문하고 있어요`)
+      : cls === 'ready' ? (StenoLoop.typedWait ? '답변을 글로 입력해 주세요' : "준비되면 '답변 시작하기'를 눌러 주세요")
+      : cls === 'listening' ? (StenoLoop.typedWait ? '답변을 글로 입력해 주세요' : '답변을 듣고 있어요')
+      : cls === 'thinking' ? (this.fuPrep ? '꼬리질문을 준비하고 있어요' : '잠시만 기다려 주세요')
+      : this.fuPrep ? '꼬리질문을 준비하고 있어요' : this.idx ? '잠시 후 다음 질문이 이어져요' : '면접관이 곧 인사를 건넬 거예요';
   },
   phase(cls){
     if(!this.el) return; this.phaseCls = cls || '';
@@ -29837,7 +29857,8 @@ const Imv = {
     const tick = ()=>{ const s = Math.floor((Date.now() - this.ansT0) / 1000); t.textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
     tick(); this.timer = setInterval(tick, 500); },
   stopTimer(){ if(this.timer){ clearInterval(this.timer); this.timer = null; } },
-  done(){ if(StenoLoop.typedWait){ const ta = this.el.querySelector('#imv-typed-ta'), s = document.getElementById('steno-input'); if(s) s.value = ta.value; } try{ dialogStopListening(); }catch(_){} },
+  done(){ if(StenoLoop.awaitingStart && StenoLoop.awaitingStart()){ try{ MobileAudio.unlock(); }catch(_){} StenoLoop.beginAnswer(); return; }
+    if(StenoLoop.typedWait){ const ta = this.el.querySelector('#imv-typed-ta'), s = document.getElementById('steno-input'); if(s) s.value = ta.value; } try{ dialogStopListening(); }catch(_){} },
   lang(){ const b = document.getElementById('iv-lang-btn'); if(b) b.click(); },
   endAsk(){ try{ openConfirmEnd(); }catch(_){} },
 
@@ -30034,23 +30055,25 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 @keyframes imvRec{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes imvPop{0%{opacity:0;transform:scale(.85)}20%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(1.04)}}
 /* ── 2026-11-11 캡처 시안 구성 · 사이트 색 (흰 바탕 · #1c1c1e 글자 · #e8532a 버튼) ── */
-#imv{--ink:#1c1c1e;--ink2:#45454a;--ink3:#66666c;--line:#e6e4e0;--surf:#f6f5f3;--acc:#e8532a;--acc-ink:#c2401b;--acc-soft:#FDE7DC;--ok:#2E8B57;background:var(--surf) !important;color:var(--ink);padding:clamp(10px,1.6vw,24px);box-sizing:border-box}
+#imv{--bg:#faf9f7;--ink:#2b2521;--ink2:#6a5b51;--ink3:#6a5b51;--line:#ded5ce;--surf:#f3ede7;--acc:#bd411b;--acc-ink:#bd411b;--acc-soft:#f3ede7;--err:#a12e28;--ok:#2E7D57;background:var(--bg) !important;color:var(--ink);padding:clamp(10px,1.6vw,24px);box-sizing:border-box}
 #imv.show{display:flex}
 #imv [hidden]{display:none !important}
-#imv .imv-card{flex:1;min-height:0;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(28,28,30,.06)}
-#imv .imv-hd{flex:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(18px,2vw,32px);height:clamp(52px,6.4vh,68px);border-bottom:1px solid var(--line)}
+#imv .imv-card{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:none}
+#imv .imv-hd{flex:none;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;padding:0 clamp(18px,2vw,32px);height:clamp(52px,6.4vh,68px);border-bottom:1px solid var(--line)}
 #imv .imv-hl{display:flex;align-items:center;gap:18px;min-width:0}
-#imv .imv-kind{font-size:clamp(14px,1vw,16px);color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
-#imv .imv-status{display:inline-flex;align-items:center;gap:9px;font-size:clamp(15px,1.1vw,18px);font-weight:700;color:var(--ink);white-space:nowrap}
+#imv .imv-hc{display:flex;justify-content:center;min-width:0}
+#imv .imv-kind{font-size:clamp(14px,1vw,16px);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#imv .imv-status{display:inline-flex;align-items:center;gap:9px;font-size:clamp(15px,1.1vw,18px);font-weight:600;color:var(--ink);white-space:nowrap;max-width:46vw;overflow:hidden;text-overflow:ellipsis}
 #imv .imv-status i{width:9px;height:9px;border-radius:50%;background:#c9c6c0;flex:none;transition:background .3s}
-#imv .imv-status[data-p="speaking"] i{background:var(--acc);box-shadow:0 0 0 calc(3px + var(--lv,0) * 6px) rgba(232,83,42,.18)}
+#imv .imv-status[data-p="speaking"] i{background:var(--acc);box-shadow:0 0 0 calc(3px + var(--lv,0) * 6px) rgba(189,65,27,.18)}
+#imv .imv-status[data-p="ready"] i{background:var(--acc)}
 #imv .imv-status[data-p="listening"] i{background:var(--ok);animation:imvRec 1.6s ease-in-out infinite}
 #imv .imv-status[data-p="thinking"] i{background:#d8a23a;animation:imvRec 1s ease-in-out infinite}
-#imv .imv-hr{display:flex;align-items:center;gap:18px;flex:none}
+#imv .imv-hr{display:flex;align-items:center;justify-content:flex-end;gap:18px;min-width:0}
 #imv .imv-rec{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink3)}
 #imv .imv-rec i{width:8px;height:8px;border-radius:50%;background:#E5483B;animation:imvRec 1.6s ease-in-out infinite}
-#imv .imv-time{font-size:13px;color:#9a9aa0;font-variant-numeric:tabular-nums;min-width:40px;text-align:right}
-#imv .imv-prog{font-size:clamp(15px,1.1vw,18px);font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+#imv .imv-time{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums;min-width:40px;text-align:right}
+#imv .imv-prog{font-size:clamp(14px,1vw,16px);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.04em}
 #imv .imv-stage{position:relative;flex:1;min-height:0;overflow:hidden;background:#d9d6cf;container-type:size}
 /* 면접관 3명: 면접장 사진 */
 #imv .imv-photo{position:absolute;inset:0;--c:1}
@@ -30087,6 +30110,7 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv .imv-mode[data-m="r"]{background:#1c1c1e;color:#fff}
 #imv .imv-pause{display:inline-flex;align-items:center;gap:7px;height:clamp(48px,6vh,58px);padding:0 18px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:clamp(14px,1.05vw,17px);font-weight:600;cursor:pointer}
 #imv .imv-pause:hover{background:var(--surf)}
+#imv .imv-opt-note{margin:4px 6px 4px;padding:10px 10px 6px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.55;color:var(--ink2)}
 #imv .imv-pause[hidden]{display:none}
 @media (max-width:640px){ #imv .imv-mine{width:calc(100% - 20px)} #imv .imv-pause{padding:0 12px} }
 #imv .imv-cap:not([hidden]) ~ .imv-lang{bottom:calc(clamp(16px,3cqh,34px) + 64px)}
@@ -30103,8 +30127,8 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv .imv-pip span{position:absolute;left:8px;bottom:6px;font-size:11.5px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 /* 아래 줄 */
 #imv .imv-foot{flex:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(18px,2vw,32px);height:clamp(72px,9.6vh,100px);border-top:1px solid var(--line)}
-#imv .imv-end{border:0;background:none;color:var(--ink2);font:inherit;font-size:clamp(14px,1vw,16px);font-weight:600;padding:12px 14px;border-radius:10px;cursor:pointer}
-#imv .imv-end:hover{background:var(--surf);color:#C23A2E}
+#imv .imv-end{border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:clamp(14px,1vw,16px);font-weight:600;height:clamp(44px,5.4vh,52px);padding:0 18px;border-radius:10px;cursor:pointer}
+#imv .imv-end:hover{background:var(--surf);color:var(--err)}
 #imv .imv-fr{display:flex;align-items:center;gap:12px}
 #imv .imv-opt-wrap{position:relative}
 #imv .imv-opt{height:clamp(48px,6vh,58px);padding:0 22px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:clamp(14px,1.05vw,17px);font-weight:600;cursor:pointer}
@@ -30117,8 +30141,8 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv .imv-opt-menu .sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s}
 #imv .imv-opt-menu button[aria-pressed="true"] .sw{background:var(--acc)}#imv .imv-opt-menu button[aria-pressed="true"] .sw::after{left:19px}
 #imv .imv-done{height:clamp(48px,6vh,58px);min-width:clamp(150px,11vw,200px);padding:0 26px;border-radius:12px;border:0;background:var(--acc);color:#fff;font:inherit;font-size:clamp(15px,1.1vw,18px);font-weight:700;cursor:pointer;transition:background .2s,opacity .2s}
-#imv .imv-done:hover:not(:disabled){background:#d6461f}
-#imv .imv-done:disabled{background:#efede9;color:#9a9aa0;cursor:default}
+#imv .imv-done:hover:not(:disabled){background:#a63816}
+#imv .imv-done:disabled{background:var(--surf);color:var(--ink2);cursor:default}
 /* 입장 · 카운트다운 */
 #imv .imv-cd{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#1c1c1e;opacity:1;transition:opacity .7s ease,background .7s ease;pointer-events:none;z-index:5}
 #imv .imv-cd p{margin:0;font-size:clamp(18px,1.4vw,24px);font-weight:600;color:rgba(255,255,255,0);transition:color .5s}
