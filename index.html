@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12l';
+var APP_VERSION = '2026-11-12m';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6085,6 +6085,142 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-flow .btn-solid:hover, #modal-setup .btn-solid:hover{background:#a63816}
 #modal-flow .btn-outline, #modal-setup .btn-outline{background:#fff;border-color:#ded5ce;color:#2b2521}
 #modal-flow .btn-outline:hover, #modal-setup .btn-outline:hover{background:#f3ede7;border-color:#ded5ce}
+/* 2026-11-12 시안 08·09·10: 면접 직전 화면을 위 메뉴가 있는 전체 화면 3단계로 */
+#modal-setup.fl-embed{display:none !important}
+#modal-flow.fl-page{z-index:90;padding:0;background:#faf9f7;align-items:stretch;justify-content:stretch}
+#modal-flow.fl-page .fl-box{max-width:none !important;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:none;margin:0;display:flex;flex-direction:column;background:#faf9f7;overflow:hidden}
+#modal-flow .fl-hdr{flex:none;border-bottom:1px solid #ded5ce;background:#faf9f7}
+#modal-flow .fl-hdr-in{max-width:1160px;margin:0 auto;height:72px;padding:0 clamp(16px,4vw,32px);display:flex;align-items:center;gap:20px}
+#modal-flow .fl-brand{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:#2b2521;flex:none}
+#modal-flow .fl-brand b{font-size:17px;font-weight:800;letter-spacing:-.01em} #modal-flow .fl-brand span{font-size:13px;color:#6a5b51}
+#modal-flow .fl-nav{flex:1;display:flex;justify-content:center;gap:24px}
+#modal-flow .fl-nav a{font-size:14.5px;color:#2b2521;text-decoration:none;padding:6px 0;border-bottom:2px solid transparent}
+#modal-flow .fl-nav a[aria-current="page"]{color:#bd411b;border-bottom-color:#bd411b;font-weight:600}
+#modal-flow .fl-nav a:hover{color:#bd411b}
+#modal-flow .fl-my{position:relative;flex:none}
+#modal-flow .fl-my-btn{border:0;background:none;font:inherit;font-size:14px;color:#2b2521;cursor:pointer;padding:8px 4px}
+#modal-flow .fl-my-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:180px;background:#fff;border:1px solid #ded5ce;border-radius:12px;box-shadow:0 12px 28px rgba(43,37,33,.12);padding:6px;z-index:5;display:flex;flex-direction:column}
+#modal-flow .fl-my-menu[hidden]{display:none}
+#modal-flow .fl-my-menu button{border:0;background:none;text-align:left;font:inherit;font-size:14px;color:#2b2521;padding:10px 12px;border-radius:8px;cursor:pointer}
+#modal-flow .fl-my-menu button:hover{background:#f3ede7}
+#modal-flow .fl-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch}
+#modal-flow .fl-wrap{max-width:1000px;margin:0 auto;padding:28px clamp(16px,4vw,40px) 56px}
+#modal-flow.fl-page .fl-top{border:0;padding:0 0 22px;display:block}
+#modal-flow.fl-page .fl-steps{display:flex;gap:14px;font-size:13px;color:#6a5b51}
+#modal-flow.fl-page .fl-steps b{font-weight:500;color:#6a5b51} #modal-flow.fl-page .fl-steps b.on{color:#bd411b;font-weight:700} #modal-flow.fl-page .fl-steps b.done{color:#6a5b51}
+#modal-flow.fl-page .fl-steps b em{display:none}
+#modal-flow.fl-page .fl-body{padding:0;overflow:visible;max-height:none}
+#modal-flow .fl-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:26px}
+#modal-flow.fl-page .fl-h{font-size:26px;line-height:1.3;font-weight:800;letter-spacing:-.02em;margin:0 0 8px}
+#modal-flow.fl-page .fl-lead{font-size:15px;color:#6a5b51;margin:0}
+#modal-flow .fl-prev{flex:none;min-width:0;padding:10px 16px}
+#modal-flow .fl-2col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.84fr);gap:34px;align-items:start}
+#modal-flow .fl-col{display:flex;flex-direction:column;gap:18px;min-width:0}
+#modal-flow .fl-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#modal-flow.fl-page .fl-f label, #modal-flow.fl-page .fl-lbl{display:block;font-size:14px;font-weight:700;color:#2b2521;margin-bottom:8px}
+#modal-flow.fl-page .fl-f input, #modal-flow.fl-page .fl-f select, #modal-flow.fl-page .fl-f textarea{width:100%;box-sizing:border-box;min-height:48px;padding:12px 14px;font-size:15px;border:1px solid #ded5ce;border-radius:8px;background:#fff;color:#2b2521}
+#modal-flow.fl-page .fl-f textarea{min-height:104px;resize:vertical;line-height:1.55}
+#modal-flow.fl-page .fl-f input:focus, #modal-flow.fl-page .fl-f select:focus, #modal-flow.fl-page .fl-f textarea:focus{outline:2px solid #bd411b;outline-offset:1px;border-color:#bd411b}
+#modal-flow .fl-hint{font-size:13px;line-height:1.55;color:#6a5b51;margin:6px 0 0}
+#modal-flow .fl-panel{background:#f3ede7;border-radius:14px;padding:24px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+#modal-flow .fl-panel p{margin:0;font-size:14px;line-height:1.6;color:#6a5b51}
+#modal-flow .fl-panel-t{font-size:16px;color:#2b2521}
+#modal-flow .fl-panel .btn{min-width:0;padding:11px 18px}
+#modal-flow .fl-panel .fl-panel-note{font-size:12.5px}
+#modal-flow .fl-sec{margin:0 0 28px;padding:0 0 24px;border-bottom:1px solid #ded5ce;display:flex;flex-direction:column;gap:14px}
+#modal-flow .fl-sec-t{font-size:17px;margin:0;color:#2b2521}
+#modal-flow .fl-fold{margin-top:28px;border-top:1px solid #ded5ce;padding-top:18px}
+#modal-flow .fl-fold > summary{cursor:pointer;font-size:15.5px;font-weight:600;color:#2b2521;list-style:none;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#modal-flow .fl-fold > summary::-webkit-details-marker{display:none}
+#modal-flow .fl-fold > summary::before{content:'▶';font-size:11px;transition:transform .15s}
+#modal-flow .fl-fold[open] > summary::before{transform:rotate(90deg)}
+#modal-flow .fl-fold > summary em{font-style:normal;font-weight:400;font-size:13px;color:#6a5b51}
+#modal-flow .fl-fold-in{margin-top:18px;display:flex;flex-direction:column;gap:18px}
+#modal-flow .fl-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+#modal-flow .fl-cta .btn{min-width:0;padding:13px 20px;font-size:15px;border-radius:8px}
+#modal-flow .fl-cta + .fl-cta{margin-top:12px}
+#modal-flow .fl-cta-s{margin-top:4px} #modal-flow .fl-cta-s .btn{padding:10px 16px;font-size:14px}
+#modal-flow .fl-flash{outline:2px solid #bd411b;outline-offset:6px;border-radius:8px;transition:outline-color .6s}
+#modal-flow .fl-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#modal-flow .fl-mode{text-align:left;border:1px solid #ded5ce;background:#fff;border-radius:10px;padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:6px;font:inherit;color:#2b2521;min-height:86px}
+#modal-flow .fl-mode b{font-size:17px} #modal-flow .fl-mode span{font-size:13px;color:#6a5b51}
+#modal-flow .fl-mode[aria-pressed="true"]{background:#bd411b;border-color:#bd411b;color:#fff} #modal-flow .fl-mode[aria-pressed="true"] span{color:#fff}
+#modal-flow .fl-mode:focus-visible, #modal-flow .fl-tg:focus-visible{outline:2px solid #2b2521;outline-offset:2px}
+#modal-flow .fl-fixed{margin:0;padding:12px 14px;border:1px solid #ded5ce;border-radius:8px;background:#f3ede7;font-size:14.5px;color:#2b2521}
+#modal-flow .fl-tgs{display:flex;flex-direction:column;gap:8px}
+#modal-flow .fl-tg{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;border:1px solid #ded5ce;background:#fff;border-radius:10px;padding:12px 14px;cursor:pointer;font:inherit;color:#2b2521}
+#modal-flow .fl-tg span{display:flex;flex-direction:column;gap:2px} #modal-flow .fl-tg b{font-size:14.5px} #modal-flow .fl-tg small{font-size:12.5px;color:#6a5b51}
+#modal-flow .fl-tg .sw{flex:none;width:40px;height:24px;border-radius:999px;background:#ded5ce;position:relative;transition:background .15s}
+#modal-flow .fl-tg .sw::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .15s}
+#modal-flow .fl-tg[aria-pressed="true"] .sw{background:#bd411b} #modal-flow .fl-tg[aria-pressed="true"] .sw::after{transform:translateX(16px)}
+#modal-flow .fl-sumlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:16px;color:#2b2521}
+#modal-flow .fl-sum2{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:4px 0 0;font-size:13px;line-height:1.5;width:100%;border-top:1px solid #ded5ce;padding-top:12px}
+#modal-flow .fl-sum2 dt{color:#6a5b51;white-space:nowrap} #modal-flow .fl-sum2 dd{margin:0;color:#2b2521;word-break:keep-all;overflow-wrap:anywhere}
+#modal-flow .fl-camslot{min-height:220px;border-radius:12px;background:#f3ede7;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#modal-flow .fl-camslot .setup-cam-box{width:100%;margin:0;border-radius:12px;aspect-ratio:16/10;max-height:none}
+#modal-flow.fl-page .fl-x, #modal-flow.fl-page .fl-acts{display:none !important}
+#modal-flow .fl-cta .btn{flex:0 0 auto;width:auto}
+#modal-flow .fl-camslot .setup-cam-box{position:relative;background:#2b2521;overflow:hidden;display:grid;place-items:center}
+#modal-flow .fl-camslot .setup-cam-box video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1)}
+#modal-flow .fl-camslot .setup-cam-box.on video{display:block} #modal-flow .fl-camslot .setup-cam-box.on .cam-msg{display:none}
+#modal-flow .fl-camslot .cam-msg{font-size:13.5px;color:#f3ede7;text-align:center;padding:0 16px;line-height:1.5}
+#modal-flow .dev-pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:12px;font-weight:700;background:#f3ede7;color:#6a5b51}
+#modal-flow .dev-pill.ok{background:#e7f1ea;color:#2e6b45} #modal-flow .dev-pill.warn{background:#fbf0e3;color:#8a5a14} #modal-flow .dev-pill.err{background:#f8e5e3;color:#a12e28}
+#modal-flow .fl-micbox .level-meter{height:10px;border-radius:3px;background:#ded5ce;position:relative;overflow:hidden} #modal-flow .fl-micbox .level-meter-fill{background:#2b2521;border-radius:3px}
+#modal-flow .fl-micbox .level-meter:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 16px,#faf9f7 16px 20px);pointer-events:none}
+#modal-flow .fl-micbox .mic-check{display:flex;align-items:center;gap:8px;font-size:13px;flex-wrap:wrap;color:#2b2521} #modal-flow .fl-micbox .mic-check-text{flex:1 1 180px}
+#modal-flow .fl-micbox .mic-help-link{color:#6a5b51;text-decoration:underline;text-underline-offset:3px}
+#modal-flow .fl-ck-fixed{cursor:default}
+#modal-flow .fl-devst{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#6a5b51}
+#modal-flow .fl-devst span{display:inline-flex;align-items:center;gap:6px} #modal-flow .fl-devst i{font-style:normal}
+#modal-flow .fl-micbox{display:flex;flex-direction:column;gap:8px}
+#modal-flow .fl-micbox .fl-lbl{margin:0}
+#modal-flow .fl-micbox .level-meter{margin:0}
+#modal-flow .fl-devsel{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid #ded5ce;border-radius:10px;background:#fff}
+#modal-flow .fl-devsel[hidden]{display:none}
+#modal-flow .fl-devsel .dev-select-row{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#6a5b51}
+#modal-flow .fl-devsel select{min-height:42px;border:1px solid #ded5ce;border-radius:8px;padding:8px 10px;font-size:14px;background:#fff;color:#2b2521}
+#modal-flow .fl-cks{display:flex;flex-direction:column;gap:14px}
+#modal-flow .fl-ck{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:15px;color:#2b2521}
+#modal-flow .fl-ck input{width:20px;height:20px;margin:1px 0 0;accent-color:#bd411b;flex:none}
+#modal-flow .fl-ck span{display:flex;flex-direction:column;gap:3px} #modal-flow .fl-ck b{font-weight:500} #modal-flow .fl-ck small{font-size:12.5px;line-height:1.5;color:#6a5b51}
+#modal-flow .fl-ck input:disabled + span{opacity:.75}
+#modal-flow .fl-vt{display:flex;flex-direction:column;gap:6px;align-items:flex-start;padding:14px;border:1px solid #ded5ce;border-radius:10px;background:#fff}
+#modal-flow .fl-vt .btn, #modal-flow #fl-recinfo-b{min-width:0;padding:10px 16px;align-self:flex-start}
+#modal-flow .fl-recinfo{padding:14px;border-radius:10px;background:#f3ede7;font-size:13px;line-height:1.6;color:#2b2521}
+#modal-flow .fl-recinfo[hidden]{display:none} #modal-flow .fl-recinfo p{margin:0 0 6px} #modal-flow .fl-recinfo p:last-child{margin:0}
+#modal-flow .fl-enter{align-self:flex-start;min-width:0;padding:14px 22px;font-size:15.5px;border-radius:8px}
+#modal-flow .fl-enter.is-lock{opacity:.5}
+#modal-flow .fl-alert{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+#modal-flow .fl-alert[hidden]{display:none}
+#modal-flow .fl-al{border:1px solid #ded5ce;background:#f3ede7;border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+#modal-flow .fl-al b{font-size:16px;color:#2b2521} #modal-flow .fl-al p{margin:0;font-size:14px;line-height:1.6;color:#2b2521}
+#modal-flow .fl-al-bad{border-color:#a12e28;background:#fff} #modal-flow .fl-al-bad > b{color:#a12e28}
+#modal-flow .fl-al-guide{font-size:13.5px}
+#modal-flow.fl-page .fl-need{margin:14px 0 0;color:#a12e28;font-size:14px;min-height:0}
+#modal-flow.fl-page .fl-need:empty{display:none}
+#modal-flow.fl-page .pr-body{margin-top:0}
+@media(max-width:860px){
+  #modal-flow .fl-2col{gap:22px}
+  #modal-flow .fl-nav{gap:14px}
+}
+@media(max-width:720px){
+  #modal-flow .fl-2col{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  #modal-flow .fl-hdr-in{height:auto;min-height:56px;flex-wrap:wrap;gap:4px 12px;padding:10px 16px 0}
+  #modal-flow .fl-brand{order:1;flex:1} #modal-flow .fl-my{order:2}
+  #modal-flow .fl-nav{order:3;flex:1 1 100%;justify-content:flex-start;gap:18px;overflow-x:auto;padding-bottom:2px}
+  #modal-flow .fl-nav a{font-size:14px;padding:10px 0;white-space:nowrap}
+  #modal-flow .fl-wrap{padding:18px 16px 40px}
+  #modal-flow.fl-page .fl-h{font-size:22px}
+  #modal-flow .fl-head{flex-direction:column-reverse;gap:10px;margin-bottom:20px} #modal-flow .fl-prev{align-self:flex-end;padding:8px 14px;font-size:14px}
+  #modal-flow .fl-grid2{grid-template-columns:1fr 1fr;gap:12px}
+  #modal-flow .fl-panel{padding:18px}
+  #modal-flow .fl-cta .btn{flex:1 1 auto}
+  #modal-flow .fl-modes{gap:10px} #modal-flow .fl-mode{padding:14px}
+  #modal-flow .fl-enter{align-self:stretch}
+}
 #modal-setup .setup-reco{background:#f3ede7 !important;border-color:#ded5ce !important}
 #modal-setup .setup-reco .btn-solid, #modal-setup .setup-reco button{background:#bd411b;border-color:#bd411b;color:#fff}
 /* ── 2026-11-12 학생 화면·창 전체를 홈과 같은 규칙 파일 색으로 (관리자·학교 화면 제외) — 모양만, 내용·기능 그대로 ── */
@@ -9264,11 +9400,20 @@ html.sv-open{overflow:hidden;}
 
 <!-- ============ SIGN UP MODAL ============ -->
 <!-- 2026-11-02k 한림대 데모: 면접 준비 흐름 (면접 종류 → 내 정보 확인 → 연습형·실전형 → 면접관 선택 → 면접 시작) -->
-<div class="modal-overlay" id="modal-flow" role="dialog" aria-modal="true" aria-label="면접 준비">
+<div class="modal-overlay fl-page" id="modal-flow" role="dialog" aria-modal="true" aria-label="면접 준비">
   <div class="modal-box fl-box">
-    <div class="fl-top"><div class="fl-steps" id="fl-steps"></div><button type="button" class="fl-x" onclick="StartFlow.close()" aria-label="닫기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="fl-body" id="fl-body" aria-live="polite"></div>
-    <div class="fl-acts"><button type="button" class="btn btn-outline" id="fl-back" onclick="StartFlow.back()">이전</button><button type="button" class="btn btn-solid" id="fl-next" onclick="StartFlow.next()">다음</button></div>
+    <!-- 2026-11-12 시안 08·09·10: 면접 직전 화면을 위 메뉴가 있는 전체 화면 3단계로 (내 경험 → 진행 방식 → 장치 점검) -->
+    <header class="fl-hdr"><div class="fl-hdr-in">
+      <a class="fl-brand" href="javascript:void(0)" onclick="StartFlow.leave(()=>goDashboard())"><b>ZAVAPASS</b><span>× 한림대학교</span></a>
+      <nav class="fl-nav" aria-label="주 메뉴"><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('home'))">홈</a><a href="javascript:void(0)" aria-current="page" onclick="StartFlow.leave(()=>navGo('hub'))">연습하기</a><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('growth'))">나의 기록</a><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('materials'))">내 자료</a></nav>
+      <div class="fl-my"><button type="button" class="fl-my-btn" id="fl-my-btn" aria-expanded="false" aria-haspopup="menu" onclick="StartFlow.myMenu(event)">▶ 내 메뉴</button>
+        <div class="fl-my-menu" id="fl-my-menu" role="menu" hidden><button type="button" role="menuitem" onclick="StartFlow.myMenu(); openMyPage()">마이페이지</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); Notice.openAll()">공지사항</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); openFeedback()">의견 · 문제 보내기</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.leave(()=>goDashboard())">준비 그만하고 홈으로</button></div></div>
+    </div></header>
+    <div class="fl-scroll" id="fl-scroll"><div class="fl-wrap">
+      <div class="fl-top"><div class="fl-steps" id="fl-steps"></div><button type="button" class="fl-x" onclick="StartFlow.close()" aria-label="닫기" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="fl-body" id="fl-body" aria-live="polite"></div>
+      <div class="fl-acts" hidden><button type="button" class="btn btn-outline" id="fl-back" onclick="StartFlow.back()">이전</button><button type="button" class="btn btn-solid" id="fl-next" onclick="StartFlow.next()">다음</button></div>
+    </div></div>
   </div>
 </div>
 <div class="modal-overlay" id="modal-signup">
@@ -12995,7 +13140,7 @@ const PrepRoom = {
     body.querySelectorAll('[data-memo]').forEach(t=>t.addEventListener('input', ()=>{ const d = this.load(); d[t.dataset.memo] = Object.assign({}, d[t.dataset.memo], { memo: t.value.slice(0, 200) }); this.save(d); }));
     body.querySelectorAll('[data-say]').forEach(b=>b.onclick = ()=>{ const it = this.items.find(x=>x.id === b.dataset.say); if(it) try{ speakQuestion(it.q, null); }catch(_){} });
     body.querySelectorAll('[data-time]').forEach(b=>b.onclick = ()=>this.toggle(b.dataset.time, b));
-    body.querySelectorAll('[data-goto-docs]').forEach(b=>b.onclick = ()=>{ this.stop(); StartFlow.s.step = 1; StartFlow.render(); setTimeout(()=>{ const d = document.getElementById('fl-docs'); if(d) d.scrollIntoView({ block:'center', behavior:'smooth' }); }, 60); });
+    body.querySelectorAll('[data-goto-docs]').forEach(b=>b.onclick = ()=>{ this.stop(); StartFlow.s.step = 1; StartFlow.s.sub = ''; StartFlow.s.openMy = true; StartFlow.render(); setTimeout(()=>{ const d = document.getElementById('fl-docs'); if(d) d.scrollIntoView({ block:'center', behavior:'smooth' }); }, 60); });
   },
   toggle(id, btn){
     if(this.tq === id){ this.finishTimer(); return; }
@@ -13859,8 +14004,9 @@ function hallymFlowGate(again){
 }
 /* 2026-11-02k 한림대 데모: 면접 준비 흐름. 끝나면 고른 분야로 기존 면접 준비 창(openSetup)을 열고 답변 시간·면접관 진행 방식을 맞춰 둠.
    학년·경험·기업·채용공고는 아직 질문 생성에 쓰이지 않고 state.flowCtx에만 담김 (커리어 인바디·채용공고 연동 전 화면 틀) */
+document.addEventListener('click', e=>{ try{ if(!e.target.closest('.fl-my')) StartFlow.myMenu(false); }catch(_){} });
 const StartFlow = {
-  STEPS:['면접 목적','맞춤 준비','질문 연습','진행 방식','면접관·설정','확인'],
+  STEPS:['내 경험','진행 방식','장치 점검'],   // 2026-11-12 시안 08·09·10 (0 = 면접 목적 고르기, 1~3 = 위 세 단계)
   EXP_TYPES:['수강 과목','프로젝트','활동'],
   PEOPLE:[ { id:'hr', n:'인사팀장', m:'차분하고 정중한 말투', q:'인성·조직 적합도를 봐요', c:'#5B6B8C', p:'normal' },
     { id:'lead', n:'현업 팀장', m:'실무적이고 간결함', q:'직무 경험을 구체적으로 물어요', c:'#3E7D6B', p:'normal' },
@@ -13883,7 +14029,8 @@ const StartFlow = {
     const note = String((state.currentUser && state.currentUser.note) || ''); const dept = (note.match(/(\S+(학과|학부|스쿨|과))\s*$/) || [])[1] || '';
     const f = this.field(state.dashField); const first = !((state.historyRecords || []).length);
     const prev = this.s || {};
-    this.s = { step: kind ? 1 : 0, kind: kind || null, mode: mode || null, count:2, people:['hr','lead'], spk:0, diff: first ? '하' : '중', showSet:true,
+    this.s = { step: kind ? 1 : 0, kind: kind || null, mode: mode || null, count:2, people:['hr','lead'], spk:0, diff: first ? '하' : '중', showSet:false, fromKind: !!kind, sub:'', openMy:false,
+      qcount: prev.qcount || (+(((document.querySelector('#chip-count .chip.sel') || {}).dataset || {}).val) || 5), cap: !!prev.cap, pip: !!prev.pip, rec: prev.rec !== false, cam: prev.cam !== false, typed:false, expText: prev.expText || '', expId: prev.expId || '',
       major:{ dept: (prev.major && prev.major.dept) || dept, grade: (prev.major && prev.major.grade) || '' }, use: (prev.use || this.exps.map(e=>e.id)),
       job:{ field:f.id, company:'', companyId:'', role:'', post:'', jobcat:'', jobPicked:false, eng: !!(prev.job && prev.job.eng) } };
     document.getElementById('modal-flow').classList.add('active'); this.render();
@@ -13892,30 +14039,48 @@ const StartFlow = {
       this.exps.forEach(e=>{ if(!this.s.use.includes(e.id)) this.s.use.push(e.id); }); };
     if(PrepSync.loaded) applySaved(); else PrepSync.pull().then(()=>{ applySaved(); if(document.getElementById('modal-flow').classList.contains('active') && this.s && this.s.step <= 2) this.render(); });
   },
-  close(){ try{ PrepRoom.stop(); }catch(_){} document.getElementById('modal-flow').classList.remove('active'); },
+  close(){ try{ PrepRoom.stop(); }catch(_){} this.devLeave(); this.myMenu(false); document.getElementById('modal-flow').classList.remove('active'); },
+  /** 위 메뉴·로고를 누르면 준비 화면을 닫고 그 화면으로 */
+  leave(go){ this.close(); try{ go && go(); }catch(_){} },
+  myMenu(e){ const m = document.getElementById('fl-my-menu'), b = document.getElementById('fl-my-btn'); if(!m) return; const open = (e && e.stopPropagation) ? (e.stopPropagation(), m.hidden) : (e === true); m.hidden = !open; if(b) b.setAttribute('aria-expanded', String(open)); },
   /** 결과에서 다시 연습: 지난번 고른 목적·회사·면접관·난이도를 그대로 두고 '맞춤 준비'부터 */
   reopen(){
     if(!this.s || !this.s.kind){ this.open(); return; }
     if(!state.currentUser){ showToast('먼저 로그인해 주세요.'); return; }
     if(isAccessExpired(state.currentUser)){ showToast('이용 기간이 종료되어 면접 연습을 시작할 수 없어요. 연장은 관리자에게 문의해 주세요.'); return; }
-    this.s.step = 1; document.getElementById('modal-flow').classList.add('active'); this.render();
+    this.s.step = 1; this.s.sub = ''; this.s.typed = false; document.getElementById('modal-flow').classList.add('active'); this.render();
   },
   /** 2026-11-02p 홈 목적 카드: 누른 카드에 '선택됨' 표시를 잠깐 보여 준 뒤 준비 창을 엶 */
   pickFromHome(kind){ this.markHome(kind); clearTimeout(this._pt); this._pt = setTimeout(()=>{ try{ AppUpdate.gateStart(()=>this.open(null, kind)); }catch(_){ this.open(null, kind); } }, 220); },   // 2026-11-05c 예전 화면으로 열려 있으면 새로고침부터
   markHome(kind){ document.querySelectorAll('[data-hm-kind]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.hmKind === kind))); },
-  back(){ if(this.s.step > 0){ this.s.step--; this.render(); } else this.close(); },
+  back(){ const s = this.s;
+    if(s.step === 1 && s.sub){ s.sub = ''; this.render(); return; }
+    if(s.step === 1){ this.saveNow(); if(s.fromKind){ this.close(); return; } }
+    if(s.step > 0){ s.step--; this.render(); } else this.close(); },
   need(){ const s = this.s; if(s.step === 0) return s.kind ? '' : '면접 목적을 골라 주세요';
     if(s.step === 1){ if(!String(s.major.dept).trim()) return '전공을 입력해 주세요'; if(!s.major.grade) return '학년을 골라 주세요'; if(s.kind === 'job' && !String(s.job.role).trim()) return '목표 직무를 입력해 주세요'; return ''; }
-    if(s.step === 3) return s.mode ? '' : '진행 방식을 골라 주세요';
-    if(s.step === 4 && s.people.length !== s.count) return `면접관을 ${s.count}명 골라 주세요`; return ''; },
-  next(){ const why = this.need(); if(why){ showToast(why); const h = document.getElementById('fl-need'); if(h) h.textContent = why; return; }
-    if(this.s.step === 1){ try{ const q = this.qbCtx(); if(q) QBank.prefetch(q); }catch(e){ console.warn('[면접 질문 미리 뽑기]', e); } }   // 2026-11-11 기관·직무를 정하면 바로 질문 준비 시작 (질문 연습·설정 단계를 지나는 동안 끝나 있게)
-    if(this.s.step < 5){ this.s.step++; this.render(); return; } this.finish(); },
+    if(s.step === 2){ if(!s.mode) return '연습형과 실전형 중 하나를 골라 주세요'; if(s.people.length !== s.count) return `면접관을 ${s.count}명 골라 주세요 ('면접관·시간·난이도 바꾸기')`; return ''; }
+    if(s.step === 3 && this._mic && this._mic !== 'ok' && !s.typed) return this._mic === 'blocked' ? "마이크가 막혀 있어요. 허용한 뒤 '다시 확인'을 누르거나 '글로 답하며 진행하기'를 골라 주세요" : "마이크를 쓸 수 없어요. 다시 확인하거나 '글로 답하며 진행하기'를 골라 주세요";
+    return ''; },
+  next(){ const why = this.need(); if(why){ showToast(why); const h = document.getElementById('fl-need'); if(h) h.textContent = why; if(this.s.step === 2 && /면접관/.test(why)){ this.s.showSet = true; this.render(); } return; }
+    const s = this.s;
+    if(s.step === 1){ this.saveNow(); s.sub = ''; try{ const q = this.qbCtx(); if(q) QBank.prefetch(q); }catch(e){ console.warn('[면접 질문 미리 뽑기]', e); } }   // 2026-11-11 기관·직무를 정하면 바로 질문 준비 시작
+    if(s.step === 3){ this.enter(); return; }
+    s.step++; this.render(); },
+  /** 2026-11-12 '이번에 이야기할 경험' 칸 → 내 경험 목록에 저장 (같은 칸을 고치면 같은 항목을 고침, 비우면 이번 면접에서 빼기만 함) */
+  saveNow(){ const s = this.s; if(!s) return; const v = String(s.expText || '').trim().slice(0, 120);
+    let e = s.expId ? this.exps.find(x=>x.id === s.expId) : null;
+    if(!v){ if(e) s.use = s.use.filter(x=>x !== e.id); return; }
+    if(e){ if(e.text === v){ if(!s.use.includes(e.id)) s.use.push(e.id); return; } e.text = v; }
+    else { const same = this.exps.find(x=>String(x.text).trim() === v); if(same) e = same; else { e = { id: 'e' + Date.now().toString(36), type: '활동', text: v }; this.exps.push(e); } s.expId = e.id; }
+    if(!s.use.includes(e.id)) s.use.push(e.id);
+    try{ PrepSync.save(); }catch(_){} },
   usedExps(){ return this.exps.filter(e=>this.s.use.includes(e.id)); },
   /** 2026-11-11 면접 DB 질문 뽑기 맥락 (기업·직무 맞춤 + 질문은행 분야일 때만) */
   qbCtx(fid){ const s = this.s; fid = fid || (s.kind === 'job' ? s.job.field : null);
     return (s.kind === 'job' && fid && QBank.applies(fid)) ? { talentId: s.job.companyId || null, companyName: s.job.company || null, grp: QBank.FIELDS[fid], job: s.job.jobcat || QBank.guessJob(s.job.role), role: (s.job.role || '').trim() || null, eng: !!s.job.eng, mood: this.mood() } : null; },
-  finish(){
+  /** 고른 내용을 면접 맥락(state.flowCtx)으로 정리 · 질문 미리 뽑기 (예전 '확인' 다음에 하던 일) */
+  prepare(){
     const s = this.s; const fid = s.kind === 'job' ? s.job.field : (state.dashField || FIELDS[0].id);
     const ps = s.people.map(id=>(this.PEOPLE.find(p=>p.id===id) || {}).p || 'normal');
     const pressure = this.qbOn() ? this.mood() : ps.includes('hard') ? 'hard' : ps.every(x=>x === 'soft') ? 'soft' : 'normal';   // 2026-11-05 질문은행 면접은 고른 분위기
@@ -13928,30 +14093,45 @@ const StartFlow = {
     if(state.flowCtx.qbank) try{ QBank.prefetch(state.flowCtx.qbank); }catch(e){ console.warn('[면접 질문 미리 뽑기]', e); }
     CompanyData.cur = null; state.companyPackP = null; try{ PrepSync.save(); }catch(_){}
     if(s.kind === 'job' && s.job.companyId){ state.companyPackP = CompanyData.pack(s.job.companyId).then(p=>{ CompanyData.cur = p; return p; }); }
-    this.close();
     try{ IvVoice.loadMap(); }catch(_){}   // 2026-11-03c 이번 면접에서 쓸 면접관 목소리 (시작 때 한 번 읽어 고정)
     if(state.dashField !== fid){ state.dashField = fid; try{ renderDashboard(); }catch(_){} }
+    this._press = pressure; return { fid, pressure };
+  },
+  /** 준비 창(장치 점검)의 설정 칩을 이 흐름에서 고른 값으로 맞춤 */
+  pickChips(){ const s = this.s, pressure = this._press || 'normal';
+    const pick = (row, val, type)=>{ const r = document.getElementById(row); const c = r && r.querySelector(`.chip[data-val="${val}"]`); if(c && !c.classList.contains('sel')) selectChip(c, type); };
+    pick('chip-realset', 'normal', 'realset'); pick('chip-timed', s.mode === 'real' ? 'real' : 'free', 'timed'); pick('chip-pressure', pressure, 'pressure'); pick('chip-diff', s.diff, 'diff'); pick('chip-followups', (FLOW_DIFFS[s.diff] || FLOW_DIFFS['중']).fu, 'followups');
+    if(!(state.flowCtx && state.flowCtx.qbank)) pick('chip-count', String(s.qcount || 5), 'count');
+  },
+  /** (예전 방식) 창을 닫고 '면접 준비' 창을 따로 엶 — 다른 곳에서 부를 때를 위해 남겨 둠 */
+  finish(){
+    const { fid } = this.prepare();
+    this.close();
     openSetup(fid);
-    setTimeout(()=>{ try{
-      const pick = (row, val, type)=>{ const r = document.getElementById(row); const c = r && r.querySelector(`.chip[data-val="${val}"]`); if(c && !c.classList.contains('sel')) selectChip(c, type); };
-      pick('chip-realset', 'normal', 'realset'); pick('chip-timed', s.mode === 'real' ? 'real' : 'free', 'timed'); pick('chip-pressure', pressure, 'pressure'); pick('chip-diff', s.diff, 'diff'); pick('chip-followups', (FLOW_DIFFS[s.diff] || FLOW_DIFFS['중']).fu, 'followups');
-    }catch(_){} }, 450);
+    setTimeout(()=>{ try{ this.pickChips(); }catch(_){} }, 450);
   },
   render(){
     const s = this.s, body = document.getElementById('fl-body');
-    document.getElementById('fl-steps').innerHTML = this.STEPS.map((t,i)=>`${i?'<span class="sep"></span>':''}<b class="${i<s.step?'done':i===s.step?'on':''}"><em>${i<s.step?'✓':i+1}</em><span>${t}</span></b>`).join('');
+    const prevStep = this._shown; this._shown = s.step + ':' + (s.sub || '');
+    document.getElementById('fl-steps').innerHTML = s.step ? this.STEPS.map((t,i)=>`<b class="${i+1<s.step?'done':i+1===s.step?'on':''}"${i+1===s.step?' aria-current="step"':''}>${i+1}. ${t}</b>`).join('') : '';
     try{ PrepRoom.stop(); }catch(_){}
-    body.innerHTML = [()=>this.vKind(), ()=>this.vPrep(), ()=>this.vPrepQ(), ()=>this.vMode(), ()=>this.vSet(), ()=>this.vStart()][s.step]() + '<p class="fl-need" id="fl-need" role="status"></p>';
-    if(s.step === 2) PrepRoom.mount();
-    document.getElementById('fl-next').textContent = s.step === 5 ? '다음: 장치 점검' : s.step === 2 ? '다음: 진행 방식' : '다음';
-    document.getElementById('fl-back').textContent = s.step === 0 ? '닫기' : '이전';
+    if(s.step !== 3) this.devLeave();
+    const views = [()=>this.vKind() + `<div class="fl-cta"><button type="button" class="btn btn-solid" data-next>다음</button></div>`, ()=>(s.sub === 'prepq' ? this.vPrepQPage() : this.vExp()), ()=>this.vMode2(), ()=>this.vDev()];
+    body.innerHTML = views[s.step]() + '<p class="fl-need" id="fl-need" role="status"></p>';
+    if(prevStep !== this._shown){ const sc = document.getElementById('fl-scroll'); if(sc) sc.scrollTop = 0; }
+    if(s.step === 1 && s.sub === 'prepq') PrepRoom.mount();
+    document.getElementById('fl-next').textContent = '다음'; document.getElementById('fl-back').textContent = s.step === 0 ? '닫기' : '이전';
     const on = (sel, fn)=>body.querySelectorAll(sel).forEach(b=>b.onclick = ()=>{ fn(b); this.render(); });
+    body.querySelectorAll('[data-next]').forEach(b=>b.onclick = ()=>this.next());
+    body.querySelectorAll('[data-prev]').forEach(b=>b.onclick = ()=>this.back());
+    on('[data-sub]', b=>{ if(b.dataset.sub === 'prepq'){ this.saveNow(); } s.sub = b.dataset.sub; });
     on('[data-kind]', b=>{ s.kind = b.dataset.kind; this.markHome(s.kind); });
     on('[data-mode]', b=>{ s.mode = b.dataset.mode; });
+    on('[data-tg]', b=>{ const k = b.dataset.tg; s[k] = !s[k]; });
     on('[data-field]', b=>{ s.job.field = b.dataset.field; s.job.role = ''; s.job.cat = ''; s.job.roleGroup = '';
       if(s.job.companyId && !fieldCompanies(s.job.field, CompanyData._list || []).some(x=>x.id === s.job.companyId)){ s.job.companyId = ''; s.job.company = ''; } });
     on('[data-use]', b=>{ const a = s.use, i = a.indexOf(b.dataset.use); i < 0 ? a.push(b.dataset.use) : a.splice(i,1); });
-    on('[data-del]', b=>{ this.exps = this.exps.filter(e=>e.id !== b.dataset.del); s.use = s.use.filter(x=>x !== b.dataset.del); try{ PrepSync.save(); }catch(_){} });
+    on('[data-del]', b=>{ this.exps = this.exps.filter(e=>e.id !== b.dataset.del); s.use = s.use.filter(x=>x !== b.dataset.del); if(s.expId === b.dataset.del){ s.expId = ''; s.expText = ''; } try{ PrepSync.save(); }catch(_){} });
     on('[data-count]', b=>{ const n = +b.dataset.count; s.count = n;   // 늘리면 추천 순서(인사팀장 → 현업 팀장 → 임원)로 채우고, 줄이면 뒤에서부터 뺌
       for(const id of ['hr','lead','exec','senior','data','press']){ if(s.people.length >= n) break; if(!s.people.includes(id)) s.people.push(id); } s.people = s.people.slice(0, n); s.spk = 0; });
     body.querySelectorAll('[data-person]').forEach(b=>b.onclick = ()=>{ const id = b.dataset.person, i = s.people.indexOf(id);
@@ -13965,7 +14145,8 @@ const StartFlow = {
     const setSpk = k=>{ if(k === s.spk) return; s.prevSpk = s.spk; s.spk = k; };
     on('#fl-spk-next', ()=>{ setSpk((s.spk + 1) % Math.max(1, s.people.length)); });
     on('[data-spk]', b=>{ setSpk(+b.dataset.spk); });
-    on('#fl-set-toggle', ()=>{ s.showSet = !s.showSet; });
+    const fold = (id, key)=>{ const d = document.getElementById(id); if(d) d.addEventListener('toggle', ()=>{ s[key] = d.open; }); };
+    fold('fl-my', 'openMy'); fold('fl-more', 'showSet');
     try{ DocBox.mount(); }catch(e){ console.warn('[서류 칸]', e); }
     const add = document.getElementById('fl-exp-add');
     if(add) add.onclick = ()=>{ const t = document.getElementById('fl-exp-text'), ty = document.getElementById('fl-exp-type'); const v = String(t.value || '').trim();
@@ -13973,9 +14154,13 @@ const StartFlow = {
       const id = 'e' + Date.now().toString(36); this.exps.push({ id, type: ty.value, text: v.slice(0, 120) }); s.use.push(id); try{ PrepSync.save(); }catch(_){} this.render(); setTimeout(()=>{ const n = document.getElementById('fl-exp-text'); if(n) n.focus(); }, 0); };
     const et = document.getElementById('fl-exp-text'); if(et) et.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); add && add.click(); } });
     const bind = (id, obj, key, re)=>{ const el = document.getElementById(id); if(!el) return; el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', ()=>{ obj[key] = el.value; if(re) this.render(); const h = document.getElementById('fl-need'); if(h) h.textContent = ''; }); };
-    bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade', true); bind('fl-role', s.job, 'role'); { const ri = document.getElementById('fl-role'); if(ri) ri.addEventListener('input', ()=>{ s.job.roleGroup = ''; clearTimeout(this._rt); this._rt = setTimeout(()=>this.renderRoles(), 250); }); } bind('fl-post', s.job, 'post');
+    bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade'); bind('fl-exp-now', s, 'expText'); bind('fl-role', s.job, 'role'); { const ri = document.getElementById('fl-role'); if(ri) ri.addEventListener('input', ()=>{ s.job.roleGroup = ''; clearTimeout(this._rt); this._rt = setTimeout(()=>this.renderRoles(), 250); }); } bind('fl-post', s.job, 'post');
+    { const qc = document.getElementById('fl-qcount'); if(qc) qc.addEventListener('change', ()=>{ s.qcount = +qc.value; this.render(); }); }
+    { const ib = document.getElementById('fl-inbody'); if(ib) ib.onclick = ()=>{ this.saveNow(); try{ openMyPage(); setTimeout(()=>{ const t = document.getElementById('mp-ib-t'); if(t) t.scrollIntoView({ block:'start', behavior:'smooth' }); }, 500); }catch(e){ console.warn('[인바디]', e); } }; }
+    { const dq = document.getElementById('fl-docq'); if(dq) dq.onclick = ()=>{ s.openMy = true; this.render(); setTimeout(()=>{ const d = document.getElementById('fl-docs'); if(d){ d.scrollIntoView({ block:'center', behavior:'smooth' }); d.classList.add('fl-flash'); setTimeout(()=>d.classList.remove('fl-flash'), 1600); } }, 60); }; }
     this.bindCompany(); this.renderRoles();
     if(s.kind === 'job') try{ QBank.bindPrep(s); }catch(e){ console.warn('[직종 고르기]', e); }   // 2026-11-05 면접 DB
+    if(s.step === 3) this.devOpen();
   },
   /** 2026-11-02y 목표 직무 고르기: 직군 탭 + 직무 버튼. 누르면 목표 직무 칸에 들어가고, 칸에 직접 적어도 됨 */
   renderRoles(){
@@ -14051,13 +14236,13 @@ const StartFlow = {
   vKind(){ const s = this.s; return `<h2 class="fl-h">어떤 면접을 준비할까요?</h2><p class="fl-lead">면접 목적을 고르면, 다음 단계에서 그에 맞는 정보를 확인해요. 진행 방식(연습형·실전형)은 그다음에 골라요.</p>
     <div class="fl-picks"><button type="button" class="fl-pick" data-kind="major" aria-pressed="${s.kind==='major'}"><span class="t">전공·경험 면접</span><span class="d">수강 과목·프로젝트·활동 경험을 얼마나 깊이 이해하고 설명하는지 연습해요.</span><span class="n">다음: 전공·학년 확인 → 경험 입력·선택</span></button>
     <button type="button" class="fl-pick" data-kind="job" aria-pressed="${s.kind==='job'}"><span class="t">기업·직무 맞춤 면접</span><span class="d">목표 기업과 직무, 채용공고에 맞춰 답변을 준비해요.</span><span class="n">다음: 기업·직무·채용공고 → 활용할 경험 확인</span></button></div>`; },
-  vExps(title){ const s = this.s;
+  vExps(title, noCoach){ const s = this.s;
     const rows = this.exps.length ? this.exps.map(e=>`<div class="fl-exp"><button type="button" class="fl-chip" data-use="${e.id}" aria-pressed="${s.use.includes(e.id)}">${s.use.includes(e.id)?'✓ 사용':'사용 안 함'}</button><span class="ty">${escapeHtml(e.type)}</span><span class="tx">${escapeHtml(e.text)}</span>${e.star ? `<button type="button" class="fl-ec on" onclick="ExpCoach.open({ id:'${e.id}', from:'flow' })" title="정리한 내용 보기·고치기">1분 답변 정리됨</button>` : `<button type="button" class="fl-ec" onclick="ExpCoach.open({ id:'${e.id}', from:'flow' })" title="경험 정리 도우미로 상황·행동·결과를 정리해요">자세히 정리</button>`}<button type="button" class="fl-del" data-del="${e.id}" aria-label="${escapeHtml(e.text)} 지우기">지우기</button></div>`).join('')
       : `<p class="fl-empty">아직 입력한 경험이 없어요. 없어도 면접은 진행할 수 있고, 경험이 없다고 낮게 평가하지 않아요.</p>`;
     const coach = `<div class="fl-ec-row"><span>말할 경험이 잘 떠오르지 않나요? 수업·아르바이트·생활 속 일에서 함께 찾아 1분 답변까지 만들어 줘요.</span><button type="button" class="btn btn-outline" onclick="ExpCoach.open({ from:'flow' })">경험 정리 도우미</button></div>`;
     return `<div class="fl-f wide"><div class="fl-row"><span class="fl-lbl">${title}</span><span class="fl-badge">학교 데이터 미연동</span></div>
       <p class="fl-sub">커리어 인바디와 연결되면 수강·활동 기록을 불러와요. 지금은 직접 입력으로 계속할 수 있어요.</p>
-      <div class="fl-exps">${rows}</div>${coach}
+      <div class="fl-exps">${rows}</div>${noCoach ? '' : coach}
       <div class="fl-add"><label class="sr" for="fl-exp-type">경험 종류</label><select id="fl-exp-type">${this.EXP_TYPES.map(t=>`<option>${t}</option>`).join('')}</select>
       <label class="sr" for="fl-exp-text">경험 내용</label><input id="fl-exp-text" maxlength="120" placeholder="예: 마케팅원론 팀 프로젝트에서 설문 분석 담당"><button type="button" class="btn btn-outline" id="fl-exp-add">추가</button></div></div>`; },
   vSummary(){ const u = this.usedExps(); return `<div class="fl-summary"><b>이번 면접에 활용할 경험</b>${u.length ? `<ul>${u.map(e=>`<li><span>${escapeHtml(e.type)}</span>${escapeHtml(e.text)}</li>`).join('')}</ul>` : '<p>선택한 경험이 없어요. 전공·직무 일반 질문으로 진행해요.</p>'}</div>`; },
@@ -14065,17 +14250,41 @@ const StartFlow = {
     <div class="fl-f"><label for="fl-grade">학년 <span class="req">*</span></label><select id="fl-grade"><option value="">학년 선택</option>${['1','2','3','4'].map(g=>`<option value="${g}" ${g===m.grade?'selected':''}>${g}학년</option>`).join('')}</select></div></div>`; },
   vPrep(){ const s = this.s;
     if(s.kind === 'major') return `<h2 class="fl-h">전공·경험 면접 준비</h2><p class="fl-lead">전공 시험이 아니라, 내 경험을 얼마나 깊이 이해하고 설명하는지 확인하는 면접이에요.</p>${this.vProfile()}${this.vExps('수강 과목·프로젝트·활동')}${this.vDocs()}${this.vSummary()}`;
-    const j = s.job, f = this.field(j.field);
-    return `<h2 class="fl-h">기업·직무 맞춤 면접 준비</h2><p class="fl-lead">기업 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vProfile()}
-    <div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}${QBank.applies(x.id) ? '<em class="fl-qb-tag">예상 질문 8문항</em>' : ''}</span><span class="d">${escapeHtml((hallymRoles(x.id).length ? hallymRoles(x.id) : (x.roles||[])).slice(0,3).join('·'))} 외</span></button>`).join('')}</div></div>
+    return `<h2 class="fl-h">기업·직무 맞춤 면접 준비</h2><p class="fl-lead">기업 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vProfile()}${this.vJob()}${this.vExps('활용할 내 경험')}${this.vDocs()}${this.vSummary()}`; },
+  /** 기관·직무 맞춤: 지원 분야·기관·직무·채용공고 칸 (예전 '맞춤 준비'와 같음) */
+  vJob(){ const j = this.s.job;
+    return `<div class="fl-f"><span class="fl-lbl">지원 분야</span><div class="fl-fields">${FIELDS.map(x=>`<button type="button" class="fl-field" data-field="${x.id}" aria-pressed="${x.id===j.field}"><span class="t">${escapeHtml(x.name)}${QBank.applies(x.id) ? '<em class="fl-qb-tag">예상 질문 8문항</em>' : ''}</span><span class="d">${escapeHtml((hallymRoles(x.id).length ? hallymRoles(x.id) : (x.roles||[])).slice(0,3).join('·'))} 외</span></button>`).join('')}</div></div>
     <div class="fl-grid"><div class="fl-f"><label for="fl-company">목표 기업·기관 <span class="fl-opt">(선택)</span></label><div class="fl-co"><input id="fl-company" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fl-co-list" autocomplete="off" value="${escapeHtml(j.company)}" placeholder="이름으로 검색하거나 아래 목록에서 고르세요"><ul id="fl-co-list" class="fl-co-list" role="listbox" hidden></ul></div></div>
     <div class="fl-f"><label for="fl-role">목표 직무 <span class="req">*</span></label><input id="fl-role" list="fl-role-list" value="${escapeHtml(j.role)}" placeholder="아래에서 고르거나 직접 입력 (예: ${escapeHtml(hallymRoles(j.field)[0] || '영업')})"><datalist id="fl-role-list">${hallymRoles(j.field).map(r=>`<option value="${escapeHtml(r)}">`).join('')}</datalist></div>
     <div class="fl-f wide" id="fl-co-browse"></div>
     <div class="fl-f wide" id="fl-co-card">${j.companyId ? '<p class="cc-load">회사 정보를 불러오는 중…</p>' : '<p class="cc-load">회사를 고르면 인재상과 면접 전형이 보여요. 목록에 없으면 이름만 적어도 돼요.</p>'}</div>
     <div class="fl-f wide" id="fl-role-pick"></div>
     ${QBank.prepHtml(j)}
-    <div class="fl-f wide"><label for="fl-post">채용공고 <span class="fl-opt">(선택)</span></label><textarea id="fl-post" placeholder="자격 요건·우대 사항을 붙여 넣으면 관련 경험을 확인하는 질문이 나와요.">${escapeHtml(j.post)}</textarea></div></div>
-    ${this.vExps('활용할 내 경험')}${this.vDocs()}${this.vSummary()}`; },
+    <div class="fl-f wide"><label for="fl-post">채용공고 <span class="fl-opt">(선택)</span></label><textarea id="fl-post" placeholder="자격 요건·우대 사항을 붙여 넣으면 관련 경험을 확인하는 질문이 나와요.">${escapeHtml(j.post)}</textarea></div></div>`; },
+  /** 단계 제목 줄 (오른쪽 '이전으로') */
+  vHead(t, lead){ return `<div class="fl-head"><div><h2 class="fl-h">${t}</h2><p class="fl-lead">${lead}</p></div><button type="button" class="btn btn-outline fl-prev" data-prev>이전으로</button></div>`; },
+  /** 1단계 · 내 경험 (시안 08) */
+  vExp(){ const s = this.s, m = s.major, job = s.kind === 'job', nSaved = this.exps.length, nUse = this.usedExps().length;
+    return `${this.vHead(job ? '어디에 지원하고, 어떤 경험을 이야기할까요?' : '어떤 경험을 이야기할까요?', '입력한 정보는 다음 단계와 재연습에서도 유지해요.')}
+    ${job ? `<section class="fl-sec fl-jobsec" aria-label="지원 기관·직무"><h3 class="fl-sec-t">지원할 곳</h3><p class="fl-hint">기관 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vJob()}</section>` : ''}
+    <div class="fl-2col">
+      <div class="fl-col">
+        <div class="fl-grid fl-grid2"><div class="fl-f"><label for="fl-dept">전공 · 필수</label><input id="fl-dept" value="${escapeHtml(m.dept)}" placeholder="예: 국어국문학과" autocomplete="off"></div>
+          <div class="fl-f"><label for="fl-grade">학년 · 필수</label><select id="fl-grade"><option value="">선택해 주세요</option>${['1','2','3','4'].map(g=>`<option value="${g}" ${g===m.grade?'selected':''}>${g}학년</option>`).join('')}</select></div></div>
+        <div class="fl-f wide"><label for="fl-exp-now">이번에 이야기할 경험 · 선택</label><textarea id="fl-exp-now" rows="4" maxlength="120" placeholder="예: 팀 프로젝트에서 역할을 조율한 경험">${escapeHtml(s.expText || '')}</textarea>
+          <p class="fl-hint">수업·프로젝트·활동 중 하나만 적어도 돼요. 떠오르지 않으면 건너뛸 수 있어요. 적은 경험은 '내 자료'에 저장돼 다음에도 쓸 수 있어요.</p></div>
+      </div>
+      <aside class="fl-panel"><b class="fl-panel-t">경험이 잘 떠오르지 않나요?</b><p>무슨 일이 있었는지, 내가 한 일은 무엇인지부터 정리해요.</p>
+        <button type="button" class="btn btn-outline" onclick="StartFlow.saveNow(); ExpCoach.open({ from:'flow' })">경험 정리 도움받기</button>
+        <p class="fl-panel-note">학교 연동 데이터는 실제 연결된 경우에만 표시해요. 지금은 연동 전이라 직접 입력으로 진행해요.</p></aside>
+    </div>
+    <details class="fl-fold" id="fl-my"${s.openMy ? ' open' : ''}><summary>내 자료에서 가져오기 <em>${nSaved ? `저장한 경험 ${nSaved}개 · 이번에 ${nUse}개 사용` : '저장한 경험 없음'}</em></summary>
+      <div class="fl-fold-in">${this.vExps('저장한 경험', true)}${this.vDocs()}</div></details>
+    <div class="fl-cta"><button type="button" class="btn btn-solid" data-next>진행 방식 고르기</button><button type="button" class="btn btn-outline" data-sub="prepq">질문 먼저 살펴보기</button></div>
+    <div class="fl-cta"><button type="button" class="btn btn-outline" id="fl-inbody">인바디·학교 자료 확인</button><button type="button" class="btn btn-outline" id="fl-docq">서류에서 질문 찾기</button></div>`; },
+  /** 1단계 안의 '질문 먼저 살펴보기' (예전 '질문 연습' 단계) */
+  vPrepQPage(){ return `<div class="fl-head"><div><h2 class="fl-h">질문 먼저 살펴보기</h2><p class="fl-lead">나올 만한 질문을 미리 보고 말할 거리를 적어 둘 수 있어요. 건너뛰어도 돼요.</p></div><button type="button" class="btn btn-outline fl-prev" data-prev>내 경험으로</button></div>
+    ${this.vPrepQ()}<div class="fl-cta"><button type="button" class="btn btn-solid" data-next>진행 방식 고르기</button></div>`; },
   vDocs(){ return '<div class="fl-f wide fl-docs" id="fl-docs">' + DocBox.html() + '</div>'; },
   vPrepQ(){ return '<div class="pr-body" id="pr-body"><p class="cc-load">질문을 불러오는 중…</p></div>'; },
   vMode(){ const s = this.s; return `<h2 class="fl-h">진행 방식을 골라 주세요</h2><p class="fl-lead">어느 목적이든 연습형과 실전형 모두 할 수 있어요.</p>
@@ -14103,17 +14312,18 @@ const StartFlow = {
     </div>`; },
   vSet(){ const s = this.s; const nm = this.names();
     return `<h2 class="fl-h">면접관과 설정</h2><p class="fl-lead">추천 설정으로 바로 시작하거나, '설정 변경'에서 바꿀 수 있어요.</p>
-    <div class="fl-reco"><div><b>추천 설정</b><p>면접관 ${nm.join(' · ')} (${s.count}명) · ${this.pressureName()} 면접 · 난이도 ${s.diff}</p></div><button type="button" class="btn btn-outline" id="fl-set-toggle" aria-expanded="${s.showSet}">${s.showSet?'설정 닫기':'설정 변경'}</button></div>
-    ${this.vMood()}
-    ${s.showSet ? `<div class="fl-grid"><div class="fl-f"><span class="fl-lbl">면접관 인원</span><div class="fl-chips">${[1,2,3].map(n=>`<button type="button" class="fl-chip" data-count="${n}" aria-pressed="${n===s.count}">${n}명</button>`).join('')}</div></div>
-    </div>
+    <div class="fl-reco"><div><b>추천 설정</b><p>면접관 ${nm.join(' · ')} (${s.count}명) · ${this.pressureName()} 면접 · 난이도 ${s.diff}</p></div></div>${this.vMore()}`; },
+  /** 2단계 접기 '면접관·시간·난이도 바꾸기' 안쪽 (예전 '면접관·설정' 단계 내용 그대로) */
+  vMore(){ const s = this.s;
+    return `${this.vMood()}
+    <div class="fl-grid"><div class="fl-f"><span class="fl-lbl">면접관 인원</span><div class="fl-chips">${[1,2,3].map(n=>`<button type="button" class="fl-chip" data-count="${n}" aria-pressed="${n===s.count}">${n}명</button>`).join('')}</div></div></div>
     <div class="fl-f"><div class="fl-row"><span class="fl-lbl">면접관 ${s.count}명 고르기 (${s.people.length}/${s.count})</span>${s.count>1?'<span class="fl-sub">처음 고른 면접관이 진행을 맡아요</span>':''}</div>
     <div class="fl-people">${this.PEOPLE.map(x=>{ const k = s.people.indexOf(x.id); return `<button type="button" class="fl-person" data-person="${x.id}" aria-pressed="${k>=0}">${k>=0&&s.count>1?`<span class="ord">${k+1}</span>`:''}<span class="av" style="background:${x.c}">${this.ini(x)}</span><span class="n">${x.n}</span><span class="m">${x.m}</span><span class="q">${x.q}</span></button>`; }).join('')}</div></div>
+    <div class="fl-f wide"><span class="fl-lbl">시간</span><p class="fl-sub">${s.mode === 'real' ? '실전형: 자기소개 60초 · 답변 90초 (실제 면접처럼 정해져 있어요)' : s.mode === 'practice' ? '연습형: 시간 제한 없이 답해요' : '연습형은 시간 제한이 없고, 실전형은 자기소개 60초 · 답변 90초예요'}</p></div>
     <div class="fl-f wide"><span class="fl-lbl">난이도</span><div class="fl-diffs">${Object.entries(FLOW_DIFFS).map(([k,v])=>`<button type="button" class="fl-diff" data-diff="${k}" aria-pressed="${k===s.diff}"><b>${k} · ${v.t}</b><span>${v.d}</span></button>`).join('')}</div>
       <p class="fl-sub">직무 질문은 난이도에 맞춰 뽑혀요. 기업 맞춤 질문은 난이도와 상관없이 같은 질문이 나와요.</p></div>
-    <div class="fl-f wide"><span class="fl-lbl">면접 유형</span><p class="fl-sub">인성·직무 질문이 기본이에요. 서류 기반 질문은 다음 장치 점검 창에서 이력서·자기소개서를 첨부하면 함께 나와요.</p></div>` : ''}
     <div class="fl-f"><div class="fl-row"><span class="fl-lbl">면접장 미리보기</span>${s.people.length>1?'<span class="fl-sub">이름을 누르면 그 면접관이 질문할 때 모습이에요</span>':''}</div>${this.vRoom()}
-    ${s.people.length>1?'<p class="fl-sub">본 질문은 진행 면접관이, 꼬리질문은 다른 면접관이 이어서 해요. 질문하는 면접관이 밝게 강조되고 이름표가 바뀌어요. 면접관 구성은 면접 분위기(부드럽게·보통·압박)에도 반영돼요.</p>':''}</div>`; },
+    ${s.people.length>1?'<p class="fl-sub">본 질문은 진행 면접관이, 꼬리질문은 다른 면접관이 이어서 해요. 질문하는 면접관이 밝게 강조되고 이름표가 바뀌어요.</p>':''}</div>`; },
   vStart(){ const s = this.s, u = this.usedExps();
     const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${s.major.grade}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.role)}${s.job.post ? ' · 채용공고 반영' : ''}`;
     const qbOn = s.kind === 'job' && QBank.applies(s.job.field);
@@ -14127,6 +14337,143 @@ const StartFlow = {
     <dt>진행 방식</dt><dd>${s.mode === 'real' ? '실전형 · 힌트·중간 피드백 없음, 마친 뒤 종합 리포트' : '연습형 · 시간 제한 없음, 질문 자막·내 답변은 켜서 보기, 일시정지하고 이어 하기'}</dd>
     <dt>시간</dt><dd>${s.mode === 'real' ? '자기소개 60초 · 답변 90초' : '시간 제한 없음'}</dd>
     <dt>면접관</dt><dd>${this.names().join(' · ')} (${s.count}명) · ${this.pressureName()} 면접</dd><dt>난이도</dt><dd>${s.diff} · ${escapeHtml((FLOW_DIFFS[s.diff] || FLOW_DIFFS['중']).d)}</dd></dl>`; },
+  qn(){ return (this.qbOn() ? 8 : (this.s.qcount || 5)); },
+  /** 2단계 · 진행 방식 (시안 09) */
+  vMode2(){ const s = this.s, qb = this.qbOn();
+    const card = (k, t, d)=>`<button type="button" class="fl-mode" data-mode="${k}" aria-pressed="${s.mode === k}"><b>${t}</b><span>${d}</span></button>`;
+    const count = qb ? `<div class="fl-f"><span class="fl-lbl">질문 수</span><p class="fl-fixed">8문항 · 이 면접은 질문 순서가 정해져 있어요</p></div>`
+      : `<div class="fl-f"><label for="fl-qcount">질문 수</label><select id="fl-qcount">${[3,5,10].map(n=>`<option value="${n}"${n === s.qcount ? ' selected' : ''}>${n}문항</option>`).join('')}</select></div>`;
+    const tg = (k, t, d)=>`<button type="button" class="fl-tg" data-tg="${k}" role="switch" aria-checked="${!!s[k]}" aria-pressed="${!!s[k]}"><span><b>${t}</b><small>${d}</small></span><i class="sw" aria-hidden="true"></i></button>`;
+    return `${this.vHead('어떻게 연습할까요?', '목적과 진행 방식은 각각 선택해요.')}
+    <div class="fl-2col">
+      <div class="fl-col">
+        <div class="fl-modes">${card('practice', '연습형', '중단·재개 가능 · 도움은 필요할 때')}${card('real', '실전형', '면접에 집중 · 끝난 뒤 평가')}</div>
+        ${count}
+        <div class="fl-f"><span class="fl-lbl">면접 화면</span><div class="fl-tgs">${tg('pip', '내 얼굴 보기', '면접 중 내 카메라 화면을 작게 보여 줘요')}${tg('cap', '자막', '면접관 질문을 글자로 보여 줘요')}</div>
+          <p class="fl-hint">기본은 꺼져 있어요. 켜 두면 면접장에서 켜진 채로 시작하고, 면접 중에도 '화면 옵션'에서 바꿀 수 있어요.</p></div>
+      </div>
+      ${this.vSumPanel()}
+    </div>
+    <details class="fl-fold" id="fl-more"${s.showSet ? ' open' : ''}><summary>면접관·시간·난이도 바꾸기 <em>면접관 ${s.count}명 · ${this.pressureName()} · 난이도 ${s.diff}</em></summary><div class="fl-fold-in">${this.vMore()}</div></details>
+    <div class="fl-cta"><button type="button" class="btn btn-solid" data-next>장치 점검으로</button></div>`; },
+  /** 2단계 오른쪽 '이번 면접' (예전 '확인' 단계 내용) */
+  vSumPanel(){ const s = this.s, u = this.usedExps(), qb = this.qbOn();
+    const kind = s.kind === 'major' ? '전공·경험' : '기관·직무';
+    const mode = s.mode === 'real' ? '실전형' : s.mode === 'practice' ? '연습형' : '진행 방식 고르기 전';
+    const info = s.kind === 'major' ? `${escapeHtml(s.major.dept)} ${escapeHtml(s.major.grade)}학년` : `${escapeHtml(this.field(s.job.field).name)} · ${escapeHtml(s.job.role)}`;
+    const co = s.kind === 'job' ? (s.job.companyId ? escapeHtml(s.job.company) + (qb ? ' 예상 질문' : ' 맞춤 질문 포함') : escapeHtml(s.job.company ? s.job.company + ' (직무 일반 질문)' : '기관 선택 안 함 (직무 일반 질문)')) : '';
+    const pq = (()=>{ try{ const m = PrepRoom.summary(); return m && m.done ? `질문 ${m.total}개 중 ${m.done}개 미리 연습` : ''; }catch(_){ return ''; } })();
+    const view = [s.pip ? '내 얼굴 보기' : '', s.cap ? '자막' : ''].filter(Boolean);
+    return `<aside class="fl-panel fl-sumbox" aria-label="이번 면접 요약"><b class="fl-panel-t">이번 면접</b>
+      <ul class="fl-sumlist"><li>${kind}</li><li>${mode} · ${this.qn()}문항</li><li>면접관 ${s.count}명</li></ul>
+      <dl class="fl-sum2">${co ? `<dt>지원</dt><dd>${co}</dd>` : ''}<dt>내 정보</dt><dd>${info}</dd><dt>경험</dt><dd>${u.length ? u.map(e=>escapeHtml(e.text)).join(', ') : '선택 안 함 (일반 질문)'}</dd>
+        <dt>시간</dt><dd>${s.mode === 'real' ? '자기소개 60초 · 답변 90초' : '시간 제한 없음'}</dd><dt>화면</dt><dd>${view.length ? view.join(' · ') + ' 켬' : '내 얼굴·자막 끔'}</dd>${pq ? `<dt>미리 연습</dt><dd>${pq}</dd>` : ''}</dl>
+      <p class="fl-panel-note">전공·경험과 기관·직무 모두 연습형·실전형으로 진행할 수 있어요.</p></aside>`; },
+  /** 3단계 · 장치·녹화 점검 (시안 10). 카메라·마이크 칸은 기존 '면접 준비' 창의 것을 그대로 빌려 와서 씀 */
+  vDev(){ const s = this.s;
+    const ck = (id, on, t, d, dis)=>`<label class="fl-ck"><input type="checkbox" id="${id}"${on ? ' checked' : ''}${dis ? ' disabled' : ''}><span><b>${t}</b>${d ? `<small>${d}</small>` : ''}</span></label>`;
+    return `${this.vHead('편하게 말할 준비가 됐나요?', '카메라·마이크·소리를 확인하고 시작해요.')}
+    <div class="fl-alert" id="fl-dev-alert" hidden></div>
+    <div class="fl-2col fl-dev">
+      <div class="fl-col">
+        <div class="fl-camslot" data-slot="cam"><p class="fl-hint">카메라를 여는 중…</p></div>
+        <div class="fl-devst" aria-label="장치 연결 상태"><span>마이크 <i data-slot="micpill"></i></span><span>카메라 <i data-slot="campill"></i></span></div>
+        <div class="fl-micbox"><span class="fl-lbl">마이크 소리</span><div data-slot="meter"></div><div data-slot="check"></div></div>
+        <div class="fl-cta fl-cta-s"><button type="button" class="btn btn-outline" id="fl-devsel-b" aria-expanded="${!!s.devSel}">장치 바꾸기</button><button type="button" class="btn btn-outline" onclick="openMicHelp()">문제가 있어요</button></div>
+        <div class="fl-devsel"${s.devSel ? '' : ' hidden'} id="fl-devsel"><div data-slot="micsel"></div><div data-slot="camsel"></div></div>
+      </div>
+      <div class="fl-col">
+        <div class="fl-cks">${ck('fl-ck-mic', true, '마이크 사용 · 필수', '면접관 질문에 말로 답해요', false).replace('<label class="fl-ck">', '<label class="fl-ck fl-ck-fixed">').replace('type="checkbox"', 'type="checkbox" onclick="return false" aria-readonly="true"')}${ck('fl-ck-cam', s.cam, '카메라 사용 · 선택', '끄면 소리만으로 면접해요')}${ck('fl-ck-rec', s.rec, '내 모습 녹화하기 · 선택', '카메라를 켠 경우 끝난 뒤 영상으로, 끈 경우 소리로 다시 볼 수 있어요. 끄면 녹화·표정 분석을 하지 않아요.')}</div>
+        <div class="fl-vt"><button type="button" class="btn btn-outline" id="fl-vt-b">목소리 테스트</button><p class="fl-hint" id="fl-vt-out" aria-live="polite">"안녕하세요" 하고 한 문장 말해 보세요. 들린 말을 글자로 보여 줄 뿐, 채점하거나 면접 기록에 저장하지 않아요.</p></div>
+        <button type="button" class="btn btn-outline" id="fl-recinfo-b" aria-expanded="${!!s.recInfo}" aria-controls="fl-recinfo">녹화·분석 안내 확인</button>
+        <div class="fl-recinfo" id="fl-recinfo"${s.recInfo ? '' : ' hidden'}><p>녹화는 <b>이 기기(브라우저) 안에서만</b> 해요. 영상·음성 파일은 서버에 올리지 않고, 결과 화면에서 내 답변을 다시 보는 데만 써요.</p><p>카메라를 켜면 답하는 동안 표정·시선을 이 기기에서 분석해 결과에 짧은 피드백으로 보여 줘요. 저장되는 건 답변을 글자로 바꾼 내용과 채점 결과예요.</p><p>창을 닫거나 새로고침하면 녹화 파일은 사라져요. 필요하면 결과 화면에서 내려받아 두세요.</p></div>
+        <button type="button" class="btn btn-solid fl-enter" id="fl-enter" data-next>면접장 입장하기</button>
+        <p class="fl-hint" id="fl-enter-note">${s.pip || s.cap ? `면접장에서 ${[s.pip ? '내 얼굴' : '', s.cap ? '자막' : ''].filter(Boolean).join('·')}이 켜진 채로 시작해요.` : '면접이 시작되면 본인 화면과 자막을 숨겨요. 면접 중 \'화면 옵션\'에서 켤 수 있어요.'}</p>
+      </div>
+    </div>`; },
+  /** 3단계를 열 때: 기존 준비 창을 보이지 않게 열어 마이크·카메라 점검을 시작 (이미 열려 있으면 칸만 다시 붙임) */
+  devOpen(){ const s = this.s;
+    if(!state.flEmbed){ const { fid } = this.prepare(); state.flEmbed = true; this._mic = ''; this._devKey = ''; this._camN = undefined;
+      try{ openSetup(fid); }catch(e){ console.warn('[장치 점검 열기]', e); }
+      clearTimeout(this._devT); this._devT = setTimeout(()=>{ const m = document.getElementById('modal-setup');
+        if(state.flEmbed && this.s && this.s.step === 3 && !(m && m.classList.contains('active')) && !document.querySelector('.modal-overlay.active:not(#modal-flow):not(#modal-setup)')){ state.flEmbed = false; this.s.step = 2; this.render(); } }, 1800);   // 열리지 않았으면(이용 기간·열리지 않은 분야 등 안내가 이미 나옴) 2단계로
+      return; }
+    this.devMount(); },
+  /** openSetup 끝에서 부름: 빌려 올 칸을 3단계 화면에 붙이고, 이 흐름에서 고른 설정을 준비 창에 맞춤 */
+  devMount(){ const body = document.getElementById('fl-body'), s = this.s; if(!body || !s || s.step !== 3 || !state.flEmbed) return;
+    if(!this._dev){ const take = el=>{ if(!el || !el.parentNode) return null; const ph = document.createComment('fl-dev'); el.parentNode.insertBefore(ph, el); return { el, ph }; };
+      const sel = id=>document.getElementById(id);
+      this._dev = { cam: take(sel('setup-cam-preview')), meter: take(sel('mic-level') && sel('mic-level').parentNode), check: take(sel('mic-check')), micsel: take(sel('setup-mic-select') && sel('setup-mic-select').closest('label')), camsel: take(sel('setup-cam-select-row')), micpill: take(sel('setup-mic-pill')), campill: take(sel('setup-cam-pill')) };
+      try{ this.pickChips(); }catch(e){ console.warn('[설정 맞춤]', e); }
+      const sw = sel('switch-cam'); if(sw && sw.checked !== !!s.cam){ sw.checked = !!s.cam; try{ onSetupCamToggle(!!s.cam); }catch(_){} } }
+    Object.entries(this._dev).forEach(([k, d])=>{ const slot = body.querySelector(`[data-slot="${k}"]`); if(d && slot){ slot.innerHTML = ''; slot.appendChild(d.el); } });
+    const cam = document.getElementById('fl-ck-cam'), rec = document.getElementById('fl-ck-rec');
+    if(cam) cam.onchange = ()=>{ s.cam = cam.checked; const sw = document.getElementById('switch-cam'); if(sw){ sw.checked = s.cam; try{ onSetupCamToggle(s.cam); }catch(_){} } };
+    if(rec) rec.onchange = ()=>{ s.rec = rec.checked; };
+    const ds = document.getElementById('fl-devsel-b'); if(ds) ds.onclick = ()=>{ s.devSel = !s.devSel; ds.setAttribute('aria-expanded', String(s.devSel)); document.getElementById('fl-devsel').hidden = !s.devSel; };
+    const ri = document.getElementById('fl-recinfo-b'); if(ri) ri.onclick = ()=>{ s.recInfo = !s.recInfo; ri.setAttribute('aria-expanded', String(s.recInfo)); document.getElementById('fl-recinfo').hidden = !s.recInfo; };
+    const vt = document.getElementById('fl-vt-b'); if(vt) vt.onclick = ()=>this.voiceTest();
+    this._devKey = ''; this.devCheck(); clearInterval(this._devIv); this._devIv = setInterval(()=>this.devCheck(), 900);
+  },
+  /** 빌려 온 칸을 원래 준비 창 자리로 돌려놓음 (closeSetup에서 부름) */
+  devRestore(){ clearInterval(this._devIv); this._devIv = null; this.voiceStop();
+    if(this._dev){ Object.values(this._dev).forEach(d=>{ if(d && d.ph.parentNode){ d.ph.parentNode.insertBefore(d.el, d.ph); d.ph.remove(); } }); this._dev = null; } },
+  /** 3단계를 떠날 때: 마이크·카메라를 끄고 숨긴 준비 창을 닫음 */
+  devLeave(){ clearTimeout(this._devT); if(state.flEmbed){ try{ closeSetup(); }catch(e){ console.warn(e); state.flEmbed = false; this.devRestore(); } } },
+  /** 마이크 막힘·마이크 없음·카메라 없음 안내 */
+  async devCheck(){ const s = this.s; if(!s || s.step !== 3 || !state.flEmbed) return;
+    let perm = 'unknown'; try{ perm = await MicGuard.state(); }catch(_){}
+    const mc = document.getElementById('mic-check'), mt = ((document.getElementById('mic-check-text') || {}).textContent || '').trim();
+    const err = !!(mc && mc.classList.contains('err'));
+    const mic = perm === 'denied' ? 'blocked' : err ? (/권한|차단|막혀|허용/.test(mt) ? 'blocked' : 'err') : 'ok';
+    if(this._camN === undefined){ this._camN = null; try{ const d = await navigator.mediaDevices.enumerateDevices(); this._camN = d.filter(x=>x.kind === 'videoinput').length; }catch(_){ this._camN = -1; } }
+    const cmsg = ((document.getElementById('setup-cam-msg') || {}).textContent || '');
+    const cam = (this._camN === 0 || /연결된 카메라가 없어요|카메라 미리보기를 지원하지 않아요/.test(cmsg)) ? 'none' : 'ok';
+    if(!this.s || this.s.step !== 3) return;
+    this._mic = mic;
+    const key = [mic, cam, !!s.typed, mt].join('|'); if(key === this._devKey) return; this._devKey = key;
+    const box = document.getElementById('fl-dev-alert'); if(!box) return;
+    const parts = [];
+    if(mic !== 'ok' && !s.typed){
+      let guide = ''; try{ guide = mic === 'blocked' ? MicGuard.guideHtml(MicGuard.platform(), 'mic', 'site') : ''; }catch(_){}
+      parts.push(`<div class="fl-al fl-al-bad" role="alert"><b>${mic === 'blocked' ? '마이크가 막혀 있어요' : '마이크를 쓸 수 없어요'}</b><p>${mic === 'blocked' ? '이 사이트의 마이크 권한이 \'차단\'으로 되어 있어 목소리를 들을 수 없어요. 아래 순서대로 허용으로 바꾼 뒤 \'다시 확인\'을 눌러 주세요.' : escapeHtml(mt || '마이크를 찾지 못했어요. 마이크가 연결돼 있는지 확인해 주세요.')}</p>
+        ${guide ? `<div class="fl-al-guide">${guide}</div>` : ''}
+        <div class="fl-cta fl-cta-s"><button type="button" class="btn btn-solid" id="fl-mic-re">바꿨어요 · 다시 확인</button><button type="button" class="btn btn-outline" id="fl-typed">글로 답하며 진행하기</button></div>
+        <p class="fl-hint">'글로 답하며 진행하기'를 고르면 면접관 질문은 그대로 듣고, 답은 글로 적어요. 채점도 똑같이 해요.</p></div>`);
+    } else if(s.typed){
+      parts.push(`<div class="fl-al" role="status"><b>글로 답하며 진행해요</b><p>면접장에서 질문을 듣고 답을 글로 적어 주세요. 마이크를 허용했다면 '다시 마이크 쓰기'를 눌러요.</p><div class="fl-cta fl-cta-s"><button type="button" class="btn btn-outline" id="fl-typed-off">다시 마이크 쓰기</button></div></div>`);
+    }
+    if(cam === 'none'){
+      parts.push(`<div class="fl-al" role="status"><b>카메라를 찾지 못했어요</b><p>카메라 없이 소리만으로 면접을 진행해요. 이번에는 녹화도 하지 않아요. 카메라를 연결했다면 새로고침한 뒤 다시 들어와 주세요.</p></div>`);
+      const c = document.getElementById('fl-ck-cam'), r = document.getElementById('fl-ck-rec'); s.cam = false; s.rec = false;
+      if(c){ c.checked = false; c.disabled = true; } if(r){ r.checked = false; r.disabled = true; }
+      const sw = document.getElementById('switch-cam'); if(sw && sw.checked){ sw.checked = false; try{ onSetupCamToggle(false); }catch(_){} }
+    }
+    box.innerHTML = parts.join(''); box.hidden = !parts.length;
+    const re = document.getElementById('fl-mic-re'); if(re) re.onclick = ()=>{ this._devKey = ''; try{ micCheck.srTested = false; startMicLevelAnim(); }catch(_){} setTimeout(()=>this.devCheck(), 1200); };
+    const ty = document.getElementById('fl-typed'); if(ty) ty.onclick = ()=>{ s.typed = true; this._devKey = ''; this.devCheck(); };
+    const tf = document.getElementById('fl-typed-off'); if(tf) tf.onclick = ()=>{ s.typed = false; this._devKey = ''; try{ startMicLevelAnim(); }catch(_){} setTimeout(()=>this.devCheck(), 1200); };
+    const en = document.getElementById('fl-enter'); if(en){ const lock = mic !== 'ok' && !s.typed; en.classList.toggle('is-lock', lock); en.setAttribute('aria-disabled', String(lock)); en.textContent = s.typed && mic !== 'ok' ? '면접장 입장하기 (글로 답하기)' : '면접장 입장하기'; }
+  },
+  /** 목소리 테스트: 들린 말을 글자로만 보여 줌. 채점·저장·기록 없음 */
+  voiceTest(){ const out = document.getElementById('fl-vt-out'), b = document.getElementById('fl-vt-b'); if(!out || !b) return;
+    if(this._vt){ this.voiceStop(); return; }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR){ out.textContent = '이 브라우저는 말을 글자로 바꾸지 못해요. 크롬이나 엣지에서 해 보세요. 면접은 글로 답하며 진행할 수 있어요.'; return; }
+    let txt = ''; const r = new SR(); r.lang = 'ko-KR'; r.interimResults = true; r.continuous = false; this._vt = r;
+    b.textContent = '듣는 중… (누르면 멈춤)'; out.textContent = '말해 보세요…';
+    r.onresult = e=>{ txt = Array.from(e.results).map(x=>x[0].transcript).join(''); out.textContent = `들린 말: "${txt}"`; };
+    r.onerror = e=>{ const c = e.error; out.textContent = c === 'not-allowed' || c === 'service-not-allowed' ? '마이크가 막혀 있어 들을 수 없어요.' : c === 'no-speech' ? '소리가 들리지 않았어요. 조금 더 크게 다시 해 보세요.' : `지금은 확인하지 못했어요 (${c}). 면접은 그대로 할 수 있어요.`; };
+    r.onend = ()=>{ if(this._vt === r) this._vt = null; clearTimeout(this._vtT); const bb = document.getElementById('fl-vt-b'); if(bb) bb.textContent = '목소리 테스트'; const o = document.getElementById('fl-vt-out'); if(o && txt) o.textContent = `들린 말: "${txt}" · 잘 들려요. 채점하거나 저장하지 않았어요.`; };
+    let tr = null; try{ tr = MicStream.track(); }catch(_){}
+    try{ (tr && SR_TRACK_OK && tr.readyState === 'live') ? r.start(tr) : r.start(); }catch(e){ this._vt = null; b.textContent = '목소리 테스트'; out.textContent = '지금은 목소리 테스트를 시작하지 못했어요. 면접은 그대로 할 수 있어요.'; return; }
+    clearTimeout(this._vtT); this._vtT = setTimeout(()=>{ try{ r.stop(); }catch(_){} }, 7000); },
+  voiceStop(){ clearTimeout(this._vtT); const r = this._vt; this._vt = null; if(r){ try{ r.abort(); }catch(_){} } const b = document.getElementById('fl-vt-b'); if(b) b.textContent = '목소리 테스트'; },
+  /** '면접장 입장하기': 이 흐름에서 고른 화면·녹화 설정을 넘기고 기존 시작 버튼과 똑같이 시작 */
+  enter(){ const s = this.s;
+    state.imvPrefs = { cap: !!s.cap, pip: !!s.pip }; state.recPref = !!s.rec; state.flTyped = !!(s.typed && this._mic !== 'ok');
+    this.voiceStop(); this._entering = true;
+    try{ SetupFlow.go(); }catch(e){ this._entering = false; console.warn('[면접 시작]', e); showToast('면접을 시작하지 못했어요. 다시 눌러 주세요.'); } },
 };
 /* 2026-11-02g 한림대 데모 홈의 '지난 면접의 보완점': 내 성장 페이지의 '보완이 필요한 질문' 목록을 그대로 비춰 보여 줌 */
 (function(){
@@ -15374,7 +15721,8 @@ function openSetup(fieldId){   // 2026-10-22v: 새 버전 확인 뒤 준비 창 
   if(!openSetup._ios && IosSafariGate.check(()=>{ openSetup._ios = true; try{ openSetup(fieldId); }finally{ openSetup._ios = false; } })) return;   // 2026-10-28b
   if(typeof AppUpdate !== 'undefined' && AppUpdate.gateStart && !openSetup._gated){ AppUpdate.gateStart(()=>{ openSetup._gated = true; try{ openSetup(fieldId); }finally{ openSetup._gated = false; } }); return; }
   state.demoResult = false;
-  setTimeout(()=>{ try{ const m = document.getElementById('modal-setup'); if(m && m.classList.contains('active')) MicGuard.precheck('setup'); }catch(_){} }, 350);
+  if(!state.flEmbed){ state.imvPrefs = null; state.recPref = undefined; state.flTyped = false; }   // 2026-11-12 내 얼굴·자막·녹화 설정은 새 준비 화면(3단계)에서 들어갈 때만
+  setTimeout(()=>{ try{ const m = document.getElementById('modal-setup'); if(m && m.classList.contains('active') && !m.classList.contains('fl-embed')) MicGuard.precheck('setup'); }catch(_){} }, 350);   // 새 준비 화면은 3단계 안에 막힘 안내를 보여 줌
   micCheck.srTested = false; micCheck.srBlocked = false;   // 환경 점검을 열 때마다 음성 인식 검사 다시
   const isReview = fieldId === 'review';
   const isAdmin = !!(state.currentUser && state.currentUser.isAdmin);
@@ -15417,6 +15765,7 @@ function openSetup(fieldId){   // 2026-10-22v: 새 버전 확인 뒤 준비 창 
   state.reviewLabel = null;
   { const rc = document.getElementById('setup-reco'); if(rc) rc.hidden = isReview; }
   document.getElementById('modal-setup').classList.add('active');
+  if(state.flEmbed) document.getElementById('modal-setup').classList.add('fl-embed');   // 2026-11-12 새 준비 화면 3단계: 창은 숨기고 장치 칸만 빌려 씀
   try{ SetupFlow.paint(); }catch(e){ console.warn('[준비 창 흐름]', e); }
   updateDifficultyNote();
   renderVoiceSelect(); renderPrimaryVoice();
@@ -15429,11 +15778,15 @@ function openSetup(fieldId){   // 2026-10-22v: 새 버전 확인 뒤 준비 창 
   startMicLevelAnim();
   loadSavedResume();
   const camChk = document.getElementById('switch-cam'); if(camChk && camChk.checked) startCamPreview(); else setCamPill('꺼짐','');
+  if(state.flEmbed){ try{ StartFlow.devMount(); }catch(e){ console.warn('[장치 점검 칸]', e); } }
 }
 function closeSetup(){
   stopSpeaking();
-  document.getElementById('modal-setup').classList.remove('active');
+  const m = document.getElementById('modal-setup'), emb = m.classList.contains('fl-embed');
+  m.classList.remove('active');
   stopMicLevelAnim(); stopCamPreview();
+  if(emb || state.flEmbed){ m.classList.remove('fl-embed'); state.flEmbed = false; try{ StartFlow.devRestore(); }catch(e){ console.warn(e); } }   // 2026-11-12 빌려 간 장치 칸을 제자리로
+  if(StartFlow._entering){ StartFlow._entering = false; StartFlow.close(); }   // 면접장에 들어가면 준비 화면도 닫음
 }
 /* ---- 휴대폰 소리 안정화 (2026-10-12) ----
    문제: 휴대폰에서 마이크를 쓴 뒤 면접관 음성이 0처럼 작아지거나 끊김.
@@ -18037,7 +18390,7 @@ async function startMicLevelAnim(){
     const m = micErrorMessage(err);
     const blocked = err && (err.name === 'NotAllowedError' || err.name === 'SecurityError');
     setMicCheck(m.kind, m.text, blocked);   // 막힘은 아래 안내창이 원인과 함께 한 번만 기록
-    if(blocked){ try{ MicGuard.lastMicErr = err; MicGuard.open('setup', 'mic', err); }catch(_){} }
+    if(blocked){ try{ MicGuard.lastMicErr = err; if(!state.flEmbed) MicGuard.open('setup', 'mic', err); }catch(_){} }   // 새 준비 화면은 3단계 안에 안내
     fill.style.width = '4%';
     { const dv = document.getElementById('setup-mic-dev'); if(dv) dv.textContent = '마이크를 찾지 못했어요'; }
   }
@@ -19532,7 +19885,7 @@ function readyStepsHtml(){
     + (state.camOn !== false && state.camPref !== false ? '<p class="rs-tip">카메라가 켜져 있으면 답하는 모습을 <b>이 기기에서만</b> 녹화·분석해서, 결과 화면에서 다시 보고 표정·시선 피드백을 받을 수 있어요. 서버에는 올리지 않아요.</p>' : '');
 }
 function showReadyGate(){
-  try{ MicGuard.precheck('live'); }catch(_){}
+  try{ if(!state.flTyped) MicGuard.precheck('live'); }catch(_){}   // 2026-11-12 '글로 답하며 진행하기'를 고른 경우 다시 묻지 않음
   const title = document.getElementById('ready-title');
   const desc = document.getElementById('ready-desc');
   { const st0 = document.getElementById('ready-steps'); if(st0){ st0.hidden = true; st0.innerHTML = ''; } }
@@ -20020,7 +20373,7 @@ const SelfCam = {
   clips: [], seg: null,
   enabled(){
     const st = state.cameraStream;
-    return !!(window.MediaRecorder && state.interviewMode === 'dialog' && state.camOn && st && st.getVideoTracks().some(t=>t.readyState === 'live'));
+    return !!(window.MediaRecorder && state.interviewMode === 'dialog' && state.camOn && state.recPref !== false && st && st.getVideoTracks().some(t=>t.readyState === 'live'));   // 2026-11-12 녹화를 끄면 답변 영상·표정 분석도 안 함
   },
   reset(){ this.stopSeg(); this.clips.forEach(c=>{ if(c && c.url){ try{ URL.revokeObjectURL(c.url); }catch(_){} } }); this.clips = []; },
   /** 답변 듣기가 시작될 때 */
@@ -20252,6 +20605,7 @@ function startDialogInterview(){
   dialogPhase('', '준비 중');
   showScreen('screen-interview');
   hideSttAlert(); setDialogTypedUI(false); StenoLoop.micEnabled = true; state.pausedMs = 0; state.dialogPaused = false;
+  if(state.flTyped){ state.micOn = false; StenoLoop.micEnabled = false; const mb = document.getElementById('btn-mic'), ml = document.getElementById('mic-label'); if(mb) mb.classList.add('active-off'); if(ml) ml.textContent = '마이크 꺼짐'; }   // 2026-11-12 준비 화면에서 '글로 답하며 진행하기'를 고른 경우 처음부터 글로 답하기
   // 1인당 AI 횟수: 이미 한도에 닿았으면 이번 면접은 처음부터 AI 없이 진행 (서버가 최종 판단)
   AiQuota.resetForInterview();
   if(AiSwitch.anyOn() && !(state.currentUser && state.currentUser.isAdmin)){
@@ -30012,6 +30366,7 @@ const Imv = {
     const pr = this.isPractice = this.practice();
     this.capOn = false; this.mineOn = false; this.mineText = ''; this.isFu = false; this.fuPrep = false; this.noteUntil = 0;   // 2026-11-12 시안 규칙: 자막·내 답변·내 화면은 기본으로 숨기고 화면 옵션에서 켬 (연습형도 같음) this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';
     ['imv-tg-cap', 'imv-tg-pip', 'imv-tg-mine'].forEach(id=>el.querySelector('#' + id).setAttribute('aria-pressed', 'false'));
+    if(state.imvPrefs && state.imvPrefs.cap){ this.capOn = true; el.querySelector('#imv-tg-cap').setAttribute('aria-pressed', 'true'); }   // 2026-11-12 준비 화면 2단계에서 '자막'을 켠 경우
     ['#imv-cap', '#imv-mine', '#imv-pip', '#imv-typed', '#imv-ac', '#imv-lang', '#imv-opt-menu'].forEach(s=>{ el.querySelector(s).hidden = true; });
     el.querySelector('#imv-pause').hidden = !pr; el.classList.toggle('pr', pr);
     el.querySelector('#imv-kind').textContent = (this.kindText || '모의면접') + (pr ? ' · 연습형' : ' · 실전형');
@@ -30029,7 +30384,8 @@ const Imv = {
       await wait(700); el.classList.remove('enter'); el.classList.add('count');
       for(let k = 3; k >= 1; k--){ if(!this.active) return; n.textContent = k; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop'); await wait(1000); }
       el.classList.remove('count'); el.classList.add('live'); try{ this.fitPhoto(); }catch(_){}
-      ImvRec.start().then(ok=>{ if(this.active && ok){ el.querySelector('#imv-rec').hidden = false; } });
+      if(state.imvPrefs && state.imvPrefs.pip && !this.pipOn){ try{ this.togglePip(); }catch(_){} }   // 2026-11-12 준비 화면 2단계에서 '내 얼굴 보기'를 켠 경우
+      if(state.recPref !== false) ImvRec.start().then(ok=>{ if(this.active && ok){ el.querySelector('#imv-rec').hidden = false; } });   // 3단계에서 '내 모습 녹화하기'를 끄면 녹화하지 않음
       await wait(500);
     })();
   },
