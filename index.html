@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z7';
+var APP_VERSION = '2026-11-12z8';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -24840,7 +24840,9 @@ const StenoDialog = {
   rememberFollowup(t){ this.recentFollowups(); if(t) this._rf.push(String(t).slice(0, 200)); },
 
   /* ② 답변 → ③ 꼬리질문 */
-  async followup({ fieldId, question, answer, reference, history, pressure, rootQuestion, followupsDone, qid, lang, force, qbType, qbQid }){
+  /** 2026-11-12z8 AI 꼬리질문을 쓸 수 있는지 (꺼져 있으면 규칙 꼬리질문이라 미리 만들 필요가 없음) */
+  aiOn(){ try{ return !!(STEP1.useLlmFollowup && AiSwitch.on('ai_followup') && AiQuota.canUse()); }catch(_){ return false; } },
+  async followup({ fieldId, question, answer, reference, history, pressure, rootQuestion, followupsDone, qid, lang, force, qbType, qbQid, noRemember }){
     history = history || [];
     const tpl = m=>this.safeTemplate(m, answer, lang, force, followupsDone);   // 2026-11-05 템플릿 꼬리질문도 안전장치·영어 지킴
     if(STEP1.useLlmFollowup && AiSwitch.on('ai_followup') && AiQuota.canUse()){
@@ -24870,7 +24872,7 @@ const StenoDialog = {
           if(!chk.ok){ DocGuard.log('doc_guard', { reason: chk.reason, detail: String(chk.detail || '').slice(0, 60), text: String(data.followup).slice(0, 140) }); throw new Error('서류 확인에서 걸러짐: ' + chk.reason); } }
         if(data.limit && typeof data.limit.daily_left === 'number') AiQuota.status = Object.assign({}, AiQuota.status||{}, data.limit);
         try{ SpeechTag.set(data.followup, 'ai_followup'); }catch(_){}
-        this.rememberFollowup(data.followup);
+        if(!noRemember) this.rememberFollowup(data.followup);   // 미리 만들 때는 실제로 물을 때 기억함 (2026-11-12z8)
         return { followup: data.followup, evaluation: data.evaluation || '', intent: data.intent || 'probe', model: data.model || '', source:'llm' };
       }catch(e){
         console.warn('[꼬리질문: LLM 실패 → 템플릿으로 대체]', e.message);
@@ -25227,7 +25229,7 @@ const VoiceCache = {
   },
 };
 async function fetchSpeechBlob(text, voice, speed, model, instructions, engine, meta){
-  if(!VoiceCache.ok(text) || instructions || (meta && meta.retry)) return fetchSpeechBlobNet(text, voice, speed, model, instructions, engine, meta);
+  if(!VoiceCache.ok(text) || (instructions && !(engine && engine.provider === 'typecast')) || (meta && meta.retry)) return fetchSpeechBlobNet(text, voice, speed, model, instructions, engine, meta);
   const k = VoiceCache.key(text, voice, speed, model, engine);
   const hit = await VoiceCache.get(k);
   if(hit){ fetchSpeechBlob.cached = true; return hit; }
@@ -25529,19 +25531,28 @@ const StenoVoice = {
   _pk(t, eng){ return [String(t || '').trim(), this.openaiVoice, this.speed, this.ttsModel, this.instructions, JSON.stringify(eng || {})].join('|'); },
   _takePre(t, eng){ const k = this._pk(t, eng), p = this._pre.get(k); if(p){ this._pre.delete(k); PreVoice.hit++; } return p || null; },
   clearPre(){ this._pre.clear(); },
-  prefetch(text, pid){
+  prefetch(text, pid, kind, quick){
     try{
       if(state.interviewMode !== 'dialog' || !text) return;
       if(VoiceBank.urlFor(text)) return;
       const t = sanitizeForSpeech(text); let eng = null;
       if(typeof IvVoice !== 'undefined' && IvVoice.active()){
         if(IvVoice.serverOff || !pid) return;
-        const p = IvVoice.P(pid); eng = IvVoice.engineFor(pid, p && p.p === 'hard' ? 'press' : 'question');
+        const p = IvVoice.P(pid); eng = IvVoice.engineFor(pid, kind || (p && p.p === 'hard' ? 'press' : 'question'));
       } else if(this.provider === 'openai') eng = this.engine; else return;
       const k = this._pk(t, eng); if(this._pre.has(k)) return;
       if(this._pre.size >= 6) this._pre.delete(this._pre.keys().next().value);
-      const pr = this._preMake(t, eng); pr.catch(()=>{}); this._pre.set(k, pr); PreVoice.made++;
+      const pr = quick ? fetchSpeechBlob(t, this.openaiVoice, this.speed, this.ttsModel, this.instructions, eng) : this._preMake(t, eng); pr.catch(()=>{}); this._pre.set(k, pr); PreVoice.made++;
     }catch(e){ console.warn('[목소리 미리 만들기 건너뜀]', e && e.message); }
+  },
+  /** 2026-11-12z8 받는 말("네, 잘 들었습니다.")처럼 짧은 말을 면접관별 목소리로 이 기기에 미리 저장 (이미 있으면 다시 만들지 않음) */
+  async warm(lines, pids){
+    try{
+      if(state.interviewMode !== 'dialog' || !(typeof IvVoice !== 'undefined' && IvVoice.active()) || IvVoice.serverOff) return;
+      for(const pid of pids){ if(!pid) continue; const p = IvVoice.P(pid), eng = IvVoice.engineFor(pid, p && p.p === 'hard' ? 'press' : 'question');
+        for(const ln of lines){ if(!StenoLoop.running) return; const t = sanitizeForSpeech(ln); if(!VoiceCache.ok(t)) continue;
+          try{ await fetchSpeechBlob(t, this.openaiVoice, this.speed, this.ttsModel, this.instructions, eng); }catch(_){} } }
+    }catch(_){}
   },
   async _preMake(t, eng){
     let blob = await fetchSpeechBlob(t, this.openaiVoice, this.speed, this.ttsModel, this.instructions, eng);
@@ -26195,7 +26206,9 @@ const StenoLoop = {
       // 2026-11-12z7 인사말과 첫 질문 목소리를 미리 만들기 시작 (인사말이 나오는 동안 첫 질문이 준비됨). 둘 다 진행 면접관(첫째)이 말함
       try{ const p0 = IvPanel.people()[0], pid0 = p0 ? p0.id : null; const q0 = questions[(this.opt.resume && this.opt.resume.startIndex) || 0];
         if(!this.opt.resume && !greet.openUrl) StenoVoice.prefetch(greet.open, pid0);
-        if(q0 && !q0.audio_url) StenoVoice.prefetch(spokenOf(q0), pid0); }catch(_){}
+        if(q0 && !q0.audio_url) StenoVoice.prefetch(spokenOf(q0), pid0);
+        // 2026-11-12z8 꼬리질문 전에 하는 받는 말을 면접관별로 미리 (첫 꼬리질문 때 목소리를 만드느라 기다리지 않게). 인사말·첫 질문을 먼저 만든 뒤 천천히
+        if(StenoDialog.aiOn()) setTimeout(()=>{ try{ StenoVoice.warm(this.fillerLines('ko'), IvPanel.people().map(x=>x.id)); }catch(_){} }, 4000); }catch(_){}
       // 꼬리질문 배치 계획: followupTotal(면접 전체 최대)이 있으면 그 수만큼(최대-1 ~ 최대 사이 랜덤) 서로 다른 질문을 무작위로 골라 1개씩 붙임.
       // 없으면 예전 방식(질문마다 maxFollowups개). 어느 질문에 붙는지는 매번 달라져서 면접자가 패턴을 외울 수 없음.
       // 2026-11-05 면접 DB 4단계: 질문은행 면접은 꼬리질문을 면접 전체 1~3개만, 답변이 약한 질문에 (한 질문 최대 2개, 마무리 질문 제외)
@@ -26244,7 +26257,45 @@ const StenoLoop = {
         for(let f=0; f<=fuCap && !this.aborted; f++){
           this._curLimit = this.opt.realMode ? realLimitMs(f===0 ? q.q : lastAsk, f>0) : this.opt.maxAnswerMs;
           this._curLang = langNow() === 'en' ? 'en-US' : 'ko-KR';   // 2026-11-05 영어로 물으면 영어로 받아 적음
+          // 이 답에 꼬리질문을 할지 (null = 하지 않음). 아래 실제 판단과 '미리 만들기'가 같은 규칙을 씀
+          const decide = ans=>{
+            if(f === fuCap) return null;          // 이 질문의 꼬리질문 한도 → 다음 질문
+            if(setOver()) return null;            // 실전 세트 시간 초과 → 꼬리질문 없이 마지막 질문으로
+            let force = false;
+            if(dyn){
+              if(fuUsed >= dyn.total) return null;
+              let left = 0; for(let k = qi + 1; k < questions.length; k++) if(eligible(k)) left++;
+              force = f === 0 && fuUsed < dyn.min && left === 0;   // 끝까지 한 번도 안 했으면 마지막 기회에 1개
+              const weak = this.weakness(q, ans, f > 0, langNow());
+              const need = f > 0 ? 0.75 : ((dyn.total - fuUsed) > left ? 0.35 : 0.55);   // 남은 질문보다 남은 꼬리질문이 많으면 문턱을 낮춤
+              if(!force && weak < need) return null;
+            }
+            return { force };
+          };
+          const fuArgs = (ans, force)=>({ fieldId:this.opt.fieldId, question:lastAsk, answer:ans, reference:q.ref, history:history.slice(), pressure:this.opt.pressure, rootQuestion:q.q, followupsDone:f, qid:(q.id != null ? q.id : q.dbId), lang: langNow(), force, qbType: q.qtype || null, qbQid: (q.qb && q.qb.qid) || null, noRemember:true });
+          // 2026-11-12z8 꼬리질문 미리 만들기: 학생이 말을 멈추고 0.9초 조용하면 그때까지의 답으로 AI 꼬리질문을 미리 만듦.
+          //   '답변 완료' 때 답이 같으면 그대로 쓰고, 다시 말을 이어 가면 버리고 다시 멈출 때 새로 만듦. 꼬리질문이 먼저 나오고 학생이 아직 조용하면 그 목소리도 미리 만듦
+          const spec = { text:null, p:null, force:false, n:0 };
+          const specTick = (fuCap > f && StenoDialog.aiOn()) ? setInterval(()=>{
+            try{
+              if(this.aborted || this.paused || !StenoListener.active) return;
+              const L = StenoListener; if(L.interim && L.interim.trim()) return;   // 아직 받아 적는 중
+              const t = joinSpeech(L.transcript || '', '').trim(); if(!t || t === spec.text) return;
+              if(Date.now() - Math.max(L.lastVoiceAt || 0, L.spokeAt || 0) < 900) return;
+              if(spec.n >= 3) return;   // 한 답변에 미리 만들기는 3번까지 (말을 자주 멈추는 경우 비용 제한)
+              const dec = decide(t); if(!dec) return;
+              spec.n++; spec.text = t; spec.force = dec.force; this.stats.fuSpec = (this.stats.fuSpec || 0) + 1;
+              const my = spec.p = StenoDialog.followup(fuArgs(t, dec.force));
+              my.then(fu=>{ try{
+                if(spec.p !== my || !fu || this.aborted || !StenoListener.active) return;
+                if(joinSpeech(StenoListener.transcript || '', StenoListener.interim || '').trim() !== spec.text) return;
+                if(dyn && fu.intent === 'next' && !spec.force) return;   // 꼬리질문을 하지 않을 답이면 목소리는 만들지 않음
+                const nf = IvPanel.nextFu(), pp = IvPanel.people()[nf ? nf.k : 0]; StenoVoice.prefetch(fu.followup, pp ? pp.id : null, 'followup');
+              }catch(_){} }, ()=>{});
+            }catch(_){}
+          }, 300) : null;
           const r = await listen();
+          if(specTick) clearInterval(specTick);
           if(this.aborted){
             // 답변 도중 종료 → 지금까지 인식된 말이 있으면 답변으로 남겨 결과에 반영
             const partial = (r && r.text || '').trim();
@@ -26276,25 +26327,22 @@ const StenoLoop = {
           emit('answer', {text:ans, reason:r.reason, durMs:r.durMs, timing:r.timing, audioParts:r.audioParts||[], limitMs: this.opt.realMode ? this._curLimit : null});
           history.push({role:'candidate', text:ans});
           if(this.opt.realMode && r.reason==='max' && !this.aborted) await say('네, 시간 관계상 여기까지 듣겠습니다.');
-          if(f === fuCap) break;          // 이 질문의 꼬리질문 한도 → 다음 질문
-          if(setOver()) break;            // 실전 세트 시간 초과 → 꼬리질문 없이 마지막 질문으로
-          let force = false;
-          if(dyn){
-            if(fuUsed >= dyn.total) break;
-            let left = 0; for(let k = qi + 1; k < questions.length; k++) if(eligible(k)) left++;
-            force = f === 0 && fuUsed < dyn.min && left === 0;   // 끝까지 한 번도 안 했으면 마지막 기회에 1개
-            const weak = this.weakness(q, ans, f > 0, langNow());
-            const need = f > 0 ? 0.75 : ((dyn.total - fuUsed) > left ? 0.35 : 0.55);   // 남은 질문보다 남은 꼬리질문이 많으면 문턱을 낮춤
-            if(!force && weak < need) break;
-          }
+          const dec = decide(ans); if(!dec) break;
+          const force = dec.force;
           emit('thinking');
           const fuLang = langNow();
           // 2026-11-05e AI가 꼬리질문을 만드는 동안(4~5초) 면접관이 먼저 "네, 잘 들었습니다." 하고 받아 줌 — 기다리는 침묵이 줄어듦 (대화 기록에는 남기지 않음)
           const filler = this.filler(fuLang);
+          // 미리 만든 꼬리질문이 같은 답으로 만든 것이면 그대로 씀 (2026-11-12z8)
+          const reuse = spec.p && spec.text === ans && spec.force === force;
+          if(reuse) this.stats.fuSpecHit = (this.stats.fuSpecHit || 0) + 1;
           const fu = await Promise.race([
-            StenoDialog.followup({ fieldId:this.opt.fieldId, question:lastAsk, answer:ans, reference:q.ref, history:history.slice(0,-1), pressure:this.opt.pressure, rootQuestion:q.q, followupsDone:f, qid:(q.id != null ? q.id : q.dbId), lang: fuLang, force, qbType: q.qtype || null, qbQid: (q.qb && q.qb.qid) || null }),
+            reuse ? spec.p : StenoDialog.followup(Object.assign(fuArgs(ans, force), { history:history.slice(0,-1), lang: fuLang })),
             abortPromise,   // 생성 중 "면접 종료"를 누르면 기다리지 않고 바로 빠져나감
           ]);
+          if(fu && fu.source === 'llm') StenoDialog.rememberFollowup(fu.followup);
+          // 2026-11-12z8 꼬리질문 글이 오면 받는 말이 끝나기를 기다리지 않고 바로 목소리를 만들기 시작 (끝소리 검사 없이 빨리)
+          if(fu && !this.aborted && !(dyn && fu.intent === 'next' && !force)){ try{ const nf = IvPanel.nextFu(), pp = IvPanel.people()[nf ? nf.k : 0]; StenoVoice.prefetch(fu.followup, pp ? pp.id : null, 'followup', true); }catch(_){} }
           await Promise.race([filler, abortPromise]);
           if(this.aborted || !fu) break;
           if(dyn){
@@ -26305,7 +26353,8 @@ const StenoLoop = {
           emit('followup', fu);
           history.push({role:'interviewer', text:fu.followup});
           lastAsk = fu.followup;
-          await say(fu.followup, fu.source==='llm' ? 'interviewer' : 'interviewer-mock', fu.audio_url || null);
+          this._fuSpeaking = true;
+          try{ await say(fu.followup, fu.source==='llm' ? 'interviewer' : 'interviewer-mock', fu.audio_url || null); }finally{ this._fuSpeaking = false; }
           if(fu.intent === 'next') break;                    // AI가 "다음 질문으로" 판단
         }
       }
@@ -26317,12 +26366,12 @@ const StenoLoop = {
   },
   _log(role, text){ this.transcript.push({role, text, at:Date.now()}); },
   /** 2026-11-05e 꼬리질문을 기다리는 동안 하는 짧은 받는 말. AI 꼬리질문을 쓸 때만, 면접관 목소리로 (기록에는 안 남김) */
+  fillerLines(lang){ const hard = this.opt.pressure === 'hard'; return lang === 'en' ? ['I see.', 'Okay, thank you.', 'Thank you.'] : hard ? ['네.', '알겠습니다.'] : ['네, 잘 들었습니다.', '네, 알겠습니다.', '네, 말씀 감사합니다.']; },
   filler(lang){
     try{
       if(this.aborted || this.paused) return Promise.resolve();
       if(!(STEP1.useLlmFollowup && AiSwitch.on('ai_followup') && AiQuota.canUse())) return Promise.resolve();
-      const hard = this.opt.pressure === 'hard';
-      const L = lang === 'en' ? ['I see.', 'Okay, thank you.', 'Thank you.'] : hard ? ['네.', '알겠습니다.'] : ['네, 잘 들었습니다.', '네, 알겠습니다.', '네, 말씀 감사합니다.'];
+      const L = this.fillerLines(lang);
       let t = L[Math.floor(Math.random() * L.length)];
       if(t === this._lastFiller) t = L[(L.indexOf(t) + 1) % L.length];
       this._lastFiller = t;
@@ -27078,7 +27127,9 @@ const IvVoice = {
   },
   active(){ return !!(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS && state.flowCtx && Array.isArray(state.flowCtx.interviewers) && state.flowCtx.interviewers.length); },
   speakerId(){ try{ const ppl = IvPanel.people(); const p = ppl[Math.max(0, IvPanel.cur)]; return p ? p.id : null; }catch(_){ return null; } },
-  kindOf(pid){ const it = state.interviewQuestions && state.interviewQuestions[state.currentQ - 1]; if(it && it.followup) return 'followup'; const p = this.P(pid); return p && p.p === 'hard' ? 'press' : 'question'; },
+  kindOf(pid){
+    if(state.interviewMode === 'dialog' && typeof StenoLoop !== 'undefined' && StenoLoop.running){ if(StenoLoop._fuSpeaking) return 'followup'; const p = this.P(pid); return p && p.p === 'hard' ? 'press' : 'question'; }   // 2026-11-12z8 라이브 면접 중에는 지난 면접 목록이 아니라 지금 말하는 것으로
+    const it = state.interviewQuestions && state.interviewQuestions[state.currentQ - 1]; if(it && it.followup) return 'followup'; const p = this.P(pid); return p && p.p === 'hard' ? 'press' : 'question'; },
   /** 2026-11-12 면접장 사진 자리와 성별이 다른 면접관은 그 면접에서만 자리에 맞는 목소리로 (Imv.seats에서 정함) */
   seatVoice: null,
   seatOv(pid){ try{ return (typeof Imv !== 'undefined' && Imv.active && this.seatVoice && this.seatVoice[pid]) || null; }catch(_){ return null; } },

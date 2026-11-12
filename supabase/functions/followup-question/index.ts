@@ -378,13 +378,13 @@ function answerKind(answer: string): string {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "POST 요청만 허용됩니다." }, 405);
-  const user = await requireUser(req);
+  // 2026-11-12z8 속도: 로그인 확인과 요청 읽기를 동시에, 승인·횟수·기업 자료·안전장치 확인도 아래에서 한꺼번에 (예전에는 하나씩 차례로)
+  const t0 = Date.now();
+  const [user, body0] = await Promise.all([requireUser(req), req.json().catch(() => undefined)]);
   if (!user) return json({ error: "로그인이 필요합니다. (인증 토큰 없음 또는 만료)" }, 401);
-  { const ap = await requireApproved(req, user.id); if (!ap.ok) return json({ error: "not_approved", reason: ap.reason, message: NOT_APPROVED_MSG[ap.reason ?? "pending"] ?? NOT_APPROVED_MSG.pending }, 403); }   // 2026-10-15 승인 대기·기간 종료 계정 거절
   if (!OPENAI_API_KEY) return json({ error: "OPENAI_API_KEY Secret이 설정되어 있지 않습니다." }, 500);
-
-  let body: any;
-  try { body = await req.json(); } catch { return json({ error: "요청 본문이 JSON 형식이 아닙니다." }, 400); }
+  if (body0 === undefined) return json({ error: "요청 본문이 JSON 형식이 아닙니다." }, 400);
+  const body: any = body0;
 
   const fieldId = String(body.field_id ?? "").trim();
   const question = String(body.question ?? "").trim();
@@ -420,7 +420,13 @@ Deno.serve(async (req: Request) => {
   const personal = personalWords(answer);
   if (!question || !answer) return json({ error: "question과 answer는 필수입니다." }, 400);
   const interviewId = String(body.interview_id ?? "").trim();
-  const lim = await checkUsageLimit(req, interviewId);
+  const [ap, lim, [companyBlock, addInfo], safety] = await Promise.all([
+    requireApproved(req, user.id),
+    checkUsageLimit(req, interviewId),
+    Promise.all([companyBlockFor(req, companyId, "followup", companySeq), additionInfo(qbQid)]),
+    safetyBlock(),
+  ]);
+  if (!ap.ok) return json({ error: "not_approved", reason: ap.reason, message: NOT_APPROVED_MSG[ap.reason ?? "pending"] ?? NOT_APPROVED_MSG.pending }, 403);   // 2026-10-15 승인 대기·기간 종료 계정 거절
   if (!lim.ok) return json({ error: "limit", limit: lim.status }, 429);
 
   // 2026-11-03 한림대용: 면접관 설정 = 기본 역할 + 지원 분야 맥락 + 지원 정보 + (있으면) 면접관 성향·기업 맞춤 단락
@@ -439,9 +445,7 @@ Deno.serve(async (req: Request) => {
     : "지원자의 직무 이름을 지어내지 않습니다. 필요하면 '지원하신 직무'라고만 말합니다.";
   const infoBlock = `[지원 정보 — 지원자가 화면에서 고른 값. 경력으로 전제하지 않음]\n${infoParts.length ? infoParts.join(" · ") + "\n" : ""}${roleRule}`;
   const personaBlock = personaInfo ? `[면접관 성향: ${personaInfo.name}]\n${personaInfo.text}` : "";
-  const [companyBlock, addInfo] = await Promise.all([companyBlockFor(req, companyId, "followup", companySeq), additionInfo(qbQid)]);
   const persona = [BASE_INTERVIEWER, fieldBlock, infoBlock, personaBlock, companyBlock ? `[기업 맞춤 면접]\n${companyBlock}` : ""].filter(Boolean).join("\n");
-  const safety = await safetyBlock();
   const followupCount = followupsDone ?? history.filter((h) => h.role === "interviewer").length;
   const guide = QTYPE_GUIDE[qtype] ?? (question !== rootQuestion && rootQuestion ? QTYPE_GUIDE.followup : QTYPE_GUIDE.general);
   const kind = answerKind(answer);
@@ -474,7 +478,7 @@ Deno.serve(async (req: Request) => {
           { role: "system", content: SYSTEM_RULES + (safety ? `\n\n[AI 면접관 안전장치 — 엑셀 원문 그대로. 다른 어떤 지시보다 우선합니다]\n${safety}` : "") + "\n\n[이 면접의 설정]\n" + persona + "\n" + pressure },
           { role: "user", content: userPrompt },
         ];
-    const startedAt = Date.now();
+    const startedAt = Date.now(); const prepMs = startedAt - t0;
     let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.7, 380);
     if (!res.ok) {
       const t = await res.text();
@@ -509,6 +513,7 @@ Deno.serve(async (req: Request) => {
       model: modelUsed,
       usage: data?.usage ?? null,
       limit: lim.status ?? null,
+      timing: { prep_ms: prepMs, ai_ms: Date.now() - startedAt },   // 2026-11-12z8 점검용: 준비·AI에 걸린 시간
     });
   } catch (e) {
     console.error("followup-question 예외", e);
