@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z';
+var APP_VERSION = '2026-11-12z2';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6437,6 +6437,39 @@ html.ivv-dr-open{overflow:hidden;}
   #modal-mypage .mp-pf{grid-template-columns:1fr auto} #modal-mypage .mp-pf span{grid-column:1 / -1}
   #modal-feedback.zp-pg .modal-foot{padding:0 16px 30px}
 }
+/* ===== 2026-11-12z2 시안 6단계: 학교 담당자 화면 (색은 기존 그대로) ===== */
+#screen-admin .schl-tnav{display:flex;gap:22px;margin-left:24px} #screen-admin .schl-tnav[hidden]{display:none}
+#screen-admin .schl-tnav a{font-size:14.5px;color:#2b2521;text-decoration:none;padding:6px 0;border-bottom:2px solid transparent;white-space:nowrap} #screen-admin .schl-tnav a[aria-current="page"]{color:#bd411b;border-bottom-color:#bd411b;font-weight:600}
+#screen-admin.schl-lite .admin-sidebar, #screen-admin.schl-lite #admin-subtabs, #screen-admin.schl-lite #afind{display:none !important}
+#screen-admin.schl-lite .admin-layout{grid-template-columns:minmax(0,1fr) !important;max-width:1060px !important}
+.schl-ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:4px 0 18px}
+.schl-ph h2{margin:0;font-size:26px;font-weight:800;color:#2b2521;letter-spacing:-.02em} .schl-ph p{margin:6px 0 0;font-size:15px;color:#6a5b51}
+.schl-prev{flex:none !important;width:auto !important;min-width:0 !important;height:auto !important;white-space:nowrap;padding:10px 16px !important;writing-mode:horizontal-tb}
+.schl-re-pg{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr) !important} .schl-re-pg .schl-re-roles{display:grid !important;grid-template-columns:1fr 1fr;gap:8px} .schl-re-pg .schl-re-r{width:auto !important;min-width:0}
+.schl-ph + .schl-head > div:first-child, .schl-ph + .schl-ttabs + .schl-head > div:first-child{display:none}
+.schl-ph + .schl-head, .schl-ph + .schl-ttabs + .schl-head{margin-top:0;justify-content:flex-start}
+.schl-pg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.55fr);gap:20px 30px;align-items:start;margin:16px 0}
+.schl-pg > div > .schl-card{margin-top:0}
+.schl-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px} .schl-acts.schl-bottom{margin-top:18px}
+.schl-more{margin:16px 0;border-top:1px solid #ded5ce;padding-top:12px} .schl-more > summary{cursor:pointer;font-weight:600;font-size:15px;color:#2b2521;padding:4px 0 10px}
+.schl-ttabs{display:flex;gap:8px;margin:0 0 14px} .schl-ttabs button{border:1px solid #ded5ce;background:#fff;color:#2b2521;border-radius:8px;padding:9px 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.schl-ttabs button[aria-selected="true"]{background:#bd411b;border-color:#bd411b;color:#fff}
+.schl-talk{grid-template-columns:minmax(0,1fr) !important} .schl-talk[data-tab="fb"] .schl-t-nt, .schl-talk[data-tab="nt"] .schl-t-fb{display:none}
+.schl-rpf{display:grid;gap:12px;align-content:start} .schl-fld span{display:block;font-size:13px;font-weight:600;color:#2b2521;margin-bottom:6px} .schl-fld select{width:100%;max-width:360px}
+.schl-stu-pg .schl-dr-h{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:4px 0 18px;border:0;background:transparent;position:static}
+.schl-stu-pg .schl-dr-h h2{margin:0;font-size:26px;font-weight:800;color:#2b2521} .schl-stu-pg .schl-dr-h p{margin:6px 0 0;font-size:14.5px;color:#6a5b51}
+.schl-stu-pg .schl-kick{display:block;font-size:13px;color:#6a5b51;margin-top:6px}
+.schl-stu-pg .schl-dr-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.62fr);gap:16px 30px;align-items:start;padding:0;overflow:visible;max-height:none}
+.schl-stu-pg .schl-dr-body > *{grid-column:1;min-width:0} .schl-stu-pg .schl-dr-body > section:last-of-type{grid-column:2;grid-row:1 / span 8;background:#f3ede7;border-radius:14px;padding:18px 20px}
+.schl-re-pg .schl-re-now h3{margin:0 0 8px;font-size:17px} .schl-re-pg .schl-re-now p{margin:2px 0;font-size:15px;color:#2b2521}
+.schl-impact{margin-top:6px} .schl-impact ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px;font-size:14px;color:#2b2521} .schl-impact li span{margin-right:8px} .schl-impact li em{font-style:normal;color:#6a5b51}
+@media (max-width:820px){
+  #screen-admin .schl-tnav{order:9;flex:1 1 100%;margin:0;overflow-x:auto;gap:18px;padding-bottom:2px}
+  #screen-admin.schl-lite .a3-hdr-inner{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:4px}
+  .schl-ph{flex-direction:column-reverse;gap:10px} .schl-prev{align-self:flex-end;padding:8px 14px} .schl-ph h2, .schl-stu-pg .schl-dr-h h2{font-size:22px}
+  .schl-pg, .schl-stu-pg .schl-dr-body{grid-template-columns:1fr} .schl-stu-pg .schl-dr-body > section:last-of-type{grid-column:1;grid-row:auto}
+  .schl-stu-pg .schl-dr-h{flex-direction:column-reverse;gap:10px} .schl-stu-pg .schl-dr-close{align-self:flex-end}
+}
 #modal-flow.fl-page{z-index:90;padding:0;background:#faf9f7;align-items:stretch;justify-content:stretch}
 #modal-flow.fl-page .fl-box{max-width:none !important;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:none;margin:0;display:flex;flex-direction:column;background:#faf9f7;overflow:hidden}
 #modal-flow .fl-hdr{flex:none;border-bottom:1px solid #ded5ce;background:#faf9f7}
@@ -7999,7 +8032,7 @@ html.sv-open{overflow:hidden;}
   <aside class="schl-drawer" id="schl-drawer" hidden aria-label="학생 상세"></aside>
   <header class="a3-hdr">
     <div class="a3-hdr-inner">
-      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="a3-tag" id="a3-role-tag">관리자</span></a><span class="schl-scope" id="schl-scope"></span>
+      <a class="d3-brand" href="javascript:void(0)" onclick="goDashboard()"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="a3-tag" id="a3-role-tag">관리자</span></a><span class="schl-scope" id="schl-scope"></span><nav class="schl-tnav" id="schl-tnav" aria-label="학교 관리 메뉴" hidden></nav>
       <span class="a3-spacer"></span>
       <button class="a3-link" onclick="goDashboard()"><svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3h6v6M17 3l-8 8M14 11v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>사용자 화면으로</button>
       <div class="d3-user">
@@ -13973,7 +14006,12 @@ const School = {
     const af = this.G('afind'); if(af) af.hidden = !this.can('admin');   // 예전 관리 기능 찾기는 관리자만
     const st = document.querySelector('#screen-admin .admin-sidebar-title'); if(st) st.textContent = r === 'admin' ? '관리자 메뉴' : `${SC_ROLE[r]} 메뉴`;
   },
-  show(sub){ this.view = sub; this.closeStudent(); if(!this.d) this.load(); else this.render(); },
+  show(sub){ this.view = sub; this.closeStudent(); if(sub !== 'roles') this.edit = null; this.paintNav(); if(!this.d) this.load(); else this.render(); },
+  /** 2026-11-12z2 시안 45~51: 교직원·학과 담당은 위 글자 메뉴 하나로 (관리자는 기존 메뉴 그대로) */
+  paintNav(){ const lite = this.isOn() && !this.can('admin'), sc = document.getElementById('screen-admin'), nv = this.G('schl-tnav'); if(sc) sc.classList.toggle('schl-lite', lite); if(!nv) return; nv.hidden = !lite; if(!lite) return;
+    const L = [['overview','현황'],['students','학생'],['records','연습 기록'],['report','보고서']].concat(this.can('manage') ? [['talk','의견·공지']] : []);
+    nv.innerHTML = L.map(([v, t])=>`<a href="javascript:void(0)"${v === this.view ? ' aria-current="page"' : ''} onclick="School.open('${v}')">${t}</a>`).join(''); },
+  ph(title, desc, prev){ return `<div class="schl-ph"><div><h2>${title}</h2><p>${desc}</p></div>${prev ? `<button type="button" class="btn btn-outline schl-prev" onclick="${prev}">이전으로</button>` : ''}</div>`; },
   async rejectSuspended(profile){
     if(!profile || profile.status !== '이용 중지') return false;
     try{ await sb.auth.signOut(); }catch(_){}
@@ -14050,11 +14088,12 @@ const School = {
   async loadFbCount(){ try{ const r = await sb.from('feedback').select('id', { count:'exact', head:true }).eq('status', '새 글'); this.fbNew = r.count || 0; this.paintSide(); }catch(_){} },
   render(){
     const main = this.G('schl-main'); if(!main || !this.d) return;
-    const fn = { overview:'vOverview', report:'vReport', students:'vStudents', records:'vRecords', talk:'vTalk', roles:'vRoles' }[this.view] || 'vOverview';
+    const fn = this.view === 'roles' && this.edit ? 'vRoleEdit' : ({ overview:'vOverview', report:'vReport', students:'vStudents', records:'vRecords', talk:'vTalk', roles:'vRoles' }[this.view] || 'vOverview');
     main.innerHTML = (this.d.errs.length ? `<p class="schl-warn">일부 자료를 읽지 못했어요 (${escapeHtml(this.d.errs.join(' · '))}). supabase/clone/007~010 적용을 확인해 주세요.</p>` : '') + this[fn]();
     this.bind(main);
     if(this.view === 'talk') this.loadTalk();
-    if(this.view === 'roles') this.loadRoleLog();
+    if(this.view === 'roles' && !this.edit) this.loadRoleLog();
+    if(this.view === 'roles' && this.edit) this.bindRoleEdit(main);
   },
   /* ── 작은 도우미 ── */
   ago(iso){ if(!iso) return '–'; const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000); return d <= 0 ? '오늘' : d === 1 ? '어제' : d < 7 ? `${d}일 전` : d < 31 ? `${Math.floor(d / 7)}주 전` : formatDateShort(iso); },
@@ -14094,8 +14133,12 @@ const School = {
       const r = Math.min(4, h / 2); const path = h ? `M${x},${H - pb} V${y + r} Q${x},${y} ${x + r},${y} H${x + bw - r} Q${x + bw},${y} ${x + bw},${y + r} V${H - pb} Z` : '';
       const show = i === weeks.length - 1 || (w.n === maxW && w.n > 0);
       return `<g class="schl-bar" tabindex="0" aria-label="${lab} 주: ${w.n}회${a != null ? `, 평균 ${a}점` : ''}"><title>${lab} 주 · 연습 ${w.n}회${a != null ? ` · 평균 ${a}점` : ''}</title><rect x="${x - gap / 2}" y="${pt}" width="${bw + gap}" height="${H - pb - pt}" fill="transparent"/>${path ? `<path d="${path}"/>` : ''}${show && w.n ? `<text x="${x + bw / 2}" y="${y - 5}" text-anchor="middle" class="v">${w.n}</text>` : ''}<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle" class="t">${lab}</text></g>`; }).join('');
-    return `<div class="schl-head"><div><h2>현황</h2><p>${sc ? `맡은 학과(${escapeHtml([...sc].join(', '))}) 학생만 보여요.` : '학생 계정만 셌어요 (관리자·교직원 연습은 빠져요).'} 숫자는 관리 화면을 연 시점 기준이에요.</p></div><div class="schl-headr"><label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 빼고 보기</label><button type="button" class="schl-btn" data-reload="1">새로 불러오기</button></div></div>
+    return this.ph('학생들의 연습 흐름을 확인해요', '교직원용 · 담당 범위의 학생 연습만 모아 보여 줘요.') + `<div class="schl-head"><div><h2>현황</h2><p>${sc ? `맡은 학과(${escapeHtml([...sc].join(', '))}) 학생만 보여요.` : '학생 계정만 셌어요 (관리자·교직원 연습은 빠져요).'} 숫자는 관리 화면을 연 시점 기준이에요.</p></div><div class="schl-headr"><label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 빼고 보기</label><button type="button" class="schl-btn" data-reload="1">새로 불러오기</button></div></div>
       <div class="schl-kpis">${this.kpi('학생', `${students.length}명`, newM ? `최근 30일 새로 가입 ${newM}명` : '')}${this.kpi('최근 7일 연습한 학생', `${act7}명`, students.length ? `전체의 ${Math.round(act7 / students.length * 100)}%` : '')}${this.kpi('최근 30일 연습', `${r30.length}회`, r60.length ? `그 전 30일 ${r60.length}회` : '')}${this.kpi('최근 30일 평균 점수', a30 != null ? `${a30}점` : '–', a30 != null && a60 != null ? `그 전 30일보다 ${a30 >= a60 ? '+' : ''}${a30 - a60}점` : '')}</div>
+      <div class="schl-pg"><div><section class="schl-card"><div class="schl-card-h"><h3>다음 상담에 참고 <span class="schl-count">${help.length}</span></h3><small>가입 후 7일 넘게 연습 없음 · 14일 넘게 쉬는 중 · 최근 3회 평균 60점 미만</small></div>
+        ${help.length ? `<ul class="schl-help">${help.slice(0, 10).map(([p, why, k])=>`<li><button type="button" class="schl-link" data-stu="${p.id}"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.dept || '')}</small></button><span class="schl-tag ${k}">${escapeHtml(why)}</span><span class="schl-dim">${p.n ? `연습 ${p.n}회 · 마지막 ${this.ago(p.lastAt)}` : `가입 ${this.ago(p.created_at)}`}</span></li>`).join('')}</ul>${help.length > 10 ? `<button type="button" class="schl-btn ghost" data-gochip="help">${help.length - 10}명 더 보기</button>` : ''}` : '<p class="schl-empty">지금은 따로 챙길 학생이 없어요.</p>'}</section>
+      </div><aside class="zp-aside schl-aside"><b>이용 결과 공유</b><p>기간·학과·집계 기준을 확인하고 이용 보고서를 내려받아요.</p><div class="schl-acts"><button type="button" class="btn btn-outline" onclick="School.open('report')">보고서 만들기</button></div></aside></div>
+      <details class="schl-more"><summary>학과별·주별 이용과 관심 기관</summary>
       <section class="schl-card"><div class="schl-card-h"><h3>주별 연습 횟수</h3><small>최근 8주 · 막대에 마우스를 올리면 그 주 평균 점수</small></div>
         ${recs.length ? `<svg class="schl-weeks" viewBox="0 0 ${W} ${H}" role="img" aria-label="최근 8주 연습 횟수, 이번 주 ${lastW.n}회"><line x1="12" x2="${W - 12}" y1="${H - pb}" y2="${H - pb}" class="base"/>${bars}</svg>` : '<p class="schl-empty">아직 연습 기록이 없어요.</p>'}</section>
       <div class="schl-two">
@@ -14106,8 +14149,7 @@ const School = {
           ${coRows.length ? `<ul class="schl-hbars">${coRows.map(([n, o])=>{ const a = o.sc.length ? Math.round(o.sc.reduce((x, y)=>x + y, 0) / o.sc.length) : null; return `<li title="${escapeHtml(n)} · ${o.n}회 · 학생 ${o.people.size}명${a != null ? ` · 평균 ${a}점` : ''}"><span class="nm">${escapeHtml(n)}</span><span class="bar"><i style="width:${Math.round(o.n / coMax * 100)}%"></i></span><span class="schl-num">${o.n}회 · ${o.people.size}명</span></li>`; }).join('')}</ul>` : '<p class="schl-empty">아직 기업을 골라 연습한 기록이 없어요.</p>'}
           ${Object.keys(fld).length ? `<div class="schl-fields"><span>분야별</span>${Object.entries(fld).sort((a, b)=>b[1] - a[1]).map(([k, n])=>`<em>${escapeHtml(k)} ${n}</em>`).join('')}</div>` : ''}</section>
       </div>
-      <section class="schl-card"><div class="schl-card-h"><h3>도움이 필요한 학생 <span class="schl-count">${help.length}</span></h3><small>가입 후 7일 넘게 연습 없음 · 14일 넘게 쉬는 중 · 최근 3회 평균 60점 미만</small></div>
-        ${help.length ? `<ul class="schl-help">${help.slice(0, 10).map(([p, why, k])=>`<li><button type="button" class="schl-link" data-stu="${p.id}"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.dept || '')}</small></button><span class="schl-tag ${k}">${escapeHtml(why)}</span><span class="schl-dim">${p.n ? `연습 ${p.n}회 · 마지막 ${this.ago(p.lastAt)}` : `가입 ${this.ago(p.created_at)}`}</span></li>`).join('')}</ul>${help.length > 10 ? `<button type="button" class="schl-btn ghost" data-gochip="help">${help.length - 10}명 더 보기</button>` : ''}` : '<p class="schl-empty">지금은 따로 챙길 학생이 없어요.</p>'}</section>`;
+      </details>`;
   },
   /* ── 학생 ── */
   needHelp(p){ const now = Date.now(), D = 86400000; return (!p.n && now - new Date(p.created_at) > 7 * D) || (p.n && now - new Date(p.lastAt) > 14 * D) || (p.recent3 != null && p.recent3 < 60); },
@@ -14119,7 +14161,7 @@ const School = {
   vStudents(){
     const f = this.f, list = this.filtered(), ds = this.depts(), cols = [...new Set(ds.map(x=>x[0]))];
     const chips = [['', '전체'], ['help', '도움 필요'], ['none', '연습 없음'], ['idle', '2주 넘게 쉼'], ['low', '점수 낮음'], ['docs', '서류 볼 수 있음'], ['ib', '인바디 있음']];
-    return `<div class="schl-head"><div><h2>학생</h2><p>이름을 누르면 점수 추이·기록·인바디·서류·상담 메모를 볼 수 있어요.${this.role() === 'dept' ? ' 맡은 학과 학생만 보여요.' : ''}</p></div><div class="schl-headr"><label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 빼고 보기</label></div></div>
+    return this.ph('학생 찾기', '담당 학과·역할의 열람 범위를 유지합니다.', "School.open('overview')") + `<div class="schl-head"><div><h2>학생</h2><p>이름을 누르면 점수 추이·기록·인바디·서류·상담 메모를 볼 수 있어요.${this.role() === 'dept' ? ' 맡은 학과 학생만 보여요.' : ''}</p></div><div class="schl-headr"><label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 빼고 보기</label></div></div>
       <div class="schl-tools"><input type="search" id="schl-q" placeholder="이름·이메일·학과 찾기" value="${escapeHtml(f.q)}" aria-label="학생 찾기">
         <select id="schl-col" aria-label="단과대학"><option value="">단과대학 전체</option>${cols.map(c=>`<option${f.college === c ? ' selected' : ''}>${escapeHtml(c)}</option>`).join('')}</select>
         <select id="schl-dept" aria-label="학과"><option value="">학과 전체</option>${ds.filter(x=>!f.college || x[0] === f.college).map(x=>`<option${f.dept === x[1] ? ' selected' : ''}>${escapeHtml(x[1])}</option>`).join('')}</select></div>
@@ -14130,13 +14172,16 @@ const School = {
   },
   async openStudent(id){
     const p = this.d && this.d.sMap[id]; if(!p) return;
-    this.sel = id; const dr = this.G('schl-drawer'), bg = this.G('schl-drawer-bg');
-    dr.innerHTML = this.drawer(p); dr.hidden = false; bg.hidden = false; document.body.classList.add('schl-noscroll');
-    this.bindDrawer(dr, p); dr.querySelector('.schl-dr-close').focus();
+    this.sel = id; const main = this.G('schl-main'); if(!main) return;
+    main.innerHTML = `<div class="schl-stu-pg">${this.drawer(p)}</div>`;   // 2026-11-12z2 시안 47: 오른쪽 칸 대신 전체 화면
+    const cl = main.querySelector('.schl-dr-close'); if(cl){ cl.className = 'btn btn-outline schl-prev schl-dr-close'; cl.innerHTML = '이전으로'; cl.removeAttribute('aria-label'); }
+    { const hp = main.querySelector('.schl-dr-h p'); if(hp) hp.insertAdjacentHTML('beforebegin', '<small class="schl-kick">학생 상세 · 소속과 담당 범위에 맞는 정보만 보여요</small>'); }
+    this.bindDrawer(main, p); window.scrollTo(0, 0); try{ main.querySelector('.schl-dr-close').focus({ preventScroll:true }); }catch(_){}
     this.loadNotes(p);
-    this._esc = e=>{ if(e.key === 'Escape') this.closeStudent(); }; document.addEventListener('keydown', this._esc);
+    this._esc = e=>{ if(e.key === 'Escape') this.backFromStudent(); }; document.addEventListener('keydown', this._esc);
   },
   closeStudent(){ const dr = this.G('schl-drawer'), bg = this.G('schl-drawer-bg'); if(dr) dr.hidden = true; if(bg) bg.hidden = true; document.body.classList.remove('schl-noscroll'); if(this._esc) document.removeEventListener('keydown', this._esc); this.sel = null; },
+  backFromStudent(){ this.closeStudent(); if(this.d) this.render(); window.scrollTo(0, 0); },
   trendChart(p){
     const pts = p.recs.filter(r=>r.score != null).slice(0, 15).reverse(); if(pts.length < 2) return '<p class="schl-empty">점수가 2번 이상 쌓이면 추이를 그려요.</p>';
     const W = 520, H = 170, l = 30, r = 12, t = 12, b = 26, x = i=>l + i * (W - l - r) / (pts.length - 1), y = s=>t + (100 - s) / 100 * (H - t - b);
@@ -14165,7 +14210,7 @@ const School = {
       </div>`;
   },
   bindDrawer(dr, p){
-    dr.querySelector('.schl-dr-close').onclick = ()=>this.closeStudent();
+    dr.querySelector('.schl-dr-close').onclick = ()=>this.backFromStudent();
     dr.querySelectorAll('[data-rec]').forEach(b=>b.onclick = ()=>this.openRecord(b.dataset.rec, p.id));
     dr.querySelectorAll('[data-doc]').forEach(b=>b.onclick = async ()=>{ const pre = this.G('schl-doc'); pre.hidden = false; pre.textContent = '불러오는 중…';
       const col = b.dataset.doc === 'cv' ? 'cv_text' : 'resume_text';
@@ -14204,14 +14249,14 @@ const School = {
   modeName(r){ return r.set_kind ? '실전 세트' : r.mode === 'dialog' ? '라이브' : r.mode === 'rehearsal' ? '리허설' : '연습'; },
   vRecords(){
     const f = this.rf, rows = this.recRows(), M = this.d.sMap, sc = rows.filter(r=>r.score != null), avg = sc.length ? Math.round(sc.reduce((a, r)=>a + r.score, 0) / sc.length) : null;
-    return `<div class="schl-head"><div><h2>연습 기록</h2><p>줄을 누르면 문항별 답변을 볼 수 있어요. 엑셀 파일은 지금 거른 기록만 담아요.</p></div><div class="schl-headr"><label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 빼고 보기</label><button type="button" class="schl-btn" data-csv="1" ${rows.length ? '' : 'disabled'}>엑셀로 내려받기 (${rows.length}건)</button></div></div>
+    return this.ph('연습 기록 확인', '학생·기간·면접 유형별로 살펴봐요. 줄을 누르면 문항별 답변이 보여요.', "School.open('overview')") + `<div class="schl-head"><div><h2>연습 기록</h2><p>줄을 누르면 문항별 답변을 볼 수 있어요. 엑셀 파일은 지금 거른 기록만 담아요.</p></div><div class="schl-headr"><label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 빼고 보기</label><button type="button" class="schl-btn" data-csv="1" ${rows.length ? '' : 'disabled'}>엑셀로 내려받기 (${rows.length}건)</button></div></div>
       <div class="schl-tools"><select id="schl-rdays" aria-label="기간">${[[7, '최근 7일'], [30, '최근 30일'], [90, '최근 90일'], [0, '전체 기간']].map(([v, l])=>`<option value="${v}"${f.days === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
         <select id="schl-rfield" aria-label="분야"><option value="">분야 전체</option>${FIELDS.map(x=>`<option value="${x.id}"${f.field === x.id ? ' selected' : ''}>${escapeHtml(x.name)}</option>`).join('')}</select>
         <select id="schl-rdept" aria-label="학과"><option value="">학과 전체</option>${this.depts().map(x=>`<option${f.dept === x[1] ? ' selected' : ''}>${escapeHtml(x[1])}</option>`).join('')}</select>
         <input type="search" id="schl-rq" placeholder="학생·기업 이름" value="${escapeHtml(f.q)}" aria-label="학생·기업 찾기"></div>
       <p class="schl-sum">${rows.length}건 · 학생 ${new Set(rows.map(r=>r.user_id)).size}명${avg != null ? ` · 평균 ${avg}점` : ''}</p>
       <section class="schl-card flush">${rows.length ? `<table class="schl-table"><thead><tr><th>날짜</th><th>학생</th><th>학과</th><th>면접</th><th>방식</th><th class="r">문항</th><th class="r">점수</th><th class="r">걸린 시간</th></tr></thead><tbody>${rows.slice(0, f.shown).map(r=>{ const p = M[r.user_id] || {};
-        return `<tr class="schl-click" data-rec="${r.id}" tabindex="0"><td>${formatDateShort(r.created_at)}</td><td><b>${escapeHtml(p.name || '')}</b></td><td>${escapeHtml(p.dept || '–')}</td><td>${escapeHtml(r.company_name ? `${r.company_name}` : (r.field_name || ''))}${r.company_name ? `<small>${escapeHtml(r.field_name || '')}</small>` : ''}</td><td>${this.modeName(r)}</td><td class="r">${r.question_count || 0}</td><td class="r">${r.score != null ? `<b class="${r.score < 60 ? 'schl-low' : ''}">${r.score}</b>` : '–'}</td><td class="r">${escapeHtml(r.duration_label ? durText(r.duration_label) : '–')}</td></tr>`; }).join('')}</tbody></table>${rows.length > f.shown ? `<button type="button" class="schl-btn ghost wide" data-more="1">${Math.min(200, rows.length - f.shown)}건 더 보기 (남은 ${rows.length - f.shown}건)</button>` : ''}` : '<p class="schl-empty pad">조건에 맞는 기록이 없어요.</p>'}</section>`;
+        return `<tr class="schl-click" data-rec="${r.id}" tabindex="0"><td>${formatDateShort(r.created_at)}</td><td><b>${escapeHtml(p.name || '')}</b></td><td>${escapeHtml(p.dept || '–')}</td><td>${escapeHtml(r.company_name ? `${r.company_name}` : (r.field_name || ''))}${r.company_name ? `<small>${escapeHtml(r.field_name || '')}</small>` : ''}</td><td>${this.modeName(r)}</td><td class="r">${r.question_count || 0}</td><td class="r">${r.score != null ? `<b class="${r.score < 60 ? 'schl-low' : ''}">${r.score}</b>` : '–'}</td><td class="r">${escapeHtml(r.duration_label ? durText(r.duration_label) : '–')}</td></tr>`; }).join('')}</tbody></table>${rows.length > f.shown ? `<button type="button" class="schl-btn ghost wide" data-more="1">${Math.min(200, rows.length - f.shown)}건 더 보기 (남은 ${rows.length - f.shown}건)</button>` : ''}` : '<p class="schl-empty pad">조건에 맞는 기록이 없어요.</p>'}</section><div class="schl-acts schl-bottom"><button type="button" class="btn btn-outline" onclick="School.open('report')">보고서 만들기</button></div>`;
   },
   csv(){
     const rows = this.recRows(), M = this.d.sMap, esc = v=>{ const t = String(v == null ? '' : v); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
@@ -14224,10 +14269,10 @@ const School = {
   },
   /* ── 의견·공지 ── */
   vTalk(){
-    return `<div class="schl-head"><div><h2>의견·공지</h2><p>학생이 보낸 의견에 답장하면 학생 화면에 알림이 가요. 공지는 로그인한 모든 학생에게 보여요.</p></div></div>
-      <div class="schl-two">
-        <section class="schl-card"><div class="schl-card-h"><h3>학생 의견</h3><label class="schl-tog"><input type="checkbox" id="schl-fball"${this.fbAll ? ' checked' : ''}> 답장한 것도 보기</label></div><div id="schl-fb"><p class="schl-dim">불러오는 중…</p></div></section>
-        <section class="schl-card"><div class="schl-card-h"><h3>공지 보내기</h3></div>
+    return this.ph('학생 의견과 학교 공지', '답장과 공지 게시를 다른 작업으로 구분해요.', "School.open('overview')") + `<div class="schl-ttabs" role="tablist"><button type="button" role="tab" data-ttab="fb" aria-selected="${(this.ttab || 'fb') === 'fb'}">받은 의견</button><button type="button" role="tab" data-ttab="nt" aria-selected="${this.ttab === 'nt'}">공지 작성·관리</button></div><div class="schl-head"><div><h2>의견·공지</h2><p>학생이 보낸 의견에 답장하면 학생 화면에 알림이 가요. 공지는 로그인한 모든 학생에게 보여요.</p></div></div>
+      <div class="schl-two schl-talk" data-tab="${this.ttab || 'fb'}">
+        <section class="schl-card schl-t-fb"><div class="schl-card-h"><h3>학생 의견</h3><label class="schl-tog"><input type="checkbox" id="schl-fball"${this.fbAll ? ' checked' : ''}> 답장한 것도 보기</label></div><div id="schl-fb"><p class="schl-dim">불러오는 중…</p></div></section>
+        <section class="schl-card schl-t-nt"><div class="schl-card-h"><h3>공지 보내기</h3></div>
           <div class="schl-form"><label>제목<input id="schl-nt-t" maxlength="80" placeholder="예: 11월 모의면접 특강 안내"></label><label>내용<textarea id="schl-nt-b" rows="4" maxlength="2000" placeholder="학생에게 보일 내용"></textarea></label>
             <label>끝나는 날 <small>(비우면 직접 끌 때까지)</small><input id="schl-nt-e" type="date"></label><button type="button" class="schl-btn" data-ntadd="1">공지 올리기</button></div>
           <h4 class="schl-sub">올린 공지</h4><div id="schl-nt"><p class="schl-dim">불러오는 중…</p></div></section>
@@ -14261,12 +14306,12 @@ const School = {
   /* ── 권한 관리 ── */
   vRoles(){
     const ppl = this.d.people.filter(p=>!this.rlf || p.role === this.rlf), cnt = r=>this.d.people.filter(p=>p.role === r).length, me = state.currentUser.id;
-    return `<div class="schl-head"><div><h2>권한 관리</h2><p>권한은 관리자만 바꿀 수 있고, 바꿀 때마다 기록이 남아요. 관리자는 한 명 이상 남아 있어야 해요.</p></div></div>
-      <section class="schl-card"><div class="schl-card-h"><h3>권한별로 할 수 있는 일</h3></div>
+    return this.ph('담당자와 열람 범위', '역할 변경과 담당 학과 변경을 함께 확인해요. [바꾸기]를 누르면 변경 전후를 비교한 뒤 확정해요.', "School.open('overview')") + `<div class="schl-head"><div><h2>권한 관리</h2><p>권한은 관리자만 바꿀 수 있고, 바꿀 때마다 기록이 남아요. 관리자는 한 명 이상 남아 있어야 해요.</p></div></div>
+      <details class="schl-more"><summary>권한별로 할 수 있는 일</summary><section class="schl-card"><div class="schl-card-h"><h3>권한별로 할 수 있는 일</h3></div>
         <div class="schl-scroll"><table class="schl-table schl-matrix"><thead><tr><th></th>${['admin','staff','dept','student'].map(r=>`<th>${SC_ROLE[r]}</th>`).join('')}</tr></thead><tbody>${SC_CAN.map(row=>`<tr><td>${row[0]}</td>${row.slice(1).map(v=>`<td class="${v === '✓' ? 'y' : v === '–' ? 'n' : 'p'}">${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
-      <div class="schl-chips" role="group" aria-label="권한으로 거르기">${[['', '전체', this.d.people.length], ['admin', '관리자', cnt('admin')], ['staff', '교직원', cnt('staff')], ['dept', '학과 담당', cnt('dept')], ['student', '학생', cnt('student')]].map(([k, l, n])=>`<button type="button" class="schl-chip" data-rlf="${k}" aria-pressed="${this.rlf === k}">${l} ${n}</button>`).join('')}</div>
+      </details><div class="schl-chips" role="group" aria-label="권한으로 거르기">${[['', '전체', this.d.people.length], ['admin', '관리자', cnt('admin')], ['staff', '교직원', cnt('staff')], ['dept', '학과 담당', cnt('dept')], ['student', '학생', cnt('student')]].map(([k, l, n])=>`<button type="button" class="schl-chip" data-rlf="${k}" aria-pressed="${this.rlf === k}">${l} ${n}</button>`).join('')}</div>
       <section class="schl-card flush"><table class="schl-table schl-roles"><thead><tr><th>계정</th><th>소속</th><th>권한</th><th>상태</th><th></th></tr></thead><tbody>${ppl.map(p=>`<tr${this.edit === p.id ? ' class="on"' : ''}><td><b>${escapeHtml(p.name)}${p.id === me ? ' <small class="schl-me">나</small>' : ''}</b>${p.is_test ? ' <span class="schl-test">테스트</span>' : ''}<small>${escapeHtml(p.email || '')}</small></td><td>${escapeHtml(p.dept || '–')}</td>
-          <td><span class="schl-role r-${p.role}">${SC_ROLE[p.role] || p.role}</span>${p.role === 'dept' && (p.scope_depts || []).length ? `<small>${escapeHtml(p.scope_depts.join(', '))}</small>` : ''}</td><td>${p.status === '이용 중지' ? '<span class="schl-tag bad">이용 중지</span>' : '<span class="schl-dim">이용 중</span>'}</td><td class="r"><button type="button" class="schl-btn ghost sm" data-redit="${p.id}">${this.edit === p.id ? '닫기' : '바꾸기'}</button></td></tr>${this.edit === p.id ? `<tr class="schl-redit"><td colspan="5">${this.roleEditor(p)}</td></tr>` : ''}`).join('')}</tbody></table></section>
+          <td><span class="schl-role r-${p.role}">${SC_ROLE[p.role] || p.role}</span>${p.role === 'dept' && (p.scope_depts || []).length ? `<small>${escapeHtml(p.scope_depts.join(', '))}</small>` : ''}</td><td>${p.status === '이용 중지' ? '<span class="schl-tag bad">이용 중지</span>' : '<span class="schl-dim">이용 중</span>'}</td><td class="r"><button type="button" class="schl-btn ghost sm" data-redit="${p.id}">바꾸기</button></td></tr>`).join('')}</tbody></table></section>
       <section class="schl-card"><div class="schl-card-h"><h3>권한 변경 기록</h3><small>최근 30건</small></div><div id="schl-rlog"><p class="schl-dim">불러오는 중…</p></div></section>`;
   },
   roleEditor(p){
@@ -14277,12 +14322,27 @@ const School = {
         <label class="grow">바꾸는 이유 <input class="schl-re-why" maxlength="80" placeholder="예: 경영대학 취업지원 담당 조교"></label><button type="button" class="schl-btn" data-rsave="${p.id}">저장</button></div>
       ${p.id === state.currentUser.id ? '<p class="schl-warn">내 계정이에요. 관리자 권한을 내려놓으면 이 화면을 더 쓸 수 없어요.</p>' : ''}</div>`;
   },
+  /** 2026-11-12z2 시안 78: 역할·학과 범위 변경을 전후 비교 화면에서 확정 */
+  vRoleEdit(){
+    const p = this.d.pMap[this.edit]; if(!p){ this.edit = null; return this.vRoles(); }
+    const cur = `${SC_ROLE[p.role] || p.role}${p.role === 'dept' && (p.scope_depts || []).length ? ' · ' + (p.scope_depts || []).join(', ') : ''}${p.status === '이용 중지' ? ' · 이용 중지' : ''}`;
+    return this.ph('역할과 학과 범위를 확인해요', '변경 전후를 비교한 뒤 확정합니다.', 'School.edit=null;School.render()') + `<div class="schl-pg schl-re-pg">
+      <div class="schl-re-now"><h3>현재</h3><p><b>${escapeHtml(p.name)}</b></p><p>${escapeHtml(cur)}</p><p class="schl-dim">${escapeHtml(p.email ? LoginId.label(p.email) : '')}</p></div>
+      <div>${this.roleEditor(p)}</div></div>
+      <section class="zp-aside schl-impact" id="schl-impact"></section>`;
+  },
+  impact(from, to){ const ix = { admin:1, staff:2, dept:3, student:4 }, a = ix[from], b = ix[to];
+    if(!a || !b || from === to) return '<b>추가로 볼 수 있게 되는 정보</b><p>역할이 그대로라 열람 범위는 바뀌지 않아요. 학과·상태만 바뀔 수 있어요.</p>';
+    const rows = SC_CAN.filter(r=>r[a] !== r[b]);
+    return `<b>추가로 볼 수 있게 되는 정보</b><p>${SC_ROLE[from]} → ${SC_ROLE[to]}로 바꾸면 아래가 달라져요. 실제 권한은 서버에서 다시 확인해요.</p>${rows.length ? `<ul>${rows.map(r=>`<li><span>${escapeHtml(r[0])}</span><em>${escapeHtml(r[a])}</em> → <b>${escapeHtml(r[b])}</b></li>`).join('')}</ul>` : ''}`; },
+  bindRoleEdit(main){ const p = this.d.pMap[this.edit]; if(!p) return; const paint = ()=>{ const to = (main.querySelector('input[name="schl-re-role"]:checked') || {}).value || p.role; const box = this.G('schl-impact'); if(box) box.innerHTML = this.impact(p.role, to); };
+    main.querySelectorAll('input[name="schl-re-role"]').forEach(r=>r.addEventListener('change', paint)); paint();
+    const sv = main.querySelector('[data-rsave]'); if(sv) sv.textContent = '변경 확정'; },
   async saveRole(uid){
     const box = document.querySelector(`.schl-re[data-uid="${uid}"]`), role = (box.querySelector('input[name="schl-re-role"]:checked') || {}).value;
     const scope = role === 'dept' ? [...box.querySelectorAll('.schl-re-depts input:checked')].map(x=>x.value) : [];
     const st = box.querySelector('.schl-re-st').value, why = box.querySelector('.schl-re-why').value.trim(), p = this.d.pMap[uid];
     if(role === 'dept' && !scope.length) return showToast('학과 담당은 맡을 학과를 하나 이상 골라 주세요');
-    if(!confirm(`${p.name}님을 '${SC_ROLE[role]}'${role === 'dept' ? `(${scope.join(', ')})` : ''}${st === '이용 중지' ? ', 이용 중지' : ''}로 바꿀까요?`)) return;
     const { error } = await sb.rpc('set_user_role', { p_user: uid, p_role: role, p_scope: scope, p_status: st, p_reason: why || null });
     if(error) return showToast('바꾸지 못했어요. ' + friendlyErr(error), 'warn');
     showToast(`${p.name}님 권한을 바꿨어요. 그 사람이 다시 로그인하면 적용돼요.`, 'ok');
@@ -14417,10 +14477,10 @@ const School = {
   },
   vReport(){
     const opts = this.rpOptions();
-    return `<div class="schl-head"><div><h2>보고서</h2><p>기간을 고르면 취업진로지원센터에 낼 이용 보고서가 만들어져요. 인쇄하거나 PDF로 저장할 수 있어요.</p></div>
-      <div class="schl-headr rp-ctl"><label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 빼고 보기</label>
-        <select id="rp-period" aria-label="보고서 기간">${opts.map(([k, l])=>`<option value="${k}"${k === this.rp ? ' selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select>
-        <button type="button" class="schl-btn ghost" data-rpcsv>엑셀로 내려받기</button><button type="button" class="schl-btn" data-rpprint>인쇄 · PDF 저장</button></div></div>
+    return this.ph('보고서를 준비해요', '집계 기준과 열람 범위를 확인한 뒤 내려받아요.', "School.open('overview')") + `<div class="schl-pg"><div class="schl-rpf">
+        <label class="schl-fld"><span>집계 기간</span><select id="rp-period" aria-label="보고서 기간">${opts.map(([k, l])=>`<option value="${k}"${k === this.rp ? ' selected' : ''}>${escapeHtml(l)}</option>`).join('')}</select></label>
+        <label class="schl-tog"><input type="checkbox" data-hidetest ${this.hideTest ? 'checked' : ''}> 테스트 계정 제외</label></div>
+      <aside class="zp-aside schl-aside"><b>집계 미리보기</b><p>고른 기간의 가입·연습·평균 점수와 학과별 이용이 아래에 미리 보여요.</p><div class="schl-acts"><button type="button" class="btn btn-outline" data-rpcsv>엑셀 내려받기</button><button type="button" class="btn btn-outline" data-rpprint>인쇄·PDF</button></div></aside></div>
       <div class="rp-wrap">${this.rpBuild()}</div>`;
   },
   rpPrint(){
@@ -14469,7 +14529,8 @@ const School = {
     const fa = this.G('schl-fball'); if(fa) fa.onchange = ()=>{ this.fbAll = fa.checked; this.loadTalk(); };
     on('[data-ntadd]', 'click', ()=>this.addNotice());
     on('[data-rlf]', 'click', e=>{ this.rlf = e.currentTarget.dataset.rlf; this.render(); });
-    on('[data-redit]', 'click', e=>{ const id = e.currentTarget.dataset.redit; this.edit = this.edit === id ? null : id; this.render(); });
+    on('[data-redit]', 'click', e=>{ this.edit = e.currentTarget.dataset.redit; this.render(); window.scrollTo(0, 0); });
+    on('[data-ttab]', 'click', e=>{ this.ttab = e.currentTarget.dataset.ttab; const w = main.querySelector('.schl-talk'); if(w) w.dataset.tab = this.ttab; main.querySelectorAll('[data-ttab]').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.ttab === this.ttab))); });
     on('input[name="schl-re-role"]', 'change', e=>{ const fs = main.querySelector('.schl-re-depts'); if(fs) fs.hidden = e.currentTarget.value !== 'dept'; });
     on('[data-rsave]', 'click', e=>this.saveRole(e.currentTarget.dataset.rsave));
   },
