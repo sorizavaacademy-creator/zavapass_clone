@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12h';
+var APP_VERSION = '2026-11-12i';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6091,6 +6091,8 @@ html.ivv-dr-open{overflow:hidden;}
 body.v3-ui:not(.is-admin-ui), body:not(.is-admin-ui) #screen-login.v3, body:not(.is-admin-ui) #screen-practice.v3, body:not(.is-admin-ui) #screen-pending.v3, body:not(.is-admin-ui) .modal-overlay{--c-bg:#faf9f7;--c-bg-2:#f3ede7;--c-surface:#f3ede7;--c-line:#ded5ce;--c-line-strong:#ded5ce;--c-ink:#2b2521;--c-ink-2:#6a5b51;--c-ink-3:#6a5b51 !important;--c-accent:#bd411b;--c-accent-btn:#bd411b;--c-accent-btn-hover:#a63816;--c-accent-ink:#bd411b;--c-accent-soft:#f3ede7}
 body:not(.is-admin-ui) #screen-login, body:not(.is-admin-ui) #screen-practice, body:not(.is-admin-ui) #screen-pending{background:#faf9f7 !important;color:#2b2521}
 body:not(.is-admin-ui) #screen-login.v3{--c-bg-2:#faf9f7}
+/* 2026-11-12 오른쪽 아래 '사용 안내'·'의견·문제 보내기' 버튼이 맨 아래 버튼을 가리지 않게: 화면 맨 아래 줄 밑에 그 높이만큼 빈칸 */
+@media(min-width:641px){ body:not(.is-admin-ui) .screen > .zp-foot{padding-bottom:calc(28px + 96px) !important} }
 body:not(.is-admin-ui):has(#screen-login.active){background:#faf9f7 !important}
 body:not(.is-admin-ui) #screen-login.v3 .lg{background:#faf9f7}
 body:not(.is-admin-ui) #screen-practice .d3-hdr, body:not(.is-admin-ui) #screen-pending .d3-hdr{background:#faf9f7;border-bottom-color:#ded5ce}
