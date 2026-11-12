@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12g';
+var APP_VERSION = '2026-11-12h';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6101,7 +6101,14 @@ body:not(.is-admin-ui) .btn-outline{background:#fff;border-color:#ded5ce;color:#
 body:not(.is-admin-ui) .modal-box .chip.sel{background:#2b2521;border-color:#2b2521;color:#fff}
 /* 연습 도구·내 자료 창 */
 body:not(.is-admin-ui) .hm-more{background:#faf9f7}
-body:not(.is-admin-ui) .hm-title{margin:0;padding:18px 22px 4px;font-size:20px;font-weight:800;letter-spacing:-.02em;color:#2b2521}
+body:not(.is-admin-ui) .hm-title{padding:22px 76px 14px 26px;border-bottom:1px solid #ded5ce}
+body:not(.is-admin-ui) .hm-title[hidden]{display:none}
+body:not(.is-admin-ui) .hm-title h2{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;color:#2b2521}
+body:not(.is-admin-ui) .hm-title p{margin:6px 0 0;font-size:14.5px;color:#6a5b51}
+body:not(.is-admin-ui) .hm-more.has-title .hm-tabs{padding:10px 16px 0}
+body:not(.is-admin-ui) .hm-more.has-title .hm-x{position:absolute;top:20px;right:22px;width:38px;height:38px;border:1px solid #ded5ce;background:#fff}
+body:not(.is-admin-ui) .hm-more.has-title .hm-x:hover{background:#f3ede7}
+@media(max-width:640px){ body:not(.is-admin-ui) .hm-title{padding:18px 64px 12px 18px} body:not(.is-admin-ui) .hm-more.has-title .hm-x{top:16px;right:16px} }
 body:not(.is-admin-ui) .hm-tabs{border-bottom-color:#ded5ce}
 body:not(.is-admin-ui) .hm-tabs button[data-t]{color:#6a5b51} body:not(.is-admin-ui) .hm-tabs button[data-t]:hover, body:not(.is-admin-ui) .hm-tabs button[data-t].on{color:#2b2521}
 body:not(.is-admin-ui) .hm-tabs button[data-t].on{box-shadow:0 0 0 1px #ded5ce}
@@ -7319,7 +7326,7 @@ html.sv-open{overflow:hidden;}
     <div class="hm-sheet" id="hm-sheet" hidden>
       <div class="hm-sheet-bg" onclick="HomeTabs.close()"></div>
       <section class="hm-more" id="hm-more" role="dialog" aria-modal="true" aria-label="연습 도구">
-        <h2 class="hm-title" id="hm-title" hidden>내 자료</h2>
+        <div class="hm-title" id="hm-title" hidden><h2 id="hm-title-h">내 자료</h2><p>내 경험·서류, 질문 모음, 지난 면접 기록을 한곳에서 봐요.</p></div>
         <div class="hm-tabs" role="tablist"><button type="button" role="tab" data-t="dday" onclick="HomeTabs.go('dday')">면접 D-day</button><button type="button" role="tab" data-t="review" onclick="HomeTabs.go('review')">지난 면접 보완점</button><button type="button" role="tab" data-t="bm" onclick="HomeTabs.go('bm')">내 질문 모음</button><button type="button" role="tab" data-t="exp" onclick="HomeTabs.go('exp')">내 경험</button><button type="button" role="tab" data-t="recent" onclick="HomeTabs.go('recent')">최근 면접 기록</button><button type="button" class="hm-x" onclick="HomeTabs.close()" aria-label="닫기">✕</button></div>
         <div class="hm-tp" data-t="review" role="tabpanel"><section class="d3-panel">
         <div class="d3-panel-head"><h3 class="d3-panel-title">지난 면접의 보완점과 다시 연습</h3><button class="d3-btn-text" id="hm-review-btn" type="button" onclick="startReviewFromDashboard()" style="display:none;">이 질문들로 다시 연습</button></div>
@@ -26170,7 +26177,8 @@ const HomeTabs = {
   KEEP: /editPlan|removeBm|openBmAll|check\(/,   // 이 버튼들은 창을 닫지 않음 (그 위에 작은 창이 뜨거나 제자리에서 바뀜)
   open(t, title){
     const sh = document.getElementById('hm-sheet'); if(!sh) return;
-    const ht = document.getElementById('hm-title'); if(ht){ ht.hidden = !title; ht.textContent = title || ''; }   // 2026-11-12 위 메뉴 '내 자료'로 열면 제목
+    const ht = document.getElementById('hm-title'), hh = document.getElementById('hm-title-h'); if(ht){ ht.hidden = !title; if(hh) hh.textContent = title || ''; }
+    const mo = document.getElementById('hm-more'); if(mo) mo.classList.toggle('has-title', !!title);   // 2026-11-12 위 메뉴 '내 자료'로 열면 제목
     sh.hidden = false; document.documentElement.classList.add('hm-open'); this.go(t);
   },
   close(){ const sh = document.getElementById('hm-sheet'); if(sh) sh.hidden = true; document.documentElement.classList.remove('hm-open'); },
