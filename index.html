@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12u';
+var APP_VERSION = '2026-11-12v';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6271,6 +6271,51 @@ html.ivv-dr-open{overflow:hidden;}
   #modal-signup .su-acts .btn{flex:1}
   #screen-login.v3 .lg-join{flex-direction:row !important} #screen-login.v3 .lg-join .lg-join-btn{flex:1}
 }
+/* ===== 2026-11-12v 시안 2단계: 전체 화면 공통 틀 (색은 기존 토큰) ===== */
+.zp-hdr{position:sticky;top:0;z-index:5;border-bottom:1px solid #ded5ce;background:#faf9f7}
+.zp-hdr-in{max-width:1160px;margin:0 auto;height:72px;padding:0 clamp(16px,4vw,32px);display:flex;align-items:center;gap:20px}
+.zp-brand{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:#2b2521;flex:none} .zp-brand b{font-size:17px;font-weight:800} .zp-brand span{font-size:13px;color:#6a5b51}
+.zp-nav{flex:1;display:flex;justify-content:center;gap:24px} .zp-nav a{font-size:14.5px;color:#2b2521;text-decoration:none;padding:6px 0;border-bottom:2px solid transparent} .zp-nav a[aria-current="page"]{color:#bd411b;border-bottom-color:#bd411b;font-weight:600} .zp-nav a:hover{color:#bd411b}
+#pk-modal.pg.on{display:block !important;padding:0;background:#faf9f7;overflow-y:auto}
+#pk-modal.pg .pk-box{width:100% !important;max-width:1000px !important;max-height:none !important;margin:0 auto;border-radius:0;box-shadow:none;background:transparent;display:block;padding:28px clamp(16px,4vw,40px) 56px;overflow:visible}
+#pk-modal.pg .pk-h{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:0 0 22px;border:0;background:transparent}
+#pk-modal.pg .pk-h small{display:block;font-size:26px;font-weight:800;color:#2b2521;letter-spacing:-.02em;line-height:1.3}
+#pk-modal.pg .pk-h h3{margin:6px 0 0;font-size:15px;font-weight:400;color:#6a5b51;line-height:1.6}
+#pk-modal.pg .pk-x{display:none} #pk-modal .pk-prev{display:none} #pk-modal.pg .pk-prev{display:inline-flex;flex:none;padding:10px 16px}
+#pk-modal.pg .pk-b{overflow:visible;max-height:none;padding:0}
+#pk-modal.pg .pk-f{position:static;justify-content:flex-start;border:0;background:transparent;padding:22px 0 0;gap:8px;flex-wrap:wrap}
+#pk-modal.pg .pk-f .pk-btn.ghost:first-child:not(:only-child){order:9}
+#pk-modal.pg .pk-b.ec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.62fr);gap:20px 34px;align-items:start}
+#pk-modal.pg .pk-b.ec > *{grid-column:1} #pk-modal.pg .pk-b.ec > .pk-aside{grid-column:2;grid-row:1 / span 3}
+.pk-aside, .zp-aside{background:#f3ede7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:10px;color:#2b2521}
+.pk-aside b, .zp-aside b{font-size:16px} .pk-aside p, .zp-aside p{margin:0;font-size:14px;line-height:1.7;color:#6a5b51} .zp-aside ol{margin:0;padding-left:20px;line-height:1.9;font-size:14.5px}
+#modal-coach.zp-pg.active{display:block;padding:0;background:#faf9f7;overflow-y:auto}
+#modal-coach.zp-pg .coach-box{max-width:1000px !important;width:100%;margin:0 auto;border-radius:0;box-shadow:none;background:transparent;max-height:none;padding:28px clamp(16px,4vw,40px) 56px}
+#modal-coach.zp-pg .zp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:0 0 22px;border:0;background:transparent}
+#modal-coach.zp-pg .zp-head h2{font-size:26px;font-weight:800;color:#2b2521;margin:0} #modal-coach.zp-pg .zp-head p{margin:6px 0 0;color:#6a5b51;font-size:15px}
+#modal-coach.zp-pg .zp-prev{flex:none;padding:10px 16px}
+#modal-coach.zp-pg .modal-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.62fr);gap:20px 34px;align-items:start;max-height:none;overflow:visible;padding:0}
+#modal-coach.zp-pg .modal-body > section{grid-column:1} #modal-coach.zp-pg .coach-aside{grid-column:2;grid-row:1 / span 3}
+#modal-coach.zp-pg .modal-foot{display:none}
+#modal-flow .fl-cta-top{margin:0 0 18px} #modal-flow .fl-cta-line{margin-top:22px;padding-top:18px;border-top:1px solid #ded5ce}
+#modal-flow .fl-ty{display:inline-block;font-size:12px;font-weight:600;color:#6a5b51;background:#f3ede7;border-radius:999px;padding:2px 8px;margin-right:8px;vertical-align:2px}
+#modal-flow .fl-row-acts{display:flex;gap:10px;align-items:center;flex:none}
+#modal-flow .fl-link{border:0;background:none;color:#6a5b51;font:inherit;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:6px}
+#modal-flow .fl-empty{padding:22px 0;border-top:1px solid #ded5ce;display:grid;gap:6px;justify-items:start} #modal-flow .fl-empty b{font-size:16px;color:#2b2521} #modal-flow .fl-empty p{margin:0 0 6px;color:#6a5b51;font-size:14px}
+#modal-flow .fl-dq{display:grid}
+#modal-flow .fl-dq-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding:20px 0;border-bottom:1px solid #ded5ce}
+#modal-flow .fl-dq-src{background:#f3ede7;border-radius:10px;padding:14px 16px} #modal-flow .fl-dq small{display:block;font-size:12.5px;color:#6a5b51;margin-bottom:6px} #modal-flow .fl-dq p{margin:0;font-size:14.5px;line-height:1.7;color:#2b2521}
+#modal-flow .fl-dq-q{display:grid;gap:10px;justify-items:start} #modal-flow .fl-dq-q p{font-weight:600}
+@media (max-width:760px){
+  .zp-hdr-in{height:auto;min-height:56px;flex-wrap:wrap;gap:4px 12px;padding:10px 16px 0} .zp-brand{flex:1}
+  .zp-nav{flex:1 1 100%;justify-content:flex-start;gap:18px;overflow-x:auto;padding-bottom:2px} .zp-nav a{font-size:14px;padding:10px 0;white-space:nowrap}
+  #pk-modal.pg .pk-box, #modal-coach.zp-pg .coach-box{padding:18px 16px 40px}
+  #pk-modal.pg .pk-h, #modal-coach.zp-pg .zp-head{flex-direction:column-reverse;gap:10px} #pk-modal.pg .pk-prev, #modal-coach.zp-pg .zp-prev{align-self:flex-end;padding:8px 14px}
+  #pk-modal.pg .pk-h small, #modal-coach.zp-pg .zp-head h2{font-size:22px}
+  #pk-modal.pg .pk-b.ec, #modal-coach.zp-pg .modal-body, #modal-flow .fl-dq-row{grid-template-columns:1fr}
+  #pk-modal.pg .pk-b.ec > .pk-aside, #modal-coach.zp-pg .coach-aside{grid-column:1;grid-row:auto}
+  #modal-flow .fl-row-acts{width:100%}
+}
 #modal-flow.fl-page{z-index:90;padding:0;background:#faf9f7;align-items:stretch;justify-content:stretch}
 #modal-flow.fl-page .fl-box{max-width:none !important;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:none;margin:0;display:flex;flex-direction:column;background:#faf9f7;overflow:hidden}
 #modal-flow .fl-hdr{flex:none;border-bottom:1px solid #ded5ce;background:#faf9f7}
@@ -7233,13 +7278,16 @@ html.sv-open{overflow:hidden;}
   </div>
 </div>
 <!-- ============ 1분 자기소개 코치 (2026-10-08) ============ -->
-<div class="modal-overlay" id="modal-coach" role="dialog" aria-modal="true" aria-labelledby="coach-title">
+<div class="modal-overlay zp-pg" id="modal-coach" role="dialog" aria-modal="true" aria-labelledby="coach-title">
+  <div class="zp-hdr-slot" id="coach-hdr"></div>
   <div class="modal-box modal-wide coach-box">
-    <div class="modal-head">
-      <h2 id="coach-title">1분 자기소개 코치</h2>
-      <p>서류와 내가 해 본 자기소개로 1분 대본을 만들고, 따라 말하며 시간과 내용을 맞춰 봐요.</p>
+    <div class="modal-head zp-head">
+      <div><h2 id="coach-title">1분 자기소개를 준비해요</h2>
+      <p>서류가 없어도 내가 한 일로 시작할 수 있어요. 1분 대본을 만들고 따라 말하며 시간과 내용을 맞춰 봐요.</p></div>
+      <button type="button" class="btn btn-outline zp-prev" onclick="closeCoach()">이전으로</button>
     </div>
     <div class="modal-body modal-scroll">
+      <aside class="zp-aside coach-aside"><b>확인할 순서</b><ol><li>강점 한 문장</li><li>그 강점을 보여 주는 경험</li><li>지원 직무·다음 목표와 연결</li></ol><p>내가 쓴 자기소개와 만들어진 대본은 따로 보여 줘요.</p></aside>
       <section class="coach-sec">
         <h3 class="coach-sec-title"><i>1</i>서류·자기소개 준비</h3>
         <ul class="coach-docs" id="coach-docs"><li>서류를 확인하는 중…</li></ul>
@@ -9513,7 +9561,7 @@ html.sv-open{overflow:hidden;}
       </section>
       <section class="mp-inbody" aria-labelledby="mp-ib-t">
         <h3 class="mp-sec-t" id="mp-ib-t">커리어 인바디 <small>학점·어학·자격·경험을 적어 두면 면접 예상 질문과 결과 조언에 써요. 학교 커리어 인바디와 연동되면 자동으로 채워져요</small></h3>
-        <div id="mp-ib"></div>
+        <button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('ib')">커리어 인바디 열기</button>
       </section>
       <h3 class="mp-sec-t mp-sec-info">내 정보</h3>
       <div class="mp-info-grid">
@@ -10265,6 +10313,10 @@ function josa(word, pair){
 /** 저장된 소요 시간('MM:SS')을 읽기 쉬운 말로: '14:20' → '14분 20초', '00:45' → '45초' */
 function durText(v){ const m = /^(\d+):(\d{2})$/.exec(String(v||'').trim()); if(!m) return String(v||''); const mm = +m[1], ss = +m[2]; return mm ? (ss ? `${mm}분 ${ss}초` : `${mm}분`) : `${ss}초`; }
 /* 2026-11-12t 안내 상황 공통 확인 창 (브라우저 기본 확인창 대신, 디자인 토큰 색) → Promise<boolean> */
+/* 2026-11-12v 시안 공통 틀: 전체 화면 위 메뉴 (팝업을 전체 화면으로 바꾼 곳에서 씀) */
+function zpNav(where){ try{ PracticeKit.close(); }catch(_){} try{ closeCoach(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
+function zpHdr(cur){ const a = (w, t)=>`<a href="javascript:void(0)"${w === cur ? ' aria-current="page"' : ''} onclick="zpNav('${w}')">${t}</a>`;
+  return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav></div></header>`; }
 function zConfirm(o){
   o = o || {};
   return new Promise(res=>{
@@ -12900,6 +12952,7 @@ function navGo(where){
   }
   if(where === 'reports'){ openAllHistory(); return; }
   if(where === 'hub' && state.currentUser && !state.currentUser.isAdmin){ StartFlow.hub(); return; }   // 2026-11-12u 시안 06: 연습하기 = 전체 화면
+  if(where === 'materials' && state.currentUser && !state.currentUser.isAdmin){ StartFlow.page('mat'); return; }   // 2026-11-12v 시안 11: 내 자료 = 전체 화면
   if(where === 'hub' || where === 'materials'){   // 2026-11-12 연습하기 창 · 내 자료(내 경험 창) — 홈 화면 안의 창이라 홈으로 먼저
     const act = document.querySelector('.screen.active'); if(!act || act.id !== 'screen-dashboard') goDashboard(); setDashView('home');
     setTimeout(()=>{ try{ if(where === 'hub') HomeSimple.toggle(true, false, '연습하기'); else HomeTabs.open('exp', '내 자료'); }catch(e){ console.warn(e); } }, 60); return; }
@@ -14311,6 +14364,54 @@ const StartFlow = {
   close(){ try{ PrepRoom.stop(); }catch(_){} this.devLeave(); this.myMenu(false); document.getElementById('modal-flow').classList.remove('active'); },
   /** 2026-11-12u 시안 06 '오늘은 어떻게 연습할까요?': 면접 준비 화면 틀 안의 첫 화면. 예전 연습하기 창의 도구는 '연습 도구 더 보기' 안에 그대로 */
   hub(){ this.open(); if(!this.s) return; this.s.hub = true; this.render(); },
+  /** 2026-11-12v 시안 11~13·15·63·64: '내 자료' 화면들 (mat 내 자료 · exps 내 경험 · expadd 경험 추가 · docs 서류 · docq 서류 질문 · ib 커리어 인바디) */
+  page(name){ this.open(); if(!this.s) return; this.s.page = name; this.render(); },
+  vPage(pg){ const s = this.s, row = (t, d, btn, act, solid)=>`<div class="fl-hub-row"><div><b>${t}</b><span>${d}</span></div><button type="button" class="btn ${solid ? 'btn-solid' : 'btn-outline'}" data-pga="${act}">${btn}</button></div>`;
+    if(pg === 'mat') return `${this.vHead('내 자료', '한 번 정리한 자료를 여러 연습에 활용해요.')}<div class="fl-hub">${row('내 경험', `수업·프로젝트·활동 경험 · ${this.exps.length}개`, '경험 보기', 'exps', true)}${row('자기소개서·이력서', '자료 읽기 상태와 질문에 쓰는 내용 확인', '서류 관리', 'docs')}${row('내 질문 모음', '찾아본 질문·담아 둔 질문', '질문 보기', 'bm')}${row('답변 노트', '유형별 내가 정한 답변', '노트 보기', 'note')}</div>
+      <div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="ib">커리어 인바디·학교 자료</button><button type="button" class="btn btn-outline" data-pga="coach">자기소개 코치</button></div>`;
+    if(pg === 'exps') return `${this.vHead('내 경험', '한 번 입력한 경험을 수정하고 면접에 다시 사용할 수 있어요.')}
+      <div class="fl-cta fl-cta-top"><button type="button" class="btn btn-solid" data-pga="expadd">경험 추가</button><button type="button" class="btn btn-outline" data-pga="coachx">도움받으며 정리</button></div>
+      ${this.exps.length ? `<div class="fl-hub">${this.exps.map(e=>`<div class="fl-hub-row"><div><b><span class="fl-ty">${escapeHtml(e.type)}</span>${escapeHtml(e.text)}</b><span>${e.star ? '1분 답변으로 정리됨' : '한 줄로 저장됨'}</span></div><div class="fl-row-acts"><button type="button" class="btn btn-outline" data-pga="star:${e.id}">${e.star ? '정리한 내용 보기' : '자세히 정리'}</button><button type="button" class="fl-link" data-pga="del:${e.id}">지우기</button></div></div>`).join('')}</div>`
+        : `<div class="fl-empty"><b>아직 저장한 경험이 없어요</b><p>기억나는 일 한 가지부터 적어 보세요.</p><button type="button" class="btn btn-outline" data-pga="expadd">첫 경험 적기</button></div>`}
+      <div class="fl-cta fl-cta-line"><button type="button" class="btn btn-outline" data-pga="start">면접 준비로</button></div>`;
+    if(pg === 'expadd') return `${this.vHead('내 경험을 정리해요', '상황보다 내가 한 행동과 배운 점을 중심으로 적어요.')}
+      <div class="fl-2col"><div class="fl-col">
+        <div class="fl-f wide"><label for="pg-exp-type">경험 종류</label><select id="pg-exp-type">${this.EXP_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div>
+        <div class="fl-f wide"><label for="pg-exp-text">경험 한 줄 · 필수</label><input id="pg-exp-text" maxlength="120" placeholder="예: 팀 프로젝트에서 일정 조율"></div>
+        <p class="fl-sub">상황·내가 한 일·결과와 배운 점은 '말하기 좋은 답변으로 정리'에서 하나씩 적어요.</p>
+        <div class="fl-cta"><button type="button" class="btn btn-solid" data-pga="save">경험 저장</button><button type="button" class="btn btn-outline" data-pga="exps">취소</button></div>
+        <div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="savestar">말하기 좋은 답변으로 정리</button></div></div>
+        <aside class="fl-panel"><b class="fl-panel-t">면접 질문의 근거가 돼요</b><p>학생이 직접 입력한 내용과 학교에서 연동된 내용을 구분해요. 지금은 학교 연동 전이라 직접 입력한 경험으로 질문을 만들어요.</p></aside></div>`;
+    if(pg === 'docs') return `${this.vHead('자기소개서·이력서', '올린 자료와 질문에 쓰는 내용을 구분해서 확인해요.')}
+      <div class="fl-2col"><div class="fl-col">${this.vDocs()}</div>
+        <aside class="fl-panel"><b class="fl-panel-t">질문의 근거가 되는 서류</b><p>올린 서류에서 문장·경력을 찾아 맞춤 질문을 만들어요. 서류를 바꾸면 질문도 새로 만들어져요.</p><div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="start">면접 준비로</button></div></aside></div>
+      <div class="fl-cta"><button type="button" class="btn btn-solid" data-pga="docq">서류 근거 질문 보기</button></div>`;
+    if(pg === 'docq'){ let L = []; try{ const r = state.resumeFull || state.resumeText || '', c = state.cvFull || state.cvText || ''; L = DocQ.fromResume(r).slice(0, 4).concat(DocQ.fromCv(c).slice(0, 4)); }catch(_){}
+      this._dq = L;
+      return `${this.vHead('내 서류에서 무엇을 물을까요?', '질문의 근거가 된 문장과 질문을 함께 확인해요.')}
+      ${L.length ? `<div class="fl-dq">${L.map((x, i)=>`<div class="fl-dq-row"><div class="fl-dq-src"><small>${x.doc === 'cv' ? '이력서' : '자기소개서'}${x.section ? ' · ' + escapeHtml(x.section) : ''}</small><p>${escapeHtml(String(x.src || x.quoteCore || '').slice(0, 220))}</p></div><div class="fl-dq-q"><small>맞춤 질문</small><p>${escapeHtml(x.q)}</p><button type="button" class="btn btn-solid" data-pga="dq:${i}">이 질문 연습</button></div></div>`).join('')}</div>`
+        : `<div class="fl-empty"><b>아직 질문을 만들 서류가 없어요</b><p>자기소개서나 이력서를 올리면 문장·경력에서 맞춤 질문을 찾아요.</p><button type="button" class="btn btn-outline" data-pga="docs">서류 올리기</button></div>`}
+      <div class="fl-cta fl-cta-line"><button type="button" class="btn btn-outline" data-pga="docs">자료 바꾸기</button></div>`; }
+    if(pg === 'ib') return `${this.vHead('커리어 인바디·학교 자료', '직접 입력한 값과 학교에서 연결된 값을 구분해요.')}<p><span class="fl-badge">학교 연동 미연결 · 직접 입력</span></p>
+      <div class="fl-2col"><div class="fl-col"><div id="mp-ib"></div></div>
+        <aside class="fl-panel"><b class="fl-panel-t">질문에 사용될 정보 확인</b><p>입력한 항목만 예상 질문과 결과 조언에 써요. 학교 커리어 인바디와 연동되면 자동으로 채워져요.</p><div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="start">면접 준비로</button></div></aside></div>`;
+    return ''; },
+  async pageAct(a){ const s = this.s;
+    if(a === 'start'){ s.page = ''; s.hub = false; s.step = 0; this.render(); return; }
+    if(['mat','exps','expadd','docs','docq','ib'].includes(a)){ s.page = a; this.render(); return; }
+    if(a === 'bm'){ try{ await PracticeKit.loadBm(); }catch(_){} PracticeKit.openBmAll(); return; }
+    if(a === 'note') return this.leave(()=>AnswerNote.open());
+    if(a === 'coach') return this.leave(()=>openCoach());
+    if(a === 'coachx'){ ExpCoach.open({ from:'mat' }); return; }
+    if(a.startsWith('star:')){ ExpCoach.open({ id: a.slice(5), from:'mat' }); return; }
+    if(a.startsWith('del:')){ const id = a.slice(4), e = this.exps.find(x=>x.id === id); if(!e) return;
+      if(!(await zConfirm({ title:'이 경험을 지울까요?', desc:'면접 준비 화면에서도 함께 빠지고 되돌릴 수 없어요.', ok:'지우기', danger:true }))) return;
+      this.exps = this.exps.filter(x=>x.id !== id); s.use = s.use.filter(x=>x !== id); try{ PrepSync.save(); }catch(_){} this.render(); return; }
+    if(a.startsWith('dq:')){ const x = (this._dq || [])[+a.slice(3)]; if(x) PracticeKit.openRetry({ q: x.q, fresh: true, pg: true, title: '서류 기반 질문' }); return; }
+    if(a === 'save' || a === 'savestar'){ const t = document.getElementById('pg-exp-text'), ty = document.getElementById('pg-exp-type'), v = String((t && t.value) || '').trim();
+      if(v.length < 4){ showToast('경험을 한 줄로 적어 주세요.', 'warn'); if(t) t.focus(); return; }
+      const id = 'e' + Date.now().toString(36); this.exps.push({ id, type: ty ? ty.value : '활동', text: v.slice(0, 120) }); s.use.push(id); try{ PrepSync.save(); }catch(_){}
+      s.page = 'exps'; this.render(); if(a === 'savestar') ExpCoach.open({ id, from:'mat' }); else showToast('경험을 저장했어요.', 'ok'); return; } },
   hubGo(fn){ this.leave(()=>{ const act = document.querySelector('.screen.active'); if(!act || act.id !== 'screen-dashboard') goDashboard(); setDashView('home'); setTimeout(()=>{ try{ fn(); }catch(e){ console.warn(e); } }, 80); }); },
   vHub(){ const row = (t, d, btn, act, solid)=>`<div class="fl-hub-row"><div><b>${t}</b><span>${d}</span></div><button type="button" class="btn ${solid ? 'btn-solid' : 'btn-outline'}" data-hub="${act}">${btn}</button></div>`;
     const tool = (t, d, act)=>`<button type="button" class="fl-hub-tool" data-hub="${act}"><b>${t}</b><span>${d}</span></button>`;
@@ -14352,6 +14453,7 @@ const StartFlow = {
   markHome(kind){ document.querySelectorAll('[data-hm-kind]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.hmKind === kind))); },
   back(){ const s = this.s;
     if(s.hub){ this.close(); return; }
+    if(s.page){ const up = { exps:'mat', expadd:'exps', docs:'mat', docq:'docs', ib:'mat' }[s.page]; if(up && s.pageFrom === 'mat'){ s.page = up; this.render(); return; } this.close(); return; }
     if(s.step === 0 && s.fromHub){ s.hub = true; this.render(); return; }
     if(s.step === 2 && s.review){ this.close(); return; }   // 복습은 '내 경험' 단계가 없음
     if(s.step === 1 && s.sub){ s.sub = ''; this.render(); return; }
@@ -14420,7 +14522,15 @@ const StartFlow = {
   },
   render(){
     const s = this.s, body = document.getElementById('fl-body');
-    const prevStep = this._shown; this._shown = (s.hub ? 'hub' : s.step) + ':' + (s.sub || '');
+    const prevStep = this._shown; this._shown = (s.hub ? 'hub' : s.page ? 'pg-' + s.page : s.step) + ':' + (s.sub || '');
+    { const nv = document.querySelectorAll('#modal-flow .fl-nav a'); nv.forEach((x, i)=>{ if(i === (s.page ? 3 : 1)) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current'); }); }
+    if(s.page){ if(s.page === 'mat') s.pageFrom = 'mat'; document.getElementById('fl-steps').innerHTML = ''; try{ PrepRoom.stop(); }catch(_){} this.devLeave();
+      body.innerHTML = this.vPage(s.page); if(prevStep !== this._shown){ const sc = document.getElementById('fl-scroll'); if(sc) sc.scrollTop = 0; }
+      body.querySelectorAll('[data-prev]').forEach(b=>b.onclick = ()=>this.back()); body.querySelectorAll('[data-pga]').forEach(b=>b.onclick = ()=>this.pageAct(b.dataset.pga));
+      if(s.page === 'docs'){ try{ DocBox.mount(); }catch(e){ console.warn('[서류 칸]', e); } }
+      if(s.page === 'ib'){ try{ Inbody.renderMy(); }catch(e){ console.warn('[인바디]', e); } }
+      { const et = document.getElementById('pg-exp-text'); if(et){ et.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); this.pageAct('save'); } }); setTimeout(()=>et.focus(), 30); } }
+      return; }
     if(s.hub){ s.fromHub = true; document.getElementById('fl-steps').innerHTML = ''; try{ PrepRoom.stop(); }catch(_){} this.devLeave();
       body.innerHTML = this.vHub(); if(prevStep !== this._shown){ const sc = document.getElementById('fl-scroll'); if(sc) sc.scrollTop = 0; }
       body.querySelectorAll('[data-prev]').forEach(b=>b.onclick = ()=>this.back()); body.querySelectorAll('[data-hub]').forEach(b=>b.onclick = ()=>this.hubAct(b.dataset.hub)); return; }
@@ -25087,6 +25197,7 @@ function coachFieldInfo(){
   const f = FIELDS.find(x=>x.id===id); return { id, name: f ? f.name : '속기사' };
 }
 async function openCoach(){
+  { const h = document.getElementById('coach-hdr'); if(h) h.innerHTML = zpHdr('hub'); }
   if(!state.currentUser){ showToast('먼저 로그인해 주세요.'); return; }
   if(isAccessExpired(state.currentUser)){ showToast('이용 기간이 종료되어 사용할 수 없어요. 연장은 관리자에게 문의해 주세요.'); return; }
   if(isPendingUser()){ showToast('담당자 승인 후 사용할 수 있어요.'); return; }
@@ -26893,17 +27004,21 @@ const PracticeKit = {
 
   /* ── 공용 창 ── */
   modal(html, cls){
+    const pg = /\bpg\b/.test(cls || '') || this._nextPg; this._nextPg = false;
     let m = document.getElementById('pk-modal');
     if(!m){ m = document.createElement('div'); m.id = 'pk-modal'; m.className = 'pk-ov'; document.body.appendChild(m);
       m.addEventListener('mousedown', e=>{ if(e.target === m) this.close(); });
       document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && m.classList.contains('on')) this.close(); }); }
-    m.innerHTML = `<div class="pk-box ${cls || ''}" role="dialog" aria-modal="true">${html}</div>`;
+    m.classList.toggle('pg', !!pg);
+    m.innerHTML = (pg ? zpHdr(this._pgNav || 'materials') : '') + `<div class="pk-box ${cls || ''}" role="dialog" aria-modal="true">${html}</div>`; this._pgNav = '';
+    if(pg) m.scrollTop = 0;
     m.classList.add('on'); document.documentElement.classList.add('pk-open');
     const f = m.querySelector('[autofocus]'); if(f) setTimeout(()=>f.focus(), 30);
     return m;
   },
-  close(){ this.stopMic(); try{ if(typeof Finish10 !== 'undefined') Finish10.stop(); }catch(_){} const m = document.getElementById('pk-modal'); if(m){ m.classList.remove('on'); m.innerHTML = ''; } document.documentElement.classList.remove('pk-open'); },
-  head(sub, title){ return `<header class="pk-h"><div><small>${sub}</small><h3>${title}</h3></div><button type="button" class="pk-x" onclick="PracticeKit.close()" aria-label="닫기">✕</button></header>`; },
+  close(){ this.stopMic(); try{ if(typeof Finish10 !== 'undefined') Finish10.stop(); }catch(_){} const m = document.getElementById('pk-modal'); if(m){ m.classList.remove('on', 'pg'); m.innerHTML = ''; } document.documentElement.classList.remove('pk-open');
+    try{ if(StartFlow.s && StartFlow.s.page && document.getElementById('modal-flow').classList.contains('active')) StartFlow.render(); }catch(_){} },
+  head(sub, title){ return `<header class="pk-h"><div><small>${sub}</small><h3>${title}</h3></div><button type="button" class="pk-x" onclick="PracticeKit.close()" aria-label="닫기">✕</button><button type="button" class="btn btn-outline pk-prev" onclick="PracticeKit.close()">이전으로</button></header>`; },
 
   /* ── ④ 내 질문 모음 ── */
   async loadBm(){
@@ -26946,6 +27061,7 @@ const PracticeKit = {
   },
   openBmAll(){
     const L = this.bm || [];
+    this._nextPg = true;
     this.modal(this.head('내 질문 모음', `${L.length}개`) + `<div class="pk-b" id="pk-bm-all"><ul class="pk-bm big">${L.map(b=>`<li><span class="pk-bm-q">${escapeHtml(b.question)}</span>${this.srcChip(b)}<button type="button" class="pk-del" onclick="PracticeKit.removeBm('${b.id}')" aria-label="빼기">✕</button></li>`).join('') || '<li class="pk-mut">담은 질문이 없어요</li>'}</ul></div>
       <footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button>${L.length ? `<button type="button" class="pk-btn pri" onclick="PracticeKit.practiceBm()">▶ 모아서 연습 (${Math.min(10, L.length)}문항)</button>` : ''}</footer>`);
   },
@@ -26958,6 +27074,7 @@ const PracticeKit = {
   /* ── ① 이 질문 다시 답하기 ── */
   openRetry(k, prefill){
     const o = typeof k === 'string' ? this.items.get(k) : k; if(!o) return; this.cur = o;
+    if(o.pg) this._nextPg = true;
     this.modal(this.head(o.title ? escapeHtml(o.title) : o.fresh ? (o.companyName ? escapeHtml(o.companyName) + ' · 예상 질문' : '예상 질문 연습') : '이 질문 다시 답하기', escapeHtml(o.q)) + `<div class="pk-b">
         ${o.answer ? `<details class="pk-prev"><summary>${escapeHtml(o.prevLabel || '이전 답변 보기')} ${o.score != null ? `<span class="pk-sc">${o.score}점</span>` : ''}</summary><p>${escapeHtml(o.answer)}</p>${o.feedback ? `<p class="pk-prev-fb"><b>그때 피드백</b> ${escapeHtml(this.fbBody(o.feedback))}</p>` : ''}</details>` : ''}
         <p class="pk-tip">${o.fresh ? '실제 면접이라고 생각하고 답해 보세요. 결론을 먼저 말하고 경험 하나를 붙이면 좋아요.' : '피드백에서 짚은 점을 넣어 다시 답해 보세요.'} <b>말로 답하거나 직접 써도</b> 돼요.</p>
@@ -27984,7 +28101,8 @@ try{ document.addEventListener('DOMContentLoaded', ()=>{ try{ document.head.inse
 const OrgSheet = {
   async open(tid){
     if(!document.getElementById('os-css')) document.head.insertAdjacentHTML('beforeend', '<style id="os-css">' + this.CSS + '</style>');
-    PracticeKit.modal(PracticeKit.head('면접 전날 한 번에 보기', '목표 기관 한 장 요약') + `<div class="pk-b" id="os-b"><div class="pk-wait"><i></i>기관 정보를 모으는 중</div></div><footer class="pk-f" id="os-f"></footer>`, 'wide');
+    PracticeKit._nextPg = true;
+    PracticeKit.modal(PracticeKit.head('기관 한 장 요약', '기관 정보는 출처와 확인 시점까지 함께 보여 줘요.') + `<div class="pk-b" id="os-b"><div class="pk-wait"><i></i>기관 정보를 모으는 중</div></div><footer class="pk-f" id="os-f"></footer>`, 'wide');
     try{ if(!PracticeKit.plan) await PracticeKit.loadPlan(); }catch(_){}
     const p = PracticeKit.plan || {}; tid = tid || p.company_id || '';
     let orgs = []; try{ orgs = await Debate.loadOrgs(); }catch(_){}
@@ -28314,7 +28432,8 @@ const QBrowse = {
   body(html){ const b = document.getElementById('qbr-b'); if(b) b.innerHTML = html; return b; },
   async open(tid){
     Debate.stopTimer();
-    PracticeKit.modal(PracticeKit.head('예상 질문', '불러오는 중') + `<div class="pk-b" id="qbr-b"><div class="pk-wait"><i></i>불러오고 있어요</div></div><footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button></footer>`, 'wide');
+    PracticeKit._nextPg = true;
+    PracticeKit.modal(PracticeKit.head('어떤 질문부터 연습할까요?', '불러오는 중') + `<div class="pk-b" id="qbr-b"><div class="pk-wait"><i></i>불러오고 있어요</div></div><footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button></footer>`, 'wide');
     try{ await Debate.loadOrgs(); }catch(e){ this.body(`<p class="pk-tip">기관 목록을 불러오지 못했어요. (${escapeHtml(e.message || e)})</p>`); return; }
     if(tid) return this.list(tid);
     this.pick();
@@ -28354,7 +28473,7 @@ const QBrowse = {
     const st = this.st, r = (this.cache.get(st.tid) || []).find(x=>x.id === id); if(!r) return;
     const o = st.org || {}, fid = o.grp === '병원' ? 'medical' : 'pubcorp', f = (typeof FIELDS !== 'undefined' ? FIELDS : []).find(x=>x.id === fid);
     PracticeKit.openRetry({ q: r.question, fieldId: fid, fieldName: f ? f.name : '', companyId: /^[GH]\d/.test(st.tid) ? st.tid : null, companyName: o.name || r.company, qbType: r.qtype,
-      fresh: true, back: ()=>{ QBrowse.open(st.tid); } });
+      fresh: true, pg: true, back: ()=>{ QBrowse.open(st.tid); } });
   },
 };
 /* ---------------- 2026-11-04f 경험 정리 도우미 (ExpCoach) ----------------
@@ -28414,6 +28533,7 @@ const ExpCoach = {
   render(){
     const v = this.v; if(!v) return;
     const body = [()=>this.vPick(), ()=>this.vAsk(), ()=>this.vDone()][v.step]();
+    PracticeKit._nextPg = true; body.html += `<aside class="pk-aside"><b>정답을 쓰는 시간이 아니에요</b><p>실제로 한 일만 짧게 적어 주세요. 도우미는 적은 내용을 이어 붙일 뿐, 없는 성과나 경력을 만들어 넣지 않아요.</p></aside>`;
     PracticeKit.modal(PracticeKit.head('경험 정리 도우미', v.step === 2 ? '내 경험 카드가 만들어졌어요' : '말할 경험이 없어도 괜찮아요. 함께 찾아봐요') + `<div class="pk-b ec">${this.bar()}${body.html}</div><footer class="pk-f">${body.foot}</footer>`, 'wide ec-box');
     if(body.bind) body.bind();
   },
