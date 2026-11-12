@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12a';
+var APP_VERSION = '2026-11-12b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -4435,7 +4435,7 @@ body.hs-mobile #pc-qr-card{display:none !important;}
 
 
 /* ---- 관리자 위쪽 메뉴 (2026-10-20o): 관리자는 연습하지 않으므로 면접 연습·리포트·내 성장만 숨김 (홈 화면은 그대로) ---- */
-body.is-admin-ui .d3-nav a[data-go="practice"], body.is-admin-ui .d3-nav a[data-go="reports"], body.is-admin-ui .d3-nav a[data-go="growth"], body.is-admin-ui .d3-nav a[data-go="debate"]{ display:none !important; }   /* 2026-11-09l 관리자도 토론 연습을 쓰지만 위 메뉴엔 안 두고 홈의 '토론 시작' 버튼으로 들어감 */
+body.is-admin-ui .d3-nav a[data-go="practice"], body.is-admin-ui .d3-nav a[data-go="reports"], body.is-admin-ui .d3-nav a[data-go="growth"], body.is-admin-ui .d3-nav a[data-go="debate"], body.is-admin-ui .d3-nav a[data-go="materials"]{ display:none !important; }   /* 2026-11-09l 관리자도 토론 연습을 쓰지만 위 메뉴엔 안 두고 홈의 '토론 시작' 버튼으로 들어감 */
 /* 2026-10-20o: 관리자 메뉴에 공지사항·관리자 화면을 홈 옆에 꺼내고, 이름 메뉴에서는 같은 항목·카카오톡 문의를 뺌 */
 .d3-nav a.adm-only{ display:none; }
 body.is-admin-ui .d3-nav a.adm-only{ display:inline-flex; }
@@ -7130,10 +7130,10 @@ html.sv-open{overflow:hidden;}
         <a href="javascript:void(0)" data-go="home" aria-current="page" onclick="navGo('home')">홈</a>
         <a href="javascript:void(0)" class="adm-only" data-adm="notices" onclick="openAdminScreen('notices')">공지사항</a>
         <a href="javascript:void(0)" class="adm-only" data-adm="admin" onclick="openAdminScreen()">관리자 화면</a>
-        <a href="javascript:void(0)" data-go="practice" onclick="navGo('practice')">면접 시작</a>
-        <a href="javascript:void(0)" data-go="debate" onclick="navGo('debate')">토론 연습</a>
-        <a href="javascript:void(0)" data-go="reports" onclick="navGo('reports')">면접 기록</a>
-        <a href="javascript:void(0)" data-go="growth" onclick="navGo('growth')">나의 성장</a>
+        <!-- 2026-11-12 시안 학생 메뉴: 홈 · 연습하기 · 나의 기록 · 내 자료 (면접 시작·토론 → 연습하기 창, 면접 기록·나의 성장 → 나의 기록) -->
+        <a href="javascript:void(0)" data-go="practice" onclick="navGo('hub')">연습하기</a>
+        <a href="javascript:void(0)" data-go="growth" onclick="navGo('growth')">나의 기록</a>
+        <a href="javascript:void(0)" data-go="materials" onclick="navGo('materials')">내 자료</a>
         <a href="javascript:void(0)" data-go="coach" onclick="navGo('coach')" style="display:none;">자기소개 코치</a>
       </nav>
       <nav style="display:none !important;"><a href="javascript:void(0)" class="kk-link kakao-show" onclick="openKakaoChannel()" style="display:none;"><svg class="kk-ic" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M10 3C5.6 3 2 5.8 2 9.2c0 2.2 1.5 4.1 3.7 5.2l-.8 2.9c-.1.3.2.5.4.3l3.4-2.3c.4 0 .9.1 1.3.1 4.4 0 8-2.8 8-6.2S14.4 3 10 3z"/></svg><span class="kk-full">카카오톡 문의</span><span class="kk-short">카톡 문의</span></a>
@@ -7166,12 +7166,11 @@ html.sv-open{overflow:hidden;}
     <!-- 2026-11-11 홈 간결하게 (시안 1번 '홈'): 큰 문구 + 시작 버튼 2개 + 3단계 안내. 예전 홈 칸들은 지우지 않고 '다른 방식으로 연습할래요' 펼치기 안으로 -->
     <section class="hz-hero" id="hz-hero">
       <div class="hz-l">
-        <p class="hz-eye" id="hz-eye"></p>
         <h1 class="hz-h" id="hz-h">면접 준비,<br>내 경험에서 시작해요.</h1>
         <p class="hz-lead">수업에서 배운 것부터 활동하며 해낸 일까지.<br>나만의 경험을 면접관에게 들려주세요.</p>
         <div class="hz-acts">
           <button type="button" class="hz-go" onclick="StartFlow.pickFromHome('major')">전공·경험 면접 시작하기</button>
-          <button type="button" class="hz-link" onclick="StartFlow.pickFromHome('job')">지원할 기관이 정해졌어요</button>
+          <button type="button" class="hz-sec" onclick="StartFlow.pickFromHome('job')">지원할 기관이 정해졌어요</button>
         </div>
         <div class="hz-ban" id="hz-ban"></div>
       </div>
@@ -7181,14 +7180,37 @@ html.sv-open{overflow:hidden;}
         <li><i>3</i><div><b>내 답변 돌아보기</b><span>잘한 점과 고칠 점을 확인해요.</span></div></li>
       </ol>
     </section>
-    <div class="hz-foot">
-      <button type="button" class="hz-more-btn" id="hz-more-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="hz-pop" onclick="HomeSimple.toggle()">다른 방식으로 연습할래요<i aria-hidden="true"></i></button>
-      <button type="button" class="hz-rec" onclick="navGo('growth')">내 연습 기록 보기</button>
+    <div class="hz-foot" id="hz-foot1">
+      <button type="button" class="hz-more-btn" id="hz-more-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="hz-pop" onclick="HomeSimple.toggle()"><i aria-hidden="true">▶</i>다른 방식으로 연습할래요</button>
+      <button type="button" class="hz-sec" onclick="navGo('materials')">내 자료 확인</button>
+      <button type="button" class="hz-sec" onclick="openAllHistory()">연습 기록 보기</button>
     </div>
+    <!-- 2026-11-12 다시 방문한 홈 (시안 05): 면접 기록이 있으면 이 칸이 보이고 위 첫 방문 칸은 숨김 -->
+    <section class="hz-ret" id="hz-ret" hidden aria-labelledby="hz-ret-h">
+      <div class="hz-ret-top">
+        <h1 class="hz-ret-h" id="hz-ret-h">지금 준비 단계에 맞춰 이어가요</h1>
+        <p class="hz-ret-sub">기본 정보는 다시 묻지 않고, 다음 행동을 먼저 보여줘요.</p>
+        <label class="hz-ret-lbl" for="hz-stage">현재 준비 단계</label>
+        <select class="hz-stage" id="hz-stage" onchange="HomeSimple.setStage(this.value)">
+          <option value="before">지원 기관을 정하기 전</option>
+          <option value="decided">지원 기관을 정했어요</option>
+          <option value="scheduled">면접 일정이 잡혔어요</option>
+        </select>
+      </div>
+      <div class="hz-ret-main">
+        <div class="hz-ret-l"><h2 class="hz-ret-big" id="hz-ret-big"></h2><div class="hz-ret-acts" id="hz-ret-acts"></div></div>
+        <aside class="hz-fix" id="hz-fix" hidden aria-label="지난 연습에서 고칠 한 가지"></aside>
+      </div>
+      <div class="hz-ret-foot">
+        <button type="button" class="hz-sec" onclick="navGo('growth')">나의 기록</button>
+        <button type="button" class="hz-sec" onclick="StartFlow.pickFromHome('job')">기관·직무 준비</button>
+        <button type="button" class="hz-sec" onclick="HomeTabs.open('dday')">면접 D-day</button>
+      </div>
+    </section>
     <div class="hz-pop" id="hz-pop" hidden>
     <div class="hz-pop-bg" onclick="HomeSimple.toggle(false)"></div>
     <section class="hz-panel" role="dialog" aria-modal="true" aria-labelledby="hz-pop-h">
-    <div class="hz-pop-hd"><div><h2 id="hz-pop-h">다른 방식으로 연습</h2><p>짧게 연습하거나 토론·발표 면접, 연습 도구를 골라요.</p></div><button type="button" class="hz-pop-x" onclick="HomeSimple.toggle(false)" aria-label="닫기"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
+    <div class="hz-pop-hd"><div><h2 id="hz-pop-h">다른 방식으로 연습</h2><p id="hz-pop-p">짧게 연습하거나 토론·발표 면접, 연습 도구를 골라요.</p></div><button type="button" class="hz-pop-x" onclick="HomeSimple.toggle(false)" aria-label="닫기"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
     <div class="hz-more" id="hz-more">
     <div class="d3-hero">
       <section class="d3-card d3-greet g4-greet">
@@ -7308,7 +7330,7 @@ html.sv-open{overflow:hidden;}
   <!-- 내 성장 (2026-10-14 확정 시안) -->
   <main class="d3-page" id="d3-growth" hidden>
     <div class="gw-head">
-      <div><p class="gw-scope" id="gw-scope">국회 속기사</p><h1 class="gw-title">내 성장</h1></div>
+      <div><p class="gw-scope" id="gw-scope">국회 속기사</p><h1 class="gw-title">내 성장</h1><button type="button" class="gw-all" onclick="openAllHistory()">면접 기록 전체 보기 ›</button></div>
       <div class="gw-range" id="gw-range" role="group" aria-label="기간"><button type="button" class="on" data-days="30" onclick="setGrowthRange(30)">30일</button><button type="button" data-days="90" onclick="setGrowthRange(90)">90일</button><button type="button" data-days="0" onclick="setGrowthRange(0)">전체</button></div>
     </div>
     <div class="gw-kpis" id="gw-kpis"></div>
@@ -11969,6 +11991,7 @@ async function renderDashboard(){
   }
   state.historyRecords = history;
   try{ HomeApp.pcCard(history.length, isAdmin); }catch(_){}
+  try{ HomeSimple.renderMode(); }catch(e){ console.warn('[홈 처음/다시 방문]', e); }
 
   // 이용 기간
   const acc = accessInfo(state.currentUser && state.currentUser.accessUntil);
@@ -12368,6 +12391,9 @@ function navGo(where){
     return;
   }
   if(where === 'reports'){ openAllHistory(); return; }
+  if(where === 'hub' || where === 'materials'){   // 2026-11-12 연습하기 창 · 내 자료(내 경험 창) — 홈 화면 안의 창이라 홈으로 먼저
+    const act = document.querySelector('.screen.active'); if(!act || act.id !== 'screen-dashboard') goDashboard(); setDashView('home');
+    setTimeout(()=>{ try{ if(where === 'hub') HomeSimple.toggle(true, false, '연습하기'); else HomeTabs.open('exp'); }catch(e){ console.warn(e); } }, 60); return; }
   if(where === 'growth'){ openGrowthScreen(); return; }
   if(where === 'debate'){ openDebateScreen(); return; }
   if(where === 'coach'){ openCoach(); return; }
@@ -29308,10 +29334,14 @@ if(DEMO_HIDE_REPORT_NUDGE){ try{ RealReport.maybeNudge = ()=>{}; RealReport.mayb
 const PageInfo = {
   /* t: 말풍선 제목 · lead: 한 줄 설명 · items: [이름, 내용] 줄마다 한 가지 */
   RULES: [
+    { sel:'#hz-ret-h', t:'홈', lead:'다시 방문하면 지금 준비 단계에 맞는 다음 행동을 먼저 보여 줘요.', items:[
+      ['준비 단계', '고른 단계에 따라 아래 문구·버튼이 바뀌어요 (이 기기에 기억)'],
+      ['고칠 한 가지', '가장 최근 면접에서 점수가 가장 낮았던 질문과 저장된 피드백'],
+      ['다른 연습', '위 메뉴 \'연습하기\'에 토론·발표 · 오늘의 질문 · 추천 세트 · 연습 도구'] ] },
     { sel:'#hz-h', t:'홈', lead:'오늘 할 연습을 고르는 첫 화면이에요.', items:[
       ['면접 시작', '전공·경험 면접 · 지원할 기관이 정해졌으면 기업·직무 맞춤'],
       ['다른 방식', '\'다른 방식으로 연습할래요\'를 누르면 토론·발표 · 오늘의 질문 · 추천 세트 · 연습 도구'],
-      ['내 기록', '\'내 연습 기록 보기\'에서 점수 흐름'] ] },
+      ['내 자료·기록', '\'내 자료 확인\'에 경험·서류·질문 모음, \'연습 기록 보기\'에 지난 면접'] ] },
     { sel:'#d3-growth .gw-title', t:'내 성장', lead:'면접 점수가 어떻게 변했는지 보는 곳이에요.', items:[
       ['기간', '30일 · 90일 · 전체 중에서 골라요'],
       ['점수 흐름', '점을 누르면 그날 리포트가 열려요'],
@@ -29466,9 +29496,10 @@ body.hz-side #d3-home .hz-panel .g4-top{flex-direction:column;align-items:stretc
 @keyframes hzSide{from{transform:translateX(40px);opacity:0}}
 @media(max-width:640px){ #d3-home .hz-pop{align-items:flex-end;padding:0} #d3-home .hz-panel,body.hz-side #d3-home .hz-panel{width:100%;height:auto;max-height:90dvh;border-radius:18px 18px 0 0;animation:hzUp .24s ease} #d3-home .hz-panel .hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr)) !important} #d3-home .hz-pop-hd{padding:18px 18px 12px} #d3-home .hz-panel .hz-more{padding:14px 16px 20px} }
 #d3-home .hz-more .d3-hero{display:block;flex:none;margin-top:6px}
-#d3-home .hz-more #d3-stats,#d3-home .hz-more .g4-top-txt > #d3-greet-meta,#d3-home .hz-more #hero-greeting,#d3-home .hz-more #hero-sub,#d3-home .hz-more .hm-first,#d3-home .hz-more .hm-mode[data-hm-kind]{display:none !important}
+#d3-home .hz-more #d3-stats,#d3-home .hz-more .g4-top-txt > #d3-greet-meta,#d3-home .hz-more #hero-greeting,#d3-home .hz-more #hero-sub,#d3-home .hz-more .hm-first{display:none !important}
 #d3-home .hz-more .d3-greet .dq-bar{margin-top:0}
-#d3-home .hz-more .hm-modes{grid-template-columns:1fr !important;flex:none !important;grid-auto-rows:auto !important}
+#d3-home .hz-more .hm-modes{grid-template-columns:repeat(3,minmax(0,1fr)) !important;flex:none !important;grid-auto-rows:auto !important}
+@media(max-width:760px){#d3-home .hz-more .hm-modes{grid-template-columns:1fr !important}}
 #d3-home .hz-more .hm-modes .hm-debate{min-height:0}
 #d3-home .hz-more .d3-greet > .g4-reco{flex:none !important}
 @media(min-width:641px) and (min-height:640px){ #screen-dashboard #d3-home.d3-page{display:block;min-height:0} }
@@ -29502,6 +29533,45 @@ body.hdr-min #screen-dashboard .d3-user-btn .d3-avatar,body.hdr-min #screen-dash
 body.hdr-min #screen-dashboard .d3-user-btn{background:none;border:0;padding:8px 10px;font-size:16px;font-weight:600}
 body.hdr-min #screen-dashboard .d3-user-btn::before{content:"내 정보";color:var(--c-ink,#1c1c1e)}
 @media(max-width:640px){ body.hdr-min #screen-dashboard .d3-hdr-inner{height:60px} body.hdr-min #screen-dashboard .d3-org{display:none} body.hdr-min #screen-dashboard .d3-user{gap:2px} body.hdr-min #screen-dashboard .hz-mn,body.hdr-min #screen-dashboard .d3-user-btn{font-size:15px;padding:8px 6px} }
+
+/* ── 2026-11-12 홈 시안 04·05 · 규칙 파일 색 (design_tokens.light) ── */
+#d3-home{--c-ink:#2b2521;--c-ink-2:#6a5b51;--c-ink-3:#6a5b51;--c-line:#ded5ce;--c-line-strong:#ded5ce;--c-surface:#f3ede7;--c-accent:#bd411b;--c-accent-ink:#bd411b;--c-accent-soft:#f3ede7;color:#2b2521}
+#screen-dashboard.active:has(#d3-home:not([hidden])){background:#faf9f7}
+#screen-dashboard.active:has(#d3-home:not([hidden])) .d3-hdr{background:#faf9f7;border-bottom-color:#ded5ce}
+#screen-dashboard.active:has(#d3-home:not([hidden])) > .zp-foot{border-top-color:#ded5ce}
+#d3-home .hz-go{box-shadow:none} #d3-home .hz-go:hover{background:#a63816}
+#d3-home .hz-sec{min-height:48px;padding:0 20px;border:1px solid #ded5ce;border-radius:10px;background:#fff;color:#2b2521;font:inherit;font-size:16px;font-weight:600;cursor:pointer}
+#d3-home .hz-sec:hover{background:#f3ede7}
+#d3-home .hz-acts .hz-sec{min-height:52px}
+#d3-home .hz-steps i{color:#6a5b51}
+#d3-home .hz-foot{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+#d3-home .hz-foot > :last-child{justify-self:end}
+#d3-home .hz-more-btn i{width:auto;height:auto;background:none;font-size:11px;margin-right:8px}
+#d3-home .hz-more-btn i::before{content:none}
+#d3-home .hz-hero[hidden],#d3-home .hz-foot[hidden],#d3-home .hz-ret[hidden],#d3-home .hz-fix[hidden]{display:none !important}
+#d3-home .hz-ret{padding:clamp(28px,5vh,56px) 0 8px}
+#d3-home .hz-ret-h{margin:0;font-size:clamp(24px,2vw,30px);font-weight:800;letter-spacing:-.02em}
+#d3-home .hz-ret-sub{margin:10px 0 0;font-size:15.5px;color:#6a5b51}
+#d3-home .hz-ret-lbl{display:block;margin:28px 0 10px;font-size:15px;font-weight:700}
+#d3-home .hz-stage{width:100%;height:50px;padding:0 16px;border:1px solid #ded5ce;border-radius:10px;background:#fff;color:#2b2521;font:inherit;font-size:16px}
+#d3-home .hz-ret-main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center;padding:clamp(36px,7vh,80px) 0 clamp(28px,5vh,56px);border-bottom:1px solid #ded5ce}
+#d3-home .hz-ret-big{margin:0;font-size:clamp(32px,3.4vw,48px);line-height:1.25;font-weight:800;letter-spacing:-.03em}
+#d3-home .hz-ret-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(20px,3.4vh,32px)}
+#d3-home .hz-ret-acts .hz-go{min-height:52px;padding:0 24px;font-size:16.5px}
+#d3-home .hz-fix{padding:24px;border-radius:14px;background:#f3ede7}
+#d3-home .hz-fix h3{margin:0;font-size:17px;font-weight:800}
+#d3-home .hz-fix-t{margin:10px 0 0;font-size:16px;line-height:1.6;color:#2b2521}
+#d3-home .hz-fix-q{margin:10px 0 16px;font-size:13.5px;line-height:1.55;color:#6a5b51}
+#d3-home .hz-fix-q b{margin-right:6px;color:#2b2521} #d3-home .hz-fix-q span{white-space:nowrap;margin-left:4px}
+#d3-home .hz-ret-foot{display:flex;justify-content:space-between;gap:12px;padding:18px 0 4px}
+@media(max-width:860px){ #d3-home .hz-ret-main{grid-template-columns:1fr} }
+@media(max-width:640px){ #d3-home .hz-foot{grid-template-columns:1fr 1fr;gap:12px} #d3-home .hz-foot .hz-more-btn{grid-column:1/-1} #d3-home .hz-foot > :last-child{justify-self:stretch} #d3-home .hz-acts .hz-sec{align-self:flex-start} #d3-home .hz-ret-big{font-size:30px} #d3-home .hz-ret-acts{flex-direction:column;align-items:flex-start} #d3-home .hz-ret-foot{flex-wrap:wrap;justify-content:flex-start} }
+/* 위 메뉴 '▶ 내 메뉴' (학생) */
+body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .d3-avatar,body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .d3-user-name,body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .d3-caret{display:none !important}
+body:not(.is-admin-ui) #screen-dashboard .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
+body:not(.is-admin-ui) #screen-dashboard .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
+body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
+.gw-all{margin-top:6px;border:0;background:none;padding:4px 0;font:inherit;font-size:14px;font-weight:600;color:#45454a;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
 `,
   init(){
     const st = document.createElement('style'); st.id = 'hz-css'; st.textContent = this.CSS; document.head.appendChild(st);
@@ -29515,10 +29585,66 @@ body.hdr-min #screen-dashboard .d3-user-btn::before{content:"내 정보";color:v
     this.sync(); const g = document.getElementById('hero-greeting'); if(g && window.MutationObserver) new MutationObserver(()=>this.sync()).observe(g, { childList: true, characterData: true, subtree: true });
   },
   header(kind){ document.body.classList.toggle('hdr-min', kind === 'min'); },
+  /* ── 2026-11-12 처음 방문 / 다시 방문 (시안 04·05): 면접 기록이 하나라도 있으면 다시 방문 홈 ── */
+  STAGES: {
+    before:    { big: '내 경험으로<br>한 번 더 연습해요.', acts: [['전공·경험 면접', "StartFlow.pickFromHome('major')", 1], ['지난 결과 보기', 'HomeSimple.lastResult()']] },
+    decided:   { big: '지원 기관에 맞춰<br>연습해요.', acts: [['기관·직무 맞춤 면접', "StartFlow.pickFromHome('job')", 1], ['지난 결과 보기', 'HomeSimple.lastResult()']] },
+    scheduled: { big: '면접 날까지<br>차근차근 준비해요.', acts: [['면접 D-day', "HomeTabs.open('dday')", 1], ['기관·직무 맞춤 면접', "StartFlow.pickFromHome('job')"]] },
+  },
+  stageKey(){ return 'zp_stage_' + ((typeof state !== 'undefined' && state.currentUser && state.currentUser.id) || 'anon'); },
+  stage(){ let v = ''; try{ v = localStorage.getItem(this.stageKey()) || ''; }catch(_){} return this.STAGES[v] ? v : 'before'; },
+  setStage(v){ try{ localStorage.setItem(this.stageKey(), v); }catch(_){} this.paintStage(); },
+  paintStage(){
+    const v = this.stage(), S = this.STAGES[v], sel = document.getElementById('hz-stage'); if(sel) sel.value = v;
+    const big = document.getElementById('hz-ret-big'), acts = document.getElementById('hz-ret-acts'); if(!big || !acts) return;
+    big.innerHTML = S.big;
+    const hasLast = !!((state.historyRecords || [])[0]);
+    acts.innerHTML = S.acts.filter(a=>hasLast || !/lastResult/.test(a[1])).map(a=>`<button type="button" class="${a[2] ? 'hz-go' : 'hz-sec'}" onclick="${a[1]}">${a[0]}</button>`).join('');
+  },
+  lastResult(){ const r = (state.historyRecords || [])[0]; if(!r){ showToast('아직 저장된 면접 결과가 없어요.'); return; } try{ state.recordBackFn = null; }catch(_){} openRecordDetail(r.id, false); },
+  renderMode(){
+    const isAdmin = !!(state.currentUser && state.currentUser.isAdmin);
+    const ret = !isAdmin && (state.historyRecords || []).length > 0;
+    const h1 = document.getElementById('hz-hero'), f1 = document.getElementById('hz-foot1'), r = document.getElementById('hz-ret'); if(!h1 || !r) return;
+    h1.hidden = ret; if(f1) f1.hidden = ret; r.hidden = !ret;
+    document.getElementById('d3-home').classList.toggle('hz-is-ret', ret);
+    if(ret){ this.paintStage(); this.loadFix(); }
+  },
+  /** 가장 최근 면접에서 점수가 가장 낮은 답변 하나 + 저장된 피드백의 '고칠 점' 한 줄 (실제 저장 기록만 씀) */
+  async loadFix(){
+    const box = document.getElementById('hz-fix'), rec = (state.historyRecords || [])[0]; if(!box) return;
+    if(!rec || !rec.id || typeof sb === 'undefined'){ box.hidden = true; return; }
+    if(this._fixFor === rec.id && this._fix !== undefined){ this.paintFix(); return; }
+    this._fixFor = rec.id; this._fix = undefined;
+    try{
+      const { data, error } = await sb.from('interview_answers').select('question_text, answer_text, score, feedback, kind, question_index').eq('record_id', rec.id).order('question_index');
+      if(error) throw error;
+      const rows = (data || []).filter(a=>a.score != null && a.question_text && String(a.answer_text || '').replace(/\s/g, '').length >= 5);
+      rows.sort((a, b)=>a.score - b.score);
+      const a = rows[0] || null; let fix = '';
+      if(a && a.feedback){ String(a.feedback).split(/\n\n+/).map(x=>x.trim()).some(b=>{ if(b.startsWith('고칠 점')){ fix = b.slice(5).replace(/^(\([^)]*\))?\s*[:：]?\s*/, '').split('\n')[0].replace(/^\d+[.)]\s*/, '').trim(); return true; } return false; }); }
+      this._fix = a ? { q: a.question_text, answer: a.answer_text || '', score: a.score, feedback: a.feedback || '', fix } : null;
+    }catch(e){ console.warn('[지난 연습 고칠 한 가지]', e); this._fix = null; }
+    if(this._fixFor === rec.id) this.paintFix();
+  },
+  paintFix(){
+    const box = document.getElementById('hz-fix'), f = this._fix; if(!box) return;
+    if(!f){ box.hidden = true; box.innerHTML = ''; return; }
+    box.hidden = false;
+    box.innerHTML = `<h3>지난 연습에서 고칠 한 가지</h3>
+      <p class="hz-fix-t">${f.fix ? escapeHtml(f.fix) : '이 질문이 지난 면접에서 점수가 가장 낮았어요.'}</p>
+      <p class="hz-fix-q"><b>질문</b>${escapeHtml(f.q)} <span>${f.score}점</span></p>
+      <button type="button" class="hz-sec" onclick="HomeSimple.retry()">같은 질문 다시 연습</button>`;
+  },
+  retry(){ const f = this._fix; if(!f) return; let ref = null; try{ ref = getBankLookup().get(String(f.q).trim()) || null; }catch(_){}
+    PracticeKit.openRetry({ q: f.q, ref, answer: f.answer, score: f.score, feedback: f.feedback, prevLabel: '지난 답변 보기', title: '지난 연습 다시 답하기', src: 'home' }); },
   more(kind){ document.body.classList.toggle('hz-side', kind === 'side'); },
   sync(){ const e = document.getElementById('hz-eye'); if(!e) return; const n = (typeof state !== 'undefined' && state.currentUser && state.currentUser.name) || ''; e.textContent = n ? `${n}님, 반가워요` : ''; },
-  toggle(force, quiet){
+  toggle(force, quiet, title){
     this.open = typeof force === 'boolean' ? force : !this.open;
+    if(this.open){ const h = document.getElementById('hz-pop-h'), pp = document.getElementById('hz-pop-p');
+      if(h) h.textContent = title || '다른 방식으로 연습';
+      if(pp) pp.textContent = title ? '면접 종류를 고르거나, 짧은 연습 · 토론·발표 면접 · 연습 도구를 골라요.' : '짧게 연습하거나 토론·발표 면접, 연습 도구를 골라요.'; }
     const m = document.getElementById('hz-pop'), b = document.getElementById('hz-more-btn'); if(!m || !b) return;
     m.hidden = !this.open; b.setAttribute('aria-expanded', this.open ? 'true' : 'false');
     document.documentElement.classList.toggle('hz-open', this.open);
