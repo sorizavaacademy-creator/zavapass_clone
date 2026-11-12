@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12i';
+var APP_VERSION = '2026-11-12j';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5445,6 +5445,7 @@ body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo 
 .fl-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .fl-badge{display:inline-block;font-size:11.5px;font-weight:700;color:#5b6474;background:#EDEEF1;border:1px solid #dfe1e6;border-radius:999px;padding:2px 8px;vertical-align:middle;}
 .fl-sub{margin:0;font-size:12.5px;color:#6b6b72;}
+#modal-flow .fl-sub{font-size:14px;line-height:1.55;color:#6a5b51;}   /* 2026-11-12 면접 준비 창 안내 글자 키움 */
 .fl-exps{display:flex;flex-direction:column;gap:6px;}
 .fl-exp{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto auto auto;align-items:center;gap:8px;padding:8px 10px;border:1px solid #E3E1DB;border-radius:10px;background:#fff;font-size:13.5px;}
 .fl-exp .ty{font-size:12px;font-weight:700;color:#4a4a52;background:#F5F4F0;border-radius:6px;padding:2px 6px;} .fl-exp .tx{min-width:0;overflow-wrap:anywhere;} .fl-exp .src{font-size:11.5px;color:#8a8a90;}
@@ -6088,50 +6089,50 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-setup .setup-reco{background:#f3ede7 !important;border-color:#ded5ce !important}
 #modal-setup .setup-reco .btn-solid, #modal-setup .setup-reco button{background:#bd411b;border-color:#bd411b;color:#fff}
 /* ── 2026-11-12 학생 화면·창 전체를 홈과 같은 규칙 파일 색으로 (관리자·학교 화면 제외) — 모양만, 내용·기능 그대로 ── */
-body.v3-ui:not(.is-admin-ui), body:not(.is-admin-ui) #screen-login.v3, body:not(.is-admin-ui) #screen-practice.v3, body:not(.is-admin-ui) #screen-pending.v3, body:not(.is-admin-ui) .modal-overlay{--c-bg:#faf9f7;--c-bg-2:#f3ede7;--c-surface:#f3ede7;--c-line:#ded5ce;--c-line-strong:#ded5ce;--c-ink:#2b2521;--c-ink-2:#6a5b51;--c-ink-3:#6a5b51 !important;--c-accent:#bd411b;--c-accent-btn:#bd411b;--c-accent-btn-hover:#a63816;--c-accent-ink:#bd411b;--c-accent-soft:#f3ede7}
-body:not(.is-admin-ui) #screen-login, body:not(.is-admin-ui) #screen-practice, body:not(.is-admin-ui) #screen-pending{background:#faf9f7 !important;color:#2b2521}
-body:not(.is-admin-ui) #screen-login.v3{--c-bg-2:#faf9f7}
+body.v3-ui:not(.is-admin-ui), body:not(:has(#screen-admin.active)) #screen-login.v3, body:not(:has(#screen-admin.active)) #screen-practice.v3, body:not(:has(#screen-admin.active)) #screen-pending.v3, body:not(:has(#screen-admin.active)) .modal-overlay{--c-bg:#faf9f7;--c-bg-2:#f3ede7;--c-surface:#f3ede7;--c-line:#ded5ce;--c-line-strong:#ded5ce;--c-ink:#2b2521;--c-ink-2:#6a5b51;--c-ink-3:#6a5b51 !important;--c-accent:#bd411b;--c-accent-btn:#bd411b;--c-accent-btn-hover:#a63816;--c-accent-ink:#bd411b;--c-accent-soft:#f3ede7}
+body:not(:has(#screen-admin.active)) #screen-login, body:not(:has(#screen-admin.active)) #screen-practice, body:not(:has(#screen-admin.active)) #screen-pending{background:#faf9f7 !important;color:#2b2521}
+body:not(:has(#screen-admin.active)) #screen-login.v3{--c-bg-2:#faf9f7}
 /* 2026-11-12 오른쪽 아래 '사용 안내'·'의견·문제 보내기' 버튼이 맨 아래 버튼을 가리지 않게: 화면 맨 아래 줄 밑에 그 높이만큼 빈칸 */
-@media(min-width:641px){ body:not(.is-admin-ui) .screen > .zp-foot{padding-bottom:calc(28px + 96px) !important} }
-body:not(.is-admin-ui):has(#screen-login.active){background:#faf9f7 !important}
-body:not(.is-admin-ui) #screen-login.v3 .lg{background:#faf9f7}
-body:not(.is-admin-ui) #screen-practice .d3-hdr, body:not(.is-admin-ui) #screen-pending .d3-hdr{background:#faf9f7;border-bottom-color:#ded5ce}
-body:not(.is-admin-ui) .modal-overlay .modal-box{background:#faf9f7;color:#2b2521}
-body:not(.is-admin-ui) .modal-overlay .modal-head, body:not(.is-admin-ui) .modal-overlay .modal-foot{border-color:#ded5ce}
-body:not(.is-admin-ui) .btn-solid{background:#bd411b;border-color:#bd411b;color:#fff;box-shadow:none} body:not(.is-admin-ui) .btn-solid:hover{background:#a63816}
-body:not(.is-admin-ui) .btn-outline{background:#fff;border-color:#ded5ce;color:#2b2521} body:not(.is-admin-ui) .btn-outline:hover{background:#f3ede7}
-body:not(.is-admin-ui) .modal-box .chip.sel{background:#2b2521;border-color:#2b2521;color:#fff}
+@media(min-width:641px){ body:not(:has(#screen-admin.active)) .screen > .zp-foot{padding-bottom:calc(28px + 96px) !important} }
+body:not(:has(#screen-admin.active)):has(#screen-login.active){background:#faf9f7 !important}
+body:not(:has(#screen-admin.active)) #screen-login.v3 .lg{background:#faf9f7}
+body:not(:has(#screen-admin.active)) #screen-practice .d3-hdr, body:not(:has(#screen-admin.active)) #screen-pending .d3-hdr{background:#faf9f7;border-bottom-color:#ded5ce}
+body:not(:has(#screen-admin.active)) .modal-overlay .modal-box{background:#faf9f7;color:#2b2521}
+body:not(:has(#screen-admin.active)) .modal-overlay .modal-head, body:not(:has(#screen-admin.active)) .modal-overlay .modal-foot{border-color:#ded5ce}
+body:not(:has(#screen-admin.active)) .btn-solid{background:#bd411b;border-color:#bd411b;color:#fff;box-shadow:none} body:not(:has(#screen-admin.active)) .btn-solid:hover{background:#a63816}
+body:not(:has(#screen-admin.active)) .btn-outline{background:#fff;border-color:#ded5ce;color:#2b2521} body:not(:has(#screen-admin.active)) .btn-outline:hover{background:#f3ede7}
+body:not(:has(#screen-admin.active)) .modal-box .chip.sel{background:#2b2521;border-color:#2b2521;color:#fff}
 /* 연습 도구·내 자료 창 */
-body:not(.is-admin-ui) .hm-more{background:#faf9f7}
-body:not(.is-admin-ui) .hm-title{padding:22px 76px 14px 26px;border-bottom:1px solid #ded5ce}
-body:not(.is-admin-ui) .hm-title[hidden]{display:none}
-body:not(.is-admin-ui) .hm-title h2{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;color:#2b2521}
-body:not(.is-admin-ui) .hm-title p{margin:6px 0 0;font-size:14.5px;color:#6a5b51}
-body:not(.is-admin-ui) .hm-more.has-title .hm-tabs{padding:10px 16px 0}
-body:not(.is-admin-ui) .hm-more.has-title .hm-x{position:absolute;top:20px;right:22px;width:38px;height:38px;border:1px solid #ded5ce;background:#fff}
-body:not(.is-admin-ui) .hm-more.has-title .hm-x:hover{background:#f3ede7}
-@media(max-width:640px){ body:not(.is-admin-ui) .hm-title{padding:18px 64px 12px 18px} body:not(.is-admin-ui) .hm-more.has-title .hm-x{top:16px;right:16px} }
-body:not(.is-admin-ui) .hm-tabs{border-bottom-color:#ded5ce}
-body:not(.is-admin-ui) .hm-tabs button[data-t]{color:#6a5b51} body:not(.is-admin-ui) .hm-tabs button[data-t]:hover, body:not(.is-admin-ui) .hm-tabs button[data-t].on{color:#2b2521}
-body:not(.is-admin-ui) .hm-tabs button[data-t].on{box-shadow:0 0 0 1px #ded5ce}
-body:not(.is-admin-ui) .hm-x{background:#f3ede7;color:#2b2521}
+body:not(:has(#screen-admin.active)) .hm-more{background:#faf9f7}
+body:not(:has(#screen-admin.active)) .hm-title{padding:22px 76px 14px 26px;border-bottom:1px solid #ded5ce}
+body:not(:has(#screen-admin.active)) .hm-title[hidden]{display:none}
+body:not(:has(#screen-admin.active)) .hm-title h2{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;color:#2b2521}
+body:not(:has(#screen-admin.active)) .hm-title p{margin:6px 0 0;font-size:14.5px;color:#6a5b51}
+body:not(:has(#screen-admin.active)) .hm-more.has-title .hm-tabs{padding:10px 16px 0}
+body:not(:has(#screen-admin.active)) .hm-more.has-title .hm-x{position:absolute;top:20px;right:22px;width:38px;height:38px;border:1px solid #ded5ce;background:#fff}
+body:not(:has(#screen-admin.active)) .hm-more.has-title .hm-x:hover{background:#f3ede7}
+@media(max-width:640px){ body:not(:has(#screen-admin.active)) .hm-title{padding:18px 64px 12px 18px} body:not(:has(#screen-admin.active)) .hm-more.has-title .hm-x{top:16px;right:16px} }
+body:not(:has(#screen-admin.active)) .hm-tabs{border-bottom-color:#ded5ce}
+body:not(:has(#screen-admin.active)) .hm-tabs button[data-t]{color:#6a5b51} body:not(:has(#screen-admin.active)) .hm-tabs button[data-t]:hover, body:not(:has(#screen-admin.active)) .hm-tabs button[data-t].on{color:#2b2521}
+body:not(:has(#screen-admin.active)) .hm-tabs button[data-t].on{box-shadow:0 0 0 1px #ded5ce}
+body:not(:has(#screen-admin.active)) .hm-x{background:#f3ede7;color:#2b2521}
 /* 다시 답하기·오늘의 질문·내 질문 모음·경험 정리 도우미 (PracticeKit) */
-body:not(.is-admin-ui) .pk-box{background:#faf9f7;color:#2b2521}
-body:not(.is-admin-ui) .pk-h{border-bottom-color:#ded5ce}
-body:not(.is-admin-ui) .pk-f{border-top-color:#ded5ce}
-body:not(.is-admin-ui) .pk-btn{border-color:#ded5ce;color:#2b2521;background:#fff}
-body:not(.is-admin-ui) .pk-btn.pri, body:not(.is-admin-ui) .rs-next-acts .pk-btn.pri{background:#bd411b;border-color:#bd411b;color:#fff}
-body:not(.is-admin-ui) .pk-btn.ghost{background:transparent;border-color:transparent}
-body:not(.is-admin-ui) .pk-box textarea, body:not(.is-admin-ui) .pk-box input{border-color:#ded5ce}
-body:not(.is-admin-ui) .ec-bar li, body:not(.is-admin-ui) .ec-remind, body:not(.is-admin-ui) .ec-sofar{background:#f3ede7;color:#6a5b51}
-body:not(.is-admin-ui) .ec-cat, body:not(.is-admin-ui) .ec-dot, body:not(.is-admin-ui) .ec-two section, body:not(.is-admin-ui) .ec-star, body:not(.is-admin-ui) .ec-ex{border-color:#ded5ce;color:#2b2521}
-body:not(.is-admin-ui) .ec-lead, body:not(.is-admin-ui) .ec-tip, body:not(.is-admin-ui) .ec-pts{color:#6a5b51}
-body:not(.is-admin-ui) .ec-q small{color:#bd411b}
+body:not(:has(#screen-admin.active)) .pk-box{background:#faf9f7;color:#2b2521}
+body:not(:has(#screen-admin.active)) .pk-h{border-bottom-color:#ded5ce}
+body:not(:has(#screen-admin.active)) .pk-f{border-top-color:#ded5ce}
+body:not(:has(#screen-admin.active)) .pk-btn{border-color:#ded5ce;color:#2b2521;background:#fff}
+body:not(:has(#screen-admin.active)) .pk-btn.pri, body:not(:has(#screen-admin.active)) .rs-next-acts .pk-btn.pri{background:#bd411b;border-color:#bd411b;color:#fff}
+body:not(:has(#screen-admin.active)) .pk-btn.ghost{background:transparent;border-color:transparent}
+body:not(:has(#screen-admin.active)) .pk-box textarea, body:not(:has(#screen-admin.active)) .pk-box input{border-color:#ded5ce}
+body:not(:has(#screen-admin.active)) .ec-bar li, body:not(:has(#screen-admin.active)) .ec-remind, body:not(:has(#screen-admin.active)) .ec-sofar{background:#f3ede7;color:#6a5b51}
+body:not(:has(#screen-admin.active)) .ec-cat, body:not(:has(#screen-admin.active)) .ec-dot, body:not(:has(#screen-admin.active)) .ec-two section, body:not(:has(#screen-admin.active)) .ec-star, body:not(:has(#screen-admin.active)) .ec-ex{border-color:#ded5ce;color:#2b2521}
+body:not(:has(#screen-admin.active)) .ec-lead, body:not(:has(#screen-admin.active)) .ec-tip, body:not(:has(#screen-admin.active)) .ec-pts{color:#6a5b51}
+body:not(:has(#screen-admin.active)) .ec-q small{color:#bd411b}
 /* 토론·토의·발표 창 */
-body:not(.is-admin-ui) .dbp-mh h2, body:not(.is-admin-ui) .dbp-b, body:not(.is-admin-ui) .dbp-ht, body:not(.is-admin-ui) .dbp-guide dt{color:#2b2521}
-body:not(.is-admin-ui) .dbp-f{border-top-color:#ded5ce;background:#faf9f7}
-body:not(.is-admin-ui) .dbp-guide, body:not(.is-admin-ui) .dbp-empty{color:#6a5b51}
-body:not(.is-admin-ui) .dbp-sc{color:#bd411b}
+body:not(:has(#screen-admin.active)) .dbp-mh h2, body:not(:has(#screen-admin.active)) .dbp-b, body:not(:has(#screen-admin.active)) .dbp-ht, body:not(:has(#screen-admin.active)) .dbp-guide dt{color:#2b2521}
+body:not(:has(#screen-admin.active)) .dbp-f{border-top-color:#ded5ce;background:#faf9f7}
+body:not(:has(#screen-admin.active)) .dbp-guide, body:not(:has(#screen-admin.active)) .dbp-empty{color:#6a5b51}
+body:not(:has(#screen-admin.active)) .dbp-sc{color:#bd411b}
 
 @media(max-width:640px){ .fl-diffs{grid-template-columns:1fr;} .cc-row{grid-template-columns:1fr;gap:6px;} .cc{padding:14px;} }
 .iv-co{margin:0 0 10px;border:1px solid #E3E1DB;border-radius:12px;background:#FAFAF8;color:#1c1c1e;}
@@ -29661,15 +29662,15 @@ body.hdr-min #screen-dashboard .d3-user-btn::before{content:"내 정보";color:v
 @media(max-width:860px){ #d3-home .hz-ret-main{grid-template-columns:1fr} }
 @media(max-width:640px){ #d3-home .hz-foot{grid-template-columns:1fr 1fr;gap:12px} #d3-home .hz-foot .hz-more-btn{grid-column:1/-1} #d3-home .hz-foot > :last-child{justify-self:stretch} #d3-home .hz-acts .hz-sec{align-self:flex-start} #d3-home .hz-ret-big{font-size:30px} #d3-home .hz-ret-acts{flex-direction:column;align-items:flex-start} #d3-home .hz-ret-foot{flex-wrap:wrap;justify-content:flex-start} }
 /* 위 메뉴 '▶ 내 메뉴' (학생) */
-body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .d3-avatar,body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .d3-user-name,body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .d3-caret{display:none !important}
-body:not(.is-admin-ui) #screen-dashboard .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
-body:not(.is-admin-ui) #screen-dashboard .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
-body:not(.is-admin-ui) #screen-dashboard .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
+body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .d3-avatar,body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .d3-user-name,body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .d3-caret{display:none !important}
+body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
+body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
+body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
 /* 질문 미리보기 화면도 '▶ 내 메뉴' */
-body:not(.is-admin-ui) #screen-practice .d3-user-btn .d3-avatar,body:not(.is-admin-ui) #screen-practice .d3-user-btn .d3-user-name,body:not(.is-admin-ui) #screen-practice .d3-user-btn .d3-caret{display:none !important}
-body:not(.is-admin-ui) #screen-practice .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
-body:not(.is-admin-ui) #screen-practice .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
-body:not(.is-admin-ui) #screen-practice .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
+body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .d3-avatar,body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .d3-user-name,body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .d3-caret{display:none !important}
+body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn{background:none;border:0;padding:8px 6px;font-size:15.5px;font-weight:600;color:#2b2521;position:relative}
+body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn::before{content:"▶  내 메뉴";white-space:pre;font-size:15.5px}
+body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .rr-av-dot{position:absolute;top:4px;right:-2px}
 .gw-all{margin-top:12px;min-height:40px;padding:0 16px;border:1px solid #ded5ce;border-radius:10px;background:#fff;font:inherit;font-size:14.5px;font-weight:600;color:#2b2521;cursor:pointer}
 .gw-all:hover{background:#f3ede7}
 /* 2026-11-12 나의 기록 화면도 홈과 같은 규칙 파일 색 — 내용·기능 그대로 */
