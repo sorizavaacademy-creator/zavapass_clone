@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z3';
+var APP_VERSION = '2026-11-12z4';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6486,6 +6486,25 @@ html.ivv-dr-open{overflow:hidden;}
 .adm-has-ph .admin-view-head{min-height:0;margin-bottom:10px}
 .schl-opslink{margin:-6px 0 14px}
 @media (max-width:820px){ .adm-ph-row{flex-direction:column-reverse;gap:10px} .adm-prev{align-self:flex-end;padding:8px 14px} .adm-ph h2{font-size:22px} #screen-admin.adm-lite .a3-hdr-inner{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:4px} }
+/* 2026-11-12z4 5~7단계 정렬 다듬기 */
+.schl-opslink{margin:0} .schl-opslink .btn{flex:none !important;width:auto !important}   /* 51: [운영 설정]을 글자 폭 버튼으로 */
+.schl-opslink + .schl-head{display:none}   /* 51: 숨긴 옛 제목이 남기던 빈 줄 없애기 */
+#screen-admin.adm-lite #admin-view-ivvoice .beta-head-btns .btn-manage{display:none}   /* 55: [이전으로]와 겹치던 [← 현황] */
+#schl-main > #admin-subtabs{margin:0}   /* 관리자 45: 학교 화면 세부 탭을 제목 아래로 */
+@media (max-width:520px){ #screen-admin.adm-lite .a3-hdr .d3-user-id{display:none} #screen-admin.adm-lite .a3-hdr .d3-user-btn{padding-right:4px} }   /* 관리자 휴대폰: 머리줄 한 줄로 */
+@media (max-width:820px){
+  .schl-re-pg{grid-template-columns:1fr !important;gap:18px !important}   /* 78 휴대폰: 현재 정보와 권한 고르기를 위아래로 */
+  #modal-feedback.zp-pg .modal-box{display:flex;flex-direction:column} #modal-feedback.zp-pg .modal-body{display:contents}
+  #modal-feedback.zp-pg .modal-foot{order:1} #modal-feedback.zp-pg .fb-aside{order:2;margin-top:22px}   /* 43 휴대폰: [보내기]를 글 상자 바로 아래, 안내 상자는 그 뒤 */
+}
+@media (max-width:600px){   /* 51 휴대폰: 옆으로 밀려 안 보이던 권한·상태·[바꾸기]를 한 칸 안에 */
+  .schl-roles thead{display:none} .schl-roles, .schl-roles tbody{display:block;width:100%}
+  .schl-roles tr{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:6px 10px;padding:12px 14px;border-bottom:1px solid var(--schl-line)}
+  .schl-roles td{display:block;padding:0 !important;border:0 !important;min-width:0}
+  .schl-roles td:nth-child(1){grid-column:1 / 4;grid-row:1} .schl-roles td:nth-child(1) small{overflow-wrap:anywhere}
+  .schl-roles td:nth-child(2){grid-column:1;grid-row:2;font-size:13px;color:#6a5b51} .schl-roles td:nth-child(3){grid-column:2;grid-row:2} .schl-roles td:nth-child(4){grid-column:3;grid-row:2;font-size:12.5px}
+  .schl-roles td.r{grid-column:4;grid-row:1 / span 2;align-self:center}
+}
 #modal-flow.fl-page{z-index:90;padding:0;background:#faf9f7;align-items:stretch;justify-content:stretch}
 #modal-flow.fl-page .fl-box{max-width:none !important;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:none;margin:0;display:flex;flex-direction:column;background:#faf9f7;overflow:hidden}
 #modal-flow .fl-hdr{flex:none;border-bottom:1px solid #ded5ce;background:#faf9f7}
@@ -14110,12 +14129,14 @@ const School = {
   async loadFbCount(){ try{ const r = await sb.from('feedback').select('id', { count:'exact', head:true }).eq('status', '새 글'); this.fbNew = r.count || 0; this.paintSide(); }catch(_){} },
   render(){
     const main = this.G('schl-main'); if(!main || !this.d) return;
+    try{ AdminPg.subHome(); }catch(_){}
     const fn = this.view === 'roles' && this.edit ? 'vRoleEdit' : ({ overview:'vOverview', report:'vReport', students:'vStudents', records:'vRecords', talk:'vTalk', roles:'vRoles' }[this.view] || 'vOverview');
     main.innerHTML = (this.d.errs.length ? `<p class="schl-warn">일부 자료를 읽지 못했어요 (${escapeHtml(this.d.errs.join(' · '))}). supabase/clone/007~010 적용을 확인해 주세요.</p>` : '') + this[fn]();
     this.bind(main);
     if(this.view === 'talk') this.loadTalk();
     if(this.view === 'roles' && !this.edit) this.loadRoleLog();
     if(this.view === 'roles' && this.edit) this.bindRoleEdit(main);
+    try{ AdminPg.subUnder(); }catch(_){}
   },
   /* ── 작은 도우미 ── */
   ago(iso){ if(!iso) return '–'; const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000); return d <= 0 ? '오늘' : d === 1 ? '어제' : d < 7 ? `${d}일 전` : d < 31 ? `${Math.floor(d / 7)}주 전` : formatDateShort(iso); },
@@ -15570,11 +15591,17 @@ const AdminPg = {
   isOps(v){ return Object.values(this.SUB).some(L=>L.some(([x])=>x === v)) && v !== 'sch-roles'; },
   navOf(v){ return (Object.entries(this.SUB).find(([, L])=>L.some(([x])=>x === v)) || ['users'])[0]; },
   hist: [],
+  /* 2026-11-12z4 관리자가 보는 학교 화면(현황 등): 세부 탭을 제목 아래로 옮김. 학교 화면을 다시 그리기 전에는 제자리로 돌려 놓아 지워지지 않게 함 */
+  subHome(){ const sub = document.getElementById('admin-subtabs'), slot = document.getElementById('adm-ph-slot'); if(sub && slot && sub.previousElementSibling !== slot) slot.after(sub); },
+  subUnder(){ const sc = document.getElementById('screen-admin'), main = document.getElementById('schl-main'), sub = document.getElementById('admin-subtabs');
+    if(!sc || !main || !sub) return; const ph = sc.classList.contains('adm-lite') && /^sch-/.test(state.adminView || '') ? main.querySelector(':scope > .schl-ph') : null;
+    if(ph) ph.after(sub); else this.subHome(); },
   back(){ const v = this.hist.pop(); this._noPush = true; showAdminView(v || 'users'); },
   paint(view){
     try{ School.paintNav(); }catch(_){}
     const adm = state.currentUser && state.currentUser.isAdmin, on = typeof School !== 'undefined' && School.isOn();
     const slot = document.getElementById('adm-ph-slot'); if(slot) slot.innerHTML = ''; document.querySelectorAll('#screen-admin .adm-has-ph').forEach(x=>x.classList.remove('adm-has-ph'));
+    this.subUnder();
     if(!adm || !on || !this.isOps(view)) return;
     const box = document.querySelector('#screen-admin .admin-view.active'); if(!box) return;
     const d = this.PH[view]; if(d){ const links = (d[2] || []).map(([v, t])=>`<button type="button" class="btn btn-outline btn-sm" onclick="showAdminView('${v}')">${t}</button>`).join('');
