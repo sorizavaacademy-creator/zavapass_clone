@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12p';
+var APP_VERSION = '2026-11-12q';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -26271,8 +26271,11 @@ const IvVoice = {
   active(){ return !!(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS && state.flowCtx && Array.isArray(state.flowCtx.interviewers) && state.flowCtx.interviewers.length); },
   speakerId(){ try{ const ppl = IvPanel.people(); const p = ppl[Math.max(0, IvPanel.cur)]; return p ? p.id : null; }catch(_){ return null; } },
   kindOf(pid){ const it = state.interviewQuestions && state.interviewQuestions[state.currentQ - 1]; if(it && it.followup) return 'followup'; const p = this.P(pid); return p && p.p === 'hard' ? 'press' : 'question'; },
-  engineFor(pid, kind){ const s = this.eff(pid, (this.map || {})[pid]), e = s.emotions || {};   // 늘 타입캐스트 (안 골랐으면 기본 목소리)
-    return { provider:'typecast', tc:{ voice_id:s.voice_id, tempo:+s.tempo || 1, pitch:s.pitch || 0, emotion: this.tcEmo(e[kind] || e.question || 'normal') } }; },
+  /** 2026-11-12 면접장 사진 자리와 성별이 다른 면접관은 그 면접에서만 자리에 맞는 목소리로 (Imv.seats에서 정함) */
+  seatVoice: null,
+  seatOv(pid){ try{ return (typeof Imv !== 'undefined' && Imv.active && this.seatVoice && this.seatVoice[pid]) || null; }catch(_){ return null; } },
+  engineFor(pid, kind){ const s = this.eff(pid, (this.map || {})[pid]), e = s.emotions || {}, ov = this.seatOv(pid);   // 늘 타입캐스트 (안 골랐으면 기본 목소리)
+    return { provider:'typecast', tc:{ voice_id: ov ? ov.voice_id : s.voice_id, tempo:+s.tempo || 1, pitch:s.pitch || 0, emotion: this.tcEmo(e[kind] || e.question || 'normal') } }; },
   lexApply(text, list){ let t = String(text || ''); (list || this.lexMap || this.lex || []).forEach(x=>{ if(x && x.t && x.s) t = t.split(x.t).join(x.s); }); return t; },
   browserVoice(gender){
     const vs = typeof getKoreanVoices === 'function' ? getKoreanVoices() : []; if(!vs.length) return null;
@@ -26285,7 +26288,7 @@ const IvVoice = {
   speakBrowser(text, onDone, pid, kind, setting){
     let m = setting || (pid && ((this.map || {})[pid] || this.rows[pid])) || (pid ? this.blank(pid) : null) || {};
     if(!setting && m.enabled === false && pid) m = this.blank(pid);
-    const w = IV_WANT[pid] || {}, meta = m.voice_meta || {}, gender = meta.gender || w.g || '';
+    const w = IV_WANT[pid] || {}, meta = m.voice_meta || {}, ov = this.seatOv(pid), gender = ov ? ov.gender : (meta.gender || w.g || '');
     let emo = (m.emotions || {})[kind] || (m.emotions || {}).question || 'normal'; if(emo === 'smart') emo = (IV_WANT[pid] || {}).emo || 'normal';
     const emoPitch = { toneup:0.12, tonedown:-0.12, happy:0.08, tender:0.04, calm:-0.05, sad:-0.1, angry:0.06 }[emo] || 0;
     const emoRate = { toneup:0.04, tonedown:-0.04, calm:-0.03, angry:0.05 }[emo] || 0;
@@ -30883,8 +30886,10 @@ const Imv = {
     const n = this.people.length, photo = n >= 1 && n <= 3, el = this.el;
     this.mode = photo ? 'photo' : 'scene';
     el.querySelector('#imv-photo').hidden = !photo; el.querySelector('#imv-scene').hidden = photo;
+    try{ IvVoice.seatVoice = {}; }catch(_){}
     if(photo){
       const lo = this.layoutFor(this.people); this.layout = lo.layout; this.col = lo.col;
+      try{ this.seatVoices(); }catch(e){ console.warn('[자리 목소리]', e); }
       const L = IMV_PHOTOS[this.layout], ph = el.querySelector('#imv-photo');
       el.querySelector('#imv-photo-img').style.backgroundImage = `url("${L.src}")`;
       ph.dataset.n = n; ph.style.setProperty('--sw', L.sw + '%');
@@ -30900,6 +30905,16 @@ const Imv = {
     this.kindText = kind; el.querySelector('#imv-kind').textContent = kind + (this.isPractice ? ' · 연습형' : ' · 실전형');
     this.cur = -1; this.speaker(0);
   },
+  /** 2026-11-12 사진 자리의 성별: 3명·2명(여성 포함)·1명(여성) 사진의 0번 자리만 여성 */
+  seatGender(layout, c){ return c === 0 && ['3', '2a', '1f'].includes(layout) ? 'female' : 'male'; },
+  /** 면접관 성별과 사진 자리 성별이 다르면(여성 2명 이상·남성만 3명 등) 그 면접관은 이번 면접에서만 자리에 맞는 기본 목소리로. 같은 패널 안에서 겹치지 않게 */
+  seatVoices(){ const map = {}, used = new Set();
+    this.people.forEach(p=>{ try{ if(this.seatGender(this.layout, this.col[this.people.indexOf(p)]) === p.gender) used.add(IvVoice.eff(p.id, (IvVoice.map || {})[p.id]).voice_id); }catch(_){} });
+    this.people.forEach((p, k)=>{ const g = this.seatGender(this.layout, this.col[k]); if(g === p.gender) return;
+      const pool = Object.entries(IV_TC_DEFAULT).filter(([id, v])=>v.gender === g && !used.has(v.voice_id));
+      const pick = pool[0] || Object.entries(IV_TC_DEFAULT).find(([id, v])=>v.gender === g); if(!pick) return;
+      used.add(pick[1].voice_id); map[p.id] = { voice_id: pick[1].voice_id, gender: g, name: pick[1].name }; });
+    IvVoice.seatVoice = map; },
   /** 사진 속 자리: 0 왼쪽(여성) · 1 가운데 · 2 오른쪽. 진행 면접관(첫 번째)은 가운데, 여성 면접관은 왼쪽 자리로 (면접 준비 창 미리보기도 같이 씀) */
   layoutFor(people){
     const n = people.length, fem = people.findIndex(p=>p && p.gender === 'female'), col = new Array(n); let layout;
@@ -31026,6 +31041,7 @@ const Imv = {
     this.pipOn = !this.pipOn; const box = this.el.querySelector('#imv-pip'), v = this.el.querySelector('#imv-pip-v');
     if(this.pipOn && v.srcObject !== st){ v.srcObject = st; try{ v.play(); }catch(_){} }
     box.hidden = !this.pipOn; this.el.querySelector('#imv-tg-pip').setAttribute('aria-pressed', String(this.pipOn));
+    if(this.pipOn){ try{ this.optToggle(null, false); }catch(_){} }   // 2026-11-12 켜면 메뉴를 닫아 내 화면이 바로 보이게
   },
   startTimer(){ this.stopTimer(); this.ansT0 = Date.now(); const t = this.el.querySelector('#imv-time');
     const tick = ()=>{ const s = Math.floor((Date.now() - this.ansT0) / 1000); t.textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
@@ -31297,9 +31313,10 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv .imv-ac div{display:flex;gap:8px;justify-content:center}
 #imv .imv-ac button{border-radius:10px;font:inherit;font-size:13.5px;font-weight:600;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
 #imv .imv-ac button.k{background:var(--acc);color:#fff;border-color:var(--acc)}
-#imv .imv-pip{position:absolute;right:clamp(14px,1.6cqw,28px);bottom:clamp(14px,2.6cqh,28px);width:clamp(180px,15cqw,280px);aspect-ratio:16/10;border-radius:12px;overflow:hidden;border:2px solid #fff;box-shadow:0 14px 34px rgba(0,0,0,.22);background:#222}
+#imv .imv-pip{position:absolute;right:clamp(14px,1.6cqw,28px);top:clamp(14px,2.6cqh,28px);bottom:auto;width:clamp(180px,15cqw,280px);aspect-ratio:16/10;border-radius:12px;overflow:hidden;border:2px solid #fff;box-shadow:0 14px 34px rgba(0,0,0,.22);background:#222}
 #imv .imv-pip video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 #imv .imv-pip span{position:absolute;left:8px;bottom:6px;font-size:11.5px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+@media (max-width:640px){#imv .imv-pip{width:clamp(108px,32vw,140px);border-radius:10px}#imv .imv-pip span{font-size:10.5px;left:6px;bottom:4px}}
 /* 아래 줄 */
 #imv .imv-foot{flex:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(18px,2vw,32px);height:clamp(72px,9.6vh,100px);border-top:1px solid var(--line)}
 #imv .imv-end{border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:clamp(14px,1vw,16px);font-weight:600;height:clamp(44px,5.4vh,52px);padding:0 18px;border-radius:10px;cursor:pointer}
