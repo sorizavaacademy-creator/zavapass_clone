@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z6';
+var APP_VERSION = '2026-11-12z7';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -21436,6 +21436,8 @@ function startDialogInterview(){
   }
   if(!StenoListener.supported()){ showToast('이 브라우저는 음성 인식을 지원하지 않아 답변을 직접 입력하는 방식으로 진행돼요. 말로 답변하려면 크롬 또는 엣지를 사용해 주세요.'); }
   startCamera();
+  // 2026-11-12z7 카운트다운·준비하는 동안 인사말 목소리를 진행 면접관(첫째) 목소리로 미리 만들어 둠 (면접관 자리 목소리는 Imv.begin에서 정해짐)
+  try{ StenoVoice.clearPre(); StenoVoice.provider = DIALOG_VOICE_PROVIDER; StenoVoice.applySettings(); if(!state.resumeDraft){ const g = VoiceBank.greeting(state.selectedField.id), p0 = IvPanel.people()[0]; if(g && !g.openUrl) StenoVoice.prefetch(g.open, p0 ? p0.id : null); } }catch(_){}
   if(typeof Imv !== 'undefined' && Imv.active){ state.skipReadyGate = false; Imv.countdown().then(()=>{ if(Imv.active) confirmReady(); }); }   // 2026-11-11 실전 모드: 입장 전환 → 3초 카운트다운 → 바로 시작
   else if(state.skipReadyGate){ state.skipReadyGate = false; confirmReady(); }
   else if(!state.resumeDraft && ReadySkip.on()){ confirmReady(); }   // 2026-10-26j: '다음부터 바로 시작'을 고른 사람
@@ -24693,7 +24695,7 @@ const IvPanel = {
   fu:0, cur:-1, qn:0, ask:0, spoken:{}, curQ:null, _fuKey:null, _fuPick:null, defNotice:null,
   people(){ const fc = state.flowCtx; const ids = fc && Array.isArray(fc.interviewers) ? fc.interviewers : []; return ids.map(id=>StartFlow.PEOPLE.find(x=>x.id === id)).filter(Boolean); },
   setup(){
-    const ppl = this.people(), r = document.getElementById('iv-roster'); this.fu = 0; this.cur = -1; this.qn = 0; this.ask = 0; this.spoken = {}; this.curQ = null; this._fuKey = null;
+    const ppl = this.people(), r = document.getElementById('iv-roster'); this.fu = 0; this.cur = -1; this.qn = 0; this.ask = 0; this.spoken = {}; this.curQ = null; this._fuKey = null; this._plan = null;
     if(r){ r.hidden = !ppl.length; r.innerHTML = ppl.map((x,i)=>`<span class="iv-rp" role="listitem" data-k="${i}"><i style="background:${x.c}"></i>${escapeHtml(x.n)}${i === 0 ? ' · 진행' : ''}<em>대기</em></span>`).join(''); }
     const p = CompanyData.active(), box = document.getElementById('iv-co');
     if(box){ box.hidden = !p; box.open = false;
@@ -24739,8 +24741,11 @@ const IvPanel = {
   /** 꼬리질문을 할 면접관: 방금 질문한 면접관이 아닌 사람 중 이 질문·꼬리질문에 어울리는 사람 (같은 차례에선 늘 같은 답) */
   nextFu(){ const n = this.people().length; if(n < 2) return { k:0, why:'' }; const key = this.qn + ':' + this.fu;
     if(this._fuKey !== key){ this._fuKey = key; this._fuPick = this.pick(this.curQ, this.ask, true); } return this._fuPick; },
+  /** 2026-11-12z7 다음 질문을 할 면접관을 미리 정해 둠 (그 목소리로 질문을 미리 만들 수 있게). 다음 질문이 오면 이 결정을 그대로 씀 */
+  planNext(q){ if(!q) return null; this._plan = Object.assign({ key: q.q }, this.askerFor(q)); return this._plan; },
   onQuestion(q){
-    this.curQ = q || null; const a = this.askerFor(q); this.ask = a.k; this.qn++; this.spoken[a.k] = (this.spoken[a.k] || 0) + 1; this.speak(a.k, a.why);
+    const pl = this._plan; this._plan = null;
+    this.curQ = q || null; const a = (pl && q && pl.key === q.q) ? pl : this.askerFor(q); this.ask = a.k; this.qn++; this.spoken[a.k] = (this.spoken[a.k] || 0) + 1; this.speak(a.k, a.why);
     const n = document.getElementById('iv-question-notice'); if(!n) return;
     if(this.defNotice == null) this.defNotice = n.textContent;
     const h = document.getElementById('iv-co-hint');
@@ -25460,7 +25465,11 @@ const StenoVoice = {
       try{
         // supabase-js의 invoke는 audio/mpeg 응답을 글자로 읽어 버려(깨진 오디오) 직접 fetch로 mp3 Blob을 받습니다
         // 2026-10-14: 실패하면 1.5초·3.5초·7초 뒤 자동으로 다시 시도 (OpenAI 분당 한도 429 등). 라이브 면접에서는 브라우저 음성으로 바꾸지 않음
-        const blob = await this.fetchWithRetry(sanitizeForSpeech(text), my);
+        // 2026-11-12z7 라이브 면접: 미리 만들어 둔 목소리가 있으면 바로 쓰고, 없으면 끝소리 검사·다시 만들기 없이 한 번만 만들어 바로 재생 (문장마다 2~3초 기다리던 것 줄임)
+        const tt = sanitizeForSpeech(text); let blob = null;
+        const pre = this._takePre(tt, this.engine);
+        if(pre){ try{ blob = await pre; }catch(_){ blob = null; } if(my !== this._seq) return; }
+        if(!blob) blob = state.interviewMode === 'dialog' ? await this._fetchRaw(tt, my) : await this.fetchWithRetry(tt, my);
         if(my !== this._seq) return;   // 그 사이 다른 발화가 시작됨
         const url = URL.createObjectURL(blob);
         MobileAudio.beforeSpeak();
@@ -25514,6 +25523,39 @@ const StenoVoice = {
     }
     throw last || new Error('음성 생성 실패');
   },
+  /** 2026-11-12z7 라이브 면접: 다음에 말할 문장(인사말·다음 질문)을 그 면접관 목소리로 미리 만들어 둠.
+      끝소리 검사·한 번 다시 만들기는 여기서 해서 학생이 기다리지 않음. 녹음본이 있는 문장은 미리 만들지 않음 */
+  _pre: new Map(),
+  _pk(t, eng){ return [String(t || '').trim(), this.openaiVoice, this.speed, this.ttsModel, this.instructions, JSON.stringify(eng || {})].join('|'); },
+  _takePre(t, eng){ const k = this._pk(t, eng), p = this._pre.get(k); if(p){ this._pre.delete(k); PreVoice.hit++; } return p || null; },
+  clearPre(){ this._pre.clear(); },
+  prefetch(text, pid){
+    try{
+      if(state.interviewMode !== 'dialog' || !text) return;
+      if(VoiceBank.urlFor(text)) return;
+      const t = sanitizeForSpeech(text); let eng = null;
+      if(typeof IvVoice !== 'undefined' && IvVoice.active()){
+        if(IvVoice.serverOff || !pid) return;
+        const p = IvVoice.P(pid); eng = IvVoice.engineFor(pid, p && p.p === 'hard' ? 'press' : 'question');
+      } else if(this.provider === 'openai') eng = this.engine; else return;
+      const k = this._pk(t, eng); if(this._pre.has(k)) return;
+      if(this._pre.size >= 6) this._pre.delete(this._pre.keys().next().value);
+      const pr = this._preMake(t, eng); pr.catch(()=>{}); this._pre.set(k, pr); PreVoice.made++;
+    }catch(e){ console.warn('[목소리 미리 만들기 건너뜀]', e && e.message); }
+  },
+  async _preMake(t, eng){
+    let blob = await fetchSpeechBlob(t, this.openaiVoice, this.speed, this.ttsModel, this.instructions, eng);
+    if(!(eng && eng.provider === 'typecast' && fetchSpeechBlob.last === 'typecast')) return blob;
+    try{
+      const bs = await EndCheck.score(blob, t); EndCheck.stats.checked++;
+      if(bs > 0 && EndCheck.maxTries(t) > 0){
+        const b2 = await fetchSpeechBlob(t, this.openaiVoice, this.speed, this.ttsModel, this.instructions, eng, { retry:true, end_note: EndCheck.why(bs) });
+        EndCheck.stats.redone++;
+        if(fetchSpeechBlob.last === 'typecast'){ const s2 = await EndCheck.score(b2, t); if(s2 < bs) blob = b2; }
+      }
+    }catch(_){}
+    return blob;
+  },
   /** 라이브 면접에서 목소리를 끝내 못 받았을 때: 브라우저 음성 대신, 화면의 질문을 읽을 시간을 준 뒤 다음 단계로 (면접 흐름은 그대로) */
   silentDone(text, onDone, why){
     console.warn('[면접관 목소리 없이 진행]', why);
@@ -25525,6 +25567,8 @@ const StenoVoice = {
   },
   stop(){ if(this.audio){ try{ this.audio.pause(); }catch(_){} this.audio=null; } stopSpeaking(); },
 };
+/* 2026-11-12z7 미리 만든 목소리를 몇 번 썼는지 (점검용) */
+const PreVoice = { made:0, hit:0 };
 // StenoDialog.speak도 라우터를 거치도록 연결
 StenoDialog.speak = (text, onDone)=>StenoVoice.speak(text, onDone);
 StenoDialog.stopSpeaking = ()=>StenoVoice.stop();
@@ -26148,6 +26192,10 @@ const StenoLoop = {
         questions = questions.slice(0, Math.max(this.opt.count, 1) + this.opt.extraQuestions.length);
       }
       emit('questions', {list:questions, source:StenoDialog.lastSource});
+      // 2026-11-12z7 인사말과 첫 질문 목소리를 미리 만들기 시작 (인사말이 나오는 동안 첫 질문이 준비됨). 둘 다 진행 면접관(첫째)이 말함
+      try{ const p0 = IvPanel.people()[0], pid0 = p0 ? p0.id : null; const q0 = questions[(this.opt.resume && this.opt.resume.startIndex) || 0];
+        if(!this.opt.resume && !greet.openUrl) StenoVoice.prefetch(greet.open, pid0);
+        if(q0 && !q0.audio_url) StenoVoice.prefetch(spokenOf(q0), pid0); }catch(_){}
       // 꼬리질문 배치 계획: followupTotal(면접 전체 최대)이 있으면 그 수만큼(최대-1 ~ 최대 사이 랜덤) 서로 다른 질문을 무작위로 골라 1개씩 붙임.
       // 없으면 예전 방식(질문마다 maxFollowups개). 어느 질문에 붙는지는 매번 달라져서 면접자가 패턴을 외울 수 없음.
       // 2026-11-05 면접 DB 4단계: 질문은행 면접은 꼬리질문을 면접 전체 1~3개만, 답변이 약한 질문에 (한 질문 최대 2개, 마무리 질문 제외)
@@ -26185,6 +26233,9 @@ const StenoLoop = {
         const q = questions[qi]; this.stats.questions++;
         this._langOverride = null; this._langSwitch = false;   // 2026-11-05e '한국어로 답할게요'는 그 질문에만
         emit('question', {index:qi+1, total:questions.length, q});
+        // 2026-11-12z7 이 질문을 말하고 학생이 답하는 동안 다음 질문을 그 질문을 할 면접관 목소리로 미리 만들어 둠 → '답변 완료' 뒤 바로 다음 질문
+        try{ const nq = questions[qi + 1]; if(nq && !nq.audio_url && !this.aborted){ const pl = IvPanel.planNext(nq), pp = IvPanel.people()[pl ? pl.k : 0]; StenoVoice.prefetch(spokenOf(nq), pp ? pp.id : null); }
+          else if(!nq && !this.aborted && !greet.closeUrl) StenoVoice.prefetch(greet.close, IvVoice.speakerId()); }catch(_){}   // 마지막 질문이면 마무리 인사를 미리
         await say(spokenOf(q), 'interviewer', q.audio_url || null);
         let history = [], lastAsk = q.q;
         // 영어 질문은 꼬리질문도 영어로 (꼬리질문 문장이 한국어면 한국어로). 2026-11-05e 학생이 '한국어로 답할게요'를 누르면 그 질문은 한국어로 받아 적고 꼬리질문도 한국어로
@@ -32033,7 +32084,7 @@ const Imv = {
     StenoVoice.speak = async function(text, onDone, opts){
       if(!Imv.active) return sp.apply(this, arguments);
       const my = ++Imv._sTok;
-      const gap = Imv.lastAnswerAt ? 1400 - (Date.now() - Imv.lastAnswerAt) : 0;   // 실제 면접처럼 답변과 다음 말 사이에 1~2초 쉼
+      const gap = Imv.lastAnswerAt ? 700 - (Date.now() - Imv.lastAnswerAt) : 0;   // 실제 면접처럼 답변과 다음 말 사이에 잠깐 쉼 (2026-11-12z7 1.4초 → 0.7초)
       if(gap > 0) await new Promise(r=>setTimeout(r, gap));
       Imv.lastAnswerAt = 0;
       if(my !== Imv._sTok) return;
