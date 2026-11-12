@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12k';
+var APP_VERSION = '2026-11-12l';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -3652,9 +3652,8 @@ var APP_VERSION = '2026-11-12k';
   @media(max-width:640px){
     .help-fab{bottom:calc(70px + env(safe-area-inset-bottom));right:14px;height:44px;width:44px;padding:0;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.12);}
     .help-fab > span:not(.hq){display:none;}
-    /* 위 메뉴에 "의견 보내기"가 있는 화면은 떠 있는 버튼을 숨김 (중복·내용 가림 방지) */
-    body:has(#screen-dashboard.active) .fb-fab, body:has(#screen-practice.active) .fb-fab{display:none !important;}
-    body:has(#screen-dashboard.active) .help-fab{bottom:calc(16px + env(safe-area-inset-bottom));}
+    /* 2026-11-12 폰도 PC·태블릿과 똑같이 홈·연습하기 화면에 '의견·문제 보내기'와 '사용 안내'를 함께 보여 줌 (아래 여백을 늘려 내용을 가리지 않게) */
+    body:not(:has(#screen-admin.active)) .screen.active > .zp-foot{padding-bottom:calc(24px + 112px + env(safe-area-inset-bottom)) !important;}
     body:has(#screen-result.active) .fb-fab{padding:11px !important;opacity:.85;} body:has(#screen-result.active) .fb-fab span{display:none;}
     #screen-dashboard.active{padding-bottom:calc(76px + env(safe-area-inset-bottom));}
     #toast-container{width:calc(100vw - 32px);}
