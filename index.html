@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12v';
+var APP_VERSION = '2026-11-12w';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6316,6 +6316,27 @@ html.ivv-dr-open{overflow:hidden;}
   #pk-modal.pg .pk-b.ec > .pk-aside, #modal-coach.zp-pg .coach-aside{grid-column:1;grid-row:auto}
   #modal-flow .fl-row-acts{width:100%}
 }
+/* ===== 2026-11-12w 시안 3단계 (색은 기존 토큰) ===== */
+#pk-modal.pg .pk-b.pk-2c{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.62fr);gap:16px 34px;align-items:start}
+#pk-modal.pg .pk-b.pk-2c > *{grid-column:1} #pk-modal.pg .pk-b.pk-2c > .pk-aside{grid-column:2;grid-row:1 / span 4}
+#pk-modal.pg .pk-bigq{margin:0;font-size:clamp(24px,3vw,32px);line-height:1.35;font-weight:800;color:#2b2521;word-break:keep-all}
+#pk-modal.pg .an-pg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.62fr);gap:20px 34px;align-items:start}
+#pk-modal.pg .an-main{display:grid;gap:14px;min-width:0}
+#pk-modal.pg .an-main select, .hp-filters select{width:100%;height:46px;border:1px solid #ded5ce;border-radius:10px;background:#fff;padding:0 12px;font:inherit;color:#2b2521}
+#pk-modal.pg .an-before{background:#f3ede7;border-radius:10px;padding:12px 14px;margin:8px 0 14px} #pk-modal.pg .an-before small{color:#6a5b51;font-size:12.5px} #pk-modal.pg .an-before p{margin:4px 0 0;font-size:14px;line-height:1.7}
+#pk-modal.pg #an-ta{width:100%;box-sizing:border-box;border:1px solid #ded5ce;border-radius:10px;padding:12px;font:inherit;font-size:15px;line-height:1.7;margin:6px 0 14px}
+#pk-modal.pg .an-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px} #pk-modal.pg .an-2 > div{background:#f3ede7;border-radius:10px;padding:14px 16px} #pk-modal.pg .an-2 small{display:block;font-size:12.5px;color:#6a5b51;margin-bottom:6px} #pk-modal.pg .an-2 p{margin:0;font-size:14px;line-height:1.7;color:#2b2521}
+.hp-filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:10px} .hp-filters .fl-f span{display:block;font-size:13px;font-weight:600;color:#2b2521;margin-bottom:6px}
+.hp-list{display:grid} .hp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:18px 0;border-bottom:1px solid #ded5ce;align-items:center}
+.hp-row b{display:block;font-size:16px;color:#2b2521} .hp-row span{display:block;font-size:13.5px;color:#6a5b51;margin-top:3px}
+.hp-st{font-style:normal;font-size:12.5px;font-weight:600;color:#6a5b51;background:#f3ede7;border-radius:6px;padding:3px 8px;justify-self:end} .hp-st.stop{color:#a12e28}
+.hp-acts{grid-column:1 / -1}
+#d3-growth .gw-head .gw-prev{flex:none;align-self:flex-start;margin-left:auto}
+#pk-modal.pg .pk-f .btn{flex:none;width:auto;min-width:0} #pk-modal.pg #pk-dday-pg{border-radius:14px;padding:20px;margin:0}
+@media (max-width:760px){
+  #pk-modal.pg .pk-b.pk-2c, #pk-modal.pg .an-pg, #pk-modal.pg .an-2, .hp-filters{grid-template-columns:1fr}
+  #pk-modal.pg .pk-b.pk-2c > .pk-aside{grid-column:1;grid-row:auto;order:9}
+}
 #modal-flow.fl-page{z-index:90;padding:0;background:#faf9f7;align-items:stretch;justify-content:stretch}
 #modal-flow.fl-page .fl-box{max-width:none !important;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:none;margin:0;display:flex;flex-direction:column;background:#faf9f7;overflow:hidden}
 #modal-flow .fl-hdr{flex:none;border-bottom:1px solid #ded5ce;background:#faf9f7}
@@ -7818,7 +7839,8 @@ html.sv-open{overflow:hidden;}
   <!-- 내 성장 (2026-10-14 확정 시안) -->
   <main class="d3-page" id="d3-growth" hidden>
     <div class="gw-head">
-      <div><p class="gw-scope" id="gw-scope">국회 속기사</p><h1 class="gw-title">나의 기록</h1><p class="gw-sub">점수 흐름과 보완할 질문을 한눈에 봐요.</p><button type="button" class="gw-all" onclick="openAllHistory()">면접 기록 전체 보기 ›</button></div>
+      <div><p class="gw-scope" id="gw-scope">국회 속기사</p><h1 class="gw-title">나의 성장</h1><p class="gw-sub">점수 흐름과 보완할 질문을 한눈에 봐요.</p><button type="button" class="gw-all" onclick="openAllHistory()">면접 기록 전체 보기 ›</button></div>
+      <button type="button" class="btn btn-outline gw-prev" onclick="goDashboard()">이전으로</button>
       <div class="gw-range" id="gw-range" role="group" aria-label="기간"><button type="button" class="on" data-days="30" onclick="setGrowthRange(30)">30일</button><button type="button" data-days="90" onclick="setGrowthRange(90)">90일</button><button type="button" data-days="0" onclick="setGrowthRange(0)">전체</button></div>
     </div>
     <div class="gw-kpis" id="gw-kpis"></div>
@@ -15756,7 +15778,23 @@ function recordGoBack(){
   else openAllHistory();
 }
 
+/* 2026-11-12w 시안 26: 학생은 '나의 면접 기록'을 전체 화면으로 */
+const HistoryPage = {
+  f: '',
+  open(){ PracticeKit.pgOpen('growth');
+    PracticeKit.modal(PracticeKit.head('나의 면접 기록', '완료한 결과와 중단한 연습을 구분해요.') + `<div class="pk-b" id="hp-b"></div><footer class="pk-f"><button type="button" class="btn btn-outline" onclick="PracticeKit.close(); navGo('growth')">나의 성장</button><button type="button" class="btn btn-outline" onclick="PracticeKit.close(); AnswerNote.open()">답변 노트</button></footer>`, 'wide');
+    this.render(); },
+  render(){ const b = document.getElementById('hp-b'); if(!b) return; const esc = escapeHtml, all = state.historyRecords || [];
+    const kinds = [...new Set(all.map(h=>h.fieldName).filter(Boolean))], L = all.filter(h=>!this.f || h.fieldName === this.f);
+    let dr = null; try{ dr = InterviewDraft.load(); }catch(_){}
+    const draftRow = dr && (!this.f || dr.fieldName === this.f) ? `<div class="hp-row"><div><b>${esc(dr.fieldName || '면접')}</b><span>답변 ${(dr.asks || []).filter(a=>String(a.answer || '').trim()).length}개 저장 · 이 기기에 보관 중</span></div><em class="hp-st stop">중단</em><div class="hp-acts"><button type="button" class="btn btn-solid" onclick="PracticeKit.close(); InterviewDraft.offer()">이어서 연습</button></div></div>` : '';
+    b.innerHTML = `<div class="hp-filters"><label class="fl-f"><span>면접 목적</span><select id="hp-f"><option value="">전체</option>${kinds.map(k=>`<option${k === this.f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select></label></div>
+      ${draftRow || L.length ? `<div class="hp-list">${draftRow}${L.map(h=>`<div class="hp-row"><div><b>${esc(h.fieldName)}</b><span>${esc(h.dateLabel)}${h.durationLabel ? ' · ' + esc(durText(h.durationLabel)) : ''}</span></div><em class="hp-st">완료 · ${h.score}점</em><div class="hp-acts"><button type="button" class="btn btn-outline" onclick="PracticeKit.close(); openRecordDetail('${h.id}', true)">결과 보기</button></div></div>`).join('')}</div>`
+        : '<div class="qa-empty"><b class="zs-t">아직 연습 기록이 없어요</b><span>첫 면접을 마치면 결과를 확인할 수 있어요.</span><button type="button" class="d3-btn d3-btn-ghost" onclick="PracticeKit.close(); StartFlow.open()">첫 면접 시작</button></div>'}`;
+    const sel = document.getElementById('hp-f'); if(sel) sel.onchange = ()=>{ this.f = sel.value; this.render(); }; }
+};
 function openAllHistory(){
+  if(state.currentUser && !state.currentUser.isAdmin){ HistoryPage.open(); return; }
   state.recordBackFn = null;
   const list = state.historyRecords || [];
   document.getElementById('record-modal-title').textContent = '리포트';
@@ -27016,7 +27054,9 @@ const PracticeKit = {
     const f = m.querySelector('[autofocus]'); if(f) setTimeout(()=>f.focus(), 30);
     return m;
   },
-  close(){ this.stopMic(); try{ if(typeof Finish10 !== 'undefined') Finish10.stop(); }catch(_){} const m = document.getElementById('pk-modal'); if(m){ m.classList.remove('on', 'pg'); m.innerHTML = ''; } document.documentElement.classList.remove('pk-open');
+  setHead(sub, title){ const m = document.getElementById('pk-modal'); if(!m) return; const a = m.querySelector('.pk-h small'), b = m.querySelector('.pk-h h3'); if(a) a.textContent = sub; if(b) b.textContent = title; },
+  pgOpen(nav){ this._nextPg = true; this._pgNav = nav || 'growth'; },
+  close(){ this.stopMic(); this._ddPg = false; try{ if(typeof Finish10 !== 'undefined') Finish10.stop(); }catch(_){} const m = document.getElementById('pk-modal'); if(m){ m.classList.remove('on', 'pg'); m.innerHTML = ''; } document.documentElement.classList.remove('pk-open');
     try{ if(StartFlow.s && StartFlow.s.page && document.getElementById('modal-flow').classList.contains('active')) StartFlow.render(); }catch(_){} },
   head(sub, title){ return `<header class="pk-h"><div><small>${sub}</small><h3>${title}</h3></div><button type="button" class="pk-x" onclick="PracticeKit.close()" aria-label="닫기">✕</button><button type="button" class="btn btn-outline pk-prev" onclick="PracticeKit.close()">이전으로</button></header>`; },
 
@@ -27074,8 +27114,10 @@ const PracticeKit = {
   /* ── ① 이 질문 다시 답하기 ── */
   openRetry(k, prefill){
     const o = typeof k === 'string' ? this.items.get(k) : k; if(!o) return; this.cur = o;
-    if(o.pg) this._nextPg = true;
-    this.modal(this.head(o.title ? escapeHtml(o.title) : o.fresh ? (o.companyName ? escapeHtml(o.companyName) + ' · 예상 질문' : '예상 질문 연습') : '이 질문 다시 답하기', escapeHtml(o.q)) + `<div class="pk-b">
+    if(o.daily) o.pg = true;
+    if(o.pg){ this._nextPg = true; if(o.daily) this._pgNav = 'hub'; }
+    const dly = o.daily ? `<h2 class="pk-bigq">${escapeHtml(o.q)}</h2>` : '', dlyAside = o.daily ? `<aside class="pk-aside"><b>더 연습하고 싶다면</b><div class="fl-cta"><button type="button" class="btn btn-outline" onclick="PracticeKit.close(); StartFlow.open(null,'major')">전공·경험 면접</button><button type="button" class="btn btn-outline" onclick="PracticeKit.loadBm().then(()=>PracticeKit.openBmAll())">질문 모음</button></div></aside>` : '';
+    this.modal((o.daily ? this.head('오늘은 한 질문만', escapeHtml((o.title || '').replace(/^오늘의 질문/, '짧은 연습도 질문·답변 기록으로 이어집니다'))) : this.head(o.title ? escapeHtml(o.title) : o.fresh ? (o.companyName ? escapeHtml(o.companyName) + ' · 예상 질문' : '예상 질문 연습') : '이 질문 다시 답하기', escapeHtml(o.q))) + `<div class="pk-b${o.daily ? ' pk-2c' : ''}">${dly}${dlyAside}
         ${o.answer ? `<details class="pk-prev"><summary>${escapeHtml(o.prevLabel || '이전 답변 보기')} ${o.score != null ? `<span class="pk-sc">${o.score}점</span>` : ''}</summary><p>${escapeHtml(o.answer)}</p>${o.feedback ? `<p class="pk-prev-fb"><b>그때 피드백</b> ${escapeHtml(this.fbBody(o.feedback))}</p>` : ''}</details>` : ''}
         <p class="pk-tip">${o.fresh ? '실제 면접이라고 생각하고 답해 보세요. 결론을 먼저 말하고 경험 하나를 붙이면 좋아요.' : '피드백에서 짚은 점을 넣어 다시 답해 보세요.'} <b>말로 답하거나 직접 써도</b> 돼요.</p>
         <textarea id="pk-ans" rows="6" placeholder="여기에 답변을 쓰거나, 아래 '말로 답하기'를 누르세요" autofocus>${escapeHtml(prefill || '')}</textarea>
@@ -27427,7 +27469,12 @@ const PracticeKit = {
     while(out.length < 3 && order.some(t=>(byTag[t] || []).length)) order.forEach(t=>{ if(out.length < 3 && (byTag[t] || []).length) out.push(byTag[t].shift()); });
     return out;
   },
+  /** 2026-11-12w 시안 31: 면접 D-day를 전체 화면으로 (홈의 D-day 칸과 같은 내용) */
+  async openDday(){ this.pgOpen('hub');
+    this.modal(this.head('면접 전날부터 다녀온 뒤까지', '지금 준비 단계에서 필요한 일만 펼쳐요.') + `<div class="pk-b"><section class="d3-panel" id="pk-dday-pg"><div class="pk-wait"><i></i>불러오는 중</div></section></div><footer class="pk-f"><button type="button" class="btn btn-outline" onclick="OrgSheet.open()">기관 한 장 요약</button><button type="button" class="btn btn-solid" onclick="AnswerNote.open()">답변 노트</button></footer>`, 'wide');
+    this._ddPg = true; try{ await this.loadPlan(); }catch(_){} this.renderPlan(); },
   renderPlan(){
+    { const pg = document.getElementById('pk-dday-pg'), home = document.getElementById('pk-dday-card'); if(pg && home){ home.id = 'pk-dday-card-x'; pg.id = 'pk-dday-card'; try{ this.renderPlan(); }finally{ pg.id = 'pk-dday-pg'; home.id = 'pk-dday-card'; } } }
     const box = document.getElementById('pk-dday-card'); if(!box) return;
     const p = this.plan;
     if(!p){ box.innerHTML = this.finHtml() + `<div class="d3-panel-head"><h3 class="d3-panel-title">면접 D-day</h3></div>
@@ -27460,13 +27507,14 @@ const PracticeKit = {
   },
   editPlan(){
     const p = this.plan || {}, minD = this.today();
-    this.modal(this.head('면접 D-day', p.target_date ? '면접 정보 바꾸기' : '면접 날짜 넣기') + `<div class="pk-b pk-form">
+    this.pgOpen('hub');
+    this.modal(this.head('면접 전날부터 다녀온 뒤까지', p.target_date ? '면접 정보를 바꿔요.' : '실제 면접 날짜와 기관을 넣어요.') + `<div class="pk-b pk-form">
         <label>면접 날짜<input type="date" id="pk-d" min="${minD}" value="${escapeHtml(p.target_date || '')}" autofocus></label>
         <label>지원 기업·기관 <small>목록에서 고르면 인재상과 기업 맞춤 질문이 함께 나와요</small><input type="text" id="pk-co" placeholder="예: 국민건강보험공단" value="${escapeHtml(p.company_name || '')}" autocomplete="off"><input type="hidden" id="pk-coid" value="${escapeHtml(p.company_id || '')}"><ul class="pk-sug" id="pk-sug"></ul></label>
         <label>지원 직무 <small>(선택)</small><input type="text" id="pk-job" maxlength="60" placeholder="예: 행정직, 간호직, 마케팅" value="${escapeHtml(p.job || '')}"></label>
         <label>면접 방식<select id="pk-fmt">${['모름', '대면', '화상'].map(x=>`<option${(p.format || '모름') === x ? ' selected' : ''}>${x}</option>`).join('')}</select></label>
       </div>
-      <footer class="pk-f">${p.target_date ? '<button type="button" class="pk-btn ghost danger" onclick="PracticeKit.delPlan()">지우기</button>' : ''}<button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button><button type="button" class="pk-btn pri" onclick="PracticeKit.savePlan()">저장</button></footer>`);
+      <footer class="pk-f">${p.target_date ? '<button type="button" class="pk-btn ghost danger" onclick="PracticeKit.delPlan()">지우기</button>' : ''}<button type="button" class="pk-btn ghost" onclick="PracticeKit._ddPg ? PracticeKit.openDday() : PracticeKit.close()">취소</button><button type="button" class="pk-btn pri" onclick="PracticeKit.savePlan()">저장</button></footer>`);
     const inp = document.getElementById('pk-co'), sug = document.getElementById('pk-sug'), hid = document.getElementById('pk-coid');
     inp.oninput = ()=>{ hid.value = ''; clearTimeout(this._st); this._st = setTimeout(async ()=>{ const q = inp.value.trim(); if(!q){ sug.innerHTML = ''; return; }
       const L = await CompanyData.search(q, 6); sug.innerHTML = L.map(c=>`<li><button type="button" data-id="${escapeHtml(c.id)}" data-n="${escapeHtml(c.name)}">${escapeHtml(c.name)}<small>${escapeHtml(c.category || '')}</small></button></li>`).join('');
@@ -27478,7 +27526,7 @@ const PracticeKit = {
       job: document.getElementById('pk-job').value.trim() || null, format: document.getElementById('pk-fmt').value, checklist: (this.plan && this.plan.checklist) || {}, updated_at: new Date().toISOString() };
     const { error } = await sb.from('interview_plans').upsert(row, { onConflict:'user_id' });
     if(error) return showToast('저장하지 못했어요. ' + friendlyErr(error), 'warn');
-    this.close(); showToast('면접 D-day를 저장했어요', 'ok'); await this.loadPlan();
+    const back = this._ddPg; this.close(); showToast('면접 D-day를 저장했어요', 'ok'); await this.loadPlan(); if(back) this.openDday();
   },
   async delPlan(){
     if(!(await zConfirm({ title:'면접 D-day를 지울까요?', desc:'적어 둔 면접 날짜와 기관이 지워져요.', ok:'지우기', danger:true }))) return;
@@ -27499,6 +27547,7 @@ const PracticeKit = {
 const HomeTabs = {
   KEEP: /editPlan|removeBm|openBmAll|check\(/,   // 이 버튼들은 창을 닫지 않음 (그 위에 작은 창이 뜨거나 제자리에서 바뀜)
   open(t, title){
+    if(t === 'dday' && state.currentUser && !state.currentUser.isAdmin){ PracticeKit.openDday(); return; }   // 2026-11-12w 시안 31
     const sh = document.getElementById('hm-sheet'); if(!sh) return;
     const ht = document.getElementById('hm-title'), hh = document.getElementById('hm-title-h'); if(ht){ ht.hidden = !title; if(hh) hh.textContent = title || ''; }
     const mo = document.getElementById('hm-more'); if(mo) mo.classList.toggle('has-title', !!title);   // 2026-11-12 위 메뉴 '내 자료'로 열면 제목
@@ -27555,18 +27604,38 @@ const AnswerNote = {
   },
   cur(k){ const d = this.data, s = d.saved[k]; if(s) return { q: s.question, a: s.answer, score: s.score, src: s.source || 'mine', fixed: true, at: s.updated_at }; const b = d.best[k]; return b ? Object.assign({ fixed:false }, b) : null; },
   async open(){
-    PracticeKit.modal(PracticeKit.head('면접 전날 훑어보기', '나만의 답변 노트') + `<div class="pk-b an-b" id="an-b"><div class="pk-wait"><i></i>그동안 한 답을 모으고 있어요</div></div>
-      <footer class="pk-f"><button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button><button type="button" class="pk-btn" onclick="AnswerNote.print()">인쇄 · PDF</button><button type="button" class="pk-btn pri" id="an-chk" onclick="AnswerNote.runCheck()">자소서와 맞춰 보기</button></footer>`, 'wide');
+    PracticeKit.pgOpen('growth');
+    PracticeKit.modal(PracticeKit.head('나만의 답변 노트', '기존 7개 유형을 유지하고, 한 번에 한 유형만 확인해요.') + `<div class="pk-b an-b" id="an-b"><div class="pk-wait"><i></i>그동안 한 답을 모으고 있어요</div></div>`, 'wide');
     try{ await this.load(); }catch(e){ const b = document.getElementById('an-b'); if(b) b.innerHTML = `<p class="pk-err">노트를 불러오지 못했어요. (${escapeHtml(e.message || e)})</p>`; return; }
     this.check = null; this.edit = null; this.render();
   },
   render(){
     const b = document.getElementById('an-b'); if(!b || !this.data) return;
-    const filled = this.CATS.filter(([k])=>this.cur(k)).length;
-    const ck = this.check;
-    b.innerHTML = `<p class="an-lead">그동안 한 답 중 <b>유형마다 점수가 가장 높은 답</b>을 모았어요. 마음에 드는 답으로 정하거나 고쳐 쓰면 그 답이 노트에 남아요. <span class="an-n">${filled}/7칸 채움</span></p>
-      ${ck ? this.checkHtml(ck) : ''}
-      <div class="an-list">${this.CATS.map(([k, l])=>this.cardHtml(k, l)).join('')}</div>`;
+    const filled = this.CATS.filter(([k])=>this.cur(k)).length, esc = escapeHtml;
+    const ck = this.check, L = Object.fromEntries(this.CATS);
+    if(!this.sel || !L[this.sel]) this.sel = (this.CATS.find(([k])=>this.cur(k)) || this.CATS[0])[0];
+    const k = this.sel;
+    if(this.edit){   // 시안 29 '내 답변을 정해요'
+      const e = this.edit, c = this.cur(e);
+      PracticeKit.setHead('내 답변을 정해요', '수정 전 내용과 새 답변을 구분합니다.');
+      b.innerHTML = `<p class="an-q"><b>${esc(L[e])}</b>${c ? ' · Q. ' + esc(c.q) : ''}</p>${c ? `<div class="an-before"><small>수정 전 답변</small><p>${esc(c.a)}</p></div>` : ''}
+        <label class="fl-f wide an-lbl" for="an-ta">내 답변</label><textarea id="an-ta" rows="7" placeholder="내 경험과 실제 결과로 고쳐 주세요.">${esc(c ? c.a : '')}</textarea>
+        <div class="fl-cta"><button type="button" class="btn btn-solid" onclick="AnswerNote.saveEdit('${e}')">내 답변 저장</button><button type="button" class="btn btn-outline" onclick="AnswerNote.edit=null;AnswerNote.render()">취소</button></div>`;
+      return; }
+    if(ck){   // 시안 67 '답변과 서류를 함께 확인해요'
+      const c = this.cur(k), doc = String(state.resumeFull || state.resumeText || state.cvFull || state.cvText || '').trim();
+      PracticeKit.setHead('답변과 서류를 함께 확인해요', '서로 다른 사실과 빠진 강점을 구분해요.');
+      b.innerHTML = `<div class="an-2"><div><small>선택한 답변 · ${esc(L[k])}</small><p>${c ? esc(c.a) : '먼저 답변 노트에 내 답변을 적어 주세요.'}</p></div><div><small>내 서류 내용</small><p>${doc ? esc(doc.slice(0, 260)) + (doc.length > 260 ? '…' : '') : '아직 읽은 서류가 없어요.'}</p></div></div>
+        ${this.checkHtml(ck)}
+        <div class="fl-cta"><button type="button" class="btn btn-outline" onclick="AnswerNote.check=null;AnswerNote.render()">노트로 돌아가기</button><button type="button" class="btn btn-solid" onclick="AnswerNote.check=null;AnswerNote.edit='${k}';AnswerNote.render()">답변 수정</button></div>`;
+      return; }
+    PracticeKit.setHead('나만의 답변 노트', '기존 7개 유형을 유지하고, 한 번에 한 유형만 확인해요.');
+    b.innerHTML = `<div class="an-pg"><div class="an-main">
+        <label class="fl-f wide"><span>질문 유형</span><select id="an-sel">${this.CATS.map(([kk, l])=>`<option value="${kk}"${kk === k ? ' selected' : ''}>${esc(l)}${this.cur(kk) ? '' : ' (비어 있음)'}</option>`).join('')}</select></label>
+        <div class="an-list">${this.cardHtml(k, L[k])}</div>
+        <p class="an-lead">유형마다 점수가 가장 높은 답을 모았어요. 마음에 드는 답으로 정하거나 고쳐 쓰면 그 답이 노트에 남아요. <span class="an-n">${filled}/7칸 채움</span></p></div>
+      <aside class="pk-aside"><b>면접 전 한 번 더</b><div class="fl-cta"><button type="button" class="btn btn-outline" id="an-chk" onclick="AnswerNote.runCheck()">자소서와 맞춰 보기</button><button type="button" class="btn btn-outline" onclick="AnswerNote.print()">인쇄·PDF</button><button type="button" class="btn btn-outline" onclick="Finish10.open()">10분 마무리</button></div></aside></div>`;
+    const sel = document.getElementById('an-sel'); if(sel) sel.onchange = ()=>{ this.sel = sel.value; this.render(); };
   },
   cardHtml(k, l){
     const c = this.cur(k), r = this.data.rew[k], ed = this.edit === k, esc = escapeHtml;
@@ -27578,7 +27647,7 @@ const AnswerNote = {
       ${ed ? `<textarea id="an-ta" rows="6">${esc(c ? c.a : '')}</textarea><div class="an-acts"><button type="button" class="pk-btn sm ghost" onclick="AnswerNote.edit=null;AnswerNote.render()">취소</button><button type="button" class="pk-btn sm pri" onclick="AnswerNote.saveEdit('${k}')">저장</button></div>`
         : c ? `<p class="an-a">${esc(c.a)}</p>` : `<p class="an-empty">아직 이 유형의 답이 없어요. 면접이나 '10분 마무리'에서 답하면 여기에 모여요.</p>`}
       ${!ed && r && (!c || r.a !== c.a) ? `<details class="an-rw"><summary>AI가 고친 답 보기</summary><p>${esc(r.a)}</p><button type="button" class="pk-btn sm" onclick="AnswerNote.useRewrite('${k}')">이 답으로 정하기</button></details>` : ''}
-      ${!ed ? `<div class="an-acts">${c && !c.fixed ? `<button type="button" class="pk-btn sm" onclick="AnswerNote.fix('${k}')">이 답으로 정하기</button>` : ''}<button type="button" class="pk-btn sm ghost" onclick="AnswerNote.edit='${k}';AnswerNote.render()">${c ? '고쳐 쓰기' : '직접 쓰기'}</button>${c && c.fixed ? `<button type="button" class="pk-btn sm ghost" onclick="AnswerNote.unfix('${k}')">자동으로 고르기</button>` : ''}</div>` : ''}
+      ${!ed ? `<div class="an-acts">${c && !c.fixed ? `<button type="button" class="pk-btn sm" onclick="AnswerNote.fix('${k}')">이 답으로 정하기</button>` : ''}<button type="button" class="pk-btn sm ghost" onclick="AnswerNote.edit='${k}';AnswerNote.render();try{document.getElementById('pk-modal').scrollTop=0}catch(_){}">${c ? '고쳐 쓰기' : '직접 쓰기'}</button>${c && c.fixed ? `<button type="button" class="pk-btn sm ghost" onclick="AnswerNote.unfix('${k}')">자동으로 고르기</button>` : ''}</div>` : ''}
     </section>`;
   },
   async save(k, row){
@@ -27602,7 +27671,7 @@ const AnswerNote = {
       let d = data;
       if(error){ let msg = error.message || ''; try{ const j = await error.context.json(); if(j && j.error === 'limit') msg = '오늘 쓸 수 있는 AI 횟수를 다 썼어요. 내일 다시 해 주세요.'; else if(j && j.message) msg = j.message; }catch(_){} throw new Error(msg || 'AI가 답하지 못했어요'); }
       if(!d || d.error) throw new Error((d && (d.message || d.error)) || 'AI가 답하지 못했어요');
-      this.check = d; this.render(); const b = document.getElementById('an-b'); if(b) b.scrollTop = 0;
+      this.check = d; this.render(); const b = document.getElementById('an-b'); if(b) b.scrollTop = 0; try{ document.getElementById('pk-modal').scrollTop = 0; }catch(_){}
     }catch(e){ showToast(e.message || '맞춰 보지 못했어요', 'warn'); }
     if(btn){ btn.disabled = false; btn.textContent = '자소서와 맞춰 보기'; }
   },
@@ -27633,7 +27702,8 @@ const Finish10 = {
   foot(h){ const f = document.getElementById('f10-f'); if(f) f.innerHTML = h; },
   async open(){
     this.stop(); try{ HomeTabs.close(); }catch(_){}
-    PracticeKit.modal(PracticeKit.head('면접 당일 10분 마무리', '실전처럼 4문항') + `<div class="pk-b" id="f10-b"><div class="pk-wait"><i></i>준비하고 있어요</div></div><footer class="pk-f" id="f10-f"></footer>`, 'wide');
+    PracticeKit.pgOpen('hub');
+    PracticeKit.modal(PracticeKit.head('10분 마무리', '자기소개·지원동기·예상 질문 2개, 총 4문항으로 준비해요.') + `<div class="pk-b" id="f10-b"><div class="pk-wait"><i></i>준비하고 있어요</div></div><footer class="pk-f" id="f10-f"></footer>`, 'wide');
     const m = document.getElementById('pk-modal'); if(m && !m._f10){ m._f10 = true; m.addEventListener('mousedown', e=>{ if(e.target === m) this.stop(); }); }
     let orgs = []; try{ orgs = (await Debate.loadOrgs()) || []; }catch(_){}
     try{ if(!PracticeKit.plan) await PracticeKit.loadPlan(); }catch(_){}
@@ -27661,7 +27731,7 @@ const Finish10 = {
       <ol class="f10-qs">${s.qs.map((x, i)=>`<li><span class="f10-no">${i + 1}</span><div><p>${esc(x.q)}</p><small>${x.sec}초${x.real ? ' · 기관 예상 질문' : i > 1 ? ' · 공통 예상 질문' : ''}</small></div></li>`).join('')}</ol>
       ${peek}
       <p class="hx-fine">마이크를 허용하면 말한 내용이 글로 받아써져요. 직접 써도 돼요.</p>`);
-    this.foot(`<button type="button" class="pk-btn ghost" onclick="Finish10.stop();PracticeKit.close()">닫기</button><button type="button" class="pk-btn" onclick="Finish10.reroll()">↻ 다른 질문</button><button type="button" class="pk-btn pri" onclick="Finish10.run(0)">▶ 시작하기</button>`);
+    this.foot(`<button type="button" class="pk-btn ghost" onclick="Finish10.stop();PracticeKit.close()">닫기</button><button type="button" class="pk-btn pri" onclick="Finish10.run(0)">▶ 4문항 시작하기</button><button type="button" class="pk-btn" onclick="Finish10.reroll()">↻ 다른 예상 질문</button><button type="button" class="pk-btn" onclick="Finish10.stop();AnswerNote.open()">내 답변 노트</button>`);
     const sel = document.getElementById('f10-org'); if(sel) sel.onchange = async ()=>{ const o = s.orgs.find(x=>x.talent_id === sel.value); s.tid = sel.value; s.org = o ? o.name : ''; await this.pickQs(); this.startView(); };
   },
   async reroll(){ await this.pickQs(); this.startView(); },
@@ -27794,7 +27864,8 @@ const RealReview = {
   body(h){ const b = document.getElementById('rv-b'); if(b){ b.innerHTML = h; b.scrollTop = 0; } },
   foot(h){ const f = document.getElementById('rv-f'); if(f) f.innerHTML = h; },
   async open(){
-    PracticeKit.modal(PracticeKit.head('면접 보고 온 날', '실제 면접 복기 노트') + `<div class="pk-b" id="rv-b"><div class="pk-wait"><i></i>불러오는 중</div></div><footer class="pk-f" id="rv-f"></footer>`, 'wide');
+    PracticeKit.pgOpen('growth');
+    PracticeKit.modal(PracticeKit.head('실제 면접을 기록해요', '받은 질문·내 답·차수·날짜와 선택적 질문 공유를 유지합니다.') + `<div class="pk-b" id="rv-b"><div class="pk-wait"><i></i>불러오는 중</div></div><footer class="pk-f" id="rv-f"></footer>`, 'wide');
     try{ await this.load(); }catch(_){ this.list = []; }
     if(this.list.length) this.home(); else this.form();
   },
