@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12s';
+var APP_VERSION = '2026-11-12t';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -1106,8 +1106,9 @@ var APP_VERSION = '2026-11-12s';
   .voice-fallback summary::before{content:'▸ ';}
   .voice-fallback[open] summary::before{content:'▾ ';}
   .save-banner{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px auto 0;padding:10px 14px;border-radius:10px;
-    background:rgba(217,119,6,.12);border:1px solid rgba(217,119,6,.45);color:var(--amber-600);font-size:13.5px;max-width:640px;}
-  .save-banner.ok{background:rgba(22,163,74,.10);border-color:rgba(22,163,74,.4);color:var(--success);}
+    background:#f3ede7;border:1px solid #ded5ce;color:#2b2521;font-size:13.5px;max-width:640px;}
+  .save-banner.err{background:#fbf1ee;border-color:rgba(161,46,40,.35);} .save-banner.err b{color:#a12e28;margin-right:4px;}
+  .save-banner.ok{background:#f3ede7;border-color:#ded5ce;color:#2b2521;}
   .save-banner.ok button{display:none;}
 
   /* ---------- interview room ---------- */
@@ -1962,9 +1963,9 @@ var APP_VERSION = '2026-11-12s';
   #screen-practice .qa-empty, .qa-panel .qa-empty{padding:26px 18px;}
   /* 토스트 통일 */
   #toast-container{bottom:36px;}
-  .toast{display:flex;align-items:center;gap:10px;text-align:left;background:#1B2740;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:11px 16px 11px 12px;box-shadow:0 14px 34px rgba(10,15,28,.35);font-weight:500;transition:opacity .25s, transform .25s;}
+  .toast{display:flex;align-items:center;gap:10px;text-align:left;background:#2b2521;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:11px 16px 11px 12px;box-shadow:0 14px 34px rgba(10,15,28,.35);font-weight:500;transition:opacity .25s, transform .25s;}
   .toast.out{opacity:0;transform:translateY(8px);}
-  .toast-ic{width:26px;height:26px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:rgba(255,255,255,.10);color:#BFD2FF;}
+  .toast-ic{width:26px;height:26px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:rgba(255,255,255,.10);color:#f3ede7;}
   .toast-ic svg{width:15px;height:15px;}
   .toast.ok .toast-ic{background:rgba(30,158,99,.25);color:#7FE3B6;}
   .toast.warn .toast-ic{background:rgba(214,69,69,.22);color:#FFB3B3;}
@@ -4128,7 +4129,7 @@ body.hs-mobile #pc-qr-card{display:none !important;}
 /* ---------- 마이크 차단 안내 (2026-10-12) ---------- */
 #modal-micblock .modal-box{max-width:480px;}
 #modal-micblock .modal-head h2{display:flex;align-items:center;gap:8px;}
-.mb-ic{flex:none;width:32px;height:32px;border-radius:50%;background:#fdecea;color:#b42318;display:inline-flex;align-items:center;justify-content:center;} .mb-ic svg{width:18px;height:18px;}
+.mb-ic{flex:none;width:32px;height:32px;border-radius:50%;background:#f3ede7;color:#a12e28;display:inline-flex;align-items:center;justify-content:center;} .mb-ic svg{width:18px;height:18px;}
 .mb-pic{margin:4px 0 14px;border:1px solid #e6e4e0;border-radius:12px;background:#f6f5f3;padding:14px;}
 .mb-bar{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #d3d0ca;border-radius:999px;height:40px;padding:0 6px 0 6px;font-size:13px;color:#45454a;position:relative;}
 .mb-bar .mb-hit{flex:none;width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#1c1c1e;background:#fdf0eb;box-shadow:0 0 0 2px #e8532a;animation:mbPulse 1.6s ease-in-out infinite;font-size:12px;font-weight:800;}
@@ -5401,7 +5402,7 @@ body:has(#modal-icon-new.active) #home-bar{display:none !important;}
 .hm-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
 .hm-row .g4-reports{grid-template-columns:1fr !important;}
 .hm-rep-empty{display:none;}
-#g4-reports-sec[style*="none"] + .hm-rep-empty{display:block;}
+#g4-reports-sec[style*="none"] + .hm-rep-empty{display:flex;}
 @media(max-width:720px){ .hm-row{grid-template-columns:1fr;} .hm-modes{grid-template-columns:1fr;} .hm-data{flex-direction:column;align-items:flex-start;} }
 /* 2026-11-02h 앱(홈 화면에 추가)·QR 안내 숨김 — DEMO_HIDE_APP_PROMO */
 body.no-app-promo #pc-qr-card, body.no-app-promo #m-app-card, body.no-app-promo #screen-login .hs-link-row, body.no-app-promo #home-bar, body.no-app-promo #mp-home, body.no-app-promo #home-sheet, body.no-app-promo #modal-icon-new{display:none !important;}
@@ -6914,9 +6915,23 @@ html.dbm-open .help-fab, html.dbm-open .fb-fab{visibility:hidden;}
 .st-qs{margin:0;padding-left:22px;display:grid;gap:6px;} .st-qs input{width:100%;box-sizing:border-box;font:inherit;font-size:14px;border:1.5px solid #CFD7E3;border-radius:10px;padding:8px 10px;}
 .st-made{display:grid;gap:8px;} .st-made > b{font-size:16px;color:#1f7a45;} .st-made p{margin:0;font-size:14px;line-height:1.6;}
 .st-url{display:flex;gap:8px;} .st-url input{flex:1;min-width:0;font:inherit;font-size:13px;border:1.5px solid #CFD7E3;border-radius:10px;padding:8px 10px;background:#F7F8FA;}
-.sg-ov{position:fixed;inset:0;z-index:6000;background:#F5F4F2;overflow:auto;display:flex;justify-content:center;padding:20px 14px;}
-.sg-box{width:min(560px,100%);background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.08);padding:22px 20px;align-self:flex-start;display:grid;gap:12px;color:#172033;}
-.sg-brand{margin:0;font-size:12px;font-weight:700;color:#c8441c;} .sg-box h2{margin:0;font-size:21px;line-height:1.35;} .sg-p{margin:0;font-size:14.5px;line-height:1.7;color:#4A5466;} .sg-fine{margin:0;font-size:12px;color:#8a8a90;}
+.zc-ov .zc-box{max-width:400px;width:calc(100% - 32px);} .zc-ov .modal-head h2{color:#2b2521;font-size:18px;line-height:1.4;word-break:keep-all;} .zc-ov .modal-head p{color:#6a5b51;font-size:14px;line-height:1.65;word-break:keep-all;}
+.zc-ov .modal-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;} .zc-ov .btn-solid{background:#bd411b;border-color:#bd411b;color:#fff;} .zc-ov .btn-solid:hover{background:#a63816;} .zc-ov .btn-solid.zc-danger{background:#a12e28;border-color:#a12e28;}
+.zc-ov .btn-outline{background:#fff;border:1px solid #ded5ce;color:#2b2521;} .zc-ov{z-index:9000;}
+@media (max-width:520px){ .zc-ov .modal-foot{flex-direction:column-reverse;} .zc-ov .modal-foot .btn{width:100%;} }
+.net-banner{position:fixed;left:50%;top:max(12px, env(safe-area-inset-top));transform:translateX(-50%);z-index:9500;width:min(560px, calc(100% - 32px));box-sizing:border-box;display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border:1px solid #ded5ce;border-left:4px solid #a12e28;border-radius:12px;box-shadow:0 12px 32px rgba(43,37,33,.18);color:#2b2521;}
+.net-banner[hidden]{display:none;} .net-banner.back{border-left-color:#2f7a4a;}
+.net-banner .nb-ic{flex:none;width:34px;height:34px;border-radius:50%;background:#f3ede7;color:#a12e28;display:inline-flex;align-items:center;justify-content:center;} .net-banner.back .nb-ic{color:#2f7a4a;} .net-banner .nb-ic svg{width:18px;height:18px;}
+.net-banner .nb-tx{flex:1;min-width:0;} .net-banner .nb-tx b{display:block;font-size:15px;} .net-banner .nb-tx p{margin:2px 0 0;font-size:13px;line-height:1.55;color:#6a5b51;word-break:keep-all;}
+.net-banner .btn{flex:none;background:#bd411b;border-color:#bd411b;color:#fff;white-space:nowrap;} .net-banner .btn:hover{background:#a63816;}
+@media (max-width:560px){ .net-banner{flex-wrap:wrap;} .net-banner .btn{width:100%;} }
+.fl-doc-fail{margin:10px 0 0;padding:12px 14px;border:1px solid rgba(161,46,40,.3);border-radius:10px;background:#fbf1ee;display:grid;gap:4px;justify-items:start;} .fl-doc-fail b{color:#a12e28;font-size:14.5px;} .fl-doc-fail p{margin:0;font-size:13.5px;line-height:1.6;color:#2b2521;word-break:keep-all;} .fl-doc-fail p.sm{color:#6a5b51;font-size:13px;} .fl-doc-fail .btn{margin-top:6px;}
+#modal-flow .doc-share{display:flex !important;flex-direction:row !important;align-items:flex-start !important;text-align:left;margin-top:10px;} #modal-flow .doc-share input{width:16px !important;height:16px !important;min-height:0 !important;padding:0 !important;margin:3px 0 0 !important;flex:none;accent-color:#bd411b;box-shadow:none !important;}
+.qa-empty .zs-t{display:block;font-size:15px;color:#2b2521;} .d3-empty .zs-btn{margin-top:12px;}
+#btn-confirm-end{background:#bd411b;border-color:#bd411b;} #btn-confirm-end:hover{background:#a63816;}
+.sg-ov{position:fixed;inset:0;z-index:6000;background:#faf9f7;overflow:auto;display:flex;justify-content:center;padding:20px 14px;}
+.sg-box{width:min(560px,100%);background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.08);padding:22px 20px;align-self:flex-start;display:grid;gap:12px;color:#2b2521;border:1px solid #ded5ce;}
+.sg-brand{margin:0;font-size:12px;font-weight:700;color:#bd411b;} .sg-box h2{margin:0;font-size:21px;line-height:1.35;} .sg-p{margin:0;font-size:14.5px;line-height:1.7;color:#6a5b51;} .sg-fine{margin:0;font-size:12px;color:#8a8a90;}
 .sg-l{display:grid;gap:4px;font-size:13px;font-weight:600;color:#4A5466;} .sg-l input,.sg-note,.sg-box textarea{font:inherit;font-size:15px;border:1.5px solid #CFD7E3;border-radius:10px;padding:10px 12px;width:100%;box-sizing:border-box;}
 .sg-btn{min-height:50px;border:0;border-radius:12px;background:#c8441c;color:#fff;font:inherit;font-weight:800;font-size:16px;cursor:pointer;flex:1;} .sg-btn.ghost{background:#fff;color:#1c1c1e;border:1.5px solid #D5D2CC;} .sg-btn:disabled{opacity:.6;}
 .sg-acts{display:flex;gap:8px;}
@@ -7614,7 +7629,7 @@ html.sv-open{overflow:hidden;}
         <div class="hm-tp" data-t="recent" role="tabpanel"><section class="d3-panel">
         <div class="d3-panel-head"><h3 class="d3-panel-title">최근 면접 기록</h3><button class="d3-btn-text" type="button" onclick="openAllHistory()">전체 보기</button></div>
         <div id="g4-reports-sec" style="display:none;"><div class="g4-reports" id="g4-reports"></div></div>
-        <div class="qa-empty hm-rep-empty">아직 면접 기록이 없어요.<br><button type="button" class="d3-btn d3-btn-ghost hm-empty-btn" onclick="StartFlow.open('practice')">첫 면접 시작하기</button></div>
+        <div class="qa-empty hm-rep-empty"><b class="zs-t">아직 연습 기록이 없어요</b><span>첫 면접을 마치면 결과를 확인할 수 있어요.</span><button type="button" class="d3-btn d3-btn-ghost hm-empty-btn" onclick="StartFlow.open('practice')">첫 면접 시작</button></div>
         </section></div>
         <div class="hm-tp" data-t="dday" role="tabpanel"><section class="d3-panel" id="pk-dday-card" aria-label="면접 D-day"></section></div>
         <div class="hm-tp" data-t="bm" role="tabpanel"><section class="d3-panel" id="pk-bm-card" aria-label="내 질문 모음"></section></div>
@@ -7724,7 +7739,7 @@ html.sv-open{overflow:hidden;}
       </div>
       <div class="d3-card d3-panel gw-card">
         <div class="d3-panel-head"><h3 class="d3-panel-title">같은 질문, 다시 답했을 때</h3><button class="d3-btn-text" type="button" onclick="openGrowthView()">자세히 <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5l5 5-5 5"/></svg></button></div>
-        <div class="gw-same" id="gw-same"><div class="d3-empty"><p class="d3-empty-desc">같은 질문을 두 번 이상 답하면 점수 변화가 여기에 보여요.</p></div></div>
+        <div class="gw-same" id="gw-same"><div class="d3-empty"><p class="d3-empty-title">비교할 기록이 더 필요해요</p><p class="d3-empty-desc">같은 질문을 두 번 이상 답하면 점수 변화가 여기에 보여요.</p></div></div>
       </section>
     </section>
   </main>
@@ -9167,10 +9182,10 @@ html.sv-open{overflow:hidden;}
 <!-- ============ CONFIRM END MODAL ============ -->
 <div class="modal-overlay" id="modal-confirm">
   <div class="modal-box" style="max-width:360px;">
-    <div class="modal-head"><h2 id="confirm-end-title">면접을 종료할까요?</h2><p id="confirm-end-desc">지금까지의 답변을 바탕으로 결과 리포트가 생성됩니다.</p></div>
+    <div class="modal-head"><h2 id="confirm-end-title">면접을 여기서 마칠까요?</h2><p id="confirm-end-desc">지금까지 완료한 답변으로 복기할 수 있어요.</p></div>
     <div class="modal-foot">
       <button class="btn btn-outline" onclick="closeConfirmEnd()">계속하기</button>
-      <button class="btn btn-solid" id="btn-confirm-end" style="background:var(--danger)" onclick="endInterview()">면접 종료</button>
+      <button class="btn btn-solid" id="btn-confirm-end" onclick="endInterview()">마치고 복기</button>
     </div>
   </div>
 </div>
@@ -9196,7 +9211,7 @@ html.sv-open{overflow:hidden;}
   <div class="modal-box" style="max-width:420px;">
     <div class="modal-head">
       <div class="kicked-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></div>
-      <h2 id="to-title">다른 기기에서 면접을 보고 있어요</h2>
+      <h2 id="to-title">다른 기기에서 진행 중이에요</h2>
       <p id="to-desc">이 계정으로 다른 기기에서 지금 면접이 진행 중이에요.</p>
       <p class="kicked-note">이 기기에서 계속하면 그쪽 면접은 지금까지 답한 내용으로 저장하고 끝나요. 한 계정은 한 기기에서만 쓸 수 있어요.</p>
     </div>
@@ -9232,11 +9247,11 @@ html.sv-open{overflow:hidden;}
   <div class="modal-box" style="max-width:420px;">
     <div class="modal-head">
       <div class="kicked-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l2.5 2.5"/><circle cx="12" cy="12" r="9"/></svg></div>
-      <h2>끝나지 않은 면접이 있어요</h2>
+      <h2>이어서 연습할까요?</h2>
       <p id="draft-desc">중간에 끊긴 면접의 답변이 이 기기에 저장되어 있어요.</p>
     </div>
     <div class="modal-foot" style="flex-direction:column;gap:8px;">
-      <button class="btn btn-solid" id="draft-resume" onclick="draftResume()" style="width:100%;">이어서 하기</button>
+      <button class="btn btn-solid" id="draft-resume" onclick="draftResume()" style="width:100%;">이어서 연습</button>
       <button class="btn btn-outline" onclick="draftShowResult()" style="width:100%;">지금까지 답한 내용으로 결과 보기</button>
       <button type="button" class="draft-del" onclick="draftDiscard()">기록 지우기</button>
     </div>
@@ -9281,14 +9296,14 @@ html.sv-open{overflow:hidden;}
   <div class="modal-box pause-box" style="max-width:420px;">
     <div class="modal-body" style="text-align:center;padding:30px 24px 22px;">
       <div class="pause-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 5v14M15 5v14"/></svg></div>
-      <h2 style="margin:0 0 6px;font-size:18px;">면접이 일시정지되었어요</h2>
-      <p style="margin:0;font-size:13.5px;color:var(--slate-400);line-height:1.6;">잠시 쉬었다가 준비되면 이어서 진행하세요.<br>면접관은 멈춘 문장을 처음부터 다시 읽고, 답변 중이었다면 이어서 들어요.</p>
+      <h2 style="margin:0 0 6px;font-size:18px;">연습을 잠시 멈췄어요</h2>
+      <p style="margin:0;font-size:13.5px;color:#6a5b51;line-height:1.6;">잠시 쉬었다가 준비되면 이어서 진행하세요.<br>면접관은 멈춘 문장을 처음부터 다시 읽고, 답변 중이었다면 이어서 들어요.</p>
       <p class="pause-reason" id="pause-reason" hidden>다른 앱이나 화면으로 나가셔서 면접을 자동으로 멈춰 두었어요.</p>
       <div class="pause-timer" id="pause-timer">00:00</div>
       <div class="help-sub" style="margin-top:4px;">일시정지한 시간은 면접 시간에서 빠져요</div>
     </div>
     <div class="modal-foot" style="flex-direction:column;gap:8px;">
-      <button class="btn btn-solid" onclick="dialogResume()" style="width:100%;">이어서 진행</button>
+      <button class="btn btn-solid" onclick="dialogResume()" style="width:100%;">연습 계속하기</button>
       <button class="btn btn-outline" onclick="dialogEndFromPause()" style="width:100%;">면접 종료</button>
     </div>
   </div>
@@ -10180,6 +10195,29 @@ function josa(word, pair){
 }
 /** 저장된 소요 시간('MM:SS')을 읽기 쉬운 말로: '14:20' → '14분 20초', '00:45' → '45초' */
 function durText(v){ const m = /^(\d+):(\d{2})$/.exec(String(v||'').trim()); if(!m) return String(v||''); const mm = +m[1], ss = +m[2]; return mm ? (ss ? `${mm}분 ${ss}초` : `${mm}분`) : `${ss}초`; }
+/* 2026-11-12t 안내 상황 공통 확인 창 (브라우저 기본 확인창 대신, 디자인 토큰 색) → Promise<boolean> */
+function zConfirm(o){
+  o = o || {};
+  return new Promise(res=>{
+    let ov = document.getElementById('modal-zc');
+    if(!ov){ ov = document.createElement('div'); ov.className = 'modal-overlay zc-ov'; ov.id = 'modal-zc'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'zc-t'); document.body.appendChild(ov); }
+    ov.innerHTML = `<div class="modal-box zc-box"><div class="modal-head"><h2 id="zc-t">${escapeHtml(o.title || '계속할까요?')}</h2>${o.desc ? `<p>${escapeHtml(o.desc)}</p>` : ''}</div><div class="modal-foot">${o.alt ? `<button type="button" class="btn btn-outline" data-zc="alt">${escapeHtml(o.alt)}</button>` : ''}<button type="button" class="btn btn-outline" data-zc="no">${escapeHtml(o.cancel || '취소')}</button><button type="button" class="btn btn-solid${o.danger ? ' zc-danger' : ''}" data-zc="yes">${escapeHtml(o.ok || '확인')}</button></div></div>`;
+    const done = v=>{ ov.classList.remove('active'); document.removeEventListener('keydown', key, true); res(v); };
+    const key = e=>{ if(e.key === 'Escape'){ e.stopPropagation(); done(false); } };
+    ov.onclick = e=>{ if(e.target === ov) done(false); };
+    ov.querySelector('[data-zc="yes"]').onclick = ()=>done(true);
+    ov.querySelector('[data-zc="no"]').onclick = ()=>done(false);
+    const alt = ov.querySelector('[data-zc="alt"]'); if(alt) alt.onclick = ()=>done('alt');
+    document.addEventListener('keydown', key, true);
+    ov.classList.add('active'); setTimeout(()=>{ try{ ov.querySelector('[data-zc="no"]').focus(); }catch(_){} }, 30);
+  });
+}
+/* 열리지 않은 분야를 눌렀을 때: 도움 요청(의견 보내기) 또는 이용 가능한 연습으로 */
+async function zAccess(){
+  const v = await zConfirm({ title:'이 기능의 이용 권한을 확인해 주세요', desc:'아직 열리지 않은 분야예요. 학교 담당자에게 문의하거나 이용 가능한 연습으로 돌아갈 수 있어요.', ok:'이용 가능한 연습으로', cancel:'닫기', alt:'도움 요청' });
+  if(v === 'alt'){ try{ openFeedback(); }catch(_){} return; }
+  if(v === true){ const sc = document.querySelector('.screen.active'); if(!(sc && sc.id === 'screen-dashboard')){ try{ goDashboard(); }catch(_){} } }
+}
 function showToast(msg, kind){
   if(/실패|오류/.test(msg) && !/보내기 실패|저장 실패|삭제 실패/.test(msg) && typeof Feedback !== 'undefined' && !(state.currentUser && state.currentUser.isAdmin)) Feedback.auto('기능 실패', msg);
   const c=document.getElementById('toast-container');
@@ -11675,7 +11713,7 @@ const ApprovalAdmin = {
   },
   async delProof(id){
     const r = (this.rows||[]).find(x=>x.id===id); if(!r || !r.proof_path) return;
-    if(!confirm('이 캡처를 지울까요? 지운 뒤에는 다시 볼 수 없어요.')) return;
+    if(!(await zConfirm({ title:'이 캡처를 지울까요?', desc:'지운 뒤에는 다시 볼 수 없어요.', ok:'지우기', danger:true }))) return;
     const rm = await sb.storage.from('approval-proof').remove([r.proof_path]);
     if(rm.error){ showToast('캡처를 지우지 못했어요: '+rm.error.message, 'warn'); return; }
     await sb.from('approval_requests').update({ proof_deleted_at: new Date().toISOString() }).eq('id', id);
@@ -12004,9 +12042,9 @@ const UsageReview = {
     try{ const b = document.getElementById('ur-body'); if(b) b.scrollTop = 0; }catch(_){}
     try{ Activity.log('usage_review_shown', { days_left: a.daysLeft }); }catch(_){}
   },
-  later(){
+  async later(){
     const { good, bad } = this.texts();
-    if((good || bad) && !confirm('쓰던 후기가 지워져요. 나중에 할까요?')) return;
+    if((good || bad) && !(await zConfirm({ title:'쓰던 후기가 지워져요', desc:'지금 닫으면 적던 내용은 남지 않아요. 나중에 다시 쓸 수 있어요.', ok:'나중에 쓰기', cancel:'계속 쓰기' }))) return;
     this.close();
     try{ Activity.log('usage_review_later', {}); }catch(_){}
     showToast('내일 다시 여쭤볼게요.', 'info');
@@ -12558,7 +12596,7 @@ async function renderDashboard(){
           <span class="d3-rscore${i===0?' latest':''}">${hh.score}<span class="unit">점</span></span>
           <svg class="d3-rchev" viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5l5 5-5 5"/></svg></a></li>`).join('') + `</ul>`;
     }else{
-      hist.innerHTML = `<div class="d3-empty"><p class="d3-empty-title">아직 연습 기록이 없어요</p><p class="d3-empty-desc">분야를 골라 첫 모의면접을 시작해보세요.</p></div>`;
+      hist.innerHTML = `<div class="d3-empty"><p class="d3-empty-title">아직 연습 기록이 없어요</p><p class="d3-empty-desc">첫 면접을 마치면 결과를 확인할 수 있어요.</p><button type="button" class="d3-btn d3-btn-ghost zs-btn" onclick="StartFlow.open('practice')">첫 면접 시작</button></div>`;
     }
     // 점수 추이 (선택 분야 기록이 2회 이상이면 그 분야, 아니면 전체)
     const scopeEl = document.getElementById('d3-trend-scope');
@@ -12596,7 +12634,7 @@ function selectDashField(fieldId){
   const allowed = (state.currentUser && state.currentUser.allowed) || [];
   const acc = accessInfo(state.currentUser && state.currentUser.accessUntil);
   if(!isAdmin && acc.expired){ showToast('이용 기간이 종료되었어요. 연장은 담당자에게 문의해 주세요.'); return; }
-  if(!isAdmin && !allowed.includes(fieldId)){ showToast('이 분야는 아직 열리지 않았어요. 취업진로지원센터에 문의해 주세요.'); return; }
+  if(!isAdmin && !allowed.includes(fieldId)){ zAccess(); return; }
   if(state.dashField === fieldId) return;
   state.dashField = fieldId;
   const f = FIELDS.find(x=>x.id===fieldId);
@@ -12628,7 +12666,7 @@ document.addEventListener('click', (e)=>{ const u = document.querySelector('#scr
 function renderTrendLine(wrap, points){
   // 2026-10-07 디자인 정리: 얇은 선 + 옅은 면, 실선 헤어라인 격자, 값은 처음·최근(·최고)만, 마우스를 올리면 그 회차 값 표시
   if(!wrap) return;
-  if(!points || points.length < 2){ wrap.innerHTML = `<div class="d3-empty"><p class="d3-empty-title">${points && points.length === 1 ? '한 번 더 연습하면 그래프가 그려져요' : '2회 이상 연습하면 점수 추이가 표시돼요'}</p></div>`; return; }
+  if(!points || points.length < 2){ wrap.innerHTML = `<div class="d3-empty"><p class="d3-empty-title">비교할 기록이 더 필요해요</p><p class="d3-empty-desc">${points && points.length === 1 ? '한 번 더 연습하면 점수 흐름이 그려져요.' : '2회 이상 연습하면 점수 흐름이 보여요.'}</p></div>`; return; }
   const W = 560, H = 220, padL = 30, padR = 22, padT = 26, padB = 30, iw = W-padL-padR, ih = H-padT-padB, n = points.length;
   const x = i => padL + (iw*i)/(n-1), y = s => padT + ih*(1 - Math.max(0, Math.min(100, s))/100);
   const md = p => { const m = String(p.dateShort||'').match(/(\d{1,2})\.(\d{1,2})$/); return m ? `${Number(m[1])}/${Number(m[2])}` : String(p.dateShort||''); };
@@ -13335,7 +13373,7 @@ const DocBox = {
     return `<div class="fl-row"><span class="fl-lbl">자기소개서·이력서</span><span class="fl-opt">(선택)</span></div>
       <p class="fl-sub">올리면 서류에 적은 문장·경력으로 맞춤 질문을 만들어, 다음 '질문 미리 연습'과 본 면접에 함께 넣어요. PDF·한글(HWP)·워드·사진 모두 돼요.</p>
       <div class="fl-doc-row">${this.slot('resume', '자기소개서', '지원 동기·경험·포부')}${this.slot('cv', '이력서', '경력·활동·수상·자격')}</div>
-      <p class="fl-doc-st${m ? ' ' + m[0] : ''}" id="fl-doc-st" role="status" aria-live="polite">${m ? escapeHtml(m[1]) : ''}</p>
+      ${m && m[0] === 'fail' ? `<div class="fl-doc-fail" id="fl-doc-st" role="alert"><b>서류를 읽지 못했어요</b><p>${escapeHtml(m[1])}</p><p class="sm">PDF·한글(HWP)·워드·사진 파일인지 확인해 주세요. 서류 없이도 면접은 그대로 진행할 수 있어요.</p><label class="btn btn-outline btn-sm" for="fl-doc-${this.failK === 'cv' ? 'cv' : 'resume'}">다시 올리기</label></div>` : `<p class="fl-doc-st${m ? ' ' + m[0] : ''}" id="fl-doc-st" role="status" aria-live="polite">${m ? escapeHtml(m[1]) : ''}</p>`}
       <label class="doc-share"><input type="checkbox" id="fl-doc-share" ${this.share ? 'checked' : ''}><span><b>학교 교직원과 서류 함께 보기</b><small>켜 두면 취업지원센터 교직원·학과 담당이 내 서류를 보고 상담과 첨삭에 써요. 언제든 끌 수 있어요.</small></span></label>`;
   },
   mount(){
@@ -13372,10 +13410,11 @@ const DocBox = {
       this.msg = n ? ['ok', `${file.name}에서 맞춤 질문 ${n}개를 만들었어요. 다음 '질문 미리 연습'의 '내 서류' 칸에서 미리 연습할 수 있어요.${saved ? '' : ' (계정 저장은 실패해서 이번 면접에만 써요)'}`]
                    : ['warn', `${file.name}을 읽었지만 경험·경력 문장을 찾지 못해 맞춤 질문은 만들지 못했어요. 항목(1. 지원 동기 …)이나 기간(2024.03 ~)이 적힌 서류면 잘 찾아요.`];
       try{ Activity.log('doc_upload', { kind: k, ext: DocText.kind(file.name), questions: n, where: 'flow' }); }catch(_){}
-    }catch(e){ this.busy = ''; this.msg = ['warn', e && e.message ? e.message : '파일을 읽지 못했어요.']; }
+    }catch(e){ this.busy = ''; this.failK = k; this.msg = ['fail', e && e.message ? e.message : '파일을 읽지 못했어요.']; }
     this.mount();
   },
   async remove(k){
+    if(!(await zConfirm({ title: (k === 'resume' ? '자기소개서' : '이력서') + '를 지울까요?', desc:'계정에 저장된 서류와 서류로 만든 맞춤 질문이 함께 지워져요. 필요하면 다시 올릴 수 있어요.', ok:'지우기', danger:true }))) return;
     if(k === 'resume'){ await deleteSavedResume(); state.resumeName = ''; } else await removeCv();
     try{ PrepRoom.dirty = true; }catch(_){}
     this.msg = null; this.mount();
@@ -14644,7 +14683,7 @@ const StartFlow = {
     b.textContent = '듣는 중… (누르면 멈춤)'; out.textContent = '말해 보세요…';
     r.onresult = e=>{ txt = Array.from(e.results).map(x=>x[0].transcript).join(''); out.textContent = `들린 말: "${txt}"`; };
     r.onerror = e=>{ const c = e.error; out.textContent = c === 'not-allowed' || c === 'service-not-allowed' ? '마이크가 막혀 있어 들을 수 없어요.' : c === 'no-speech' ? '소리가 들리지 않았어요. 조금 더 크게 다시 해 보세요.' : `지금은 확인하지 못했어요 (${c}). 면접은 그대로 할 수 있어요.`; };
-    r.onend = ()=>{ if(this._vt === r) this._vt = null; clearTimeout(this._vtT); const bb = document.getElementById('fl-vt-b'); if(bb) bb.textContent = '목소리 테스트'; const o = document.getElementById('fl-vt-out'); if(o && txt) o.textContent = `들린 말: "${txt}" · 잘 들려요. 채점하거나 저장하지 않았어요.`; };
+    r.onend = ()=>{ if(this._vt === r) this._vt = null; clearTimeout(this._vtT); const bb = document.getElementById('fl-vt-b'); if(bb) bb.textContent = '목소리 테스트'; const o = document.getElementById('fl-vt-out'); if(o && txt) o.textContent = `들린 말: "${txt}" · 목소리 점검을 마쳤어요. 채점하지 않은 점검이라 면접 성적과 섞이지 않아요.`; };
     let tr = null; try{ tr = MicStream.track(); }catch(_){}
     try{ (tr && SR_TRACK_OK && tr.readyState === 'live') ? r.start(tr) : r.start(); }catch(e){ this._vt = null; b.textContent = '목소리 테스트'; out.textContent = '지금은 목소리 테스트를 시작하지 못했어요. 면접은 그대로 할 수 있어요.'; return; }
     clearTimeout(this._vtT); this._vtT = setTimeout(()=>{ try{ r.stop(); }catch(_){} }, 7000); },
@@ -14706,7 +14745,7 @@ async function renderGrowthPage(){
     ['목표 75점까지', toGoal==null?'–':(toGoal===0?'달성':toGoal), toGoal?'점':'', toGoal==null?'':(toGoal===0?'목표를 넘었어요':(d&&d>0?`지금 속도면 약 ${Math.max(1,Math.ceil(toGoal/Math.max(1,d)))}회 뒤`:'꾸준히 하면 올라가요')), '', false]
   ].map(([l,v,u,n,dd,down])=>`<div class="gw-kpi"><div class="l">${l}</div><div class="v"><b>${v}</b><span>${u}</span>${dd?`<span class="d${down?' down':''}">${dd}</span>`:''}</div><div class="n">${n}</div></div>`).join('');
   const line = document.getElementById('gw-line');
-  if(line) line.innerHTML = pool.length >= 2 ? gwLineSvg(pool.slice(-12)) : `<div class="d3-empty"><p class="d3-empty-title">${pool.length===1?'한 번 더 연습하면 그래프가 그려져요':'아직 기록이 없어요'}</p><p class="d3-empty-desc">${days?'기간을 "전체"로 바꾸면 더 많은 기록이 보여요.':'첫 모의면접을 마치면 여기에 점수 흐름이 쌓여요.'}</p></div>`;
+  if(line) line.innerHTML = pool.length >= 2 ? gwLineSvg(pool.slice(-12)) : `<div class="d3-empty"><p class="d3-empty-title">${pool.length===1?'비교할 기록이 더 필요해요':'아직 연습 기록이 없어요'}</p><p class="d3-empty-desc">${days?'기간을 "전체"로 바꾸면 더 많은 기록이 보여요.':'첫 모의면접을 마치면 여기에 점수 흐름이 쌓여요.'}</p></div>`;
   try{ renderActivityCalendar(); }catch(_){}
   // 이정표
   const first70 = all.find(h=>h.score>=70), first80 = all.find(h=>h.score>=80), tenth = all[9];
@@ -14736,7 +14775,7 @@ async function renderGrowthPage(){
   if(sameBox){
     const byQ = {}; data.forEach((x,i)=>x.answers.forEach(an=>{ if(an.kind==='followup' || an.score==null) return; const key = String(an.question_text||'').replace(/\s+/g,' ').trim(); (byQ[key] = byQ[key] || []).push({ score:an.score, i }); }));
     const rows = Object.entries(byQ).filter(([,v])=>v.length>=2).map(([q,v])=>{ v.sort((a,b)=>a.i-b.i); return [q, v[0].score, v[v.length-1].score, v.length]; }).sort((a,b)=>(b[2]-b[1])-(a[2]-a[1])).slice(0,4);
-    sameBox.innerHTML = rows.length ? rows.map(([q,a0,a1,n])=>{ const dd=a1-a0; return `<div class="sm"><b>${escapeHtml(q)}</b>${a0}점 → ${a1}점 <span class="${dd>0?'up':dd<0?'down':''}">${dd>0?'+':''}${dd}</span> <small style="color:var(--c-ink-3)">· ${n}번 답함</small></div>`; }).join('') : '<div class="d3-empty"><p class="d3-empty-desc">같은 질문을 두 번 이상 답하면 점수 변화가 여기에 보여요.</p></div>';
+    sameBox.innerHTML = rows.length ? rows.map(([q,a0,a1,n])=>{ const dd=a1-a0; return `<div class="sm"><b>${escapeHtml(q)}</b>${a0}점 → ${a1}점 <span class="${dd>0?'up':dd<0?'down':''}">${dd>0?'+':''}${dd}</span> <small style="color:var(--c-ink-3)">· ${n}번 답함</small></div>`; }).join('') : '<div class="d3-empty"><p class="d3-empty-title">비교할 기록이 더 필요해요</p><p class="d3-empty-desc">같은 질문을 두 번 이상 답하면 점수 변화가 여기에 보여요.</p></div>';
   }
 }
 async function openGrowthView(field){
@@ -15517,7 +15556,7 @@ function openAllHistory(){
           </div>
           <span class="score-pill ${h.score<75?'mid':''}">${h.score}점</span>
         </div>`).join('')
-    : '<div class="qa-empty">아직 연습 기록이 없어요.</div>');
+    : '<div class="qa-empty"><b class="zs-t">아직 연습 기록이 없어요</b><span>첫 면접을 마치면 결과를 확인할 수 있어요.</span></div>');
   document.getElementById('modal-record').classList.add('active');
 }
 
@@ -15693,7 +15732,7 @@ function openPractice(fieldId){
   const isAdmin = !!(state.currentUser && state.currentUser.isAdmin);
   const allowed = (state.currentUser && state.currentUser.allowed) || [];
   if(!isAdmin && !allowed.includes(fieldId)){
-    showToast('이 분야는 아직 열리지 않았어요. 담당자에게 문의해 주세요.');
+    zAccess();
     return;
   }
   const field = FIELDS.find(f=>f.id===fieldId);
@@ -15919,7 +15958,7 @@ function openSetup(fieldId){   // 2026-10-22v: 새 버전 확인 뒤 준비 창 
   const allowed = (state.currentUser && state.currentUser.allowed) || [];
   if(isAccessExpired(state.currentUser)){ showToast('이용 기간이 종료되어 면접 연습을 시작할 수 없어요. 연장은 관리자에게 문의해 주세요.'); return; }
   if(!isReview && !isAdmin && !allowed.includes(fieldId)){
-    showToast('이 분야는 아직 열리지 않았어요. 담당자에게 문의해 주세요.');
+    zAccess();
     return;
   }
   if(isReview){
@@ -17722,6 +17761,7 @@ async function handleMyPageResumeUpload(event){
   }
 }
 async function deleteSavedResumeFromMyPage(){
+  if(!(await zConfirm({ title:'자기소개서를 지울까요?', desc:'계정에 저장된 자기소개서와 서류로 만든 맞춤 질문이 함께 지워져요. 필요하면 다시 올릴 수 있어요.', ok:'지우기', danger:true }))) return;
   await deleteSavedResume();
   await renderMyPageResume();
 }
@@ -17804,7 +17844,7 @@ async function handleMyPageCvUpload(event){
   st.className='resume-status ok'; st.textContent = `'${f.name}' 파일을 저장했어요. 다음 면접부터 이력서 맞춤 질문과 꼬리질문에 쓰여요.`;
   await renderMyPageCv(); syncCvCard();
 }
-async function removeCvFromMyPage(){ if(await deleteSavedCv()) showToast('저장된 이력서를 삭제했어요'); await renderMyPageCv(); syncCvCard(); }
+async function removeCvFromMyPage(){ if(!(await zConfirm({ title:'이력서를 지울까요?', desc:'계정에 저장된 이력서와 서류로 만든 맞춤 질문이 함께 지워져요. 필요하면 다시 올릴 수 있어요.', ok:'지우기', danger:true }))) return; if(await deleteSavedCv()) showToast('저장된 이력서를 삭제했어요'); await renderMyPageCv(); syncCvCard(); }
 /* ---------------- 자기소개서 텍스트 저장 / 자동 불러오기 (user_resumes 테이블) ---------------- */
 async function saveResumeText(fileName, text){
   if(!state.currentUser) return false;
@@ -20726,7 +20766,7 @@ const InterviewDraft = {
     const when = `${t.getMonth()+1}월 ${t.getDate()}일 ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
     document.getElementById('draft-desc').textContent = `${when}에 하던 ${d.fieldName || ''} ${d.realSet ? '실전 세트 ' : ''}면접이 중간에 끊겼어요. 답변 ${answered}개는 이 기기에 저장되어 있어요.`;
     const rb = document.getElementById('draft-resume');
-    if(rb){ rb.hidden = !(left && d.questions); rb.textContent = left ? `이어서 하기 (남은 질문 ${left}개)` : '이어서 하기'; }
+    if(rb){ rb.hidden = !(left && d.questions); rb.textContent = left ? `이어서 연습 (남은 질문 ${left}개)` : '이어서 연습'; }
     document.getElementById('modal-draft').classList.add('active');
     try{ Activity.log('draft_offer', { answered, left }); }catch(_){}
   },
@@ -20764,8 +20804,8 @@ async function draftShowResult(){
     await finishDialogInterview(d.asks.map(a=>Object.assign({}, a)), []);
   }catch(e){ console.error(e); showToast('결과를 만들지 못했어요. '+friendlyErr(e), 'warn'); }
 }
-function draftDiscard(){
-  if(!confirm('저장된 답변을 지울까요? 지우면 되돌릴 수 없어요.')) return;
+async function draftDiscard(){
+  if(!(await zConfirm({ title:'이 기록을 삭제할까요?', desc:'이 기기에 보관한 답변이 지워지고 되돌릴 수 없어요. 결과로 남기려면 취소하고 \'지금까지 답한 내용으로 결과 보기\'를 눌러 주세요.', ok:'삭제', cancel:'취소', danger:true }))) return;
   InterviewDraft.clear(); draftClose(); showToast('끊겼던 면접 기록을 지웠어요.', 'info');
 }
 function startDialogInterview(){
@@ -22121,9 +22161,9 @@ function openConfirmEnd(){
     StenoLoop.pause();   // 말하기·듣기 일시 정지 (취소하면 이어서 진행)
     updateListeningUI(false); stopWaveAnim();
     dialogPhase('', '일시 정지');
-    titleEl.textContent = '면접을 지금 종료할까요?';
-    descEl.textContent = '지금까지 나눈 대화를 바탕으로 결과 리포트가 생성됩니다. (답변하던 내용도 결과에 포함돼요)';
-    confirmBtn.textContent = '면접 종료';
+    titleEl.textContent = '면접을 여기서 마칠까요?';
+    descEl.textContent = '지금까지 완료한 답변으로 복기할 수 있어요. 답변하던 내용도 함께 들어가요.';
+    confirmBtn.textContent = '마치고 복기';
     confirmBtn.onclick = function(){
       document.getElementById('modal-confirm').classList.remove('active');
       document.getElementById('modal-pause').classList.remove('active'); clearInterval(pauseTimerIv);
@@ -22153,9 +22193,9 @@ function openConfirmEnd(){
     confirmBtn.textContent = '라이브 시작';
     confirmBtn.onclick = function(){ document.getElementById('modal-confirm').classList.remove('active'); stopRecognition(); stopSpeaking(); startDialogInterview(); };
   }else{
-    titleEl.textContent = '면접을 종료할까요?';
-    descEl.textContent = '지금까지의 답변을 바탕으로 결과 리포트가 생성됩니다.';
-    confirmBtn.textContent = '면접 종료';
+    titleEl.textContent = '면접을 여기서 마칠까요?';
+    descEl.textContent = '지금까지 완료한 답변으로 복기할 수 있어요.';
+    confirmBtn.textContent = '마치고 복기';
     confirmBtn.onclick = endInterview;
   }
   document.getElementById('modal-confirm').classList.add('active');
@@ -22223,7 +22263,7 @@ function setSaveBanner(kind, text){
   if(kind === 'ok'){ try{ setTimeout(()=>AppUpdate.maybeShow(), 1500); }catch(_){} }
   const b = document.getElementById('save-banner'); if(!b) return;
   if(!kind){ b.style.display='none'; return; }
-  b.style.display=''; b.classList.toggle('ok', kind==='ok'); document.getElementById('save-banner-text').textContent = text;
+  b.style.display=''; b.classList.toggle('ok', kind==='ok'); b.classList.toggle('err', kind==='err'); { const tx = document.getElementById('save-banner-text'); if(kind==='err'){ tx.innerHTML = '<b>아직 저장되지 않았어요</b> ' + escapeHtml(text); } else tx.textContent = text; }
   const btn = document.getElementById('save-retry-btn'); if(btn){ btn.disabled = (kind==='saving'); btn.textContent = kind==='saving' ? '저장 중…' : '다시 저장'; }
 }
 async function retrySaveRecord(){
@@ -25152,7 +25192,7 @@ async function coachMake(){
   if(Coach.draftRec){ StenoListener.stop('manual'); }
   const draft = document.getElementById('coach-draft').value.trim();
   if(!Coach.docs.resume && !Coach.docs.cv && coachCharCount(draft) < 20){ showToast('서류가 없으면 자기소개를 20자 이상 말하거나 적어 주세요.'); return; }
-  if(Coach.dirty && Coach.script && !confirm('지금 대본에 고친 내용이 저장되지 않았어요. 새 대본으로 바꿀까요?')) return;
+  if(Coach.dirty && Coach.script && !(await zConfirm({ title:'고친 대본이 아직 저장되지 않았어요', desc:'새 대본으로 바꾸면 지금 고친 내용은 사라져요.', ok:'새 대본으로 바꾸기', cancel:'그대로 두기' }))) return;
   if(!AiSwitch.anyOn()){
     // AI가 꺼져 있으면: 서류·내 말에서 자격·경력·숫자를 뽑아 기본 대본을 만듦 (비용 0)
     try{
@@ -25804,8 +25844,8 @@ const AppUpdate = {
   },
   hide(){ const bar = document.getElementById('update-bar'); if(!bar || bar.hidden) return; bar.classList.remove('on'); bar.hidden = true; },
   later(){ this.dismissed = this.latest; this.hide(); },
-  reload(){
-    if(this.busy() && !confirm('지금 새로고침하면 진행 중인 화면이 처음으로 돌아가요. 새로고침할까요?')) return;
+  async reload(){
+    if(this.busy() && !(await zConfirm({ title:'지금 새로고침할까요?', desc:'진행 중인 화면이 처음으로 돌아가요.', ok:'새로고침', cancel:'나중에' }))) return;
     try{ const q = new URLSearchParams(location.search); q.set('v', String(Date.now())); location.replace(location.pathname + '?' + q.toString() + location.hash); }
     catch(_){ location.reload(); }
   }
@@ -26105,10 +26145,36 @@ function interviewInProgress(){
   const scr = document.querySelector('.screen.active');
   return !!(scr && scr.id === 'screen-interview' && (StenoLoop.running || state.interviewMode === 'live' || state.interviewMode === 'rehearsal'));
 }
+/* 2026-11-12t 면접 중 연결 끊김: 화면 위 안내 띠 (연습형은 자동으로 잠시 멈춤, 실전형은 시간이 그대로 흐름) */
+const NetBanner = {
+  paused:false,
+  el(){ let b = document.getElementById('net-banner'); if(b) return b;
+    b = document.createElement('div'); b.id = 'net-banner'; b.className = 'net-banner'; b.setAttribute('role', 'alert'); b.hidden = true;
+    b.innerHTML = '<div class="nb-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16.1a5 5 0 0 1 7 0M12 19.5h.01"/><path d="M3 3l18 18"/></svg></div><div class="nb-tx"><b id="nb-t">연결이 잠시 끊겼어요</b><p id="nb-d"></p></div><button type="button" class="btn btn-solid btn-sm" id="nb-go">연결 확인 후 이어가기</button>';
+    document.body.appendChild(b); b.querySelector('#nb-go').onclick = ()=>this.check(); return b; },
+  real(){ return state.timedMode === 'real'; },
+  show(){ const b = this.el(), real = this.real();
+    if(!real && state.interviewMode === 'dialog' && StenoLoop.running && !state.dialogPaused){
+      try{ dialogPause(); document.getElementById('modal-pause').classList.remove('active'); this.paused = true; }catch(_){}
+    }
+    document.getElementById('nb-t').textContent = '연결이 잠시 끊겼어요';
+    document.getElementById('nb-d').textContent = real
+      ? '지금까지 한 답변은 그대로 있어요. 실전형이라 시간은 계속 흘러요. 와이파이·데이터를 확인해 주세요.'
+      : (this.paused ? '지금까지 한 답변은 그대로 있어요. 연습을 잠시 멈춰 두었어요. 와이파이·데이터를 확인한 뒤 이어가세요.' : '지금까지 한 답변은 그대로 있어요. 와이파이·데이터를 확인해 주세요.');
+    b.classList.remove('back'); b.hidden = false; },
+  back(){ const b = document.getElementById('net-banner'); if(!b || b.hidden) return;
+    document.getElementById('nb-t').textContent = '연결이 다시 잡혔어요';
+    document.getElementById('nb-d').textContent = this.paused ? '준비되면 아래 버튼을 눌러 이어가세요.' : '면접을 그대로 이어가세요.';
+    b.classList.add('back'); if(!this.paused) setTimeout(()=>{ if(navigator.onLine) this.hide(); }, 2500); },
+  check(){ if(!navigator.onLine){ document.getElementById('nb-d').textContent = '아직 연결되지 않았어요. 와이파이·데이터를 켠 뒤 다시 눌러 주세요.'; return; }
+    const was = this.paused; this.hide(); if(was){ try{ dialogResume(); }catch(_){} } },
+  hide(){ this.paused = false; const b = document.getElementById('net-banner'); if(b){ b.hidden = true; b.classList.remove('back'); } }
+};
 window.addEventListener('offline', ()=>{
+  if(interviewInProgress()){ NetBanner.show(); return; }
   showToast('인터넷 연결이 끊겼어요. 음성 인식과 기록 저장이 멈출 수 있어요. 연결이 돌아오면 자동으로 이어집니다.');
 });
-window.addEventListener('online', ()=>{ showToast('인터넷 연결이 다시 잡혔어요.'); setTimeout(()=>{ try{ PendingSave.flush(); }catch(_){} }, 1500); });
+window.addEventListener('online', ()=>{ const b = document.getElementById('net-banner'); if(b && !b.hidden) NetBanner.back(); else showToast('인터넷 연결이 다시 잡혔어요.'); setTimeout(()=>{ try{ PendingSave.flush(); }catch(_){} }, 1500); });
 // 면접 도중 새로고침·탭 닫기 → 브라우저 기본 확인창 ("변경사항이 저장되지 않을 수 있습니다")
 window.addEventListener('beforeunload', (e)=>{
   if(!interviewInProgress()) return;
@@ -27193,7 +27259,7 @@ const PracticeKit = {
     this.close(); showToast('면접 D-day를 저장했어요', 'ok'); await this.loadPlan();
   },
   async delPlan(){
-    if(!confirm('면접 D-day를 지울까요?')) return;
+    if(!(await zConfirm({ title:'면접 D-day를 지울까요?', desc:'적어 둔 면접 날짜와 기관이 지워져요.', ok:'지우기', danger:true }))) return;
     const { error } = await sb.from('interview_plans').delete().eq('user_id', this.uid());
     if(error) return showToast('지우지 못했어요. ' + friendlyErr(error), 'warn');
     this.close(); this.plan = null; this._pack = null; this.renderPlan();
@@ -27736,7 +27802,7 @@ const StudyGuest = {
     let ov = document.getElementById('sg-ov'); if(!ov){ ov = document.createElement('div'); ov.id = 'sg-ov'; ov.className = 'sg-ov'; document.body.appendChild(ov); }
     ov.innerHTML = `<div class="sg-wrap"><div class="sg-vid" id="sg-vid" hidden></div><div class="sg-main" id="sg-main"><div class="sg-box"><div class="pk-wait"><i></i>질문을 불러오는 중</div></div></div></div>`;
     try{ const { data, error } = await sb.rpc('study_get', { p_token: token }); if(error) throw error; this.d = data; }catch(_){ this.d = null; }
-    if(!this.d){ this.box(`<h2>링크가 열리지 않아요</h2><p class="sg-p">기한(3일)이 지났거나 잘못된 링크예요. 친구에게 새 링크를 달라고 해 주세요.</p>`); return; }
+    if(!this.d){ this.box(`<h2>초대 링크를 사용할 수 없어요</h2><p class="sg-p">기한(3일)이 지났거나 잘못된 링크예요. 초대한 친구에게 새 링크를 요청해 주세요.</p>`); return; }
     this.R = (this.d.questions || []).map(()=>({})); this.intro();
   },
   box(h){ const m = document.getElementById('sg-main'); if(m) m.innerHTML = `<div class="sg-box"><p class="sg-brand">ZAVAPASS × 한림대학교 · 친구와 함께 면접 연습</p>${h}</div>`; },
