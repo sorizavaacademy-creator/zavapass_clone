@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12c';
+var APP_VERSION = '2026-11-12d';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6064,6 +6064,28 @@ html.ivv-dr-open{overflow:hidden;}
 .fl-diff b{font-size:14.5px;} .fl-diff span{font-size:12.5px;color:#4a4a52;}
 .fl-diff[aria-pressed="true"]{border-color:#c8441c;background:#FDF5F1;box-shadow:0 0 0 3px rgba(200,68,28,.13);}
 @media(min-width:700px){ #modal-flow .fl-box{max-width:880px;} .fl-people{grid-template-columns:repeat(5,minmax(0,1fr));} .fl-people .fl-person{padding:12px;} }
+/* 2026-11-12 면접 준비 창(6단계)·장치 확인·면접 설정 창도 홈과 같은 규칙 파일 색 (design_tokens.light) — 모양만, 내용·기능 그대로 */
+#modal-flow, #modal-setup{--c-bg:#faf9f7;--c-bg-2:#f3ede7;--c-surface:#f3ede7;--c-line:#ded5ce;--c-line-strong:#ded5ce;--c-ink:#2b2521;--c-ink-2:#6a5b51;--c-ink-3:#6a5b51 !important;--c-accent:#bd411b;--c-accent-btn:#bd411b;--c-accent-btn-hover:#a63816;--c-accent-ink:#bd411b;--c-accent-soft:#f3ede7}
+#modal-flow .fl-box, #modal-setup .setup-box{background:#faf9f7;color:#2b2521}
+#modal-setup .modal-head, #modal-setup .setup-foot, #modal-setup .modal-foot{background:#faf9f7}
+#modal-flow .fl-top{border-bottom-color:#ded5ce}
+#modal-flow .fl-acts{border-top-color:#ded5ce;background:#faf9f7}
+#modal-flow .fl-steps{color:#6a5b51} #modal-flow .fl-steps b.done{color:#6a5b51} #modal-flow .fl-steps b.done em{background:#6a5b51;color:#fff}
+#modal-flow .fl-steps b em{background:#f3ede7;color:#6a5b51} #modal-flow .fl-steps b.on{color:#2b2521} #modal-flow .fl-steps b.on em{background:#bd411b;color:#fff} #modal-flow .fl-steps b.done em{background:#6a5b51;color:#fff} #modal-flow .fl-steps .sep{background:#ded5ce}
+#modal-flow .fl-h{color:#2b2521} #modal-flow .fl-lead, #modal-flow .fl-sub, #modal-flow .fl-pick .d, #modal-flow .fl-lbl, #modal-flow .fl-f label{color:#6a5b51}
+#modal-flow .fl-pick, #modal-flow .fl-person, #modal-flow .fl-field, #modal-flow .fl-diff, #modal-flow .fl-mood-b, #modal-flow .fl-chip, #modal-flow .fl-f input, #modal-flow .fl-f select, #modal-flow .fl-f textarea{border-color:#ded5ce;color:#2b2521}
+#modal-flow .fl-pick[aria-pressed="true"], #modal-flow .fl-person[aria-pressed="true"], #modal-flow .fl-field[aria-pressed="true"], #modal-flow .fl-diff[aria-pressed="true"], #modal-flow .fl-mood-b[aria-pressed="true"]{border-color:#bd411b;background:#f3ede7;box-shadow:0 0 0 3px rgba(189,65,27,.12)}
+#modal-flow .fl-chip[aria-pressed="true"]{background:#2b2521;border-color:#2b2521;color:#fff}
+#modal-flow .fl-person .ord{background:#bd411b} #modal-flow .req{color:#bd411b}
+#modal-flow .fl-note, #modal-flow .fl-reco{background:#f3ede7;border-color:#ded5ce}
+#modal-flow .fl-r3-rp.on{border-color:#bd411b;background:#f3ede7}
+#modal-flow .btn-solid, #modal-setup .btn-solid{background:#bd411b;border-color:#bd411b;color:#fff;box-shadow:none}
+#modal-flow .btn-solid:hover, #modal-setup .btn-solid:hover{background:#a63816}
+#modal-flow .btn-outline, #modal-setup .btn-outline{background:#fff;border-color:#ded5ce;color:#2b2521}
+#modal-flow .btn-outline:hover, #modal-setup .btn-outline:hover{background:#f3ede7;border-color:#ded5ce}
+#modal-setup .setup-reco{background:#f3ede7 !important;border-color:#ded5ce !important}
+#modal-setup .setup-reco .btn-solid, #modal-setup .setup-reco button{background:#bd411b;border-color:#bd411b;color:#fff}
+
 @media(max-width:640px){ .fl-diffs{grid-template-columns:1fr;} .cc-row{grid-template-columns:1fr;gap:6px;} .cc{padding:14px;} }
 .iv-co{margin:0 0 10px;border:1px solid #E3E1DB;border-radius:12px;background:#FAFAF8;color:#1c1c1e;}
 .iv-co summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:13.5px;font-weight:700;}
