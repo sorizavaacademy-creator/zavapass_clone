@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z5';
+var APP_VERSION = '2026-11-12z6';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6332,6 +6332,13 @@ html.ivv-dr-open{overflow:hidden;}
 .hp-st{font-style:normal;font-size:12.5px;font-weight:600;color:#6a5b51;background:#f3ede7;border-radius:6px;padding:3px 8px;justify-self:end} .hp-st.stop{color:#a12e28}
 .hp-acts{grid-column:1 / -1}
 #d3-growth .gw-head .gw-prev{flex:none;align-self:flex-start;margin-left:auto}
+/* 2026-11-12z6 전체 정렬 다듬기 */
+#d3-growth .gw-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:16px} #d3-growth .gw-head > div:first-child{grid-column:1;grid-row:1 / span 2}
+#d3-growth .gw-head .gw-prev{grid-column:2;grid-row:1;justify-self:end;align-self:start;margin:0} #d3-growth .gw-head .gw-range{grid-column:2;grid-row:2;justify-self:end}   /* 27 나의 성장: [이전으로]를 오른쪽 끝에 */
+@media (max-width:640px){ #d3-growth .gw-head > div:first-child{grid-row:1} #d3-growth .gw-head .gw-range{grid-column:1 / -1;grid-row:2;justify-self:start;margin-top:10px} }
+@media (min-width:641px) and (max-width:820px){ #d3-debate.dbm .dbm-head{flex-direction:row;gap:16px} #d3-debate.dbm .dbm-prev{align-self:flex-start;padding:10px 16px} #d3-debate.dbm .dbm-head h2{font-size:26px} }   /* 34~36 토론 태블릿: 제목 옆에 [이전으로] */
+@media (max-width:1100px){ #modal-flow .fl-2col .ib-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }   /* 64 인바디 태블릿: 칸이 좁아 값이 잘리던 것 */
+.sv-ov .sv-top .sv-st{margin-left:auto} .sv-ov .sv-top .sv-end{margin-left:0} .sv-ov .sv-top .sv-st:not(.on):not(.warn):not(.bad){background:#f3ede7;color:#2b2521} .sv-ov .sv-top .sv-st.on, .sv-ov .sv-top .sv-st.warn, .sv-ov .sv-top .sv-st.bad{color:#fff}   /* 38 친구 연습: 상태 표시를 [끝내기] 옆으로 */
 #pk-modal.pg .pk-f .btn{flex:none;width:auto;min-width:0} #pk-modal.pg #pk-dday-pg{border-radius:14px;padding:20px;margin:0}
 @media (max-width:760px){
   #pk-modal.pg .pk-b.pk-2c, #pk-modal.pg .an-pg, #pk-modal.pg .an-2, .hp-filters{grid-template-columns:1fr}
