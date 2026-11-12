@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12r';
+var APP_VERSION = '2026-11-12s';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -30464,14 +30464,16 @@ const PageInfo = {
     { sel:'#hz-ret-h', t:'홈', lead:'다시 방문하면 지금 준비 단계에 맞는 다음 행동을 먼저 보여 줘요.', items:[
       ['준비 단계', '고른 단계에 따라 아래 문구·버튼이 바뀌어요 (이 기기에 기억)'],
       ['고칠 한 가지', '가장 최근 면접에서 점수가 가장 낮았던 질문과 저장된 피드백'],
-      ['다른 연습', '위 메뉴 \'연습하기\'에 토론·발표 · 오늘의 질문 · 추천 세트 · 연습 도구'] ] },
+      ['다른 연습', '위 메뉴 \'연습하기\'에 토론·발표 · 오늘의 질문 · 추천 세트 · 연습 도구'],
+      ['지난 기록', '위 메뉴 \'나의 기록\'에서 지난 면접 결과를 다시 봐요'] ] },
     { sel:'#hz-h', t:'홈', lead:'오늘 할 연습을 고르는 첫 화면이에요.', items:[
-      ['면접 시작', '전공·경험 면접 · 지원할 기관이 정해졌으면 기업·직무 맞춤'],
-      ['다른 방식', '\'다른 방식으로 연습할래요\'를 누르면 토론·발표 · 오늘의 질문 · 추천 세트 · 연습 도구'],
-      ['내 자료·기록', '\'내 자료 확인\'에 경험·서류·질문 모음, \'연습 기록 보기\'에 지난 면접'] ] },
+      ['면접 시작', '\'전공·경험 면접 시작하기\' · 지원할 기관이 정해졌으면 \'지원할 기관이 정해졌어요\''],
+      ['다른 방식', '\'다른 방식으로 연습할래요\'에 토론·발표 · 오늘의 질문 · 추천 세트 · 연습 도구'],
+      ['내 자료', '\'내 자료 확인\'에 경험·서류·질문 모음'],
+      ['지난 기록', '\'연습 기록 보기\' 또는 위 메뉴 \'나의 기록\'에서 지난 면접 결과를 다시 봐요'] ] },
     { sel:'#d3-growth .gw-title', t:'나의 기록', lead:'면접 점수가 어떻게 변했는지 보는 곳이에요.', items:[
       ['기간', '30일 · 90일 · 전체 중에서 골라요'],
-      ['점수 흐름', '점을 누르면 그날 리포트가 열려요'],
+      ['점수 흐름', '점을 누르면 그날 결과가 새 결과 화면으로 열려요'],
       ['약한 곳', '문항 종류별 점수 · 보완이 필요한 질문'] ] },
     { sel:'#dbt-ptitle', t:'토론 연습', lead:'공공기관 토론·토의·발표 면접을 연습해요.', items:[
       ['진행 순서', '주제 고르기 → 준비 → 말하기 → AI 반론 → 다시 답하기 → 피드백'],
@@ -30484,28 +30486,35 @@ const PageInfo = {
         ['끝나면', '바로 결과 리포트가 나와요'] ] },
       t:'면접 리허설', lead:'채점 없이 미리 해 보는 연습이에요.', items:[
         ['확인할 것', '카메라 · 마이크 · 내 모습과 목소리'] ] },
-    { sel:'#result-title', t:'결과 리포트', lead:'방금 본 면접의 결과예요.', items:[
-      ['먼저 볼 것', '맨 위 \'이번에 고칠 한 가지\''],
-      ['문항별', '펼치면 A~E 점수 · 근거 · 고칠 점 · 바꿔 말하기'],
+    { sel:'#rv-sum .rv-kick', t:'결과 요약', lead:'면접 결과를 가장 먼저 고칠 점 한 가지부터 보여 줘요.', items:[
+      ['질문별', '\'모든 질문 분석\'에서 질문을 골라 피드백 · 내 답변 · 바꿔 말하기'],
+      ['평가 근거', '\'A~E 점수·비중·근거\'에 기준별 점수와 이유'],
+      ['다시 연습', '\'같은 질문 다시 연습\' · 다시 답하면 전후 비교'],
+      ['저장', '\'내 메뉴\'의 리포트 인쇄 · PDF 저장'] ] },
+    { sel:'#result-title', t:'결과 리포트', lead:'방금 본 면접의 자세한 결과예요.', items:[
+      ['문항별', '펼치면 A~E 점수 · 근거 · 고칠 점'],
       ['다시 연습', '\'이 질문 다시 답하기\''],
-      ['저장', '오른쪽 위 \'인쇄 · PDF\''] ] },
+      ['저장', '\'내 메뉴\'의 리포트 인쇄 · PDF 저장'] ] },
   ],
   CSS: `.pg-i{display:inline-grid;place-items:center;box-sizing:border-box;width:18px;height:18px;margin:0 0 0 7px;padding:0;vertical-align:middle;position:relative;top:-.12em;border:1.5px solid currentColor;border-radius:50%;background:none;color:inherit;opacity:.45;cursor:pointer;font:italic 700 11px/1 Georgia,'Times New Roman',serif;transition:opacity .15s,color .15s}
     .pg-i::before{content:"i"}
-    .pg-i:hover,.pg-i:focus-visible,.pg-i.on{opacity:1;color:#C8441C;outline:none}
+    .pg-i:hover,.pg-i:focus-visible,.pg-i.on{opacity:1;color:#bd411b;outline:none}
     .rh3-bar-title .pg-i{flex:none;top:0;margin:0 2px 0 0;align-self:center}
-    #pg-pop{position:fixed;z-index:99990;box-sizing:border-box;width:min(330px,calc(100vw - 24px));background:#fff;color:#1c1c1e;border:1px solid #e6e3dd;border-radius:12px;box-shadow:0 10px 28px rgba(20,24,34,.18);padding:12px 16px 14px;font:13.5px/1.55 Pretendard,system-ui,-apple-system,'Noto Sans KR',sans-serif;text-align:left;word-break:keep-all;overflow-wrap:break-word;opacity:0;transform:translateY(4px);transition:opacity .14s,transform .14s;pointer-events:none}
+    #pg-pop{position:fixed;z-index:99990;box-sizing:border-box;width:min(340px,calc(100vw - 24px));background:#fff;color:#2b2521;border:1px solid #ded5ce;border-radius:12px;box-shadow:0 14px 34px rgba(43,37,33,.18);padding:14px 18px 16px;font:14px/1.6 Pretendard,system-ui,-apple-system,'Noto Sans KR',sans-serif;text-align:left;word-break:keep-all;overflow-wrap:break-word;opacity:0;transform:translateY(4px);transition:opacity .14s,transform .14s;pointer-events:none}
     #pg-pop.show{opacity:1;transform:none;pointer-events:auto}
-    #pg-pop::before{content:"";position:absolute;top:-6px;left:var(--ax,24px);width:10px;height:10px;margin-left:-5px;background:#fff;border-left:1px solid #e6e3dd;border-top:1px solid #e6e3dd;transform:rotate(45deg)}
+    #pg-veil{position:fixed;inset:0;z-index:99980;background:rgba(250,249,247,.78);opacity:0;pointer-events:none;transition:opacity .14s}
+    #pg-veil.show{opacity:1}
+    .pg-i.on{position:relative;z-index:99985;background:#fff;opacity:1}
+    #pg-pop::before{content:"";position:absolute;top:-6px;left:var(--ax,24px);width:10px;height:10px;margin-left:-5px;background:#fff;border-left:1px solid #ded5ce;border-top:1px solid #ded5ce;transform:rotate(45deg)}
     #pg-pop.up::before{top:auto;bottom:-6px;transform:rotate(225deg)}
-    #pg-pop .ph{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#8a8a90;margin-bottom:4px}
-    #pg-pop .ph i{width:15px;height:15px;box-sizing:border-box;border:1.3px solid #8a8a90;border-radius:50%;display:inline-grid;place-items:center;font:italic 700 10px/1 Georgia,serif}
-    #pg-pop .pt{display:block;font-size:15px;font-weight:800;margin:0 0 2px}
-    #pg-pop .pl{margin:0 0 10px;color:#55555c}
-    #pg-pop dl{display:grid;grid-template-columns:max-content 1fr;column-gap:12px;row-gap:7px;margin:0;padding-top:10px;border-top:1px solid #efece6}
-    #pg-pop dt{font-weight:700;color:#1c1c1e;white-space:nowrap}
-    #pg-pop dd{margin:0;color:#55555c}
-    #pg-pop .pg-c{white-space:nowrap}
+    #pg-pop .ph{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#6a5b51;margin-bottom:6px}
+    #pg-pop .ph i{width:15px;height:15px;box-sizing:border-box;border:1.3px solid #6a5b51;border-radius:50%;display:inline-grid;place-items:center;font:italic 700 10px/1 Georgia,serif}
+    #pg-pop .pt{display:block;font-size:16px;font-weight:800;margin:0 0 4px;color:#2b2521}
+    #pg-pop .pl{margin:0 0 12px;color:#6a5b51}
+    #pg-pop dl{display:grid;grid-template-columns:5.4em 1fr;column-gap:12px;row-gap:9px;margin:0;padding-top:12px;border-top:1px solid #ded5ce}
+    #pg-pop dt{font-weight:700;color:#2b2521;word-break:keep-all}
+    #pg-pop dd{margin:0;color:#6a5b51}
+    #pg-pop .pg-c{white-space:normal}
     @media print{.pg-i,#pg-pop{display:none !important}}`,
   live(){ const s = document.getElementById('screen-interview'); return !!(s && s.classList.contains('lv3')); },
   info(r){ return r.live && this.live() ? r.live : r; },
@@ -30514,6 +30523,7 @@ const PageInfo = {
     document.head.insertAdjacentHTML('beforeend', '<style id="pg-css">' + this.CSS + '</style>');
     const pop = this.pop = document.createElement('div'); pop.id = 'pg-pop'; pop.setAttribute('role', 'tooltip'); pop.setAttribute('aria-hidden', 'true');
     document.body.appendChild(pop);
+    const veil = this.veil = document.createElement('div'); veil.id = 'pg-veil'; veil.setAttribute('aria-hidden', 'true'); document.body.insertBefore(veil, pop);   // 2026-11-12 뒤 화면을 옅게 가려 말풍선이 한 겹 위에 뜬 것처럼
     this.hover = matchMedia('(hover: hover) and (pointer: fine)').matches;
     pop.addEventListener('mouseenter', ()=>clearTimeout(this.ht)); pop.addEventListener('mouseleave', ()=>this.soon());
     document.addEventListener('click', e=>{ if(this.cur && !pop.contains(e.target) && !e.target.closest('.pg-i')) this.hide(); }, true);
@@ -30543,7 +30553,7 @@ const PageInfo = {
     const o = this.info(b._r), esc = s=>escapeHtml(String(s));
     this.pop.innerHTML = `<div class="ph"><i>i</i>페이지 안내</div><b class="pt">${esc(o.t)}</b><p class="pl">${esc(o.lead)}</p>`
       + `<dl>${o.items.map(([k, v])=>`<dt>${esc(k)}</dt><dd>${this.chunks(v)}</dd>`).join('')}</dl>`;
-    this.pop.classList.add('show'); this.pop.setAttribute('aria-hidden', 'false'); this.place();
+    this.pop.classList.add('show'); this.pop.setAttribute('aria-hidden', 'false'); if(this.veil) this.veil.classList.add('show'); this.place();
   },
   /* ' · ', ' / ', ' → ' 로 나뉜 낱말 묶음이 줄 중간에서 끊기거나 줄 첫머리가 '·'로 시작하지 않게, 구분 기호는 앞 묶음 끝에 붙여 한 덩어리로 둠 */
   chunks(v){
@@ -30557,15 +30567,22 @@ const PageInfo = {
     const r = b.getBoundingClientRect(), m = 12; if(r.bottom < 0 || r.top > innerHeight || (!r.width && !r.height)) return this.hide();
     p.style.left = '0px'; p.style.top = '0px';
     const w = p.offsetWidth, h = p.offsetHeight, cx = r.left + r.width / 2;
-    const x = Math.max(m, Math.min(cx - 24, innerWidth - w - m));
-    let y = r.bottom + 10, up = false;
-    if(y + h > innerHeight - m && r.top - 10 - h > m){ y = r.top - 10 - h; up = true; }
+    /* 2026-11-12 아래·위 × ⓘ에서 오른쪽으로·왼쪽으로 펼치는 네 자리 중, 화면 안에 들어가고 주변 글자·버튼을 가장 적게 덮는 자리로 */
+    const scr = b.closest('.screen, .modal-overlay, #modal-flow') || document.body;
+    const boxes = [...scr.querySelectorAll('p, h1, h2, h3, li, button, a, label, select, input, textarea, .hz-step, .rv-panel, .fl-panel')].filter(e=>e !== b && !e.contains(b) && e.offsetParent && !p.contains(e)).map(e=>e.getBoundingClientRect()).filter(q=>q.width && q.height && q.bottom > 0 && q.top < innerHeight);
+    const cover = (x0, y0)=>boxes.reduce((t, q)=>{ const ix = Math.min(x0 + w, q.right) - Math.max(x0, q.left), iy = Math.min(y0 + h, q.bottom) - Math.max(y0, q.top); return t + (ix > 0 && iy > 0 ? ix * iy : 0); }, 0);
+    const clampX = v=>Math.max(m, Math.min(v, innerWidth - w - m));
+    const cands = [[clampX(cx - 24), r.bottom + 10, false], [clampX(cx - w + 24), r.bottom + 10, false], [clampX(cx - 24), r.top - 10 - h, true], [clampX(cx - w + 24), r.top - 10 - h, true]]
+      .filter(c=>c[1] >= m && c[1] + h <= innerHeight - m);
+    const pick = (cands.length ? cands : [[clampX(cx - 24), Math.max(m, Math.min(r.bottom + 10, innerHeight - h - m)), false]])
+      .map((c, i)=>({ c, s: cover(c[0], c[1]) + (c[2] ? 1500 : 0) + i })).sort((a1, a2)=>a1.s - a2.s)[0].c;
+    const x = pick[0], y = pick[1], up = pick[2];
     p.classList.toggle('up', up);
     p.style.setProperty('--ax', Math.max(16, Math.min(cx - x, w - 16)) + 'px');
     p.style.left = x + 'px'; p.style.top = y + 'px';
   },
   soon(){ if(!this.pinned){ clearTimeout(this.ht); this.ht = setTimeout(()=>this.hide(), 160); } },
-  hide(){ if(this.pop){ this.pop.classList.remove('show'); this.pop.setAttribute('aria-hidden', 'true'); } if(this.cur) this.cur.classList.remove('on'); this.cur = null; this.pinned = false; }
+  hide(){ if(this.veil) this.veil.classList.remove('show'); if(this.pop){ this.pop.classList.remove('show'); this.pop.setAttribute('aria-hidden', 'true'); } if(this.cur) this.cur.classList.remove('on'); this.cur = null; this.pinned = false; }
 };
 try{ PageInfo.init(); }catch(e){ console.warn('PageInfo', e); }
 /* 2026-11-11 홈 간결하게 (시안 1번 '홈')
