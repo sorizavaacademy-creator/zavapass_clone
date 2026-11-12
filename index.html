@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12x';
+var APP_VERSION = '2026-11-12y';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6391,6 +6391,19 @@ html.ivv-dr-open{overflow:hidden;}
   #d3-debate .dbp-f .pk-btn{flex:1 1 0 !important;min-width:0}
   .sv-ov{grid-template-rows:auto minmax(0,1fr) auto auto !important}
 }
+/* 2026-11-12y 1~3단계 정렬 다듬기 */
+#modal-signup .su-brand{padding:8px 0 18px;margin-bottom:12px}
+#modal-flow .fl-hub-row b .fl-ty{display:inline-block;margin:0 8px 0 0;vertical-align:2px;font-size:12px;line-height:1.5;padding:1px 8px}
+#modal-flow .fl-pg-docs #fl-docs > .fl-row, #modal-flow .fl-pg-docs #fl-docs > .fl-sub{display:none}
+#pk-modal.pg .qbr-list li{display:flex;align-items:center;gap:16px}
+#pk-modal.pg .qbr-list li > p{flex:1;min-width:0;margin:0}
+#pk-modal.pg .qbr-list .qbr-meta{margin:0;flex:none}
+#pk-modal.pg .pk-q-big{margin:0 0 14px;font-size:20px;font-weight:700;line-height:1.5;color:#2b2521;word-break:keep-all}
+#pk-dday-pg .d3-btn-solid{background:#bd411b !important;border-color:#bd411b !important;color:#fff !important}
+#pk-modal.pg #rv-items{padding-left:0;list-style:none;margin-left:0}
+#pk-modal.pg .an-pg .pk-aside .fl-cta{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+#pk-modal.pg .an-pg .pk-aside .fl-cta .btn{width:100%;justify-content:center}
+@media (max-width:600px){ #pk-modal.pg .qbr-list li{flex-wrap:wrap;gap:8px} #pk-modal.pg .pk-q-big{font-size:18px} }
 #modal-flow.fl-page{z-index:90;padding:0;background:#faf9f7;align-items:stretch;justify-content:stretch}
 #modal-flow.fl-page .fl-box{max-width:none !important;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:none;margin:0;display:flex;flex-direction:column;background:#faf9f7;overflow:hidden}
 #modal-flow .fl-hdr{flex:none;border-bottom:1px solid #ded5ce;background:#faf9f7}
@@ -9782,6 +9795,7 @@ html.sv-open{overflow:hidden;}
 </div>
 <div class="modal-overlay" id="modal-signup">
   <div class="modal-box signup-box">
+    <div class="lh-brand su-brand"><b>ZAVAPASS</b><span>× 한림대학교</span></div>
     <div class="su-top"><div><h2 class="su-h">계정을 만들어요</h2><p class="su-line" id="su-line">1 / 3 · <b>계정</b> → 소속·연락 → 동의</p></div><button type="button" class="btn btn-outline su-prev" onclick="SignupSteps.prev(true)">이전으로</button></div>
     <div class="modal-head signup-head">
       <div class="brand-logo" aria-hidden="true">
@@ -14463,7 +14477,7 @@ const StartFlow = {
         <div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="savestar">말하기 좋은 답변으로 정리</button></div></div>
         <aside class="fl-panel"><b class="fl-panel-t">면접 질문의 근거가 돼요</b><p>학생이 직접 입력한 내용과 학교에서 연동된 내용을 구분해요. 지금은 학교 연동 전이라 직접 입력한 경험으로 질문을 만들어요.</p></aside></div>`;
     if(pg === 'docs') return `${this.vHead('자기소개서·이력서', '올린 자료와 질문에 쓰는 내용을 구분해서 확인해요.')}
-      <div class="fl-2col"><div class="fl-col">${this.vDocs()}</div>
+      <div class="fl-2col"><div class="fl-col fl-pg-docs">${this.vDocs()}</div>
         <aside class="fl-panel"><b class="fl-panel-t">질문의 근거가 되는 서류</b><p>올린 서류에서 문장·경력을 찾아 맞춤 질문을 만들어요. 서류를 바꾸면 질문도 새로 만들어져요.</p><div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="start">면접 준비로</button></div></aside></div>
       <div class="fl-cta"><button type="button" class="btn btn-solid" data-pga="docq">서류 근거 질문 보기</button></div>`;
     if(pg === 'docq'){ let L = []; try{ const r = state.resumeFull || state.resumeText || '', c = state.cvFull || state.cvText || ''; L = DocQ.fromResume(r).slice(0, 4).concat(DocQ.fromCv(c).slice(0, 4)); }catch(_){}
@@ -27175,7 +27189,8 @@ const PracticeKit = {
     if(o.daily) o.pg = true;
     if(o.pg){ this._nextPg = true; if(o.daily) this._pgNav = 'hub'; }
     const dly = o.daily ? `<h2 class="pk-bigq">${escapeHtml(o.q)}</h2>` : '', dlyAside = o.daily ? `<aside class="pk-aside"><b>더 연습하고 싶다면</b><div class="fl-cta"><button type="button" class="btn btn-outline" onclick="PracticeKit.close(); StartFlow.open(null,'major')">전공·경험 면접</button><button type="button" class="btn btn-outline" onclick="PracticeKit.loadBm().then(()=>PracticeKit.openBmAll())">질문 모음</button></div></aside>` : '';
-    this.modal((o.daily ? this.head('오늘은 한 질문만', escapeHtml((o.title || '').replace(/^오늘의 질문/, '짧은 연습도 질문·답변 기록으로 이어집니다'))) : this.head(o.title ? escapeHtml(o.title) : o.fresh ? (o.companyName ? escapeHtml(o.companyName) + ' · 예상 질문' : '예상 질문 연습') : '이 질문 다시 답하기', escapeHtml(o.q))) + `<div class="pk-b${o.daily ? ' pk-2c' : ''}">${dly}${dlyAside}
+    const qBig = o.pg && !o.daily ? `<p class="pk-q-big">${escapeHtml(o.q)}</p>` : '';
+    this.modal((o.daily ? this.head('오늘은 한 질문만', escapeHtml((o.title || '').replace(/^오늘의 질문/, '짧은 연습도 질문·답변 기록으로 이어집니다'))) : this.head(o.title ? escapeHtml(o.title) : o.fresh ? (o.companyName ? escapeHtml(o.companyName) + ' · 예상 질문' : '예상 질문 연습') : '이 질문 다시 답하기', (o.pg ? '먼저 내 말로 답한 뒤 필요한 도움을 펼쳐요.' : escapeHtml(o.q)))) + `<div class="pk-b${o.daily ? ' pk-2c' : ''}">${dly}${dlyAside}${qBig}
         ${o.answer ? `<details class="pk-prev"><summary>${escapeHtml(o.prevLabel || '이전 답변 보기')} ${o.score != null ? `<span class="pk-sc">${o.score}점</span>` : ''}</summary><p>${escapeHtml(o.answer)}</p>${o.feedback ? `<p class="pk-prev-fb"><b>그때 피드백</b> ${escapeHtml(this.fbBody(o.feedback))}</p>` : ''}</details>` : ''}
         <p class="pk-tip">${o.fresh ? '실제 면접이라고 생각하고 답해 보세요. 결론을 먼저 말하고 경험 하나를 붙이면 좋아요.' : '피드백에서 짚은 점을 넣어 다시 답해 보세요.'} <b>말로 답하거나 직접 써도</b> 돼요.</p>
         <textarea id="pk-ans" rows="6" placeholder="여기에 답변을 쓰거나, 아래 '말로 답하기'를 누르세요" autofocus>${escapeHtml(prefill || '')}</textarea>
