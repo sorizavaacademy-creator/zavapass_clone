@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13f';
+var APP_VERSION = '2026-11-13g';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -7357,7 +7357,7 @@ html.sv-open{overflow:hidden;}
         </div>
         <div class="rr-paste" id="rr-paste" hidden>
           <label class="rr-lbl" for="rr-paste-text" style="margin:0;">한 줄에 질문 하나 · 꼬리질문은 줄 앞에 ㄴ</label>
-          <textarea id="rr-paste-text" class="rr-in" rows="6" placeholder="예)&#10;1분 자기소개 해 보세요&#10;국회 속기사가 하는 일을 말해 보세요&#10;ㄴ 그중 가장 어려울 것 같은 일은요?&#10;회의록에 의원이 발언을 빼 달라고 하면 어떻게 하겠어요?"></textarea>
+          <textarea id="rr-paste-text" class="rr-in" rows="6" placeholder="예)&#10;1분 자기소개 해 보세요&#10;우리 기관에 지원한 이유를 말해 보세요&#10;ㄴ 그중 가장 어려울 것 같은 일은요?&#10;회의록에 의원이 발언을 빼 달라고 하면 어떻게 하겠어요?"></textarea>
           <button type="button" class="rr-btn primary" onclick="RealReport.applyPaste()">질문 목록에 넣기</button>
         </div>
         <details class="rr-more">
@@ -7371,7 +7371,7 @@ html.sv-open{overflow:hidden;}
       <div class="rr-info" id="rr-info"><div class="rr-sec">면접 정보 <small>분야는 미리 골라 뒀어요</small></div>
       <div class="rr-grid">
         <div><label class="rr-lbl" for="rr-field">분야</label><select id="rr-field" class="rr-in"></select></div>
-        <div><label class="rr-lbl" for="rr-org">기관 <small>선택</small></label><input id="rr-org" class="rr-in" maxlength="60" placeholder="예: 국회사무처"></div>
+        <div><label class="rr-lbl" for="rr-org">기관 <small>선택</small></label><input id="rr-org" class="rr-in" maxlength="60" placeholder="예: 국민건강보험공단"></div>
         <div><label class="rr-lbl" for="rr-date">면접 날짜 <small id="rr-date-hint">선택</small></label><input type="date" id="rr-date" class="rr-in"></div>
       </div>
       <div id="rr-result-wrap">
@@ -7816,7 +7816,7 @@ html.sv-open{overflow:hidden;}
           <div class="pd-rj-file"><label class="d3-btn d3-btn-ghost pd-rj-pick" for="pd-rj-file"><span id="pd-rj-file-name">파일 고르기</span></label><input type="file" id="pd-rj-file" accept="image/*,.pdf,.heic,.heif" onchange="Rejoin.pick(this)" hidden><span class="pd-rj-fn" id="pd-rj-fn">아직 고르지 않았어요</span></div>
           <div class="pd-rj-prev" id="pd-rj-prev" hidden></div>
           <label class="pd-lbl" for="pd-rj-memo">하고 싶은 말 <small>선택</small></label>
-          <textarea id="pd-rj-memo" class="pd-in" rows="2" maxlength="500" placeholder="예: 국회는 불합격했고, 이번엔 ○○지방법원이에요"></textarea>
+          <textarea id="pd-rj-memo" class="pd-in" rows="2" maxlength="500" placeholder="예: ○○공단은 불합격했고, 이번엔 ○○병원이에요"></textarea>
           <button type="button" class="d3-btn d3-btn-primary pd-send" id="pd-rj-send" onclick="Rejoin.submit()">새 분야 승인 요청 보내기</button>
         </div>
       </section>
@@ -8048,7 +8048,7 @@ html.sv-open{overflow:hidden;}
   <!-- 내 성장 (2026-10-14 확정 시안) -->
   <main class="d3-page" id="d3-growth" hidden>
     <div class="gw-head">
-      <div><p class="gw-scope" id="gw-scope">국회 속기사</p><h1 class="gw-title">나의 성장</h1><p class="gw-sub">점수 흐름과 보완할 질문을 한눈에 봐요.</p><button type="button" class="gw-all" onclick="openAllHistory()">면접 기록 전체 보기 ›</button></div>
+      <div><p class="gw-scope" id="gw-scope"></p><h1 class="gw-title">나의 성장</h1><p class="gw-sub">점수 흐름과 보완할 질문을 한눈에 봐요.</p><button type="button" class="gw-all" onclick="openAllHistory()">면접 기록 전체 보기 ›</button></div>
       <button type="button" class="btn btn-outline gw-prev" onclick="goDashboard()">이전으로</button>
       <div class="gw-range" id="gw-range" role="group" aria-label="기간"><button type="button" class="on" data-days="30" onclick="setGrowthRange(30)">30일</button><button type="button" data-days="90" onclick="setGrowthRange(90)">90일</button><button type="button" data-days="0" onclick="setGrowthRange(0)">전체</button></div>
     </div>
@@ -8867,7 +8867,7 @@ html.sv-open{overflow:hidden;}
       <aside class="p3-side" id="practice-side">
         <section class="p3-card">
           <button type="button" class="p3-field" onclick="goDashboard()" title="다른 분야 고르기"><span class="p3-ficon" id="practice-field-icon"></span><span class="p3-fname" id="practice-field-tag">공공기관 · 국회 속기사</span><span class="p3-fchange">분야 바꾸기</span></button>
-          <h1 id="practice-title">국회 속기사 면접 준비</h1>
+          <h1 id="practice-title">면접 준비</h1>
           <p class="p3-desc" id="practice-sub">질문을 미리 살펴보거나, 바로 면접 준비실로 이동할 수 있어요. 질문 열람은 선택이에요.</p>
           <div class="p3-stats">
             <div><span>전체 질문</span><b><em id="practice-total">0</em>개</b></div>
@@ -9192,7 +9192,7 @@ html.sv-open{overflow:hidden;}
       <div class="result-hero-deco" aria-hidden="true"></div>
       <div class="result-hero-main">
         <div class="result-hero-badges"><span class="badge">면접 완료</span><span class="result-mode-chip" id="result-mode-chip">AI 대화 면접</span></div>
-        <h1 id="result-title">국회 속기사 모의면접 결과</h1>
+        <h1 id="result-title">모의면접 결과</h1>
         <p class="result-meta" id="result-meta"></p>
         <p class="result-summary-line" id="result-summary-line"></p>
         <div class="save-banner" id="save-banner" style="display:none;"><span id="save-banner-text"></span><button class="btn btn-sm" id="save-retry-btn" onclick="retrySaveRecord()">다시 저장</button></div>
@@ -9934,7 +9934,7 @@ html.sv-open{overflow:hidden;}
       <a class="fl-brand" href="javascript:void(0)" onclick="StartFlow.leave(()=>goDashboard())"><b>ZAVAPASS</b><span>× 한림대학교</span></a>
       <nav class="fl-nav" aria-label="주 메뉴"><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('home'))">홈</a><a href="javascript:void(0)" aria-current="page" onclick="StartFlow.leave(()=>navGo('hub'))">연습하기</a><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('growth'))">나의 기록</a><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('materials'))">내 자료</a></nav>
       <div class="fl-my"><button type="button" class="fl-my-btn" id="fl-my-btn" aria-expanded="false" aria-haspopup="menu" onclick="StartFlow.myMenu(event)">▶ 내 메뉴</button>
-        <div class="fl-my-menu" id="fl-my-menu" role="menu" hidden><button type="button" role="menuitem" onclick="StartFlow.myMenu(); openMyPage()">마이페이지</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); Notice.openAll()">공지사항</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); openFeedback()">의견 · 문제 보내기</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.close(); PrivacyPage.open()">자료·녹화 안내</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.leave(()=>goDashboard())">준비 그만하고 홈으로</button></div></div>
+        <div class="fl-my-menu" id="fl-my-menu" role="menu" hidden><button type="button" role="menuitem" onclick="StartFlow.myMenu(); openMyPage()">마이페이지</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.close(); openAllHistory()">리포트 전체</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); Notice.openAll()">공지사항</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); openFeedback()">의견 · 문제 보내기</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.close(); PrivacyPage.open()">자료·녹화 안내</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.leave(()=>goDashboard())">준비 그만하고 홈으로</button></div></div>
     </div></header>
     <div class="fl-scroll" id="fl-scroll"><div class="fl-wrap">
       <div class="fl-top"><div class="fl-steps" id="fl-steps"></div><button type="button" class="fl-x" onclick="StartFlow.close()" aria-label="닫기" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -10572,9 +10572,10 @@ function zpCloseAll(){ PageNav.clear(); try{ ZpMy.close(); }catch(_){} try{ clos
 function zpNav(where){ zpCloseAll(); navGo(where); }
 /* 2026-11-13a 전체 화면 위 메뉴에도 '▶ 내 메뉴' (시안: 모든 화면 같은 머리줄) — 마이페이지·공지사항·의견 보내기·자료 안내·로그아웃 */
 const ZpMy = {
-  toggle(e, btn){ if(e) e.stopPropagation(); const m = btn && btn.nextElementSibling; if(!m) return; const open = m.hidden; this.close(); m.hidden = !open; btn.setAttribute('aria-expanded', String(open)); },
+  toggle(e, btn){ if(e) e.stopPropagation(); const m = btn && btn.nextElementSibling; if(!m) return; const open = m.hidden; this.close(); m.hidden = !open; btn.setAttribute('aria-expanded', String(open));
+    if(open){ const rr = document.getElementById('rr-menu-item'), it = m.querySelector('.zp-my-rr'); if(it) it.hidden = !(rr && rr.style.display !== 'none'); } },   // 2026-11-13g 홈의 내 메뉴와 같은 항목 (면접 질문 남기기는 홈에서 보일 때만)
   close(){ document.querySelectorAll('.zp-my-menu').forEach(m=>{ m.hidden = true; const b = m.previousElementSibling; if(b) b.setAttribute('aria-expanded', 'false'); }); },
-  go(k){ this.close(); zpCloseAll(); setTimeout(()=>{ try{ if(k === 'my') openMyPage(); else if(k === 'notice') Notice.openAll(); else if(k === 'fb') openFeedback(); else if(k === 'privacy') PrivacyPage.open(); else if(k === 'out') handleLogout(); }catch(e){ console.warn('[내 메뉴]', e); } }, 0); },
+  go(k){ this.close(); zpCloseAll(); setTimeout(()=>{ try{ if(k === 'my') openMyPage(); else if(k === 'notice') Notice.openAll(); else if(k === 'hist') openAllHistory(); else if(k === 'rr') RealReport.openDrawer(); else if(k === 'fb') openFeedback(); else if(k === 'privacy') PrivacyPage.open(); else if(k === 'out') handleLogout(); }catch(e){ console.warn('[내 메뉴]', e); } }, 0); },
 };
 document.addEventListener('click', e=>{ try{ if(!e.target.closest('.zp-my')) ZpMy.close(); }catch(_){} });
 /* 2026-11-13a 휴대폰 '뒤로' 버튼(밀어서 뒤로 포함): 사이트를 나가지 않고 앞에 보이는 화면의 [이전으로]·✕를 누른 것처럼.
@@ -10616,7 +10617,7 @@ const ZpBack = {
 };
 try{ ZpBack.init(); }catch(e){ console.warn('ZpBack', e); }
 function zpHdr(cur){ const a = (w, t)=>`<a href="javascript:void(0)"${w === cur ? ' aria-current="page"' : ''} onclick="zpNav('${w}')">${t}</a>`;
-  return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav><div class="zp-my"><button type="button" class="zp-my-btn" aria-expanded="false" aria-haspopup="menu" onclick="ZpMy.toggle(event, this)">▶ 내 메뉴</button><div class="zp-my-menu" role="menu" hidden><button type="button" role="menuitem" onclick="ZpMy.go('my')">마이페이지</button><button type="button" role="menuitem" onclick="ZpMy.go('notice')">공지사항</button><button type="button" role="menuitem" onclick="ZpMy.go('fb')">의견 · 문제 보내기</button><button type="button" role="menuitem" onclick="ZpMy.go('privacy')">자료·녹화 안내</button><hr><button type="button" role="menuitem" onclick="ZpMy.go('out')">로그아웃</button></div></div></div></header>`; }
+  return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav><div class="zp-my"><button type="button" class="zp-my-btn" aria-expanded="false" aria-haspopup="menu" onclick="ZpMy.toggle(event, this)">▶ 내 메뉴</button><div class="zp-my-menu" role="menu" hidden><button type="button" role="menuitem" onclick="ZpMy.go('my')">마이페이지</button><button type="button" role="menuitem" class="zp-my-rr" onclick="ZpMy.go('rr')" hidden>면접 질문 남기기</button><button type="button" role="menuitem" onclick="ZpMy.go('hist')">리포트 전체</button><button type="button" role="menuitem" onclick="ZpMy.go('notice')">공지사항</button><button type="button" role="menuitem" onclick="ZpMy.go('fb')">의견 · 문제 보내기</button><button type="button" role="menuitem" onclick="ZpMy.go('privacy')">자료·녹화 안내</button><hr><button type="button" role="menuitem" onclick="ZpMy.go('out')">로그아웃</button></div></div></div></header>`; }
 function zConfirm(o){
   o = o || {};
   return new Promise(res=>{
@@ -11515,7 +11516,7 @@ const RealReport = {
         : `<p class="rr-pledge">가입할 때 <span class="nw"><b>면접&nbsp;후기</b>를</span> 남기기로 약속했어요. 면접을 본 뒤 꼭 남겨&nbsp;주세요.</p>`) : '';
     if(ph === 'none'){
       title = '면접에서 받은 질문을 남겨 주세요';
-      desc = `실제 면접 질문은 다음 지원자에게 가장 좋은 연습 문제예요. 남기면 바로 같은 분야 연습 문항으로 들어가요.${n ? ` 지금까지 합격자들이 남긴 ${escapeHtml(fname)} 질문은 <b>${n}개</b>예요.` : ''}`;
+      desc = `실제 면접 질문은 다음 지원자에게 가장 좋은 연습 문제예요. 남기면 담당자가 확인한 뒤 같은 분야 연습 문항으로 넣어요.${n ? ` 지금까지 합격자들이 남긴 ${escapeHtml(fname)} 질문은 <b>${n}개</b>예요.` : ''}`;
       acts = btn('면접 질문 남기기', "RealReport.open('self')", true);
     }else if(ph === 'planned'){
       title = `${rrMD(r.interview_date) || '면접'} 면접을 응원해요`;
@@ -11666,12 +11667,12 @@ const RealReport = {
       this.slideInit();
     }else if(kind === 'after' || kind === 'today'){
       t.textContent = kind === 'today' ? '오늘 면접 보셨나요?' : '면접 어떠셨어요?';
-      d.textContent = '잊기 전에 받은 질문을 남겨 주세요. 한두 개만 적어도 다음 지원자에게 큰 도움이 돼요. 남기면 바로 같은 분야 연습 문항으로 들어가요.';
+      d.textContent = '잊기 전에 받은 질문을 남겨 주세요. 한두 개만 적어도 다음 지원자에게 큰 도움이 돼요. 남기면 담당자가 확인한 뒤 같은 분야 연습 문항으로 넣어요.';
     }else{
       const fid = state.dashField || ((state.currentUser||{}).allowed||[])[0] || 'assembly';
       const n = this.fieldCount(fid);
       t.textContent = '면접에서 받은 질문을 남겨 주세요';
-      d.textContent = '실제 면접 질문은 다음 지원자에게 가장 좋은 연습 문제예요. 남기면 바로 같은 분야 연습 문항으로 들어가요.';
+      d.textContent = '실제 면접 질문은 다음 지원자에게 가장 좋은 연습 문제예요. 남기면 담당자가 확인한 뒤 같은 분야 연습 문항으로 넣어요.';
       if(n) b.innerHTML = `<p class="rrn-count">지금까지 합격자들이 남긴 ${escapeHtml(rrFieldName(fid))} 질문 <b>${n}개</b></p>`;
     }
     document.getElementById('modal-rr-nudge').classList.add('active');
@@ -11816,7 +11817,7 @@ const RealReport = {
     const ol = document.getElementById('rr-qs'); if(!ol) return;
     if(ol.children.length >= 30){ showToast('질문은 30개까지 남길 수 있어요'); return; }
     const li = document.createElement('li'); li.className = 'rr-q';
-    li.innerHTML = `<div class="rr-q-line"><textarea class="rr-in rr-qt" rows="2" maxlength="300" placeholder="예: 속기사가 되려는 이유는 무엇인가요?"></textarea><button type="button" class="rr-x" onclick="RealReport.removeRow(this)" aria-label="이 질문 지우기" title="이 질문 지우기">×</button></div>
+    li.innerHTML = `<div class="rr-q-line"><textarea class="rr-in rr-qt" rows="2" maxlength="300" placeholder="예: 우리 기관에 지원한 이유는 무엇인가요?"></textarea><button type="button" class="rr-x" onclick="RealReport.removeRow(this)" aria-label="이 질문 지우기" title="이 질문 지우기">×</button></div>
       <textarea class="rr-in rr-ft" rows="2" maxlength="900" placeholder="이어서 받은 꼬리질문 (한 줄에 하나)"${follow ? '' : ' hidden'}></textarea>
       <button type="button" class="rr-link rr-fbtn" onclick="RealReport.showFollow(this)"${follow ? ' hidden' : ''}>+ 꼬리질문도 있었어요</button>`;
     li.querySelector('.rr-qt').value = q || '';
@@ -11871,7 +11872,8 @@ const RealReport = {
       try{ Activity.log('real_report', { mode:this.mode, field:p.field_id, n:qs.length, added, dup, result:p.result }); }catch(_){}
       this.close();
       showToast(isPlan ? `${rrMD(date)} 면접을 기억해 둘게요. 면접이 끝나면 질문을 남겨 주세요.`
-        : `${isPhone ? '저장했어요.' : '남겨 주셔서 고마워요!'} 새 질문 ${added}개가 연습 문항에 들어갔어요${dup ? ` (이미 있던 질문 ${dup}개는 건너뜀)` : ''}.`, 'ok');
+        : (added || dup) ? `${isPhone ? '저장했어요.' : '남겨 주셔서 고마워요!'} 새 질문 ${added}개가 연습 문항에 들어갔어요${dup ? ` (이미 있던 질문 ${dup}개는 건너뜀)` : ''}.`
+        : `${isPhone ? '저장했어요.' : '남겨 주셔서 고마워요!'} 담당자가 확인한 뒤 연습 문항에 넣을게요.`, 'ok');   // 2026-11-13g 한림대: 후기 질문은 '후기 질문 정리'에서 확인 후 넣음 ('새 질문 0개' 대신)
       if(added){ try{ QuestionBank.load(true); }catch(_){} }
       if(isPhone){ try{ ReportAdmin.load(true); }catch(_){} }
       else { await this.load(); this.rerender(); }
@@ -28930,7 +28932,8 @@ const Debate = {
     const mine = this.topics.filter(t=>t.tid === s.tid);
     let pool = (mine.length ? mine : this.topics).slice();
     if(s.kind !== 'pt' && pool.some(t=>!t.pt)) pool = pool.filter(t=>!t.pt);   // 토론·토의를 고르면 발표 주제는 빼고
-    let x = Math.floor(s.seed * 1e6); pool.sort((a, b)=>(s.kind === 'pt' ? (b.pt - a.pt) : 0) || ((a.id.charCodeAt(a.id.length - 1) * 31 + x) % 97) - ((b.id.charCodeAt(b.id.length - 1) * 31 + x) % 97));   // 발표를 고르면 발표 주제 먼저
+    const x = Math.floor(s.seed * 1e9) >>> 0, hk = id=>{ let v = x ^ 2166136261; const t = String(id); for(let i = 0; i < t.length; i++){ v ^= t.charCodeAt(i); v = Math.imul(v, 16777619) >>> 0; } v ^= v >>> 15; return Math.imul(v, 2246822519) >>> 0; };   // 2026-11-13g 주제 번호 전체로 섞음 (예전엔 마지막 글자 하나로만 섞어 같은 묶음이 되풀이됨)
+    pool.sort((a, b)=>(s.kind === 'pt' ? (b.pt - a.pt) : 0) || (hk(a.id) - hk(b.id)));   // 발표를 고르면 발표 주제 먼저
     const list = pool.slice(0, 8);
     const note = s.tid && !mine.length ? `<p class="dbt-note">${me && me.grp === '병원' ? `${escapeHtml(me.name)} 등 병원 면접에는 토론·발표 주제가 거의 없어요. 병원은 인성·직무 면접 위주라, 이 연습은 공공기관을 준비할 때 더 도움이 돼요. 아래는 공공기관 주제예요.` : `${escapeHtml(me ? me.name : '고른 기관')}은 토론·발표 주제 후기가 아직 없어서, 다른 공공기관 주제를 보여 드려요.`}</p>` : '';
     const how = {
