@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13c';
+var APP_VERSION = '2026-11-13d';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6282,6 +6282,8 @@ html.ivv-dr-open{overflow:hidden;}
 .zp-my-menu button{border:0;background:none;text-align:left;font:inherit;font-size:14px;color:#2b2521;padding:10px 12px;border-radius:8px;cursor:pointer} .zp-my-menu button:hover{background:#f3ede7} .zp-my-menu hr{border:0;border-top:1px solid #ded5ce;margin:4px 6px}
 /* 2026-11-13a 휴대폰: 작은 ⓘ·×·지우기 버튼을 손가락으로 누르기 쉽게 (보이는 크기는 그대로, 누르는 자리만 넓게) */
 @media (pointer:coarse){ .pg-i::after, .ib-chip button::after{content:'';position:absolute;inset:-12px} .ib-chip button{position:relative} .fl-del{padding:8px 10px;min-height:36px} }
+/* 2026-11-13d PC: 면접 기록 창(학생 기록·지난 기록)이 좁아 양옆 여백이 많이 남던 것 → 더 넓게, 글자도 조금 크게 */
+@media (min-width:1100px){ #modal-record .modal-box{max-width:min(1000px,90vw) !important;width:min(1000px,90vw) !important;max-height:92vh !important} #modal-record .record-item{padding:20px 22px} #modal-record .record-q{font-size:16px} #modal-record .record-a, #modal-record .record-a-t, #modal-record .fb-block, #modal-record .record-item .feedback{font-size:15px;line-height:1.75} }
 #pk-modal.pg.on{display:block !important;padding:0;background:#faf9f7;overflow-y:auto}
 #pk-modal.pg .pk-box{width:100% !important;max-width:1000px !important;max-height:none !important;margin:0 auto;border-radius:0;box-shadow:none;background:transparent;display:block;padding:28px clamp(16px,4vw,40px) 56px;overflow:visible}
 #pk-modal.pg .pk-h{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:0 0 22px;border:0;background:transparent}
@@ -6476,7 +6478,8 @@ html.ivv-dr-open{overflow:hidden;}
 .schl-ttabs{display:flex;gap:8px;margin:0 0 14px} .schl-ttabs button{border:1px solid #ded5ce;background:#fff;color:#2b2521;border-radius:8px;padding:9px 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .schl-ttabs button[aria-selected="true"]{background:#bd411b;border-color:#bd411b;color:#fff}
 .schl-talk{grid-template-columns:minmax(0,1fr) !important} .schl-talk[data-tab="fb"] .schl-t-nt, .schl-talk[data-tab="nt"] .schl-t-fb{display:none}
-.schl-rpf{display:grid;gap:12px;align-content:start} .schl-fld span{display:block;font-size:13px;font-weight:600;color:#2b2521;margin-bottom:6px} .schl-fld select{width:100%;max-width:360px}
+.schl-rpf{display:grid;gap:12px;align-content:start}
+@media (max-width:760px){ .schl-help .schl-link{padding:10px 0;min-height:44px;align-items:center;width:100%} .schl-fld select{min-height:44px;padding:0 12px;font-size:15px} }   /* 2026-11-13d 휴대폰: 현황 '다음 상담에 참고' 이름 줄, 보고서 '집계 기간' 칸을 누르기 쉬운 높이로 */ .schl-fld span{display:block;font-size:13px;font-weight:600;color:#2b2521;margin-bottom:6px} .schl-fld select{width:100%;max-width:360px}
 .schl-stu-pg .schl-dr-h{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:4px 0 18px;border:0;background:transparent;position:static}
 .schl-stu-pg .schl-dr-h h2{margin:0;font-size:26px;font-weight:800;color:#2b2521} .schl-stu-pg .schl-dr-h p{margin:6px 0 0;font-size:14.5px;color:#6a5b51}
 .schl-stu-pg .schl-kick{display:block;font-size:13px;color:#6a5b51;margin-top:6px}
@@ -14352,7 +14355,7 @@ const School = {
     const r = this.d.recs.find(x=>String(x.id) === String(rid)); if(!r) return;
     state.historyRecords = [{ id: r.id, fieldName: r.company_name ? `${r.company_name} 맞춤` : r.field_name, score: r.score, durationLabel: r.duration_label || '', dateLabel: `${formatDateFull(r.created_at)} · ${r.question_count || 0}문항` }].concat((state.historyRecords || []).filter(h=>String(h.id) !== String(rid)));
     state.recordBackFn = uid ? ()=>{ closeRecordModal(); this.openStudent(uid); } : ()=>{ closeRecordModal(); };
-    this.closeStudent(); openRecordDetail(rid, !!uid);
+    this.closeStudent(); state.recordViewOther = true; openRecordDetail(rid, !!uid);   // 2026-11-13d 담당자가 보는 학생 기록: '학생 답변', 학생용 버튼 숨김
   },
   async loadNotes(p){
     const box = this.G('schl-notes'); if(!box) return;
@@ -16204,6 +16207,7 @@ async function openRecordDetail(recordId, fromList){
   return openRecordDetailOld(recordId, fromList);
 }
 async function openRecordDetailOld(recordId, fromList){
+  const other = !!state.recordViewOther || !!(state.currentUser && state.currentUser.isAdmin); state.recordViewOther = false;   // 2026-11-13d 다른 사람(학생)의 기록을 보는 중
   const rec = (state.historyRecords || []).find(h=>String(h.id)===String(recordId));
   const body = document.getElementById('record-modal-body');
   document.getElementById('record-modal-title').textContent = rec ? `${rec.fieldName} 모의면접` : '면접 기록';
@@ -16242,10 +16246,10 @@ async function openRecordDetailOld(recordId, fromList){
     return `
       <div class="record-item">
         <div class="record-q"><span>Q${(a.question_index ?? i)+1}. ${escapeHtml(a.question_text || '')}</span>${scoreHtml}</div>
-        <p class="record-a"><b>내 답변</b><span class="record-a-t" id="rec-ans-${a.question_index ?? i}">${answer}</span>${(a.answer_raw && state.currentUser && state.currentUser.isAdmin) ? `<span class="af-fixed" title="${escapeHtml('처음 받아 적은 글: ' + a.answer_raw)}">바로잡은 답변</span>` : ''}</p>
+        <p class="record-a"><b>${other ? '학생 답변' : '내 답변'}</b><span class="record-a-t" id="rec-ans-${a.question_index ?? i}">${answer}</span>${(a.answer_raw && state.currentUser && state.currentUser.isAdmin) ? `<span class="af-fixed" title="${escapeHtml('처음 받아 적은 글: ' + a.answer_raw)}">바로잡은 답변</span>` : ''}</p>
         ${a.feedback ? renderFeedbackBlock(a.feedback) : ''}
         ${(setRow && setRow.nonverbal && Array.isArray(setRow.nonverbal.items)) ? FaceCoach.answerNoteHtml(setRow.nonverbal.items.find(x=>x.i === (a.question_index ?? i))) : ''}
-        ${(rec && state.currentUser && !state.currentUser.isAdmin) ? PracticeKit.toolsHtml({ q: a.question_text || '', answer: a.answer_text || '', score: a.score, feedback: a.feedback || '', followup: a.kind === 'followup',
+        ${(rec && state.currentUser && !other) ? PracticeKit.toolsHtml({ q: a.question_text || '', answer: a.answer_text || '', score: a.score, feedback: a.feedback || '', followup: a.kind === 'followup',
           fieldId: rec.fieldId, fieldName: rec.fieldName, recordId: rec.id, src: 'record' }) : ''}
       </div>`;
   }).join('');
