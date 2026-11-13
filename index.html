@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z11';
+var APP_VERSION = '2026-11-12z12';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -10558,7 +10558,7 @@ const PageNav = {
   clear(){ this.st = []; },
 };
 const BackTo = { set(t){ PageNav.push(t, ()=>openMyPage(), 'mypage'); }, clear(){ PageNav.clear(); } };   // 내 정보에서 연 화면 (예전 이름 그대로)
-function zpNav(where){ PageNav.clear(); try{ PracticeKit.close(); }catch(_){} try{ closeCoach(); }catch(_){} try{ closeDebateScreen(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
+function zpNav(where){ PageNav.clear(); try{ closeMyPage(); }catch(_){} try{ closeFeedback(); }catch(_){} try{ HomeTabs.close(); HomeSimple.toggle(false, true); }catch(_){} try{ PracticeKit.close(); }catch(_){}   /* 2026-11-12z12 내 정보·도움 요청 화면도 위 메뉴를 누르면 닫고 이동 */ try{ closeCoach(); }catch(_){} try{ closeDebateScreen(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
 function zpHdr(cur){ const a = (w, t)=>`<a href="javascript:void(0)"${w === cur ? ' aria-current="page"' : ''} onclick="zpNav('${w}')">${t}</a>`;
   return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav></div></header>`; }
 function zConfirm(o){
