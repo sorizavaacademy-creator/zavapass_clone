@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13j';
+var APP_VERSION = '2026-11-13k';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -4418,6 +4418,7 @@ body.hs-mobile #pc-qr-card{display:none !important;}
 /* ---- 종(알림) · 말풍선 · 목록 (2026-10-20g) ---- */
 #screen-dashboard .d3-user{ display:flex; align-items:center; gap:4px; }
 .nt-bell-wrap{ position:relative; flex:none; }
+.cal-cell.fut{ opacity:.35; }
 .nt-bell{ position:relative; width:44px; height:44px; border-radius:50%; border:1px solid transparent; background:none; color:var(--c-ink-2, #45454a); display:grid; place-items:center; cursor:pointer; }
 .nt-bell:hover, .nt-bell[aria-expanded="true"]{ background:var(--c-surface, #f6f5f3); border-color:var(--c-line, #e6e4e0); color:var(--c-ink, #1c1c1e); }
 .nt-badge{ position:absolute; top:5px; right:4px; min-width:18px; height:18px; padding:0 5px; box-sizing:border-box; border-radius:999px; background:#e8532a; color:#fff; font-size:11px; font-weight:800; line-height:18px; text-align:center; box-shadow:0 0 0 2px #fff; }
@@ -6277,6 +6278,8 @@ html.ivv-dr-open{overflow:hidden;}
 .zp-brand{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:#2b2521;flex:none} .zp-brand b{font-size:17px;font-weight:800} .zp-brand span{font-size:13px;color:#6a5b51}
 .zp-nav{flex:1;display:flex;justify-content:center;gap:24px} .zp-nav a{font-size:14.5px;color:#2b2521;text-decoration:none;padding:6px 0;border-bottom:2px solid transparent} .zp-nav a[aria-current="page"]{color:#bd411b;border-bottom-color:#bd411b;font-weight:600} .zp-nav a:hover{color:#bd411b}
 /* 2026-11-13a 전체 화면 머리줄 '▶ 내 메뉴' (연습하기 화면과 같은 모양·자리) */
+.zp-bell{position:relative;flex:none;width:40px;height:40px;margin-right:-12px;border:0;border-radius:50%;background:none;color:#2b2521;display:grid;place-items:center;cursor:pointer} .zp-bell:hover{background:#f1ebe5} .zp-bell[hidden]{display:none !important}
+.zp-bell-n{position:absolute;top:3px;right:1px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:999px;background:#e8532a;color:#fff;font-size:10.5px;font-style:normal;font-weight:800;line-height:17px;text-align:center;box-shadow:0 0 0 2px #fff} .zp-bell-n[hidden]{display:none}
 .zp-my{position:relative;flex:none} .zp-my-btn{border:0;background:none;font:inherit;font-size:14px;color:#2b2521;cursor:pointer;padding:8px 4px}
 .zp-my-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:180px;background:#fff;border:1px solid #ded5ce;border-radius:12px;box-shadow:0 12px 28px rgba(43,37,33,.12);padding:6px;z-index:30;display:flex;flex-direction:column} .zp-my-menu[hidden]{display:none}
 .zp-my-menu button{border:0;background:none;text-align:left;font:inherit;font-size:14px;color:#2b2521;padding:10px 12px;border-radius:8px;cursor:pointer} .zp-my-menu button:hover{background:#f3ede7} .zp-my-menu hr{border:0;border-top:1px solid #ded5ce;margin:4px 6px}
@@ -6315,7 +6318,7 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-flow .fl-dq-src{background:#f3ede7;border-radius:10px;padding:14px 16px} #modal-flow .fl-dq small{display:block;font-size:12.5px;color:#6a5b51;margin-bottom:6px} #modal-flow .fl-dq p{margin:0;font-size:14.5px;line-height:1.7;color:#2b2521}
 #modal-flow .fl-dq-q{display:grid;gap:10px;justify-items:start} #modal-flow .fl-dq-q p{font-weight:600}
 @media (max-width:760px){
-  .zp-hdr-in{height:auto;min-height:56px;flex-wrap:wrap;gap:4px 12px;padding:10px 16px 0} .zp-brand{flex:1;order:1} .zp-my{order:2}
+  .zp-hdr-in{height:auto;min-height:56px;flex-wrap:wrap;gap:4px 12px;padding:10px 16px 0} .zp-brand{flex:1;order:1} .zp-my{order:2} .zp-hdr-in .zp-bell{order:2;margin-right:-8px} .zp-hdr-in .zp-my{order:2}
   .zp-nav{order:3;flex:1 1 100%;justify-content:flex-start;gap:18px;overflow-x:auto;padding-bottom:2px} .zp-nav a{font-size:14px;padding:10px 0;white-space:nowrap}
   #pk-modal.pg .pk-box, #modal-coach.zp-pg .coach-box{padding:18px 16px 40px}
   #pk-modal.pg .pk-h, #modal-coach.zp-pg .zp-head{flex-direction:column-reverse;gap:10px} #pk-modal.pg .pk-prev, #modal-coach.zp-pg .zp-prev{align-self:flex-end;padding:8px 14px}
@@ -6667,7 +6670,7 @@ html.ivv-dr-open{overflow:hidden;}
 }
 @media(max-width:640px){
   #modal-flow .fl-hdr-in{height:auto;min-height:56px;flex-wrap:wrap;gap:4px 12px;padding:10px 16px 0}
-  #modal-flow .fl-brand{order:1;flex:1} #modal-flow .fl-my{order:2}
+  #modal-flow .fl-brand{order:1;flex:1} #modal-flow .fl-my{order:2} #modal-flow .fl-hdr-in .zp-bell{order:2;margin-right:-8px}
   #modal-flow .fl-nav{order:3;flex:1 1 100%;justify-content:flex-start;gap:18px;overflow-x:auto;padding-bottom:2px}
   #modal-flow .fl-nav a{font-size:14px;padding:10px 0;white-space:nowrap}
   #modal-flow .fl-wrap{padding:18px 16px 40px}
@@ -9946,6 +9949,7 @@ html.sv-open{overflow:hidden;}
     <header class="fl-hdr"><div class="fl-hdr-in">
       <a class="fl-brand" href="javascript:void(0)" onclick="StartFlow.leave(()=>goDashboard())"><b>ZAVAPASS</b><span>× 한림대학교</span></a>
       <nav class="fl-nav" aria-label="주 메뉴"><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('home'))">홈</a><a href="javascript:void(0)" aria-current="page" onclick="StartFlow.leave(()=>navGo('hub'))">연습하기</a><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('growth'))">나의 기록</a><a href="javascript:void(0)" onclick="StartFlow.leave(()=>navGo('materials'))">내 자료</a></nav>
+      <button type="button" class="zp-bell" onclick="Notice.openAll()" aria-label="알림" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><i class="zp-bell-n" hidden></i></button>
       <div class="fl-my"><button type="button" class="fl-my-btn" id="fl-my-btn" aria-expanded="false" aria-haspopup="menu" onclick="StartFlow.myMenu(event)">▶ 내 메뉴</button>
         <div class="fl-my-menu" id="fl-my-menu" role="menu" hidden><button type="button" role="menuitem" onclick="StartFlow.myMenu(); openMyPage()">마이페이지</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.close(); openAllHistory()">리포트 전체</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); Notice.openAll()">공지사항</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); openFeedback()">의견 · 문제 보내기</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.close(); PrivacyPage.open()">자료·녹화 안내</button><button type="button" role="menuitem" onclick="StartFlow.myMenu(); StartFlow.leave(()=>goDashboard())">준비 그만하고 홈으로</button></div></div>
     </div></header>
@@ -10629,8 +10633,13 @@ const ZpBack = {
   },
 };
 try{ ZpBack.init(); }catch(e){ console.warn('ZpBack', e); }
+/* 2026-11-13k 홈에만 있던 종(알림)을 다른 전체 화면 위 메뉴에도 — 누르면 공지·알림 화면, 새 소식 수는 홈 종과 같게 */
+function zpBell(click){ const w = document.getElementById('nt-bell-wrap'), bd = document.getElementById('nt-badge'); const on = !!(w && w.style.display !== 'none'); const n = bd && !bd.hidden ? bd.textContent : '';
+  return `<button type="button" class="zp-bell" onclick="${click}" aria-label="${n ? '알림 · 새 소식 ' + n + '개' : '알림'}"${on ? '' : ' hidden'}><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><i class="zp-bell-n"${n ? '' : ' hidden'}>${n}</i></button>`; }
+function zpBellSync(){ const w = document.getElementById('nt-bell-wrap'), bd = document.getElementById('nt-badge'); const on = !!(w && w.style.display !== 'none'); const n = bd && !bd.hidden ? bd.textContent : '';
+  document.querySelectorAll('.zp-bell').forEach(b=>{ b.hidden = !on; b.setAttribute('aria-label', n ? '알림 · 새 소식 ' + n + '개' : '알림'); const i = b.querySelector('.zp-bell-n'); if(i){ i.textContent = n; i.hidden = !n; } }); }
 function zpHdr(cur){ const a = (w, t)=>`<a href="javascript:void(0)"${w === cur ? ' aria-current="page"' : ''} onclick="zpNav('${w}')">${t}</a>`;
-  return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav><div class="zp-my"><button type="button" class="zp-my-btn" aria-expanded="false" aria-haspopup="menu" onclick="ZpMy.toggle(event, this)">▶ 내 메뉴</button><div class="zp-my-menu" role="menu" hidden><button type="button" role="menuitem" onclick="ZpMy.go('my')">마이페이지</button><button type="button" role="menuitem" class="zp-my-rr" onclick="ZpMy.go('rr')" hidden>면접 질문 남기기</button><button type="button" role="menuitem" onclick="ZpMy.go('hist')">리포트 전체</button><button type="button" role="menuitem" onclick="ZpMy.go('notice')">공지사항</button><button type="button" role="menuitem" onclick="ZpMy.go('fb')">의견 · 문제 보내기</button><button type="button" role="menuitem" onclick="ZpMy.go('privacy')">자료·녹화 안내</button><hr><button type="button" role="menuitem" onclick="ZpMy.go('out')">로그아웃</button></div></div></div></header>`; }
+  return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav>${zpBell("ZpMy.go('notice')")}<div class="zp-my"><button type="button" class="zp-my-btn" aria-expanded="false" aria-haspopup="menu" onclick="ZpMy.toggle(event, this)">▶ 내 메뉴</button><div class="zp-my-menu" role="menu" hidden><button type="button" role="menuitem" onclick="ZpMy.go('my')">마이페이지</button><button type="button" role="menuitem" class="zp-my-rr" onclick="ZpMy.go('rr')" hidden>면접 질문 남기기</button><button type="button" role="menuitem" onclick="ZpMy.go('hist')">리포트 전체</button><button type="button" role="menuitem" onclick="ZpMy.go('notice')">공지사항</button><button type="button" role="menuitem" onclick="ZpMy.go('fb')">의견 · 문제 보내기</button><button type="button" role="menuitem" onclick="ZpMy.go('privacy')">자료·녹화 안내</button><hr><button type="button" role="menuitem" onclick="ZpMy.go('out')">로그아웃</button></div></div></div></header>`; }
 function zConfirm(o){
   o = o || {};
   return new Promise(res=>{
@@ -11463,7 +11472,7 @@ async function tryRestoreSession(){
  * 2) 비대면 승인 (Approval) — 승인 대기 화면에서 서류 합격 캡처를 올려 요청 → 관리자 '승인 요청' 화면에서 보고 승인·반려·캡처 지우기
  * 3) 베타 한 줄 평가 (BetaRate) — 결과 화면 아래 "도움이 됐나요?" 한 번 누르기 (feedback 표, kind '베타 평가') */
 const RR_RESULT = { planned:'면접 예정', waiting:'결과 기다리는 중', pass:'합격', fail:'불합격', unknown:'밝히지 않음' };
-const RR_FIELD_IDS = ['assembly','council','court','prosecution','sunflower','education','corporate','freelance'];
+const RR_FIELD_IDS = DEMO_HALLYM_FIELDS ? HALLYM_FIELDS.map(f=>f.id) : ['assembly','council','court','prosecution','sunflower','education','corporate','freelance'];   // 2026-11-13k 한림대 모드는 한림대 분야(예전엔 '분야' 칸에 assembly 같은 영어가 보였음)
 function rrFieldName(id){ const f = FIELDS.find(x=>x.id===id); return f ? f.name : (id || ''); }
 /** 2026-10-23g: '국회 면접은 어떠셨어요?'처럼 쓰는 짧은 기관 이름 */
 function rrOrgShort(id){ return ({ assembly:'국회', council:'의회', court:'법원', prosecution:'검찰', sunflower:'해바라기센터', education:'교육기관', corporate:'기업', freelance:'프리랜서' })[id] || ''; }
@@ -11518,7 +11527,7 @@ const RealReport = {
   fieldCount(fid){ return (EXAM_QA[fid] || []).filter(it=>it.cat === '합격자 제보').length; },
   cardHtml(where){
     const r = this.latest(), ph = this.phase();
-    const fid = (r && r.field_id) || (where === 'closed' && this.closedFid) || state.dashField || ((state.currentUser||{}).allowed||[])[0] || 'assembly';
+    const fid = (r && r.field_id) || (where === 'closed' && this.closedFid) || state.dashField || ((state.currentUser||{}).allowed||[])[0] || RR_FIELD_IDS[0];
     const n = this.fieldCount(fid), fname = rrFieldName(fid);
     const added = this.mine.reduce((s,x)=>s+(x.added_count||0), 0);
     const btn = (label, js, primary)=>`<button type="button" class="rr-btn${primary?' primary':''}" onclick="${js}">${label}</button>`;
@@ -11682,7 +11691,7 @@ const RealReport = {
       t.textContent = kind === 'today' ? '오늘 면접 보셨나요?' : '면접 어떠셨어요?';
       d.textContent = '잊기 전에 받은 질문을 남겨 주세요. 한두 개만 적어도 다음 지원자에게 큰 도움이 돼요. 남기면 담당자가 확인한 뒤 같은 분야 연습 문항으로 넣어요.';
     }else{
-      const fid = state.dashField || ((state.currentUser||{}).allowed||[])[0] || 'assembly';
+      const fid = state.dashField || ((state.currentUser||{}).allowed||[])[0] || RR_FIELD_IDS[0];
       const n = this.fieldCount(fid);
       t.textContent = '면접에서 받은 질문을 남겨 주세요';
       d.textContent = '실제 면접 질문은 다음 지원자에게 가장 좋은 연습 문제예요. 남기면 담당자가 확인한 뒤 같은 분야 연습 문항으로 넣어요.';
@@ -11783,7 +11792,7 @@ const RealReport = {
     // 분야
     const allowed = ((state.currentUser||{}).allowed || []).filter(Boolean);
     const ids = isPhone || (state.currentUser||{}).isAdmin ? RR_FIELD_IDS : RR_FIELD_IDS.slice().sort((a,b)=>(allowed.includes(b)?1:0)-(allowed.includes(a)?1:0));
-    const defField = (r && r.field_id) || opt.field || (isClosedExpired() && this.closedFid) || (allowed.includes(state.dashField) ? state.dashField : allowed[0]) || 'assembly';   // 2026-10-23g
+    const defField = (r && r.field_id) || opt.field || (isClosedExpired() && this.closedFid) || (allowed.includes(state.dashField) ? state.dashField : allowed[0]) || RR_FIELD_IDS[0];   // 2026-10-23g
     $('rr-field').innerHTML = ids.map(id=>`<option value="${id}"${id===defField?' selected':''}>${escapeHtml(rrFieldName(id))}</option>`).join('');
     $('rr-org').value = (r && r.org) || '';
     $('rr-date').value = (r && r.interview_date) ? String(r.interview_date).slice(0,10) : (!isPhone && (state.currentUser||{}).accessUntil ? String(state.currentUser.accessUntil).slice(0,10) : '');
@@ -12185,7 +12194,7 @@ const ReportAdmin = {
    *  · 첫 화면(한눈에 보기): 기간 · 많이 나온 질문 TOP 5 · 분야 카드(합격/대기/불합격 막대·자주 나온 질문·유형) · 최근 들어온 후기
    *  · 상세(분야 카드·TOP 질문·최근 후기를 누르면): 왼쪽 거르기(분야·질문 유형·결과·기간) / 가운데 목록(질문별·사람별) / 오른쪽 고른 것의 상세와 바로 할 일 */
   rows:null, view:'overview', period:'', field:'all', qtype:'all', res:{ pass:true, waiting:true, fail:true, unknown:true }, q:'', showHidden:false,
-  mode:'questions', selKey:null, selId:null, callField:'assembly',
+  mode:'questions', selKey:null, selId:null, callField:RR_FIELD_IDS[0],
   QTYPES: [
     ['intro', '자기소개 · 지원 동기', /자기\s*소개|지원\s*(한\s*)?동기|지원한\s*이유|왜\s*지원|되려는\s*이유|되고\s*싶|입사|우리\s*기관|선택한\s*이유|포부/],
     ['situ', '상황 대처', /어떻게\s*(하|대처|기록|처리)|만약|한다면|라면|요청하면|요구하면|상황|대처|갈등|민원|실수(를|하)|빼\s*달라|지워\s*달라|동시\s*발언/],
@@ -12259,7 +12268,7 @@ const ReportAdmin = {
     const top = `<section class="ra-top5"><div class="ra-top5-h"><h3>가장 많이 나온 질문 TOP 5</h3><span>받았다고 남긴 사람 수 기준 · ${this.period ? `최근 ${this.period}일` : '전체 기간'}</span></div>
       ${this._top.map((g,i)=>`<button type="button" class="ra-top5-row" onclick="ReportAdmin.openTop(ReportAdmin._top[${i}].key)"><b class="rk${i<3?' hi':''}">${i+1}</b><span class="tq"><span>${escapeHtml(g.q)}</span><small>${escapeHtml(rrFieldName(g.field))} · ${escapeHtml(this.typeName(g.type))}</small></span><span class="bar" aria-hidden="true"><i style="width:${Math.round(g.who.size/max*100)}%"></i></span><span class="tn">${g.who.size}명</span></button>`).join('') || '<p class="ra-none">아직 질문이 없어요</p>'}</section>`;
     let fids = RR_FIELD_IDS.filter(id=>rows.some(r=>r.field_id===id));
-    if(!fids.length) fids = ['assembly','council','court'];
+    if(!fids.length) fids = RR_FIELD_IDS.slice(0, 3);
     const cards = fids.map(id=>{
       const fr = rows.filter(r=>r.field_id===id), fg = gs.filter(g=>g.field===id);
       const c = k=>fr.filter(r=>r.result===k).length, n = fr.length || 1;
@@ -13994,10 +14003,10 @@ const Inbody = {
     this.renderOut();
   },
   async loadPeers(){ try{ const { data, error } = await sb.rpc('inbody_peers', { p_field: null }); if(!error) this.peers = data; else this.peers = { status:'error', msg: error.message }; }catch(e){ this.peers = { status:'error', msg: e.message }; } return this.peers; },
-  band(label, my, p, fmt, unit){
+  band(label, my, p, fmt, unit){   // 2026-11-13k 중간보다 낮으면 '상위 100%' 대신 '중간보다 낮은 편'
     if(!p || p.p25 == null || !p.k) return '';
     const lo = Math.min(p.p25, my == null ? p.p25 : my), hi = Math.max(p.p75, my == null ? p.p75 : my), pad = (hi - lo) * 0.25 || 1, a = lo - pad, b = hi + pad, x = v=>Math.max(0, Math.min(100, (v - a) / (b - a) * 100));
-    return `<div class="ib-band"><div class="ib-band-h"><b>${label}</b><span>${my != null ? `나 <strong>${fmt(my)}</strong>${p.me_pct != null ? ` · 같은 분야에서 <strong>상위 ${Math.max(1, 100 - p.me_pct)}%</strong>` : ''}` : '<em>내 기록 없음</em>'}</span></div>
+    return `<div class="ib-band"><div class="ib-band-h"><b>${label}</b><span>${my != null ? `나 <strong>${fmt(my)}</strong>${p.me_pct != null ? ` · 같은 분야에서 <strong>${p.me_pct >= 50 ? `상위 ${Math.max(1, 100 - p.me_pct)}%` : '중간보다 낮은 편'}</strong>` : ''}` : '<em>내 기록 없음</em>'}</span></div>
       <div class="ib-track" aria-hidden="true"><i class="mid" style="left:${x(p.p25)}%;width:${Math.max(1, x(p.p75) - x(p.p25))}%"></i><i class="med" style="left:${x(p.p50)}%"></i>${my != null ? `<i class="me" style="left:${x(my)}%"></i>` : ''}</div>
       <div class="ib-band-f"><span>가운데 50%: ${fmt(p.p25)}~${fmt(p.p75)}${unit || ''}</span><span>중간값 ${fmt(p.p50)}${unit || ''}</span></div></div>`;
   },
@@ -16132,7 +16141,7 @@ async function renderActivityCalendar(){
   if(!calEl || !state.currentUser) return;
   const DAYS = 28;
   const today = new Date(); today.setHours(0,0,0,0);
-  const start = new Date(today); start.setDate(start.getDate() - (DAYS-1));
+  const start = new Date(today); start.setDate(start.getDate() - 21 - today.getDay());   // 2026-11-13k 달력처럼 일요일부터 (예전엔 '토 일 월…'처럼 28일 전 요일부터 시작)
   const scope = recordFieldScope();
   let cq = sb.from('interview_records')
     .select('created_at')
@@ -16154,6 +16163,7 @@ async function renderActivityCalendar(){
     const c = counts[keyOf(d)] || 0;
     const lvl = c===0 ? '' : c===1 ? 'l1' : c===2 ? 'l2' : 'l3';
     const isToday = keyOf(d)===keyOf(today);
+    if(d > today){ html += `<div class="cal-cell fut" aria-hidden="true"><span>${d.getDate()}</span></div>`; continue; }
     html += `<div class="cal-cell ${lvl}${isToday?' today':''}" title="${d.getMonth()+1}월 ${d.getDate()}일 · ${c}회"><span>${d.getDate()}</span></div>`;
   }
   calEl.innerHTML = html;
@@ -17598,7 +17608,7 @@ const Notice = {
   async check(){
     if(!this.isUser() || this.checked) return;
     this.checked = true;
-    const wrap = document.getElementById('nt-bell-wrap'); if(wrap) wrap.style.display = '';
+    const wrap = document.getElementById('nt-bell-wrap'); if(wrap) wrap.style.display = ''; try{ zpBellSync(); }catch(_){}
     try{
       await this.fetch(); this.paint();
       const u = this.unseen();
@@ -17635,6 +17645,7 @@ const Notice = {
     const bd = document.getElementById('nt-badge'); if(bd){ bd.textContent = n > 9 ? '9+' : String(n); bd.hidden = !n; }
     const bell = document.getElementById('nt-bell'); if(bell) bell.setAttribute('aria-label', n ? `알림 · 새 소식 ${n}개` : '알림');
     const dot = document.getElementById('nt-menu-dot'); if(dot) dot.hidden = !n;
+    try{ zpBellSync(); }catch(_){}
   },
   panelHtml(ns, rs, newSet){
     let h = '';
@@ -25776,8 +25787,8 @@ const COACH_SEC_PER_CHAR = 0.2;   // 공백 뺀 1글자 ≈ 0.2초 (1분 ≈ 300
 function coachCharCount(t){ return String(t||'').replace(/\s/g,'').length; }
 function coachEstSec(t){ return Math.round(coachCharCount(t) * COACH_SEC_PER_CHAR); }
 function coachFieldInfo(){
-  const id = state.dashField || (state.selectedField && state.selectedField.id !== 'review' ? state.selectedField.id : null) || 'assembly';
-  const f = FIELDS.find(x=>x.id===id); return { id, name: f ? f.name : '속기사' };
+  const id = state.dashField || (state.selectedField && state.selectedField.id !== 'review' ? state.selectedField.id : null) || FIELDS[0].id;
+  const f = FIELDS.find(x=>x.id===id); return { id, name: f ? f.name : '' };
 }
 async function openCoach(){
   { const h = document.getElementById('coach-hdr'); if(h) h.innerHTML = zpHdr('hub'); }
@@ -31798,7 +31809,7 @@ body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-das
 body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav a[aria-current="page"]{color:#bd411b !important;font-weight:600 !important;border-bottom-color:#bd411b}
 body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav a[aria-current="page"]::after{display:none !important}
 body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user{flex:none;position:relative;gap:0 !important}
-body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .nt-bell-wrap{position:absolute !important;right:100%;top:50%;transform:translateY(-50%);margin-right:6px}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .nt-bell-wrap{position:absolute !important;right:100%;top:50%;margin-top:-22px;margin-right:6px}   /* 2026-11-13k: transform을 쓰면 휴대폰 알림 창(position:fixed)이 종 크기로 찌그러져서 margin으로 가운데 맞춤 */
 body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn{padding:8px 4px !important;font-size:14px !important;font-weight:400 !important;min-height:0 !important;height:auto !important}
 body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn::before{font-size:14px !important;content:"▶ 내 메뉴" !important}
 @media (max-width:760px){
