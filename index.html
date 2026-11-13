@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13h';
+var APP_VERSION = '2026-11-13i';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -31715,6 +31715,17 @@ body.hdr-min #screen-dashboard .d3-user-btn::before{content:"내 정보";color:v
 #d3-home .hz-fix-q{margin:10px 0 16px;font-size:13.5px;line-height:1.55;color:#6a5b51}
 #d3-home .hz-fix-q b{margin-right:6px;color:#2b2521} #d3-home .hz-fix-q span{white-space:nowrap;margin-left:4px}
 #d3-home .hz-ret-foot{display:flex;justify-content:space-between;gap:12px;padding:18px 0 4px}
+/* 2026-11-13i 홈 아래 줄 B안: 좌·중·우로 흩어져 있던 버튼을 같은 모양으로 맞춰 왼쪽부터 한 줄로 (휴대폰은 기존 배치 그대로) */
+@media(min-width:641px){
+  #d3-home .hz-foot{display:flex !important;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px}
+  #d3-home .hz-foot .hz-more-btn{min-height:48px;padding:0 18px 0 14px;border:1px solid #ded5ce;background:#fff;border-radius:10px;font-size:16px}
+  #d3-home .hz-foot .hz-more-btn:hover{background:#f3ede7}
+  #d3-home .hz-foot .hz-more-btn i{background:#f3ede7}
+  #d3-home .hz-foot .hz-fold{order:9;flex:1 1 100%}
+  #d3-home .hz-ret-foot{justify-content:flex-start !important;gap:10px !important}
+}
+@media(max-width:640px){ #d3-home .hz-ret-foot{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px !important} #d3-home .hz-ret-foot > *{min-width:0;width:100%;padding-left:6px !important;padding-right:6px !important;white-space:nowrap;justify-content:center} }   /* 휴대폰: 나의 기록·기관·직무 준비·면접 D-day를 같은 폭 한 줄로 (2+1로 나뉘던 것) */
+@media(max-width:380px){ #d3-home .hz-ret-foot{gap:8px !important} #d3-home .hz-ret-foot > *{font-size:14px} }
 @media(max-width:860px){ #d3-home .hz-ret-main{grid-template-columns:1fr} }
 @media(max-width:640px){ #d3-home .hz-foot{grid-template-columns:1fr 1fr;gap:12px} #d3-home .hz-foot .hz-more-btn{grid-column:1/-1} #d3-home .hz-foot > :last-child{justify-self:stretch} #d3-home .hz-acts .hz-sec{align-self:flex-start} #d3-home .hz-ret-big{font-size:30px} #d3-home .hz-ret-acts{flex-direction:column;align-items:flex-start} #d3-home .hz-ret-foot{flex-wrap:wrap;justify-content:flex-start} }
 /* 위 메뉴 '▶ 내 메뉴' (학생) */
