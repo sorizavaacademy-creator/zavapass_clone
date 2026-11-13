@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13i';
+var APP_VERSION = '2026-11-13j';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6569,6 +6569,13 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-flow .fl-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 #modal-flow.fl-page .fl-f label, #modal-flow.fl-page .fl-lbl{display:block;font-size:14px;font-weight:700;color:#2b2521;margin-bottom:8px}
 #modal-flow.fl-page .fl-f input, #modal-flow.fl-page .fl-f select, #modal-flow.fl-page .fl-f textarea{width:100%;box-sizing:border-box;min-height:48px;padding:12px 14px;font-size:15px;border:1px solid #ded5ce;border-radius:8px;background:#fff;color:#2b2521}
+/* 2026-11-13j 입력칸 규칙(폭 100%·높이 48px)이 체크박스·선택 단추까지 키우던 것 → 원래 크기로, 글자 옆에 */
+#modal-flow .fl-f input[type=checkbox], #modal-flow .fl-f input[type=radio]{width:18px !important;height:18px !important;min-height:0 !important;padding:0 !important;margin:3px 0 0 !important;flex:none;border-radius:4px;accent-color:#bd411b}
+#modal-flow .fl-f label.fl-eng{display:flex !important;gap:10px;align-items:flex-start}
+/* 2026-11-13j 관리자 화면: 테두리만 있고 높이·여백이 없어 브라우저 기본 모양(22px)으로 납작하던 입력칸 */
+#screen-admin input.pipe-input:not([type=checkbox]):not([type=radio]){min-height:40px;padding:6px 10px;box-sizing:border-box;font-size:15px}
+#screen-admin #pipe-silence, #screen-admin #pipe-maxsec{min-height:40px;padding:6px 8px !important;box-sizing:border-box;width:72px !important;border-radius:8px !important}
+#screen-admin #loop-count, #screen-admin #loop-followups{min-height:40px;min-width:64px;padding:6px 10px !important;box-sizing:border-box}
 #modal-flow.fl-page .fl-f textarea{min-height:104px;resize:vertical;line-height:1.55}
 #modal-flow.fl-page .fl-f input:focus, #modal-flow.fl-page .fl-f select:focus, #modal-flow.fl-page .fl-f textarea:focus{outline:2px solid #bd411b;outline-offset:1px;border-color:#bd411b}
 #modal-flow .fl-hint{font-size:13px;line-height:1.55;color:#6a5b51;margin:6px 0 0}
