@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z10';
+var APP_VERSION = '2026-11-12z11';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -7494,7 +7494,7 @@ html.sv-open{overflow:hidden;}
     <div class="modal-head zp-head">
       <div><h2 id="coach-title">1분 자기소개를 준비해요</h2>
       <p>서류가 없어도 내가 한 일로 시작할 수 있어요. 1분 대본을 만들고 따라 말하며 시간과 내용을 맞춰 봐요.</p></div>
-      <button type="button" class="btn btn-outline zp-prev" onclick="closeCoach()">이전으로</button>
+      <button type="button" class="btn btn-outline zp-prev" onclick="closeCoach(); PageNav.back('coach')">이전으로</button>
     </div>
     <div class="modal-body modal-scroll">
       <aside class="zp-aside coach-aside"><b>확인할 순서</b><ol><li>강점 한 문장</li><li>그 강점을 보여 주는 경험</li><li>지원 직무·다음 목표와 연결</li></ol><p>내가 쓴 자기소개와 만들어진 대본은 따로 보여 줘요.</p></aside>
@@ -7914,7 +7914,7 @@ html.sv-open{overflow:hidden;}
     <div class="hz-pop" id="hz-pop" hidden>
     <div class="hz-pop-bg" onclick="HomeSimple.toggle(false)"></div>
     <section class="hz-panel" role="dialog" aria-modal="true" aria-labelledby="hz-pop-h">
-    <div class="hz-pop-hd"><div><h2 id="hz-pop-h">다른 방식으로 연습</h2><p id="hz-pop-p">짧게 연습하거나 토론·발표 면접, 연습 도구를 골라요.</p></div><button type="button" class="hz-pop-x" onclick="HomeSimple.toggle(false)" aria-label="닫기"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
+    <div class="hz-pop-hd"><div><h2 id="hz-pop-h">다른 방식으로 연습</h2><p id="hz-pop-p">짧게 연습하거나 토론·발표 면접, 연습 도구를 골라요.</p></div><button type="button" class="hz-pop-x" onclick="HomeSimple.toggle(false); PageNav.back('pop')" aria-label="닫기"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
     <div class="hz-more" id="hz-more">
     <div class="d3-hero">
       <section class="d3-card d3-greet g4-greet">
@@ -7954,7 +7954,7 @@ html.sv-open{overflow:hidden;}
       <div class="hm-sheet-bg" onclick="HomeTabs.close()"></div>
       <section class="hm-more" id="hm-more" role="dialog" aria-modal="true" aria-label="연습 도구">
         <div class="hm-title" id="hm-title" hidden><h2 id="hm-title-h">내 자료</h2><p>내 경험·서류, 질문 모음, 지난 면접 기록을 한곳에서 봐요.</p></div>
-        <div class="hm-tabs" role="tablist"><button type="button" role="tab" data-t="dday" onclick="HomeTabs.go('dday')">면접 D-day</button><button type="button" role="tab" data-t="review" onclick="HomeTabs.go('review')">지난 면접 보완점</button><button type="button" role="tab" data-t="bm" onclick="HomeTabs.go('bm')">내 질문 모음</button><button type="button" role="tab" data-t="exp" onclick="HomeTabs.go('exp')">내 경험</button><button type="button" role="tab" data-t="recent" onclick="HomeTabs.go('recent')">최근 면접 기록</button><button type="button" class="hm-x" onclick="HomeTabs.close()" aria-label="닫기">✕</button></div>
+        <div class="hm-tabs" role="tablist"><button type="button" role="tab" data-t="dday" onclick="HomeTabs.go('dday')">면접 D-day</button><button type="button" role="tab" data-t="review" onclick="HomeTabs.go('review')">지난 면접 보완점</button><button type="button" role="tab" data-t="bm" onclick="HomeTabs.go('bm')">내 질문 모음</button><button type="button" role="tab" data-t="exp" onclick="HomeTabs.go('exp')">내 경험</button><button type="button" role="tab" data-t="recent" onclick="HomeTabs.go('recent')">최근 면접 기록</button><button type="button" class="hm-x" onclick="HomeTabs.close(); PageNav.back('sheet')" aria-label="닫기">✕</button></div>
         <div class="hm-tp" data-t="review" role="tabpanel"><section class="d3-panel">
         <div class="d3-panel-head"><h3 class="d3-panel-title">지난 면접의 보완점과 다시 연습</h3><button class="d3-btn-text" id="hm-review-btn" type="button" onclick="startReviewFromDashboard()" style="display:none;">이 질문들로 다시 연습</button></div>
         <div id="hm-review"><div class="qa-empty">면접을 한 번 마치면, 점수가 낮았던 질문을 여기에 모아 드려요.</div></div>
@@ -8013,7 +8013,7 @@ html.sv-open{overflow:hidden;}
       <div class="dbm-hdr" id="dbm-hdr"></div>
       <div class="fl-top dbm-oldtop"><div class="fl-steps" id="dbp-steps-old" aria-hidden="true"></div><button type="button" class="fl-x" onclick="closeDebateScreen()" aria-label="닫기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
       <div class="dbm-scroll">
-        <div class="dbm-head"><div><h2 id="dbt-ptitle">주제 고르기</h2><p>공공기관 토론·토의·발표 면접 대비 · 각 형식의 자료와 피드백을 나눠서 보여 줘요</p></div><button type="button" class="btn btn-outline dbm-prev" onclick="closeDebateScreen()">이전으로</button></div>
+        <div class="dbm-head"><div><h2 id="dbt-ptitle">주제 고르기</h2><p>공공기관 토론·토의·발표 면접 대비 · 각 형식의 자료와 피드백을 나눠서 보여 줘요</p></div><button type="button" class="btn btn-outline dbm-prev" onclick="closeDebateScreen(); PageNav.back('debate')">이전으로</button></div>
         <ol class="dbp-order-m" id="dbp-steps-m" aria-hidden="true"></ol>
         <div class="dbp-grid">
           <section class="dbp-main" aria-live="polite"><div class="dbp-b" id="dbt-b"><div class="pk-wait"><i></i>주제를 불러오고 있어요</div></div></section>
@@ -10547,9 +10547,18 @@ function josa(word, pair){
 function durText(v){ const m = /^(\d+):(\d{2})$/.exec(String(v||'').trim()); if(!m) return String(v||''); const mm = +m[1], ss = +m[2]; return mm ? (ss ? `${mm}분 ${ss}초` : `${mm}분`) : `${ss}초`; }
 /* 2026-11-12t 안내 상황 공통 확인 창 (브라우저 기본 확인창 대신, 디자인 토큰 색) → Promise<boolean> */
 /* 2026-11-12v 시안 공통 틀: 전체 화면 위 메뉴 (팝업을 전체 화면으로 바꾼 곳에서 씀) */
-/* 2026-11-12z10 [이전으로]가 들어온 곳으로: 내 정보에서 연 화면(내 경험·내 서류·커리어 인바디·자기소개 코치)은 [이전으로]를 누르면 내 정보로 돌아옴. 위 메뉴로 옮기면 지움 */
-const BackTo = { t:'', set(t){ this.t = t; }, take(t){ if(this.t && this.t === t){ this.t = ''; return true; } return false; }, clear(){ this.t = ''; } };
-function zpNav(where){ BackTo.clear(); try{ PracticeKit.close(); }catch(_){} try{ closeCoach(); }catch(_){} try{ closeDebateScreen(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
+/* 2026-11-12z11 [이전으로]는 들어온 화면으로: 화면 A에서 화면 B를 열 때 'B에서 이전으로를 누르면 A를 다시 연다'를 기억해 둠.
+   B의 [이전으로]를 누르면 B를 닫고 A를 엶. 위 메뉴(홈·연습하기·나의 기록·내 자료)로 옮기면 모두 지움.
+   to: 열리는 화면 종류 ('pk' 연습 도구 화면 · 'coach' 자기소개 코치 · 'debate' 토론 · 'flow' 면접 준비·내 자료 · 'sheet' 도구 창 · 'pop' 다른 방식 창) */
+const PageNav = {
+  st: [],
+  push(to, back, key){ this.st.push({ to, back, key: key || '' }); if(this.st.length > 8) this.st.shift(); },
+  drop(key){ if(key) this.st = this.st.filter(x=>x.key !== key); },   // 그 화면이 다른 길로 다시 열리면 그 화면으로 돌아가는 기억은 지움
+  back(from){ const top = this.st[this.st.length - 1]; if(top && top.to === from){ this.st.pop(); setTimeout(()=>{ try{ top.back(); }catch(e){ console.warn('[이전으로]', e); } }, 0); return true; } this.st = []; return false; },
+  clear(){ this.st = []; },
+};
+const BackTo = { set(t){ PageNav.push(t, ()=>openMyPage(), 'mypage'); }, clear(){ PageNav.clear(); } };   // 내 정보에서 연 화면 (예전 이름 그대로)
+function zpNav(where){ PageNav.clear(); try{ PracticeKit.close(); }catch(_){} try{ closeCoach(); }catch(_){} try{ closeDebateScreen(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
 function zpHdr(cur){ const a = (w, t)=>`<a href="javascript:void(0)"${w === cur ? ' aria-current="page"' : ''} onclick="zpNav('${w}')">${t}</a>`;
   return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav></div></header>`; }
 function zConfirm(o){
@@ -13882,7 +13891,7 @@ const Inbody = {
     this._certs = (d.certs || []).slice();
     const paintChips = ()=>{ const c = document.getElementById('ib-chips'); c.innerHTML = this._certs.map((x, i)=>`<span class="ib-chip">${escapeHtml(x.name)}<button type="button" data-cdel="${i}" aria-label="${escapeHtml(x.name)} 지우기">×</button></span>`).join(''); c.querySelectorAll('[data-cdel]').forEach(b=>b.onclick = ()=>{ this._certs.splice(+b.dataset.cdel, 1); paintChips(); }); };
     paintChips();
-    const addC = ()=>{ const i = document.getElementById('ib-cert'), v = i.value.trim(); if(!v) return; if(this._certs.length >= 15) return showToast('자격증은 15개까지 적을 수 있어요'); if(!this._certs.some(x=>x.name === v)) this._certs.push({ name: v }); i.value = ''; paintChips(); i.focus(); };
+    const addC = ()=>{ const i = document.getElementById('ib-cert'), v = i.value.trim(); if(!v){ showToast('자격증 이름을 적거나 목록에서 골라 주세요'); try{ i.focus(); }catch(_){} return; } if(this._certs.length >= 15) return showToast('자격증은 15개까지 적을 수 있어요'); if(!this._certs.some(x=>x.name === v)) this._certs.push({ name: v }); i.value = ''; paintChips(); i.focus(); };
     document.getElementById('ib-cadd').onclick = addC;
     document.getElementById('ib-cert').onkeydown = e=>{ if(e.key === 'Enter'){ e.preventDefault(); addC(); } };
     document.getElementById('ib-save').onclick = ()=>this.save();
@@ -14647,11 +14656,11 @@ const StartFlow = {
       this.exps.forEach(e=>{ if(!this.s.use.includes(e.id)) this.s.use.push(e.id); }); };
     if(PrepSync.loaded) applySaved(); else PrepSync.pull().then(()=>{ applySaved(); if(document.getElementById('modal-flow').classList.contains('active') && this.s && this.s.step <= 2) this.render(); });
   },
-  close(){ if(BackTo.t === 'flow') BackTo.clear(); try{ PrepRoom.stop(); }catch(_){} this.devLeave(); this.myMenu(false); document.getElementById('modal-flow').classList.remove('active'); },
+  close(){ try{ PrepRoom.stop(); }catch(_){} this.devLeave(); this.myMenu(false); document.getElementById('modal-flow').classList.remove('active'); },
   /** 2026-11-12u 시안 06 '오늘은 어떻게 연습할까요?': 면접 준비 화면 틀 안의 첫 화면. 예전 연습하기 창의 도구는 '연습 도구 더 보기' 안에 그대로 */
-  hub(){ this.open(); if(!this.s) return; this.s.hub = true; this.render(); },
+  hub(){ PageNav.drop('hub'); this.open(); if(!this.s) return; this.s.hub = true; this.render(); },
   /** 2026-11-12v 시안 11~13·15·63·64: '내 자료' 화면들 (mat 내 자료 · exps 내 경험 · expadd 경험 추가 · docs 서류 · docq 서류 질문 · ib 커리어 인바디) */
-  page(name){ this.open(); if(!this.s) return; this.s.page = name; this.render(); },
+  page(name){ if(name === 'mat') PageNav.drop('mat'); this.open(); if(!this.s) return; this.s.page = name; this.render(); },
   vPage(pg){ const s = this.s, row = (t, d, btn, act, solid)=>`<div class="fl-hub-row"><div><b>${t}</b><span>${d}</span></div><button type="button" class="btn ${solid ? 'btn-solid' : 'btn-outline'}" data-pga="${act}">${btn}</button></div>`;
     if(pg === 'mat') return `${this.vHead('내 자료', '한 번 정리한 자료를 여러 연습에 활용해요.')}<div class="fl-hub">${row('내 경험', `수업·프로젝트·활동 경험 · ${this.exps.length}개`, '경험 보기', 'exps', true)}${row('자기소개서·이력서', '자료 읽기 상태와 질문에 쓰는 내용 확인', '서류 관리', 'docs')}${row('내 질문 모음', '찾아본 질문·담아 둔 질문', '질문 보기', 'bm')}${row('답변 노트', '유형별 내가 정한 답변', '노트 보기', 'note')}</div>
       <div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="ib">커리어 인바디·학교 자료</button><button type="button" class="btn btn-outline" data-pga="coach">자기소개 코치</button></div>`;
@@ -14686,8 +14695,8 @@ const StartFlow = {
     if(a === 'start'){ s.page = ''; s.hub = false; s.step = 0; this.render(); return; }
     if(['mat','exps','expadd','docs','docq','ib'].includes(a)){ s.page = a; this.render(); return; }
     if(a === 'bm'){ try{ await PracticeKit.loadBm(); }catch(_){} PracticeKit.openBmAll(); return; }
-    if(a === 'note') return this.leave(()=>AnswerNote.open());
-    if(a === 'coach') return this.leave(()=>openCoach());
+    if(a === 'note'){ PageNav.push('pk', ()=>StartFlow.page('mat'), 'mat'); return this.leave(()=>AnswerNote.open()); }   // 2026-11-12z11 이전으로 = 내 자료
+    if(a === 'coach'){ PageNav.push('coach', ()=>StartFlow.page('mat'), 'mat'); return this.leave(()=>openCoach()); }
     if(a === 'coachx'){ ExpCoach.open({ from:'mat' }); return; }
     if(a.startsWith('star:')){ ExpCoach.open({ id: a.slice(5), from:'mat' }); return; }
     if(a.startsWith('del:')){ const id = a.slice(4), e = this.exps.find(x=>x.id === id); if(!e) return;
@@ -14707,13 +14716,19 @@ const StartFlow = {
     <details class="fl-hub-more"><summary>연습 도구 더 보기</summary><div class="fl-hub-tools">${tool('오늘의 질문 · 이번 주 목표', '추천 세트와 함께 보기', 'today')}${tool('면접 D-day', '전날·당일·다녀온 뒤', 'dday')}${tool('지난 면접 보완점', '낮았던 질문 다시 연습', 'review')}${tool('답변 노트', '유형별 내 최고 답변', 'note')}${tool('내 질문 모음', '담아 둔 질문 연습', 'bm')}${tool('내 경험', '경험 정리·입력', 'exp')}${tool('최근 면접 기록', '리포트 다시 보기', 'recent')}</div></details>`; },
   hubAct(a){ const s = this.s;
     if(a === 'start'){ s.hub = false; s.step = 0; this.render(); return; }
-    if(a === 'docq'){ s.hub = false; s.kind = s.kind || 'major'; s.step = 1; s.openMy = true; this.render(); setTimeout(()=>{ const d = document.getElementById('fl-docs'); if(d) d.scrollIntoView({ block:'center', behavior:'smooth' }); }, 120); return; }
-    if(a === 'debate') return this.leave(()=>navGo('debate'));
-    if(a === 'coach') return this.leave(()=>openCoach());
-    if(a === 'study') return this.hubGo(()=>Study.open());
-    if(a === 'note') return this.hubGo(()=>AnswerNote.open());
-    if(a === 'today') return this.hubGo(()=>HomeSimple.toggle(true, false, '연습하기'));
-    this.hubGo(()=>HomeTabs.open(a)); },
+    if(a === 'docq'){ s.hub = false; s.kind = s.kind || 'major'; s.step = 1; s.openMy = true; s.backHub = true; this.render(); setTimeout(()=>{ const d = document.getElementById('fl-docs'); if(d) d.scrollIntoView({ block:'center', behavior:'smooth' }); }, 120); return; }
+    // 2026-11-12z11 연습하기에서 연 화면의 [이전으로]는 연습하기로. 내 경험·내 질문 모음·최근 면접 기록은 작은 탭 창 대신 전체 화면으로
+    const backHub = to=>PageNav.push(to, ()=>StartFlow.hub(), 'hub');
+    if(a === 'exp'){ s.hub = false; s.page = 'exps'; s.pageFrom = 'hub'; this.render(); return; }
+    if(a === 'debate'){ backHub('debate'); return this.leave(()=>navGo('debate')); }
+    if(a === 'coach'){ backHub('coach'); return this.leave(()=>openCoach()); }
+    if(a === 'study'){ backHub('pk'); return this.hubGo(()=>Study.open()); }
+    if(a === 'note'){ backHub('pk'); return this.hubGo(()=>AnswerNote.open()); }
+    if(a === 'bm'){ backHub('pk'); return this.hubGo(async ()=>{ try{ await PracticeKit.loadBm(); }catch(_){} PracticeKit.openBmAll(); }); }
+    if(a === 'recent'){ backHub('pk'); return this.hubGo(()=>openAllHistory()); }
+    if(a === 'dday'){ backHub('pk'); return this.hubGo(()=>PracticeKit.openDday()); }
+    if(a === 'today'){ backHub('pop'); return this.hubGo(()=>HomeSimple.toggle(true, false, '연습하기')); }
+    backHub('sheet'); this.hubGo(()=>HomeTabs.open(a)); },
   /** 2026-11-12 복습 면접(고른 질문으로)도 새 준비 화면으로: 질문이 정해져 있어 '내 경험'을 건너뛰고 '진행 방식'부터 */
   review(){
     const list = (state.reviewOverride && state.reviewOverride.length ? state.reviewOverride : (state.reviewCandidates || [])).slice(0, 10);
@@ -14740,8 +14755,10 @@ const StartFlow = {
   back(){ const s = this.s;
     if(s.hub){ this.close(); return; }
     if(s.page){ const up = { exps:'mat', expadd:'exps', docs:'mat', docq:'docs', ib:'mat' }[s.page]; if(up && s.pageFrom === 'mat'){ s.page = up; this.render(); return; }
-      if(s.page === 'expadd' && s.pageFrom !== 'mat' && BackTo.t === 'flow'){ s.page = 'exps'; this.render(); return; }   // 내 정보 → 내 경험 → 경험 추가에서 [이전으로]는 내 경험으로
-      if(BackTo.take('flow')){ this.close(); openMyPage(); return; } this.close(); return; }
+      if(s.page === 'expadd' && s.pageFrom !== 'mat'){ const top = PageNav.st[PageNav.st.length - 1]; if((top && top.to === 'flow') || s.pageFrom === 'hub'){ s.page = 'exps'; this.render(); return; } }   // 내 경험 → 경험 추가에서 [이전으로]는 내 경험으로
+      if(s.pageFrom === 'hub'){ s.page = ''; s.pageFrom = ''; s.hub = true; this.render(); return; }   // 연습하기에서 연 내 경험 → 연습하기로
+      this.close(); PageNav.back('flow'); return; }
+    if(s.step === 1 && s.backHub && !s.sub){ s.backHub = false; s.hub = true; this.render(); return; }   // 연습하기 '서류 기반 질문' → 이전으로 = 연습하기
     if(s.step === 0 && s.fromHub){ s.hub = true; this.render(); return; }
     if(s.step === 2 && s.review){ this.close(); return; }   // 복습은 '내 경험' 단계가 없음
     if(s.step === 1 && s.sub){ s.sub = ''; this.render(); return; }
@@ -18272,6 +18289,7 @@ function permUntilTouched(){ if(state.bulkPermissionMode){ const k = document.ge
 
 /* ---------------- 마이페이지 ---------------- */
 async function openMyPage(){
+  PageNav.drop('mypage');
   const u = state.currentUser;
   if(!u) return;
   document.getElementById('mp-name').textContent = u.name || '';
@@ -25730,7 +25748,6 @@ function closeCoach(){
   if(Coach.practicing || Coach.draftRec){ try{ StenoListener.stop('manual'); }catch(e){} }
   coachStopTimer();
   document.getElementById('modal-coach').classList.remove('active');
-  if(BackTo.take('coach')) openMyPage();   // 2026-11-12z10 내 정보에서 열었으면 내 정보로
 }
 function coachRenderScript(){
   const has = !!Coach.script;
@@ -27553,9 +27570,10 @@ const PracticeKit = {
   },
   setHead(sub, title){ const m = document.getElementById('pk-modal'); if(!m) return; const a = m.querySelector('.pk-h small'), b = m.querySelector('.pk-h h3'); if(a) a.textContent = sub; if(b) b.textContent = title; },
   pgOpen(nav){ this._nextPg = true; this._pgNav = nav || 'growth'; },
+  pgBack(){ this.close(); PageNav.back('pk'); },   // 2026-11-12z11 [이전으로]: 닫고 들어온 화면으로
   close(){ this.stopMic(); this._ddPg = false; try{ if(typeof Finish10 !== 'undefined') Finish10.stop(); }catch(_){} const m = document.getElementById('pk-modal'); if(m){ m.classList.remove('on', 'pg'); m.innerHTML = ''; } document.documentElement.classList.remove('pk-open');
     try{ if(StartFlow.s && StartFlow.s.page && document.getElementById('modal-flow').classList.contains('active')) StartFlow.render(); }catch(_){} },
-  head(sub, title){ return `<header class="pk-h"><div><small>${sub}</small><h3>${title}</h3></div><button type="button" class="pk-x" onclick="PracticeKit.close()" aria-label="닫기">✕</button><button type="button" class="btn btn-outline pk-prev" onclick="PracticeKit.close()">이전으로</button></header>`; },
+  head(sub, title){ return `<header class="pk-h"><div><small>${sub}</small><h3>${title}</h3></div><button type="button" class="pk-x" onclick="PracticeKit.close()" aria-label="닫기">✕</button><button type="button" class="btn btn-outline pk-prev" onclick="PracticeKit.pgBack()">이전으로</button></header>`; },
 
   /* ── ④ 내 질문 모음 ── */
   async loadBm(){
@@ -27968,20 +27986,20 @@ const PracticeKit = {
     return out;
   },
   /** 2026-11-12w 시안 31: 면접 D-day를 전체 화면으로 (홈의 D-day 칸과 같은 내용) */
-  async openDday(){ this.pgOpen('hub');
-    this.modal(this.head('면접 전날부터 다녀온 뒤까지', '지금 준비 단계에서 필요한 일만 펼쳐요.') + `<div class="pk-b"><section class="d3-panel" id="pk-dday-pg"><div class="pk-wait"><i></i>불러오는 중</div></section></div><footer class="pk-f"><button type="button" class="btn btn-outline" onclick="OrgSheet.open()">기관 한 장 요약</button><button type="button" class="btn btn-solid" onclick="AnswerNote.open()">답변 노트</button></footer>`, 'wide');
+  async openDday(){ PageNav.drop('dday'); this.pgOpen('hub');
+    this.modal(this.head('면접 전날부터 다녀온 뒤까지', '지금 준비 단계에서 필요한 일만 펼쳐요.') + `<div class="pk-b"><section class="d3-panel" id="pk-dday-pg"><div class="pk-wait"><i></i>불러오는 중</div></section></div><footer class="pk-f"><button type="button" class="btn btn-outline" onclick="PageNav.push('pk', ()=>PracticeKit.openDday(), 'dday'); OrgSheet.open()">기관 한 장 요약</button><button type="button" class="btn btn-solid" onclick="PageNav.push('pk', ()=>PracticeKit.openDday(), 'dday'); AnswerNote.open()">답변 노트</button></footer>`, 'wide');
     this._ddPg = true; try{ await this.loadPlan(); }catch(_){} this.renderPlan(); },
   renderPlan(){
     { const pg = document.getElementById('pk-dday-pg'), home = document.getElementById('pk-dday-card'); if(pg && home){ home.id = 'pk-dday-card-x'; pg.id = 'pk-dday-card'; try{ this.renderPlan(); }finally{ pg.id = 'pk-dday-pg'; home.id = 'pk-dday-card'; } } }
     const box = document.getElementById('pk-dday-card'); if(!box) return;
     const p = this.plan;
     if(!p){ box.innerHTML = this.finHtml() + `<div class="d3-panel-head"><h3 class="d3-panel-title">면접 D-day</h3></div>
-      <div class="pk-dd-empty"><p>면접 날짜와 기업을 넣으면 <b>남은 날</b>, <b>오늘 연습할 3문항</b>, <b>전날 점검표</b>를 챙겨 드려요.</p><button type="button" class="d3-btn d3-btn-solid" onclick="PracticeKit.editPlan()">면접 날짜 넣기</button></div>`; return; }
+      <div class="pk-dd-empty"><p>면접 날짜와 기업을 넣으면 <b>남은 날</b>, <b>오늘 연습할 3문항</b>, <b>전날 점검표</b>를 챙겨 드려요.</p><button type="button" class="d3-btn d3-btn-solid" onclick="PageNav.push('pk', ()=>PracticeKit.openDday(), 'dday'); PracticeKit.editPlan()">면접 날짜 넣기</button></div>`; return; }
     const d = this.dleft(), cl = this.checks(), done = cl.filter(([k])=>p.checklist && p.checklist[k]).length, tq = this.todays();
     const t = this._pack && this._pack.talent, kws = t && t.verify_status !== '미확인' ? (t.keywords || []).slice(0, 5) : [];
     const dLabel = d > 0 ? `D-${d}` : d === 0 ? 'D-DAY' : `D+${-d}`, dt = new Date(p.target_date + 'T00:00:00');
     const near = d != null && d <= 3 && d >= 0;
-    box.innerHTML = this.finHtml() + `<div class="d3-panel-head"><h3 class="d3-panel-title">면접 D-day</h3><button type="button" class="d3-btn-text" onclick="PracticeKit.editPlan()">바꾸기</button></div>
+    box.innerHTML = this.finHtml() + `<div class="d3-panel-head"><h3 class="d3-panel-title">면접 D-day</h3><button type="button" class="d3-btn-text" onclick="PageNav.push('pk', ()=>PracticeKit.openDday(), 'dday'); PracticeKit.editPlan()">바꾸기</button></div>
       <div class="pk-dd-top"><b class="pk-dd-d ${d < 0 ? 'past' : near ? 'near' : ''}">${dLabel}</b><div><b>${escapeHtml(p.company_name || '면접')}</b>${p.job ? ` · ${escapeHtml(p.job)}` : ''}<small>${dt.getMonth() + 1}월 ${dt.getDate()}일 (${'일월화수목금토'[dt.getDay()]})${p.format && p.format !== '모름' ? ' · ' + escapeHtml(p.format) + ' 면접' : ''}</small></div></div>
       ${d < 0 ? `<p class="pk-mut">면접이 끝났어요. 수고 많으셨어요! 다음 면접 날짜를 넣으면 다시 준비를 도와드려요.</p>` : `
       ${kws.length ? `<div class="pk-kw"><span>인재상</span>${kws.map(k=>`<i>${escapeHtml(CompanyCard.flat(k))}</i>`).join('')}</div>` : ''}
