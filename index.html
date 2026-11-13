@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13g';
+var APP_VERSION = '2026-11-13h';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6549,6 +6549,12 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-flow .fl-my-menu button:hover{background:#f3ede7}
 #modal-flow .fl-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch}
 #modal-flow .fl-wrap{max-width:1000px;margin:0 auto;padding:28px clamp(16px,4vw,40px) 56px}
+/* 2026-11-13h 시안처럼 본문 양 끝을 위 메뉴 줄 양 끝(로고·내 메뉴)에 맞춤: 본문 폭 1000→1160px, 양옆 여백도 위 메뉴 줄과 같게 */
+#pk-modal.pg .pk-box, #modal-coach.zp-pg .coach-box, #modal-mypage.zp-pg .modal-box, #modal-feedback.zp-pg .modal-box{max-width:1160px !important;padding-left:clamp(16px,4vw,32px) !important;padding-right:clamp(16px,4vw,32px) !important}
+#modal-feedback.zp-pg .modal-foot{max-width:1160px !important;padding-left:clamp(16px,4vw,32px) !important;padding-right:clamp(16px,4vw,32px) !important}
+#modal-flow .fl-wrap{max-width:1160px !important;padding-left:clamp(16px,4vw,32px) !important;padding-right:clamp(16px,4vw,32px) !important}
+.dbm .dbm-scroll{padding-left:clamp(16px,4vw,32px) !important;padding-right:clamp(16px,4vw,32px) !important} .dbm .dbm-scroll > *{max-width:1096px} .dbm .dbp-f{max-width:1160px}
+#screen-result .rv-proc, #screen-result .rv-sum, #screen-result .rv-q, #screen-result .rv-ae, #screen-result .rv-rw, #screen-result .rv-dv, #screen-result .rv-rt, #screen-result .rv-cmp, #screen-result .rv-all > summary{max-width:none !important}
 #modal-flow.fl-page .fl-top{border:0;padding:0 0 22px;display:block}
 #modal-flow.fl-page .fl-steps{display:flex;gap:14px;font-size:13px;color:#6a5b51}
 #modal-flow.fl-page .fl-steps b{font-weight:500;color:#6a5b51} #modal-flow.fl-page .fl-steps b.on{color:#bd411b;font-weight:700} #modal-flow.fl-page .fl-steps b.done{color:#6a5b51}
@@ -31648,6 +31654,8 @@ body.hz-side #d3-home .hz-panel .g4-top{flex-direction:column;align-items:stretc
 #screen-dashboard.active:has(#d3-home:not([hidden])) > .zp-foot{margin-top:0}
 #d3-home .hz-hero{flex:1 0 auto;align-content:center}
 @media(min-width:1800px){ #screen-dashboard .d3-hdr-inner, #screen-dashboard #d3-home.d3-page, #screen-dashboard > .zp-foot{max-width:1400px} }
+/* 2026-11-13h 넓은 화면(1800px 이상): 학생 홈 본문도 위 메뉴 줄과 같은 폭(1160px) — 로고와 큰 제목의 왼쪽 줄이 어긋나던 것 */
+@media(min-width:1800px){ body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard #d3-home.d3-page, body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard > .zp-foot{max-width:1160px} }
 #d3-home .hz-h .pg-i{white-space:nowrap}
 @media(min-width:1280px) and (min-height:800px){
   #d3-home .hz-h{font-size:clamp(50px,3.6vw,64px)}
