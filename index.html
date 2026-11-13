@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13b';
+var APP_VERSION = '2026-11-13c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6503,6 +6503,7 @@ html.ivv-dr-open{overflow:hidden;}
 .adm-ph{margin:6px 0 18px} .adm-ph-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
 .adm-ph h2{margin:0;font-size:26px;font-weight:800;color:#2b2521;letter-spacing:-.02em} .adm-ph p{margin:6px 0 0;font-size:15px;color:#6a5b51;max-width:70ch}
 .adm-prev{flex:none;white-space:nowrap;padding:10px 16px}
+#admin-view-reports .ra-head{position:relative} #admin-view-reports .ra-head .adm-prev-x{position:absolute;top:0;right:0} #admin-view-reports .ra-head:has(.adm-prev-x){padding-right:120px} #admin-view-reportq .admin-view-head .adm-prev-x{margin-left:auto}
 .adm-ph-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px} .adm-ph-links .btn{flex:none !important;width:auto !important}
 .adm-has-ph .admin-view-head > div > h2, .adm-has-ph .admin-view-head > div > p, .adm-has-ph .admin-view-head > h2, .adm-has-ph .admin-view-head > p{display:none !important}
 .adm-has-ph .admin-view-head{min-height:0;margin-bottom:10px}
@@ -8120,7 +8121,7 @@ html.sv-open{overflow:hidden;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
         <span class="amb-txt"><span class="amb-name">연습 결과</span><small class="amb-desc">기록 · 실전 세트 · 엑셀</small></span>
       </button>
-      <button class="admin-menu-btn" data-group="questions" onclick="showAdminView('questions')">
+      <button class="admin-menu-btn" data-group="questions" onclick="showAdminView('qbank')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
         <span class="amb-txt"><span class="amb-name">질문 <span class="menu-badge" id="ra-nav-badge" style="display:none;"></span></span><small class="amb-desc">질문 · 녹음 · 실제 후기</small></span>
       </button>
@@ -8596,7 +8597,7 @@ html.sv-open{overflow:hidden;}
           <section class="vs-step">
             <h3 class="vs-h"><i>2</i>들어 보고 저장하기</h3>
             <label class="vs-label" for="tts-text">들어볼 문장 <small>면접에서 나올 문장을 넣어 보세요</small></label>
-            <textarea id="tts-text" class="vs-input" rows="2">국회 상임위원회 회의 중 발언자가 겹칠 경우, 속기록 작성 순서를 어떻게 정리하시겠습니까? 조서와 녹취록의 차이도 함께 설명해 주십시오.</textarea>
+            <textarea id="tts-text" class="vs-input" rows="2">지원하신 직무에서 가장 중요하다고 생각하는 역량은 무엇이고, 그 역량을 보여 준 경험을 하나 말씀해 주세요.</textarea>
             <div class="vs-quick" role="group" aria-label="예시 문장">
               <button type="button" onclick="VoiceSet.example(0)">면접 질문</button><button type="button" onclick="VoiceSet.example(1)">꼬리질문</button><button type="button" onclick="VoiceSet.example(2)">인사말</button>
             </div>
@@ -8621,7 +8622,7 @@ html.sv-open{overflow:hidden;}
             <summary>고급 설정 <small>발음 교정<span id="vs-adv-oa-sum"> · 대신 읽기용 OpenAI 목소리</span></small></summary>
             <div class="vs-adv-body">
               <label class="vs-label" for="tts-fixes">발음 교정 <small>어색하게 읽는 단어를 "원래 단어=읽을 표기"로 한 줄에 하나씩 (예: 노트북=노트 북)</small></label>
-              <textarea id="tts-fixes" class="vs-input" rows="2" placeholder="노트북=노트 북&#10;속기록=속끼록" onchange="ttsSaveFixes()"></textarea>
+              <textarea id="tts-fixes" class="vs-input" rows="2" placeholder="노트북=노트 북&#10;인재상=인재쌍" onchange="ttsSaveFixes()"></textarea>
               <div id="vs-adv-oa-wrap" hidden>
                 <label class="vs-label">대신 읽기용 OpenAI 목소리 <small>타입캐스트가 잠깐 안 될 때만 이 목소리로 읽어 면접이 멈추지 않아요</small></label>
                 <div id="vs-adv-oa"></div>
@@ -10594,10 +10595,12 @@ const ZpBack = {
     const ivOn = !!document.querySelector('#screen-interview.active') || document.body.classList.contains('imv-on');
     const popup = root.classList.contains('modal-overlay') && root.classList.contains('active');
     if(ivOn && !popup){ try{ openConfirmEnd(); }catch(_){} return true; }   // 면접 중: '면접을 여기서 마칠까요?' (계속하기를 누르면 이어서)
-    const btn = this.pick(root, b=>txt(b) === '이전으로' || /^←/.test(txt(b)) || b.getAttribute('aria-label') === '이전으로')
+    const btn = this.pick(root, b=>txt(b) === '이전으로' || b.getAttribute('aria-label') === '이전으로')
+      || this.pick(root, b=>/^←/.test(txt(b)) && !b.closest('header, nav, [class*="tnav"]'))   /* 2026-11-13c 관리자 위 메뉴의 '← 학교 관리'를 [이전으로]보다 먼저 누르던 것 */
       || this.pick(root, b=>b.dataset.zc === 'no' || txt(b) === '취소' || txt(b) === '닫기' || (ivOn && /계속하기$/.test(txt(b))))
       || this.pick(root, b=>/^(✕|×|x)$/i.test(txt(b)) || /^닫기/.test(b.getAttribute('aria-label') || '') || b.classList.contains('modal-close'));
     if(btn){ btn.click(); return true; }
+    if(root.id === 'screen-admin') return false;   // 관리자 첫 화면(현황)에서는 학생 홈으로 보내지 않고 '한 번 더 누르면 나가요'
     if(root.classList.contains('screen') && root.id !== 'screen-dashboard' && root.id !== 'screen-login'){ try{ goDashboard(); }catch(_){} return true; }
     try{ const g = document.getElementById('d3-growth'), d = document.getElementById('d3-debate'); if((g && !g.hidden) || (d && !d.hidden)){ goDashboard(); setDashView('home'); return true; } }catch(_){}
     return false;
@@ -12185,7 +12188,7 @@ const ReportAdmin = {
     if(!this.rows || force){
       if(box) box.innerHTML = '<div class="qa-empty">불러오는 중…</div>';
       try{ const { data, error } = await sb.from('interview_reports').select('*').order('created_at', { ascending:false }).limit(1000); if(error) throw error; this.rows = data || []; }
-      catch(e){ if(box) box.innerHTML = `<div class="qa-empty">면접 후기를 불러오지 못했어요. (${escapeHtml(String(e.message||e))})</div>`; return; }
+      catch(e){ const m = String((e && e.message) || e); if(box) box.innerHTML = `<div class="qa-empty">면접 후기를 불러오지 못했어요. ${/schema cache|does not exist|Could not find/i.test(m) ? '서버에 후기 표가 아직 준비되지 않았어요. 개발 담당자에게 알려 주세요.' : /failed to fetch|network/i.test(m) ? '인터넷 연결을 확인한 뒤 다시 눌러 주세요.' : '잠시 후 오른쪽 위 새로고침을 눌러 주세요.'}</div>`; console.warn('[면접 후기]', m); return; }   // 2026-11-13c 영어 오류 문구 대신 쉬운 말
     }
     this.render(); this.renderCall();
   },
@@ -12565,7 +12568,7 @@ async function qmLoad(){
   const note = document.getElementById('qm-note');
   const sel = document.getElementById('qm-field');
   if(sel && !sel.options.length) sel.innerHTML = qmFields().map(f=>`<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('');
-  if(sel) sel.value = Qm.field;
+  if(sel){ if(![...sel.options].some(o=>o.value === Qm.field) && sel.options.length) Qm.field = sel.options[0].value; sel.value = Qm.field; }   // 2026-11-13c 예전 기본 분야(국회)가 없어 빈칸으로 보이던 것
   try{
     const { data, error } = await sbAll(()=>sb.from('questions').select('*').order('sort_order', {ascending:true}).order('id', {ascending:true}));   // 2026-10-21d 1,000개 넘어도 전부
     if(error) throw error;
@@ -12596,7 +12599,7 @@ function qmRender(){
   const hiddenN = inField.filter(r=>!r.is_active).length;
   document.getElementById('qm-count').textContent = `${list.length}개 표시` + (hiddenN ? ` · 숨긴 문항 ${hiddenN}개` : '') + (needRec ? ` · 전체에서 녹음 필요 ${needRec}개` : '');
   const el = document.getElementById('qm-list');
-  if(!list.length){ el.innerHTML = `<div class="qa-empty" style="margin:12px;">${rows.length ? '조건에 맞는 문항이 없어요.' : '문항을 불러오는 중이에요…'}</div>`; return; }
+  if(!list.length){ el.innerHTML = `<div class="qa-empty" style="margin:12px;">${rows.length ? '조건에 맞는 문항이 없어요.' : Qm.rows ? '예전 문항 표가 비어 있어요. 지금 면접 질문은 <a href="javascript:void(0)" onclick="showAdminView(\'qbank\')">면접 DB·버전</a>에서 관리해요.' : '문항을 불러오는 중이에요…'}</div>`; return; }
   const groups = []; const key = r=>(r.bank)+'|'+(r.category||'');
   list.forEach(r=>{ let g = groups.find(x=>x.k===key(r)); if(!g){ g = { k:key(r), bank:r.bank, cat:r.category||'', items:[] }; groups.push(g); } g.items.push(r); });
   el.innerHTML = groups.map(g=>`<section class="qm-group"><header><b>${escapeHtml(g.cat || '(카테고리 없음)')}</b><span>${escapeHtml(QM_BANKS[g.bank]||g.bank)} · ${g.items.length}개</span></header>` + g.items.map((r,i)=>{
@@ -12792,7 +12795,7 @@ function endTour(done){
   Tour.on = false;
   const el = document.getElementById('tour'); if(el) el.hidden = true; document.body.classList.remove('tour-on');
   try{ localStorage.setItem(tourKey(), new Date().toISOString()); }catch(_){}
-  if(done) showToast('준비됐어요. 분야를 고르고 면접을 시작해 보세요.');
+  if(done) showToast((state.currentUser && (state.currentUser.isAdmin || (typeof School !== 'undefined' && School.isOn && School.isOn()))) ? '준비됐어요. 위 메뉴에서 필요한 화면을 골라 보세요.' : '준비됐어요. 분야를 고르고 면접을 시작해 보세요.');   // 2026-11-13c 관리자·담당자에게 학생용 문구가 뜨던 것
   try{ setTimeout(()=>HomeApp.maybeOffer(), 600); }catch(_){}
   try{ setTimeout(()=>RealReport.maybeNudge(), 1800); }catch(_){}   // 2026-10-16b 투어가 끝나면 '합격하면 꼭 남겨 주세요' 팝업
 }
@@ -14131,7 +14134,7 @@ const School = {
     if(sc){ sc.classList.toggle('schl-lite', on && !adm); sc.classList.toggle('adm-lite', on && adm); } if(!nv) return; nv.hidden = !on; if(!on) return;
     const av = state.adminView || ('sch-' + this.view);
     if(adm && AdminPg.isOps(av)){ const k = AdminPg.navOf(av);
-      nv.innerHTML = `<a href="javascript:void(0)" class="tn-back" onclick="School.open('overview')">← 학교 관리</a>` + AdminPg.NAV.map(([v, t])=>`<a href="javascript:void(0)"${v === k ? ' aria-current="page"' : ''} onclick="showAdminView('${v}')">${t}</a>`).join(''); return; }
+      nv.innerHTML = `<a href="javascript:void(0)" class="tn-back" onclick="School.open('overview')">← 학교 관리</a>` + AdminPg.NAV.map(([v, t])=>`<a href="javascript:void(0)"${v === k ? ' aria-current="page"' : ''} onclick="showAdminView('${v === 'questions' ? 'qbank' : v}')">${t}</a>`).join(''); return; }
     const L = [['overview','현황'],['students','학생'],['records','연습 기록'],['report','보고서']].concat(this.can('manage') ? [['talk','의견·공지']] : []).concat(adm ? [['roles','설정']] : []);
     const cur = /^sch-/.test(av) ? av.slice(4) : ({ overview:'overview', live:'overview', records:'records', realset:'records', hardq:'records', export:'records', notices:'talk' })[av] || this.view;
     nv.innerHTML = L.map(([v, t])=>`<a href="javascript:void(0)"${v === cur ? ' aria-current="page"' : ''} onclick="School.open('${v}')">${t}</a>`).join(''); },
@@ -15663,13 +15666,13 @@ function renderOverviewHardQ(){
 const AdminPg = {
   NAV: [['users','사용자'],['questions','문항'],['ivvoice','면접관'],['pipeline','AI·음성'],['feedback','운영 기록']],
   SUB: { users:[['users','계정·이용 권한'],['beta','연습 진행표'],['sch-roles','담당자·열람 범위']],
-    questions:[['questions','문항·모범답안'],['qbank','면접 DB·버전'],['qrecord','질문 음성·캐시'],['reports','실제 면접 후기'],['reportq','후기 질문 정리']],
+    questions:[['qbank','면접 DB·버전'],['qrecord','질문 음성·캐시'],['reports','실제 면접 후기'],['reportq','후기 질문 정리'],['questions','예전 문항 표']],   // 2026-11-13c '문항'을 누르면 실제 질문은행(면접 DB)이 먼저
     ivvoice:[['ivvoice','면접관 10명 목소리']],
     pipeline:[['pipeline','AI 켜기·횟수'],['sttfix','인식·발음 사전'],['tccredit','사용량·한도'],['ttslive','즉석으로 읽은 문장'],['voice','기본 목소리']],
     feedback:[['feedback','진단 기록·의견'],['live','접속·면접 세션'],['devtest','문제 확인 (개발용)']] },
   PH: { users:['사용자·이용 권한','계정 상태와 이용 범위를 확인하고 바꿔요.',[['live','접속·면접 세션'],['tccredit','사용량·한도']]],
     beta:['연습 진행표','학생마다 어디까지 연습했는지 한눈에 봐요.'],
-    questions:['문항·후기 관리','문항 원본과 실제 면접 제보를 구분해서 관리해요.',[['qbank','엑셀 DB·버전 관리'],['qbank','평가 기준']]],
+    questions:['예전 문항 표','처음 서비스에서 쓰던 문항 표예요. 지금 면접 질문은 \'면접 DB·버전\'의 질문은행(엑셀로 올린 것)에서 나와요.',[['qbank','면접 DB·버전으로']]],
     qbank:['면접 DB와 사용 중인 판','질문은행·기업 목록·평가 기준·AI 규칙을 함께 관리해요. 올리기 전에 검사하고, 바로 전 판으로 되돌릴 수 있어요.'],
     qrecord:['면접관 음성과 질문 캐시','미리 녹음해 둔 질문 음성과 면접 중 즉석으로 읽는 음성을 구분해요.'],
     ivvoice:['면접관 10명의 목소리','목소리 선택·미리 듣기·세부 조절을 함께 관리해요.',[['sttfix','발음 사전'],['tccredit','사용량·한도']]],
@@ -15693,7 +15696,7 @@ const AdminPg = {
   paint(view){
     try{ School.paintNav(); }catch(_){}
     const adm = state.currentUser && state.currentUser.isAdmin, on = typeof School !== 'undefined' && School.isOn();
-    const slot = document.getElementById('adm-ph-slot'); if(slot) slot.innerHTML = ''; document.querySelectorAll('#screen-admin .adm-has-ph').forEach(x=>x.classList.remove('adm-has-ph'));
+    const slot = document.getElementById('adm-ph-slot'); if(slot) slot.innerHTML = ''; document.querySelectorAll('#screen-admin .adm-has-ph').forEach(x=>x.classList.remove('adm-has-ph')); document.querySelectorAll('#screen-admin .adm-prev-x').forEach(x=>x.remove());
     this.subUnder();
     if(!adm || !on || !this.isOps(view)) return;
     const box = document.querySelector('#screen-admin .admin-view.active'); if(!box) return;
@@ -15702,6 +15705,7 @@ const AdminPg = {
     const d = this.PH[view]; if(d){ const links = (d[2] || []).filter(([v])=>!inTabs.has(v)).map(([v, t])=>`<button type="button" class="btn btn-outline btn-sm" onclick="showAdminView('${v}')">${t}</button>`).join('');
       (slot || box).insertAdjacentHTML('afterbegin', `<div class="adm-ph"><div class="adm-ph-row"><div><h2>${d[0]}</h2><p>${d[1]}</p></div>${this.hist.length ? '<button type="button" class="btn btn-outline adm-prev" onclick="AdminPg.back()">이전으로</button>' : ''}</div>${links ? `<div class="adm-ph-links">${links}</div>` : ''}</div>`);
       box.classList.add('adm-has-ph'); }
+    else if(this.hist.length && (view === 'reports' || view === 'reportq')){ const head = box.querySelector('.ra-head, .admin-view-head'); if(head) head.insertAdjacentHTML('beforeend', '<button type="button" class="btn btn-outline adm-prev adm-prev-x" onclick="AdminPg.back()">이전으로</button>'); }   // 2026-11-13c 제목 줄이 따로 있는 두 화면도 [이전으로]
     const sub = document.getElementById('admin-subtabs'), L = this.SUB[this.navOf(view)] || [];
     if(sub){ sub.innerHTML = L.length > 1 ? L.map(([v, t])=>`<button type="button" class="${v === view ? 'on' : ''}" onclick="showAdminView('${v}')">${t}</button>`).join('') : ''; }
   },
@@ -22448,7 +22452,7 @@ const SttAdmin = {
       }
       try{ Activity.log('answers_fixed', { n: done }); }catch(_){}
       if(!quiet) showToast(`지난 답변 ${done}개를 바로잡았어요. 점수는 그대로예요.`);
-    }catch(e){ showToast('지난 답변을 바로잡지 못했어요: ' + ((e && e.message) || e)); done = -1; }
+    }catch(e){ const m = String((e && e.message) || e); console.warn('[답변 바로잡기]', m); showToast('지난 답변을 바로잡지 못했어요. ' + (/schema cache|does not exist|Could not find/i.test(m) ? '서버 준비가 아직 안 됐어요. 개발 담당자에게 알려 주세요.' : /관리자만/.test(m) ? '관리자만 할 수 있어요.' : '잠시 후 다시 눌러 주세요.')); done = -1; }
     this.past = null; this.renderPast(); return done;
   },
   async save(pairs, msg){
@@ -27117,7 +27121,7 @@ async function tcFetch(body){
 const TC_AGE = { child:'어린이', teenager:'10대', young_adult:'청년', middle_age:'중년', elder:'노년' };
 const TC_EMO = { smart:'문맥 따라 자동', normal:'보통', toneup:'톤 높게', tonedown:'톤 낮게', happy:'밝게', sad:'슬프게', angry:'화난', whisper:'속삭임', tender:'부드럽게', calm:'차분하게' };
 const VS_EXAMPLES = [
-  '국회 상임위원회 회의 중 발언자가 겹칠 경우, 속기록 작성 순서를 어떻게 정리하시겠습니까? 조서와 녹취록의 차이도 함께 설명해 주십시오.',
+  '지원하신 직무에서 가장 중요하다고 생각하는 역량은 무엇이고, 그 역량을 보여 준 경험을 하나 말씀해 주세요.',
   '방금 말씀하신 경험에서, 가장 어려웠던 순간은 언제였고 그때 어떻게 판단하셨나요?',
   '안녕하세요. 지금부터 모의 면접을 시작하겠습니다. 편하게 답변해 주세요.',
 ];
