@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-12z8';
+var APP_VERSION = '2026-11-12z10';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6423,6 +6423,14 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-mypage .mp-pg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.62fr);gap:20px 34px;align-items:start;margin-bottom:18px}
 #modal-mypage .mp-pf{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #ded5ce}
 #modal-mypage .mp-pf span{font-size:13.5px;color:#6a5b51} #modal-mypage .mp-pf b{font-size:15px;color:#2b2521} #modal-mypage .mp-pf em{font-style:normal;color:#6a5b51;font-weight:400}
+/* 2026-11-12z10 내 정보: 그 자리에서 고치기 */
+#modal-mypage .mp-pf-ed{align-items:start} #modal-mypage .mp-pf-ed > span{padding-top:8px}
+#modal-mypage .mp-ed{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.7fr);gap:10px} #modal-mypage .mp-ed .mp-ed-w{grid-column:1 / -1}
+#modal-mypage .mp-ed-f{display:grid;gap:5px;font-size:12.5px;font-weight:600;color:#6a5b51} #modal-mypage .mp-ed-f small{font-weight:400}
+#modal-mypage .mp-ed-f input, #modal-mypage .mp-ed-f select{height:40px;border:1px solid #ded5ce;border-radius:8px;padding:0 10px;font:inherit;font-size:14.5px;color:#2b2521;background:#fff;width:100%;box-sizing:border-box}
+#modal-mypage .mp-ed-acts{display:flex;flex-direction:column;gap:6px;padding-top:22px} #modal-mypage .mp-ed-acts .btn{flex:none;width:auto;min-width:64px}
+#modal-mypage .mp-ed-sug{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:4px} #modal-mypage .mp-ed-sug:empty{display:none}
+#modal-mypage .mp-ed-sug button{width:100%;text-align:left;border:1px solid #ded5ce;background:#fff;border-radius:8px;padding:7px 10px;font:inherit;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;gap:8px} #modal-mypage .mp-ed-sug small{color:#6a5b51}
 #modal-mypage .mp-acts{display:flex;gap:8px;flex-wrap:wrap} #modal-mypage .mp-bottom{margin-top:20px}
 #modal-mypage .mp-fold, #modal-feedback .fb-faq{border-top:1px solid #ded5ce;padding:14px 0} #modal-mypage .mp-fold summary, #modal-feedback .fb-faq summary{cursor:pointer;font-weight:600;color:#2b2521;font-size:15px}
 #modal-mypage .mp-fold[open] summary{margin-bottom:12px}
@@ -6441,14 +6449,14 @@ html.ivv-dr-open{overflow:hidden;}
   #modal-mypage.zp-pg .zp-head, #modal-feedback.zp-pg .zp-head{flex-direction:column-reverse;gap:10px} #modal-mypage.zp-pg .zp-prev, #modal-feedback.zp-pg .zp-prev{align-self:flex-end;padding:8px 14px}
   #modal-mypage.zp-pg .zp-head h2, #modal-feedback.zp-pg .zp-head h2{font-size:22px}
   #modal-mypage .mp-pg, #modal-feedback.zp-pg .modal-body{grid-template-columns:1fr} #modal-feedback.zp-pg .fb-aside{grid-column:1;grid-row:auto;order:9;margin-top:16px}
-  #modal-mypage .mp-pf{grid-template-columns:1fr auto} #modal-mypage .mp-pf span{grid-column:1 / -1}
+  #modal-mypage .mp-pf{grid-template-columns:1fr auto} #modal-mypage .mp-pf span{grid-column:1 / -1} #modal-mypage .mp-ed{grid-template-columns:1fr} #modal-mypage .mp-ed-acts{flex-direction:row;padding-top:0;grid-column:1 / -1}
   #modal-feedback.zp-pg .modal-foot{padding:0 16px 30px}
 }
 /* ===== 2026-11-12z2 시안 6단계: 학교 담당자 화면 (색은 기존 그대로) ===== */
 #screen-admin .schl-tnav{display:flex;gap:22px;margin-left:24px} #screen-admin .schl-tnav[hidden]{display:none}
 #screen-admin .schl-tnav a{font-size:14.5px;color:#2b2521;text-decoration:none;padding:6px 0;border-bottom:2px solid transparent;white-space:nowrap} #screen-admin .schl-tnav a[aria-current="page"]{color:#bd411b;border-bottom-color:#bd411b;font-weight:600}
 #screen-admin.schl-lite .admin-sidebar, #screen-admin.schl-lite #admin-subtabs, #screen-admin.schl-lite #afind{display:none !important}
-#screen-admin.schl-lite .admin-layout{grid-template-columns:minmax(0,1fr) !important;max-width:1060px !important}
+#screen-admin.schl-lite .admin-layout{grid-template-columns:minmax(0,1fr) !important;max-width:1360px !important}   /* 2026-11-12z9 넓은 화면에서 1060 → 1360 */
 .schl-ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:4px 0 18px}
 .schl-ph h2{margin:0;font-size:26px;font-weight:800;color:#2b2521;letter-spacing:-.02em} .schl-ph p{margin:6px 0 0;font-size:15px;color:#6a5b51}
 .schl-prev{flex:none !important;width:auto !important;min-width:0 !important;height:auto !important;white-space:nowrap;padding:10px 16px !important;writing-mode:horizontal-tb}
@@ -6479,7 +6487,8 @@ html.ivv-dr-open{overflow:hidden;}
 }
 /* ===== 2026-11-12z3 시안 7단계: 관리자 운영 설정 (색은 기존 그대로) ===== */
 #screen-admin.adm-lite .admin-sidebar{display:none !important}
-#screen-admin.adm-lite .admin-layout{grid-template-columns:minmax(0,1fr) !important;max-width:1060px !important}
+#screen-admin.adm-lite .admin-layout{grid-template-columns:minmax(0,1fr) !important;max-width:1360px !important}   /* 2026-11-12z9 넓은 화면에서 1060 → 1360 */
+#screen-admin.adm-lite .admin-content, #screen-admin.schl-lite .admin-content{max-width:none}   /* 안쪽 칸도 1180으로 묶이지 않게 (2026-11-12z9) */
 #screen-admin .schl-tnav .tn-back{color:#6a5b51;font-size:13.5px;margin-right:6px}
 #screen-admin.adm-lite #admin-subtabs{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 6px;padding:0 0 10px;border-bottom:1px solid #ded5ce;background:transparent;box-shadow:none}
 #screen-admin.adm-lite #admin-subtabs:empty{display:none}
@@ -9756,7 +9765,7 @@ html.sv-open{overflow:hidden;}
     </div>
     <div class="modal-body modal-scroll">
       <div class="mp-pg"><div class="mp-prof" id="mp-prof"><p class="hx-fine">불러오는 중…</p></div>
-        <aside class="zp-aside"><b>학교 데이터 연결</b><p>현재 학교 데이터와 연동 전이에요. 직접 입력한 경험·서류·인바디만 질문과 조언에 써요.</p><div class="mp-acts"><button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('exps')">내 경험</button><button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('docs')">내 서류</button></div></aside></div>
+        <aside class="zp-aside"><b>학교 데이터 연결</b><p>현재 학교 데이터와 연동 전이에요. 직접 입력한 경험·서류·인바디만 질문과 조언에 써요.</p><div class="mp-acts"><button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('exps'); BackTo.set('flow')">내 경험</button><button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('docs'); BackTo.set('flow')">내 서류</button></div></aside></div>
       <details class="mp-fold"><summary>서류 관리 (자기소개서·이력서)</summary>
       <section class="mp-docs" aria-labelledby="mp-docs-t">
         <h3 class="mp-sec-t" id="mp-docs-t">면접 맞춤 질문용 서류 <small>올리면 면접 때 내 서류에 맞춘 질문이 나와요</small></h3>
@@ -9781,7 +9790,7 @@ html.sv-open{overflow:hidden;}
       </details>
       <section class="mp-inbody" aria-labelledby="mp-ib-t" hidden>
         <h3 class="mp-sec-t" id="mp-ib-t">커리어 인바디 <small>학점·어학·자격·경험을 적어 두면 면접 예상 질문과 결과 조언에 써요. 학교 커리어 인바디와 연동되면 자동으로 채워져요</small></h3>
-        <button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('ib')">커리어 인바디 열기</button>
+        <button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('ib'); BackTo.set('flow')">커리어 인바디 열기</button>
       </section>
       <details class="mp-fold"><summary>계정·로그인 관리</summary>
       <h3 class="mp-sec-t mp-sec-info">로그인 계정</h3>
@@ -9798,7 +9807,7 @@ html.sv-open{overflow:hidden;}
 
       <div class="mp-home" id="mp-home"><img src="apple-touch-icon.png?v=27c" alt=""><div><p class="t">휴대폰 홈 화면에 추가</p><p class="d" id="mp-home-d">아이콘만 누르면 바로 들어와요.</p></div><button class="btn btn-outline" id="mp-home-btn" onclick="HomeApp.open(true)">추가 방법</button></div>
       </details>
-      <div class="mp-acts mp-bottom"><button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('ib')">커리어 인바디·학교 자료</button><button type="button" class="btn btn-outline" onclick="closeMyPage(); openCoach()">자기소개 코치</button></div>
+      <div class="mp-acts mp-bottom"><button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('ib'); BackTo.set('flow')">커리어 인바디·학교 자료</button><button type="button" class="btn btn-outline" onclick="closeMyPage(); openCoach(); BackTo.set('coach')">자기소개 코치</button></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-outline" onclick="closeMyPage()">닫기</button>
@@ -10538,7 +10547,9 @@ function josa(word, pair){
 function durText(v){ const m = /^(\d+):(\d{2})$/.exec(String(v||'').trim()); if(!m) return String(v||''); const mm = +m[1], ss = +m[2]; return mm ? (ss ? `${mm}분 ${ss}초` : `${mm}분`) : `${ss}초`; }
 /* 2026-11-12t 안내 상황 공통 확인 창 (브라우저 기본 확인창 대신, 디자인 토큰 색) → Promise<boolean> */
 /* 2026-11-12v 시안 공통 틀: 전체 화면 위 메뉴 (팝업을 전체 화면으로 바꾼 곳에서 씀) */
-function zpNav(where){ try{ PracticeKit.close(); }catch(_){} try{ closeCoach(); }catch(_){} try{ closeDebateScreen(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
+/* 2026-11-12z10 [이전으로]가 들어온 곳으로: 내 정보에서 연 화면(내 경험·내 서류·커리어 인바디·자기소개 코치)은 [이전으로]를 누르면 내 정보로 돌아옴. 위 메뉴로 옮기면 지움 */
+const BackTo = { t:'', set(t){ this.t = t; }, take(t){ if(this.t && this.t === t){ this.t = ''; return true; } return false; }, clear(){ this.t = ''; } };
+function zpNav(where){ BackTo.clear(); try{ PracticeKit.close(); }catch(_){} try{ closeCoach(); }catch(_){} try{ closeDebateScreen(); }catch(_){} try{ StartFlow.close(); }catch(_){} navGo(where); }
 function zpHdr(cur){ const a = (w, t)=>`<a href="javascript:void(0)"${w === cur ? ' aria-current="page"' : ''} onclick="zpNav('${w}')">${t}</a>`;
   return `<header class="zp-hdr"><div class="zp-hdr-in"><a class="zp-brand" href="javascript:void(0)" onclick="zpNav('home')"><b>ZAVAPASS</b><span>× 한림대학교</span></a><nav class="zp-nav" aria-label="주 메뉴">${a('home','홈')}${a('hub','연습하기')}${a('growth','나의 기록')}${a('materials','내 자료')}</nav></div></header>`; }
 function zConfirm(o){
@@ -14636,7 +14647,7 @@ const StartFlow = {
       this.exps.forEach(e=>{ if(!this.s.use.includes(e.id)) this.s.use.push(e.id); }); };
     if(PrepSync.loaded) applySaved(); else PrepSync.pull().then(()=>{ applySaved(); if(document.getElementById('modal-flow').classList.contains('active') && this.s && this.s.step <= 2) this.render(); });
   },
-  close(){ try{ PrepRoom.stop(); }catch(_){} this.devLeave(); this.myMenu(false); document.getElementById('modal-flow').classList.remove('active'); },
+  close(){ if(BackTo.t === 'flow') BackTo.clear(); try{ PrepRoom.stop(); }catch(_){} this.devLeave(); this.myMenu(false); document.getElementById('modal-flow').classList.remove('active'); },
   /** 2026-11-12u 시안 06 '오늘은 어떻게 연습할까요?': 면접 준비 화면 틀 안의 첫 화면. 예전 연습하기 창의 도구는 '연습 도구 더 보기' 안에 그대로 */
   hub(){ this.open(); if(!this.s) return; this.s.hub = true; this.render(); },
   /** 2026-11-12v 시안 11~13·15·63·64: '내 자료' 화면들 (mat 내 자료 · exps 내 경험 · expadd 경험 추가 · docs 서류 · docq 서류 질문 · ib 커리어 인바디) */
@@ -14728,7 +14739,9 @@ const StartFlow = {
   markHome(kind){ document.querySelectorAll('[data-hm-kind]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.hmKind === kind))); },
   back(){ const s = this.s;
     if(s.hub){ this.close(); return; }
-    if(s.page){ const up = { exps:'mat', expadd:'exps', docs:'mat', docq:'docs', ib:'mat' }[s.page]; if(up && s.pageFrom === 'mat'){ s.page = up; this.render(); return; } this.close(); return; }
+    if(s.page){ const up = { exps:'mat', expadd:'exps', docs:'mat', docq:'docs', ib:'mat' }[s.page]; if(up && s.pageFrom === 'mat'){ s.page = up; this.render(); return; }
+      if(s.page === 'expadd' && s.pageFrom !== 'mat' && BackTo.t === 'flow'){ s.page = 'exps'; this.render(); return; }   // 내 정보 → 내 경험 → 경험 추가에서 [이전으로]는 내 경험으로
+      if(BackTo.take('flow')){ this.close(); openMyPage(); return; } this.close(); return; }
     if(s.step === 0 && s.fromHub){ s.hub = true; this.render(); return; }
     if(s.step === 2 && s.review){ this.close(); return; }   // 복습은 '내 경험' 단계가 없음
     if(s.step === 1 && s.sub){ s.sub = ''; this.render(); return; }
@@ -15617,7 +15630,9 @@ const AdminPg = {
     this.subUnder();
     if(!adm || !on || !this.isOps(view)) return;
     const box = document.querySelector('#screen-admin .admin-view.active'); if(!box) return;
-    const d = this.PH[view]; if(d){ const links = (d[2] || []).map(([v, t])=>`<button type="button" class="btn btn-outline btn-sm" onclick="showAdminView('${v}')">${t}</button>`).join('');
+    // 2026-11-12z9 아래 작은 탭에 이미 있는 메뉴는 위 큰 버튼에서 뺌 (같은 메뉴가 두 번 보이지 않게). 다른 묶음으로 가는 바로가기만 남김
+    const same = this.SUB[this.navOf(view)] || [], inTabs = new Set(same.length > 1 ? same.map(x=>x[0]) : []);
+    const d = this.PH[view]; if(d){ const links = (d[2] || []).filter(([v])=>!inTabs.has(v)).map(([v, t])=>`<button type="button" class="btn btn-outline btn-sm" onclick="showAdminView('${v}')">${t}</button>`).join('');
       (slot || box).insertAdjacentHTML('afterbegin', `<div class="adm-ph"><div class="adm-ph-row"><div><h2>${d[0]}</h2><p>${d[1]}</p></div>${this.hist.length ? '<button type="button" class="btn btn-outline adm-prev" onclick="AdminPg.back()">이전으로</button>' : ''}</div>${links ? `<div class="adm-ph-links">${links}</div>` : ''}</div>`);
       box.classList.add('adm-has-ph'); }
     const sub = document.getElementById('admin-subtabs'), L = this.SUB[this.navOf(view)] || [];
@@ -18273,7 +18288,7 @@ async function openMyPage(){
   const cs = document.getElementById('mp-cv-status'); if(cs){ cs.style.display='none'; cs.className='resume-status'; cs.textContent=''; }
   document.getElementById('modal-mypage').classList.add('active');
   { const h = document.getElementById('mp-hdr'); if(h) h.innerHTML = zpHdr(''); }
-  MyProf.render();
+  MyProf.edit = ""; MyProf.render();
   await renderMyPageResume();
   await renderMyPageCv();
   try{ await DocBox.loadShare(); }catch(_){}
@@ -18282,18 +18297,67 @@ async function openMyPage(){
 function closeMyPage(){ document.getElementById('modal-mypage').classList.remove('active'); }
 /* 2026-11-12z 시안 41: 면접용 프로필 (보여 주기만, 고치는 곳으로 이어 줌 — 저장하는 곳을 두 군데로 만들지 않음) */
 const MyProf = {
-  async render(){
+  edit: '',   // 2026-11-12z10 지금 고치는 줄 ('' | 'major' | 'org' | 'job')
+  async render(quick){
     const box = document.getElementById('mp-prof'); if(!box) return; const esc = escapeHtml;
-    try{ if(!PrepSync.loaded) await Promise.race([PrepSync.pull(), new Promise(r=>setTimeout(r, 3000))]); }catch(_){}
-    try{ if(!PracticeKit.plan) await PracticeKit.loadPlan(); }catch(_){}
+    if(!quick){   // '바꾸기'·'취소'·'저장' 뒤에는 다시 불러오지 않고 바로 그림 (입력칸이 늦게 바뀌지 않게)
+      try{ if(!PrepSync.loaded) await Promise.race([PrepSync.pull(), new Promise(r=>setTimeout(r, 3000))]); }catch(_){}
+      try{ if(!PracticeKit.plan) await PracticeKit.loadPlan(); }catch(_){} }
     const pr = PrepSync.profile || {}, pl = PracticeKit.plan || {};
-    const row = (l, v, btn, fn)=>`<div class="mp-pf"><span>${l}</span><b>${v ? esc(v) : '<em>아직 없음</em>'}</b><button type="button" class="btn btn-outline btn-sm" onclick="${fn}">${btn}</button></div>`;
+    const org = pl.company_name || pr.org || '', job = pl.job || pr.job || '';
+    // 2026-11-12z10 '바꾸기'를 누르면 다른 화면으로 넘어가지 않고 이 줄에서 바로 고치고 [저장]
+    const row = (k, l, v)=>this.edit === k ? `<div class="mp-pf mp-pf-ed" data-k="${k}"><span>${l}</span><div class="mp-ed">${this.form(k, pr, org, job)}</div>
+        <div class="mp-ed-acts"><button type="button" class="btn btn-solid btn-sm" onclick="MyProf.save('${k}')">저장</button><button type="button" class="btn btn-outline btn-sm" onclick="MyProf.open('')">취소</button></div></div>`
+      : `<div class="mp-pf"><span>${l}</span><b>${v ? esc(v) : '<em>아직 없음</em>'}</b><button type="button" class="btn btn-outline btn-sm" onclick="MyProf.open('${k}')">바꾸기</button></div>`;
     box.innerHTML = `<h3 class="mp-sec-t">면접용 프로필</h3>
-      ${row('전공·학년', [pr.dept, pr.grade ? pr.grade + '학년' : ''].filter(Boolean).join(' · '), '바꾸기', "closeMyPage(); StartFlow.open(null,'major')")}
-      ${row('관심 기관', pl.company_name || '', '바꾸기', 'closeMyPage(); PracticeKit.editPlan()')}
-      ${row('희망 직무', pl.job || '', '바꾸기', 'closeMyPage(); PracticeKit.editPlan()')}
-      <p class="hx-fine">전공·학년은 면접 준비 화면에서, 관심 기관·직무는 면접 D-day에서 저장해요.</p>`;
-  }
+      ${row('major', '전공·학년', [pr.dept, pr.grade ? pr.grade + '학년' : ''].filter(Boolean).join(' · '))}
+      ${row('org', '관심 기관', org)}
+      ${row('job', '희망 직무', job)}
+      <p class="hx-fine">여기서 바꾼 값은 면접 준비 화면과 면접 D-day에도 그대로 쓰여요.</p>`;
+    const f = box.querySelector('.mp-pf-ed input, .mp-pf-ed select'); if(f) try{ f.focus({ preventScroll:true }); }catch(_){}
+    box.querySelectorAll('.mp-pf-ed input').forEach(i=>i.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); MyProf.save(this.edit); } if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); MyProf.open(''); } }));
+    if(this.edit === 'org') this.bindOrg();
+  },
+  form(k, pr, org, job){ const esc = escapeHtml;
+    if(k === 'major'){ const depts = []; try{ Object.values(HALLYM_DEPTS).forEach(L=>L.forEach(d=>depts.push(d))); }catch(_){}
+      return `<label class="mp-ed-f">전공<input id="mp-ed-dept" value="${esc(pr.dept || '')}" placeholder="예: 경영학과" list="mp-ed-depts" autocomplete="off"><datalist id="mp-ed-depts">${depts.map(d=>`<option value="${esc(d)}">`).join('')}</datalist></label>
+        <label class="mp-ed-f">학년<select id="mp-ed-grade"><option value="">선택해 주세요</option>${['1','2','3','4'].map(g=>`<option value="${g}"${String(pr.grade || '') === g ? ' selected' : ''}>${g}학년</option>`).join('')}</select></label>`; }
+    if(k === 'org') return `<label class="mp-ed-f mp-ed-w">기관 이름 <small>목록에서 고르면 인재상과 기업 맞춤 질문이 함께 나와요</small><input id="mp-ed-org" value="${esc(org)}" placeholder="예: 국민건강보험공단" autocomplete="off"><input type="hidden" id="mp-ed-orgid" value="${esc((PracticeKit.plan || {}).company_id || (PrepSync.profile || {}).org_id || '')}"><ul class="pk-sug mp-ed-sug" id="mp-ed-sug"></ul></label>`;
+    return `<label class="mp-ed-f mp-ed-w">직무<input id="mp-ed-job" value="${esc(job)}" maxlength="60" placeholder="예: 행정직, 간호직, 마케팅" autocomplete="off"></label>`;
+  },
+  bindOrg(){
+    const inp = document.getElementById('mp-ed-org'), sug = document.getElementById('mp-ed-sug'), hid = document.getElementById('mp-ed-orgid'); if(!inp || !sug) return;
+    inp.oninput = ()=>{ hid.value = ''; clearTimeout(this._st); this._st = setTimeout(async ()=>{ const q = inp.value.trim(); if(!q){ sug.innerHTML = ''; return; }
+      let L = []; try{ L = await CompanyData.search(q, 6); }catch(_){}
+      sug.innerHTML = L.map(c=>`<li><button type="button" data-id="${escapeHtml(c.id)}" data-n="${escapeHtml(c.name)}">${escapeHtml(c.name)}<small>${escapeHtml(c.category || '')}</small></button></li>`).join('');
+      sug.querySelectorAll('button').forEach(b=>b.onclick = ()=>{ inp.value = b.dataset.n; hid.value = b.dataset.id; sug.innerHTML = ''; }); }, 200); };
+  },
+  open(k){ this.edit = k || ''; this.render(true); },
+  async save(k){
+    const v = id=>{ const e = document.getElementById(id); return e ? String(e.value || '').trim() : ''; };
+    try{
+      if(k === 'major'){
+        const dept = v('mp-ed-dept'), grade = v('mp-ed-grade');
+        if(!dept) return showToast('전공을 적어 주세요'); if(!grade) return showToast('학년을 골라 주세요');
+        PrepSync.profile = Object.assign({}, PrepSync.profile, { dept, grade });
+        try{ if(StartFlow.s && StartFlow.s.major){ StartFlow.s.major.dept = dept; StartFlow.s.major.grade = grade; } }catch(_){}   // 저장할 때 면접 준비 화면 값이 덮어쓰지 않게
+        await PrepSync.flush();
+      } else {
+        const pl = PracticeKit.plan;
+        const val = k === 'org' ? v('mp-ed-org') : v('mp-ed-job'), oid = k === 'org' ? (v('mp-ed-orgid') || null) : null;
+        if(pl && pl.target_date){   // 면접 D-day가 있으면 그 날짜는 그대로 두고 기관·직무만 바꿈
+          const patch = k === 'org' ? { company_name: val || null, company_id: oid } : { job: val || null };
+          const { error } = await sb.from('interview_plans').update(Object.assign(patch, { updated_at: new Date().toISOString() })).eq('user_id', state.currentUser.id);
+          if(error) return showToast('저장하지 못했어요. ' + friendlyErr(error), 'warn');
+          PracticeKit.plan = Object.assign({}, pl, patch);
+        }
+        // 면접 날짜가 없어도 저장 (D-day를 처음 만들 때 이 값이 미리 채워짐)
+        PrepSync.profile = Object.assign({}, PrepSync.profile, k === 'org' ? { org: val, org_id: oid || '' } : { job: val });
+        await PrepSync.flush();
+      }
+      this.edit = ''; await this.render(true); showToast('저장했어요', 'ok');
+    }catch(e){ showToast('저장하지 못했어요. ' + (e && e.message || ''), 'warn'); }
+  },
 };
 
 async function renderMyPageResume(){
@@ -25666,6 +25730,7 @@ function closeCoach(){
   if(Coach.practicing || Coach.draftRec){ try{ StenoListener.stop('manual'); }catch(e){} }
   coachStopTimer();
   document.getElementById('modal-coach').classList.remove('active');
+  if(BackTo.take('coach')) openMyPage();   // 2026-11-12z10 내 정보에서 열었으면 내 정보로
 }
 function coachRenderScript(){
   const has = !!Coach.script;
@@ -27477,7 +27542,7 @@ const PracticeKit = {
     const pg = /\bpg\b/.test(cls || '') || this._nextPg; this._nextPg = false;
     let m = document.getElementById('pk-modal');
     if(!m){ m = document.createElement('div'); m.id = 'pk-modal'; m.className = 'pk-ov'; document.body.appendChild(m);
-      m.addEventListener('mousedown', e=>{ if(e.target === m) this.close(); });
+      m.addEventListener('mousedown', e=>{ if(e.target === m && !m.classList.contains('pg')) this.close(); });   // 2026-11-12z10 전체 화면(pg)일 때는 바깥 빈 곳을 눌러도 닫히지 않음
       document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && m.classList.contains('on')) this.close(); }); }
     m.classList.toggle('pg', !!pg);
     m.innerHTML = (pg ? zpHdr(this._pgNav || 'materials') : '') + `<div class="pk-box ${cls || ''}" role="dialog" aria-modal="true">${html}</div>`; this._pgNav = '';
@@ -27939,7 +28004,8 @@ const PracticeKit = {
     if(error) showToast('점검표를 저장하지 못했어요. ' + friendlyErr(error), 'warn');
   },
   editPlan(){
-    const p = this.plan || {}, minD = this.today();
+    const pf = (typeof PrepSync !== 'undefined' && PrepSync.profile) || {};
+    const p = this.plan || { company_name: pf.org || '', company_id: pf.org_id || '', job: pf.job || '' }, minD = this.today();   // 2026-11-12z10 내 정보에 적은 관심 기관·직무를 미리 채움
     this.pgOpen('hub');
     this.modal(this.head('면접 전날부터 다녀온 뒤까지', p.target_date ? '면접 정보를 바꿔요.' : '실제 면접 날짜와 기관을 넣어요.') + `<div class="pk-b pk-form">
         <label>면접 날짜<input type="date" id="pk-d" min="${minD}" value="${escapeHtml(p.target_date || '')}" autofocus></label>
@@ -28137,7 +28203,7 @@ const Finish10 = {
     this.stop(); try{ HomeTabs.close(); }catch(_){}
     PracticeKit.pgOpen('hub');
     PracticeKit.modal(PracticeKit.head('10분 마무리', '자기소개·지원동기·예상 질문 2개, 총 4문항으로 준비해요.') + `<div class="pk-b" id="f10-b"><div class="pk-wait"><i></i>준비하고 있어요</div></div><footer class="pk-f" id="f10-f"></footer>`, 'wide');
-    const m = document.getElementById('pk-modal'); if(m && !m._f10){ m._f10 = true; m.addEventListener('mousedown', e=>{ if(e.target === m) this.stop(); }); }
+    const m = document.getElementById('pk-modal'); if(m && !m._f10){ m._f10 = true; m.addEventListener('mousedown', e=>{ if(e.target === m && !m.classList.contains('pg')) this.stop(); }); }
     let orgs = []; try{ orgs = (await Debate.loadOrgs()) || []; }catch(_){}
     try{ if(!PracticeKit.plan) await PracticeKit.loadPlan(); }catch(_){}
     try{ if(!AnswerNote.data) await AnswerNote.load(); }catch(_){}
