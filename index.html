@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13d';
+var APP_VERSION = '2026-11-13e';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -23832,10 +23832,13 @@ const ResultView = {
   failed(){ if(!this.aiOn() || state.histView) return []; const n = state.currentQ || 0, out = [];
     for(let i = 0; i < n; i++){ const t = String((state.answerTexts || [])[i] || '').trim(); const a = (state.answerFeedback || [])[i]; if(t && !(a && a.ai)) out.push(i); }
     return out; },
-  show(mode, qi){ this.mode = mode; if(qi != null) this.qi = qi; const sc = this.scr(); if(!sc) return; sc.dataset.rv = mode;
+  show(mode, qi){ const pm = this.mode, pq = this.qi; if(mode === 'sum') this.hist = []; else if(!this._back && pm && pm !== mode && pm !== 'proc' && pm !== 'fail'){ this.hist = this.hist || []; this.hist.push({ m: pm, q: pq }); if(this.hist.length > 12) this.hist.shift(); } this._back = false;   // 2026-11-13e 지나온 결과 화면 기억
+    this.mode = mode; if(qi != null) this.qi = qi; const sc = this.scr(); if(!sc) return; sc.dataset.rv = mode;
     if(mode !== 'dv') this.dvStop(); if(mode !== 'rt') this.rtMicStop();
     if(mode === 'sum') this.renderSum(); else if(mode === 'q') this.renderQ(this.qi); else if(mode === 'ae') this.renderAe(this.qi); else if(mode === 'rw') this.renderRw(this.qi); else if(mode === 'dv') this.renderDv(this.qi); else if(mode === 'rt') this.renderRt(this.qi); else if(mode === 'cmp') this.renderCmp(this.qi);
     try{ window.scrollTo(0, 0); }catch(_){} },
+  /** [이전으로]·휴대폰 뒤로: 들어온 결과 화면으로 (기억이 없으면 기본 화면) */
+  back(def){ const h = (this.hist || []).pop(); this._back = true; if(h) this.show(h.m, h.q); else this.show(def || 'sum', def === 'sum' ? undefined : this.qi); },
   refresh(){ if(this.mode === 'sum') this.renderSum(); else if(this.mode === 'q') this.renderQ(this.qi); else if(this.mode === 'ae') this.renderAe(this.qi); else if(this.mode === 'dv') this.renderDv(this.qi); },
   /* ── 20 분석 중 ── */
   procStart(list){ const total = list.length; let done = 0; this.mode = 'proc'; const sc = this.scr(); if(sc) sc.dataset.rv = 'proc';
@@ -23957,7 +23960,8 @@ const ResultView = {
     const kick2 = state.histView ? kick.replace(/^이번 면접/, '이 면접') : kick;
     const head = p ? p.tip.t : (n ? '답이 짧아 고칠 점을 고르지 못했어요' : '기록된 답변이 없어요');
     const good = this.goodLine();
-    const fix = p ? (p.why || p.tip.ex) : (n ? '답변을 조금 더 길게 말하면 질문별 피드백을 받을 수 있어요.' : '');
+    const fixAlt = p ? (()=>{ try{ const lab = p.ax && Rubric.AXIS_LABELS[p.ax], ax = p.rb && p.rb.axes && p.rb.axes[p.ax]; return lab ? `질문 ${p.i + 1}에서 '${lab}' 점수가 가장 낮았어요${ax && ax.score != null ? ` (${ax.score}점)` : ''}.` : ''; }catch(_){ return ''; } })() : '';   // 2026-11-13e '이렇게 해 보세요' 문장을 되풀이하지 않게
+    const fix = p ? (p.why || fixAlt) : (n ? '답변을 조금 더 길게 말하면 질문별 피드백을 받을 수 있어요.' : '');
     const k = p ? this.key(p.i) : '';
     const canRw = p && String((state.answerTexts || [])[p.i] || '').trim().length >= 5 && PracticeKit.uid();
     const rec = this.rec(), vid = !!(rec && rec.url), cam = this.hasSelfCam();
@@ -24010,7 +24014,7 @@ const ResultView = {
     const S = (a.strengths || []).filter(Boolean), I = (a.improvements || []).filter(Boolean);
     const k = this.key(i), canRw = ans.trim().length >= 5 && PracticeKit.uid();
     const rw = String(a.rewrite || '').trim();
-    box.innerHTML = `<div class="rv-head rv-head-row"><div><h1 class="rv-h">${escapeHtml(title)}</h1><p class="rv-lead">질문 ${i + 1} / ${n}${sc.type ? ' · ' + escapeHtml(sc.type) : ''}${sc.g && sc.g !== '–' ? ` · ${escapeHtml(sc.g)} ${escapeHtml(sc.s)}` : sc.s ? ' · ' + escapeHtml(sc.s) : ''}${sc.by ? ` <span class="rv-dim">(${escapeHtml(sc.by)})</span>` : ''}</p></div><button type="button" class="btn btn-outline rv-prev" onclick="ResultView.show('sum')">이전으로</button></div>
+    box.innerHTML = `<div class="rv-head rv-head-row"><div><h1 class="rv-h">${escapeHtml(title)}</h1><p class="rv-lead">질문 ${i + 1} / ${n}${sc.type ? ' · ' + escapeHtml(sc.type) : ''}${sc.g && sc.g !== '–' ? ` · ${escapeHtml(sc.g)} ${escapeHtml(sc.s)}` : sc.s ? ' · ' + escapeHtml(sc.s) : ''}${sc.by ? ` <span class="rv-dim">(${escapeHtml(sc.by)})</span>` : ''}</p></div><button type="button" class="btn btn-outline rv-prev" onclick="ResultView.back('sum')">이전으로</button></div>
       <div class="rv-f"><label for="rv-qsel">돌아볼 질문</label><select id="rv-qsel" onchange="ResultView.show('q', +this.value)">${opts}</select></div>
       <div class="rv-2col rv-qgrid">
         <div class="rv-main">
@@ -24132,7 +24136,7 @@ const ResultView = {
   /** 공통: 돌아볼 질문 고르기 */
   qSel(mode, i){ const n = state.currentQ || 0;
     return `<div class="rv-f"><label for="rv-sel-${mode}">돌아볼 질문</label><select id="rv-sel-${mode}" onchange="ResultView.show('${mode}', +this.value)">${Array.from({ length: n }, (_, k)=>{ const s2 = this.qScore(k), it = state.interviewQuestions[k] || {}; return `<option value="${k}"${k === i ? ' selected' : ''}>질문 ${k + 1} · ${escapeHtml(it.followup ? '꼬리질문' : (s2.type || '질문'))} · ${escapeHtml(String(it.q || '').slice(0, 28))}${String(it.q || '').length > 28 ? '…' : ''}</option>`; }).join('')}</select></div>`; },
-  headRow(t, lead, back){ return `<div class="rv-head rv-head-row"><div><h1 class="rv-h">${t}</h1><p class="rv-lead">${lead}</p></div><button type="button" class="btn btn-outline rv-prev" onclick="ResultView.show('${back || 'q'}'${back === 'sum' ? '' : ', ' + this.qi})">이전으로</button></div>`; },
+  headRow(t, lead, back){ return `<div class="rv-head rv-head-row"><div><h1 class="rv-h">${t}</h1><p class="rv-lead">${lead}</p></div><button type="button" class="btn btn-outline rv-prev" onclick="ResultView.back('${back || 'q'}')">이전으로</button></div>`; },
   /* ── 65 A~E 평가 근거 ── */
   renderAe(i){ const box = document.getElementById('rv-ae'); if(!box) return; const n = state.currentQ || 0; if(!n){ box.innerHTML = ''; return; }
     i = Math.max(0, Math.min(n - 1, i || 0)); this.qi = i;
@@ -24218,10 +24222,10 @@ const ResultView = {
     const m = !!(d && d.measured), fm = !!(f && f.frames >= 3);
     const fx = k=>{ try{ return (FaceCoach.tips(f).fix || []).find(t=>k.test(t)) || ''; }catch(_){ return ''; } };
     return [
-      ['rate', '말 빠르기', m ? `${d.rate}자/분 · ${d.rateLabel}` : null, m ? (/느림/.test(d.rateLabel) ? '조금 더 또박또박 이어서 말해 보세요. 문장 사이 쉼을 짧게 줄이면 좋아요.' : /빠름/.test(d.rateLabel) ? '문장 끝마다 한 박자 쉬어 가며 말해 보세요.' : '알맞은 빠르기로 말했어요.') : ''],
-      ['filler', '군말 (음·어)', m ? d.fillerLabel : null, m ? (d.fillers > 0 ? '"음·어"가 나오려 할 때 잠깐 숨을 고르고 다음 문장을 시작해 보세요.' : '군말 없이 말했어요.') : ''],
-      ['hes', '머뭇거림', m ? d.hesLabel : null, m ? (d.hesSec != null && d.hesSec > 4 ? '질문을 듣고 첫 문장을 시작하기까지 오래 걸렸어요. 결론 한 문장을 먼저 말해 보세요.' : '질문을 듣고 바로 답을 시작했어요.') : ''],
-      ['time', '답변 시간', m ? `${d.durSec}초 · ${d.timeLabel}` : null, m ? (/짧음/.test(d.timeLabel) ? '경험 한 가지와 결과를 덧붙여 30초~1분으로 말해 보세요.' : /김/.test(d.timeLabel) ? '경험은 하나만 골라 결론 → 내가 한 일 → 결과 순서로 줄여 보세요.' : '알맞은 길이로 답했어요.') : ''],
+      ['rate', '말 빠르기', (m && d.rate != null) ? `${d.rate}자/분${d.rateLabel ? ' · ' + d.rateLabel : ''}` : null, (m && d.rate != null) ? (/느림/.test(d.rateLabel) ? '조금 더 또박또박 이어서 말해 보세요. 문장 사이 쉼을 짧게 줄이면 좋아요.' : /빠름/.test(d.rateLabel) ? '문장 끝마다 한 박자 쉬어 가며 말해 보세요.' : '알맞은 빠르기로 말했어요.') : ''],
+      ['filler', '군말 (음·어)', (m && d.fillerLabel) ? d.fillerLabel : null, m ? (d.fillers > 0 ? '"음·어"가 나오려 할 때 잠깐 숨을 고르고 다음 문장을 시작해 보세요.' : '군말 없이 말했어요.') : ''],
+      ['hes', '머뭇거림', (m && d.hesLabel) ? d.hesLabel : null, m ? (d.hesSec != null && d.hesSec > 4 ? '질문을 듣고 첫 문장을 시작하기까지 오래 걸렸어요. 결론 한 문장을 먼저 말해 보세요.' : '질문을 듣고 바로 답을 시작했어요.') : ''],
+      ['time', '답변 시간', (m && d.durSec != null) ? `${d.durSec}초${d.timeLabel ? ' · ' + d.timeLabel : ''}` : null, (m && d.durSec != null) ? (/짧음/.test(d.timeLabel) ? '경험 한 가지와 결과를 덧붙여 30초~1분으로 말해 보세요.' : /김/.test(d.timeLabel) ? '경험은 하나만 골라 결론 → 내가 한 일 → 결과 순서로 줄여 보세요.' : '알맞은 길이로 답했어요.') : ''],
       ['gaze', '시선 (카메라 정면)', fm ? `정면 ${f.frontPct}% · 아래 ${f.downPct || 0}%` : null, fm ? (fx(/시선|아래|정면|카메라/) || '카메라 쪽을 보며 답했어요.') : ''],
       ['pose', '자세 (고개 움직임)', fm ? `크게 움직인 시간 ${f.movePct || 0}%` : null, fm ? (fx(/움직|자세|고개|손/) || '자세가 안정적이었어요.') : ''],
       ['vol', '음량', m && d.vol ? (d.vol.endDrop >= 30 ? `끝부분이 ${d.vol.endDrop}% 작아짐` : d.vol.label) : null, m && d.vol ? d.vol.note : ''],
@@ -31720,6 +31724,29 @@ body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .rr-av-dot{po
 #d3-growth .gw-card, #d3-growth .d3-card, #d3-growth .d3-panel{background:#fff;border:1px solid #ded5ce}
 #d3-growth .gw-range button{border-color:#ded5ce;background:#fff;color:#2b2521}
 #d3-growth .gw-range button.on{background:#2b2521;border-color:#2b2521;color:#fff}
+/* 2026-11-13e 결과 화면 위 메뉴 줄도 다른 화면과 같게 (작은 로고 · 가운데 메뉴 · 주황 밑줄 · 오른쪽 ▶ 내 메뉴) */
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr{background:#faf9f7 !important;border-bottom:1px solid #ded5ce !important}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-hdr-inner{display:flex !important;align-items:center;gap:20px;height:72px !important;max-width:1160px !important;margin:0 auto;padding:0 clamp(16px,4vw,32px) !important}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-brand{flex:none;display:flex;align-items:baseline;gap:8px;transform:none !important;color:#2b2521}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-dot{display:none !important}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-logo{font-size:17px !important;font-weight:800;letter-spacing:normal;gap:0}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-org{display:inline-flex !important;align-items:baseline;gap:4px !important;font-size:13px !important;font-weight:400 !important;letter-spacing:normal !important;color:#6a5b51 !important}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-org .d3-x{color:#6a5b51 !important;font-weight:400}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-brand, body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-brand *, body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-nav a, body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-my-btn{line-height:normal !important}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-nav{flex:1;display:flex !important;justify-content:center;gap:24px !important;margin:0 !important}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-nav a{height:auto !important;padding:6px 0 !important;font-size:14.5px !important;font-weight:400 !important;color:#2b2521 !important;background:none !important;border-radius:0 !important;border-bottom:2px solid transparent}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-nav a:hover{color:#bd411b !important}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-nav a[aria-current="page"]{color:#bd411b !important;font-weight:600 !important;border-bottom-color:#bd411b}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-nav a[aria-current="page"]::after{display:none !important}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-actions{flex:none;display:flex;align-items:center;gap:0}
+body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-my-btn{padding:8px 4px !important;font-size:14px !important;font-weight:400 !important;color:#2b2521 !important;min-height:0 !important;height:auto !important}
+@media (max-width:760px){
+  body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-hdr-inner{height:auto !important;min-height:56px;flex-wrap:wrap;gap:4px 12px;padding:10px 16px 0 !important}
+  body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-brand{order:1;flex:1} body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-actions{order:2}
+  body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-nav{order:3;flex:1 1 100%;justify-content:flex-start;gap:18px !important;overflow-x:auto;padding-bottom:2px}
+  body:not(.is-admin-ui):not(:has(#screen-admin.active)) #screen-result .r3-hdr .d3-nav a{font-size:14px !important;padding:10px 0 !important;white-space:nowrap}
+  #screen-result .rv-ec button, #screen-result .rs-next-ec button{display:inline-block;padding:10px 0;min-height:44px}   /* '경험 정리 도우미로 소재 찾기' 누르기 쉽게 */
+}
 /* 2026-11-13b 홈·나의 성장 위 메뉴 줄도 다른 화면과 같게 (시안: 작은 로고 · 가운데 메뉴 · 주황 밑줄 · 오른쪽 ▶ 내 메뉴). 알림 종은 내 메뉴 왼쪽에 그대로 */
 body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-hdr{background:#faf9f7 !important;border-bottom:1px solid #ded5ce !important}
 body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-hdr-inner{display:flex !important;align-items:center;gap:20px;height:72px !important;max-width:1160px !important;margin:0 auto;padding:0 clamp(16px,4vw,32px) !important}
