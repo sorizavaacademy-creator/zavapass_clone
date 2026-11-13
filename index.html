@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13a';
+var APP_VERSION = '2026-11-13b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6643,7 +6643,7 @@ html.ivv-dr-open{overflow:hidden;}
 #modal-flow.fl-page .pr-body{margin-top:0}
 @media(max-width:860px){
   #modal-flow .fl-2col{gap:22px}
-  #modal-flow .fl-nav{gap:14px}
+  /* 2026-11-13b 태블릿도 다른 화면과 같은 메뉴 간격 (예전 gap:14px 지움) */
 }
 @media(max-width:720px){
   #modal-flow .fl-2col{grid-template-columns:1fr}
@@ -31712,6 +31712,32 @@ body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn .rr-av-dot{po
 #d3-growth .gw-card, #d3-growth .d3-card, #d3-growth .d3-panel{background:#fff;border:1px solid #ded5ce}
 #d3-growth .gw-range button{border-color:#ded5ce;background:#fff;color:#2b2521}
 #d3-growth .gw-range button.on{background:#2b2521;border-color:#2b2521;color:#fff}
+/* 2026-11-13b 홈·나의 성장 위 메뉴 줄도 다른 화면과 같게 (시안: 작은 로고 · 가운데 메뉴 · 주황 밑줄 · 오른쪽 ▶ 내 메뉴). 알림 종은 내 메뉴 왼쪽에 그대로 */
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-hdr{background:#faf9f7 !important;border-bottom:1px solid #ded5ce !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-hdr-inner{display:flex !important;align-items:center;gap:20px;height:72px !important;max-width:1160px !important;margin:0 auto;padding:0 clamp(16px,4vw,32px) !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-brand{flex:none;display:flex;align-items:baseline;gap:8px;transform:none !important;color:#2b2521}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-dot{display:none !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn .rr-av-dot{left:auto !important;right:-5px !important;top:2px !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-brand, body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-brand *, body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav a, body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn, body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn::before{line-height:normal !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-logo{font-size:17px !important;font-weight:800;letter-spacing:normal;gap:0}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-org{display:inline-flex !important;align-items:baseline;gap:4px !important;font-size:13px !important;font-weight:400 !important;letter-spacing:normal !important;color:#6a5b51 !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-org .d3-x{color:#6a5b51 !important;font-weight:400}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav{flex:1;display:flex !important;justify-content:center;gap:24px !important;margin:0 !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav a{height:auto !important;padding:6px 0 !important;font-size:14.5px !important;font-weight:400 !important;color:#2b2521 !important;background:none !important;border-radius:0 !important;border-bottom:2px solid transparent}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav a:hover{color:#bd411b !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav a[aria-current="page"]{color:#bd411b !important;font-weight:600 !important;border-bottom-color:#bd411b}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav a[aria-current="page"]::after{display:none !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user{flex:none;position:relative;gap:0 !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .nt-bell-wrap{position:absolute !important;right:100%;top:50%;transform:translateY(-50%);margin-right:6px}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn{padding:8px 4px !important;font-size:14px !important;font-weight:400 !important;min-height:0 !important;height:auto !important}
+body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn::before{font-size:14px !important;content:"▶ 내 메뉴" !important}
+@media (max-width:760px){
+  body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-hdr-inner{height:auto !important;min-height:56px;flex-wrap:wrap;gap:4px 12px;padding:10px 16px 0 !important}
+  body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-brand{order:1;flex:1} body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user{order:2}
+  body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav{order:3;flex:1 1 100%;justify-content:flex-start;gap:18px !important;overflow-x:auto;padding-bottom:2px}
+  body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-nav a{font-size:14px !important;padding:10px 0 !important;white-space:nowrap}
+  body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-org{display:inline-flex !important}
+}
 `,
   init(){
     const st = document.createElement('style'); st.id = 'hz-css'; st.textContent = this.CSS; document.head.appendChild(st);
