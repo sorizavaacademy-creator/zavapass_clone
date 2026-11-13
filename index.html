@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13e';
+var APP_VERSION = '2026-11-13f';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -5644,7 +5644,7 @@ html.pk-open{overflow:hidden;}
 .pk-tip{margin:0;color:#4A5466;font-size:13.5px;}
 #pk-ans{width:100%;box-sizing:border-box;min-height:140px;padding:12px;border:1.5px solid #CFD7E3;border-radius:12px;font:inherit;font-size:15px;line-height:1.65;resize:vertical;}
 #pk-ans:focus{outline:none;border-color:#2346A0;}
-.pk-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;} .pk-mut{color:#6B7485;font-size:13px;} .pk-cnt{margin-left:auto;color:#6B7485;font-size:13px;}
+.pk-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;} .pk-why{margin:4px 0 6px;padding:8px 10px;border-radius:8px;background:#fdf0eb;color:#8a3a1c;font-size:13.5px;line-height:1.6;} .pk-mut{color:#6B7485;font-size:13px;} .pk-cnt{margin-left:auto;color:#6B7485;font-size:13px;}
 .pk-wait{display:flex;align-items:center;gap:10px;padding:16px;border-radius:12px;background:#F4F6FA;color:#4A5466;font-size:14px;}
 .pk-wait i{width:18px;height:18px;border-radius:50%;border:3px solid #C9D6F5;border-top-color:#2346A0;animation:liSpin .9s linear infinite;}
 .pk-err{padding:14px;border-radius:12px;background:#FDECEC;color:#8A1C1C;font-size:14px;}
@@ -20011,6 +20011,7 @@ const RubricPoints = {
   map: null, loading: null,
   load(){
     if(this.map) return Promise.resolve(true);
+    if(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS) return Promise.resolve(false);   // 2026-11-13f 한림대: 예전 문항별 채점 포인트 표는 없음 → 부르지 않고 모범답안 자동 분해로
     if(this.loading) return this.loading;
     // 2026-10-22v: 공개 파일(rubric-points.json) 대신 DB(rubric_points)에서 — 이용 중인 사람만 받을 수 있음
     this.loading = sbAll(()=>sb.from('rubric_points').select('id,data').order('id', { ascending:true })).then(({ data, error })=>{
@@ -24931,7 +24932,7 @@ const PersonaTalk = {
   },
 };
 const STEP1 = {
-  useDbQuestions: true,      // false면 DB를 건너뛰고 HTML 안의 문제은행만 사용
+  useDbQuestions: !(typeof DEMO_HALLYM_FIELDS !== 'undefined' && DEMO_HALLYM_FIELDS),      // false면 DB를 건너뛰고 HTML 안의 문제은행만 사용 (2026-11-13f 한림대는 예전 문항 표(pick_questions)를 쓰지 않아 바로 HTML 문제은행으로)
   useLlmFollowup: true,      // false면 Edge Function을 부르지 않고 템플릿 꼬리질문만 사용
   followupTimeoutMs: 20000,
   maxFollowupsPerQuestion: 3,
@@ -27704,7 +27705,7 @@ const PracticeKit = {
       </div>
       <footer class="pk-f">${o.back ? '<button type="button" class="pk-btn ghost" onclick="PracticeKit.back()">← 질문 목록</button>' : ''}<button type="button" class="pk-btn ghost" onclick="PracticeKit.close()">닫기</button><button type="button" class="pk-btn pri" id="pk-grade" onclick="PracticeKit.grade()">${o.fresh ? '채점하기' : '채점하고 비교하기'}</button></footer>`, 'wide');
     const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt');
-    const upd = ()=>{ cnt.textContent = ta.value.trim().length + '자'; }; ta.oninput = upd; upd();
+    const upd = ()=>{ cnt.textContent = ta.value.replace(/\s/g, '').length + '자'; }; ta.oninput = upd; upd();   // 2026-11-13f 채점 안내('답변이 n자로 짧아요')와 같은 띄어쓰기 뺀 글자 수
   },
   mic(){
     const btn = document.getElementById('pk-mic'), st = document.getElementById('pk-mic-st'), ta = document.getElementById('pk-ans'); if(!btn || !ta) return;
@@ -27730,15 +27731,20 @@ const PracticeKit = {
     const call = sb.functions.invoke('grade-answer', { body: { question: o.q, reference: o.ref ? refForAi(o.ref) : '', answer: ans, field: o.fieldName || '', field_id: o.fieldId || undefined,
       qtype: qtype || undefined, is_followup: !!o.followup, interview_id: 'retry-' + this.today(), company_id: o.companyId || undefined, company_seq: o.companySeq || undefined, major_dept: ctx.major_dept || undefined,
       qb_type: o.qbType || (prevAe && prevAe.qtype) || undefined, prior_scores: prevAe ? prevAe.scores : undefined } });   // 2026-11-05 A~E: 같은 질문을 다시 답하면 이전 점수와 비교해 좋아진 항목부터
-    const { data, error } = await Promise.race([call, new Promise((_, rej)=>setTimeout(()=>rej(new Error('AI 채점 응답이 늦어요')), 45000))]);
-    if(error || !data || typeof data.score !== 'number') return null;
+    let data = null, error = null;
+    try{ ({ data, error } = await Promise.race([call, new Promise((_, rej)=>setTimeout(()=>rej(new Error('AI 채점 응답이 늦어요')), 45000))])); }
+    catch(e){ this._aiWhy = '응답이 늦어 기본 채점으로 보여 줘요. 잠시 뒤 다시 채점하면 AI 피드백을 받을 수 있어요.'; return null; }
+    if(error){ let lim = null; try{ const b = await error.context.json(); if(b && b.error === 'limit') lim = b.limit || {}; }catch(_){}
+      this._aiWhy = lim ? (lim.reason === 'total' ? 'AI 채점 횟수를 모두 써서 기본 채점으로 보여 줘요. 더 필요하면 담당자에게 문의해 주세요.' : '오늘 쓸 수 있는 AI 채점 횟수를 다 써서 기본 채점으로 보여 줘요. 내일 다시 AI 피드백을 받을 수 있어요.')
+        : 'AI 채점이 잠시 응답하지 않아 기본 채점으로 보여 줘요. 잠시 뒤 다시 채점해 보세요.'; return null; }   // 2026-11-13f 왜 기본 채점인지 알려 줌
+    if(!data || typeof data.score !== 'number') return null;
     return { score: Math.max(0, Math.min(100, Math.round(data.score))), feedback: data.feedback || '', strengths: data.strengths || [], improvements: data.improvements || [], ae: data.ae && data.ae.scores ? data.ae : null };
   },
   async grade(){
     const o = this.cur, ta = document.getElementById('pk-ans'), btn = document.getElementById('pk-grade'), res = document.getElementById('pk-res'); if(!o || !ta) return;
     const ans = ta.value.trim(); if(ans.length < 10) return showToast('답변을 조금 더 길게 해 주세요 (10자 이상)');
     this.stopMic(); btn.disabled = true; btn.textContent = '채점하는 중…'; res.innerHTML = '<div class="pk-wait"><i></i>AI가 채점하고 있어요 (10~20초)</div>';
-    let ai = null; try{ ai = await this.aiGrade(o, ans); }catch(_){}
+    this._aiWhy = ''; let ai = null; try{ ai = await this.aiGrade(o, ans); }catch(_){}
     let rb = null; try{ rb = Rubric.evaluate({ q: o.q, ref: o.ref || null, followup: !!o.followup, fieldId: o.fieldId }, ans, null, ai ? ai.score : undefined); }catch(_){}
     const score = ai ? ai.score : (rb && !rb.empty ? rb.total : effortScore(ans));
     const axes = rb && !rb.empty ? Object.fromEntries(['content','structure','detail','length','attitude'].map(k=>[Rubric.AXIS_LABELS[k], rb.axes[k].score])) : null;
@@ -27756,7 +27762,7 @@ const PracticeKit = {
         <div class="pk-big"><div><small>이전</small><b>${o.score != null ? o.score : '–'}</b></div><i>→</i><div><small>${o.fresh && o.score == null ? '점수' : '이번'}</small><b class="now">${score}</b></div>${d != null ? `<span class="pk-delta ${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d > 0 ? '+' + d + '점 올랐어요' : d < 0 ? d + '점' : '그대로예요'}</span>` : ''}</div>
         ${o.noGrowth ? '' : this.growthHtml(o.answer, ans, prevAxes, axes, d)}
         ${rows ? `<table class="pk-ax"><thead><tr><th>항목</th><th>이전</th><th>${o.fresh && o.score == null ? '점수' : '이번'}</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : ''}
-        <div class="pk-fb"><b>${ai ? 'AI 피드백' : '피드백 (기본 채점)'}</b><p>${escapeHtml(fb)}</p>
+        <div class="pk-fb"><b>${ai ? 'AI 피드백' : '피드백 (기본 채점)'}</b>${!ai && this._aiWhy ? `<p class="pk-why">${escapeHtml(this._aiWhy)}</p>` : ''}<p>${escapeHtml(fb)}</p>
           ${ai && ai.strengths.length ? `<p class="pk-s"><b>잘한 점</b> ${ai.strengths.map(escapeHtml).join(' · ')}</p>` : ''}${ai && ai.improvements.length ? `<p class="pk-i"><b>보완할 점</b> ${ai.improvements.map(escapeHtml).join(' · ')}</p>` : ''}</div>
         <div class="pk-acts"><button type="button" class="pk-btn" onclick="PracticeKit.again()">↻ 한 번 더 고쳐 답하기</button><button type="button" class="pk-btn pk-ai" onclick="PracticeKit.rewriteNow()">✎ 이 답변 AI로 고쳐 보기</button></div>
       </div>`;
@@ -28322,7 +28328,7 @@ const Finish10 = {
       <textarea id="pk-ans" rows="7" placeholder="말하면 여기에 받아써져요. 직접 써도 돼요"></textarea>
       <div class="pk-row"><button type="button" class="pk-btn" id="pk-mic" onclick="PracticeKit.mic()">🎙 말로 답하기</button><span class="pk-mut" id="pk-mic-st"></span><span class="pk-cnt" id="pk-cnt">0자</span></div>`);
     this.foot(`<button type="button" class="pk-btn ghost" onclick="Finish10.startView()">처음으로</button><button type="button" class="pk-btn pri" id="f10-next" onclick="Finish10.next()">${i < s.qs.length - 1 ? '다 말했어요, 다음 질문' : '다 말했어요, 결과 보기'}</button>`);
-    const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt'); ta.oninput = ()=>{ cnt.textContent = ta.value.trim().length + '자'; };
+    const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt'); ta.oninput = ()=>{ cnt.textContent = ta.value.replace(/\s/g, '').length + '자'; };
     const live = document.getElementById('f10-live'), q = document.querySelector('#f10-b .f10-q');
     live.className = 'dbt-live talk'; live.innerHTML = `<span class="dbt-wave" aria-hidden="true"><i></i><i></i><i></i></span><span><b>면접관</b>이 질문하고 있어요</span><button type="button" class="pk-btn sm" id="f10-skip">건너뛰고 바로 말하기</button>`;
     if(q) q.classList.add('speaking');
@@ -28998,7 +29004,7 @@ const Debate = {
       <div class="pk-row"><button type="button" class="pk-btn" id="pk-mic" onclick="PracticeKit.mic()">🎙 말로 답하기</button><span class="pk-mut" id="pk-mic-st"></span><span class="pk-cnt" id="pk-cnt">0자</span></div>`);
     const next = round === 1 ? { debate:'다 말했어요, 반론 듣기', group:'다 말했어요, 다음 의견 듣기', pt:'발표 끝, 질문 받기' }[k] : '다 말했어요, 피드백 받기';
     this.foot(`<button type="button" class="pk-btn ghost" onclick="Debate.pickView()">그만하고 주제 고르기</button><button type="button" class="pk-btn pri" id="dbt-next" onclick="Debate.submit(${round})">${next}</button>`);
-    const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt'); ta.oninput = ()=>{ cnt.textContent = ta.value.trim().length + '자'; }; ta.focus();
+    const ta = document.getElementById('pk-ans'), cnt = document.getElementById('pk-cnt'); ta.oninput = ()=>{ cnt.textContent = ta.value.replace(/\s/g, '').length + '자'; }; ta.focus();
     if(s.real) this.realFlow(round, ais);
   },
   /* 2026-11-10 실전처럼: 진행자·상대 발언을 목소리로 읽고 → 말할 시간 카운트다운 (끝나면 자동으로 보냄) */
