@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-16b';
+var APP_VERSION = '2026-11-16c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -32080,7 +32080,7 @@ const Imv = {
           <div class="imv-hr"><span class="imv-rec" id="imv-rec" hidden><i></i>녹화 중</span><span class="imv-time" id="imv-time"></span><span class="imv-prog" id="imv-prog" aria-live="polite"></span></div>
         </div>
         <div class="imv-stage" id="imv-stage">
-          <div class="imv-photo" id="imv-photo" hidden><div class="imv-photo-img" id="imv-photo-img"></div><div class="imv-shade" id="imv-shade"></div><div class="imv-spot" id="imv-spot"></div></div>
+          <div class="imv-photo" id="imv-photo" hidden><div class="imv-photo-img" id="imv-photo-img"></div><div class="imv-shade" id="imv-shade"></div><div class="imv-spot" id="imv-spot"></div><div class="imv-say" id="imv-say" aria-hidden="true"><span class="imv-say-w"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><b id="imv-say-t">면접관</b></div></div>
           <div class="imv-scene" id="imv-scene" hidden>
             <div class="imv-room"><div class="imv-wall"></div><div class="imv-ceil"><i></i><i></i><i></i><i></i></div><div class="imv-panel"></div><div class="imv-window"><div class="imv-blind"></div></div>
               <svg class="imv-plant" viewBox="0 0 200 420" aria-hidden="true"><path d="M60 330h80l-10 90H70z" fill="#D9D3CA"/><path d="M60 330h80v14H60z" fill="#C9C1B6"/>
@@ -32251,7 +32251,8 @@ const Imv = {
     if(ph && this.mode === 'photo'){ ph.dataset.c = c; this.fitPhoto(c); }
     const tag = el.querySelector('#imv-tag'); tag.dataset.c = this.mode === 'photo' ? c : (this.people.length === 1 ? 1 : c);
     const p = this.people[k];
-    el.querySelector('#imv-tag-t').textContent = this.mode === 'photo' && this.people.length > 1 ? `${this.posName(k)} 면접관` : '면접관';   // 2026-11-12 시안: 위치만 짧게
+    el.querySelector('#imv-tag-t').textContent = this.mode === 'photo' && this.people.length > 1 ? `${this.posName(k)} 면접관` : '면접관';
+    { const st = el.querySelector('#imv-say-t'); if(st) st.textContent = (p && (p.role || p.name)) || '면접관'; }   /* 2026-11-17 말하는 면접관 아래 이름·소리 막대 */   // 2026-11-12 시안: 위치만 짧게
     this.status();
   },
   /** 2026-11-12 사진 맞추기: 세로로 긴 화면(휴대폰)에서는 사진을 옆으로 옮겨 질문하는 면접관 얼굴이 가운데 오게. 넓은 화면은 예전과 같음 */
@@ -32532,6 +32533,18 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv[data-phase="listening"] .imv-shade,#imv[data-phase="idle"] .imv-shade{opacity:.35}
 #imv .imv-spot{position:absolute;bottom:0;height:5px;width:22%;left:calc(var(--sx,50%) - 11%);border-radius:4px 4px 0 0;background:var(--acc);opacity:0;transition:left .8s cubic-bezier(.2,.7,.2,1),opacity .4s}
 #imv[data-phase="speaking"] .imv-spot{opacity:calc(.55 + var(--lv,0) * .45)}
+/* 2026-11-17 누가 말하는지 또렷하게 (립싱크 대신): 말하는 면접관 쪽으로 조금 더 다가가고, 다른 면접관은 어둡게, 얼굴 아래 이름표에 목소리 막대 */
+#imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-photo-img{transform:scale(1.07)}
+#imv .imv-shade{background:radial-gradient(ellipse var(--sw,24%) 88% at var(--sx,50%) 58%,rgba(20,18,17,0) 52%,rgba(20,18,17,.5) 100%)}
+#imv .imv-say{position:absolute;left:var(--sx,50%);bottom:clamp(54px,11cqh,120px);transform:translate(-50%,10px);display:inline-flex;align-items:center;gap:10px;padding:8px 15px 8px 12px;border-radius:999px;background:rgba(18,15,13,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:clamp(13px,1vw,16px);font-weight:700;white-space:nowrap;opacity:0;pointer-events:none;transition:left .8s cubic-bezier(.2,.7,.2,1),opacity .35s,transform .35s;box-shadow:0 10px 26px rgba(0,0,0,.28)}
+#imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-say{opacity:1;transform:translate(-50%,0)}
+#imv .imv-say b{font-weight:700;letter-spacing:-.01em}
+#imv .imv-say-w{display:inline-flex;align-items:center;gap:3px;height:20px}
+#imv .imv-say-w i{width:3px;height:6px;border-radius:2px;background:#ff8a5c;transform-origin:center;animation:imvSay .9s ease-in-out infinite;animation-play-state:paused}
+#imv[data-phase="speaking"] .imv-say-w i{animation-play-state:running}
+#imv .imv-say-w i:nth-child(1){height:calc(5px + var(--lv,0) * 8px);animation-delay:-.1s}#imv .imv-say-w i:nth-child(2){height:calc(6px + var(--lv,0) * 12px);animation-delay:-.45s}#imv .imv-say-w i:nth-child(3){height:calc(6px + var(--lv,0) * 15px);animation-delay:-.2s}#imv .imv-say-w i:nth-child(4){height:calc(7px + var(--lv,0) * 13px);animation-delay:-.65s}#imv .imv-say-w i:nth-child(5){height:calc(6px + var(--lv,0) * 15px);animation-delay:-.3s}#imv .imv-say-w i:nth-child(6){height:calc(6px + var(--lv,0) * 11px);animation-delay:-.55s}#imv .imv-say-w i:nth-child(7){height:calc(5px + var(--lv,0) * 8px);animation-delay:-.15s}
+@keyframes imvSay{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){#imv .imv-say-w i{animation:none}#imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-photo-img{transform:scale(1.035)}}
 /* 그림 장면 (면접관 1~2명) */
 #imv .imv-scene{position:absolute;inset:0}
 #imv .imv-scene .imv-room{position:absolute;inset:0}
