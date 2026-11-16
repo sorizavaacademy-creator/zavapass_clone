@@ -1,4 +1,7 @@
 // 운영 ZAVAPASS에서 읽어 온 원본 (2026-11-03, 읽기만). 클론(yiuraowvnadqdrnysdce)에만 배포
+// 2026-11-16 서류에 없는 직업이 대본에 들어가던 문제 (영업관리 지원자에게 '공직자' 대본):
+//   · 지원 목표는 서류에 적힌 지원 분야 > 학생이 정한 관심 기관·희망 직무 > 실제로 연습한 분야 순서. 화면이 분야를 고르지 않았으면 분야 설명을 붙이지 않음
+//   · 대본을 받은 뒤 서류·학생 말·지원 목표에 없는 직업·기관 이름과 숫자를 찾아, 있으면 그 말을 빼고 한 번 더 쓰게 함. 그래도 남으면 unverified로 화면에 알림
 // 2026-11-03 한림대용: 속기사 채용 → 대학생 채용 면접으로 프롬프트 교체
 // 2026-10-23a: 안내 문구의 '교육팀' → '담당자' (부서 이름을 특정하지 않음)
 // 2026-10-22v: OpenAI 일시 오류(5xx·429)면 한 번 더, 응답이 비거나 형식이 깨지면 토큰을 늘려 한 번 더 (예전에는 바로 502)
@@ -11,14 +14,16 @@
 // 요청 (POST, JSON)
 //   {
 //     field_id   : "gov" | "pubcorp" | "corp" | "startup" | "welfare" | "major" (모르는 값은 일반 대학생 취업 면접),
-//     field_name : "공무원" 등 (화면에 보이는 분야 이름, 없으면 '지원 분야'),
+//     field_name : "공무원" 등 (학생이 실제로 연습한 분야일 때만, 없으면 비움),
+//     doc_target : 서류에 적힌 지원 분야·직무 (예: "영업관리 (식품·유통)")   // 선택, 2026-11-16
+//     target_org / target_job : 내 정보의 관심 기관·희망 직무              // 선택, 2026-11-16
 //     resume_summary : "자기소개서 앞부분(최대 2,000자)",   // 선택
 //     cv_summary     : "이력서 앞부분(최대 1,500자)",        // 선택
 //     draft          : "지원자가 직접 말하거나 적은 자기소개(최대 1,500자)"   // 선택
 //   }
 //   셋(자기소개서·이력서·직접 한 자기소개) 중 하나는 있어야 합니다.
 // 응답
-//   { script, points[], tips[], feedback, model, limit:{left, limit} }
+//   { script, points[], tips[], feedback, model, limit:{left, limit}, unverified[] (서류에서 찾지 못한 말) }
 //
 // 1인 하루 10회 (step14_intro_coach.sql의 intro_coach_try RPC). 관리자는 제한 없음.
 // 필요한 Secret: OPENAI_API_KEY (필수), OPENAI_MODEL (선택, 기본 gpt-5.6-luna)
@@ -151,10 +156,11 @@ const SYSTEM = `당신은 대학생 취업 면접을 지도해 온 면접 코치
 [대본 규칙 — 반드시 지킵니다]
 1. 길이: 소리 내어 읽었을 때 50~60초. 공백을 뺀 글자 수 260~320자.
 2. 구성: ① 첫 문장 — 나를 한 줄로 보여 주는 강점 키워드 ② 그 강점의 근거가 되는 경험 1~2개(기간·횟수·인원·자격·성과 같은 숫자를 서류나 지원자의 말에서 가져와서. 실무 경력이 없으면 수업·팀 프로젝트·동아리·아르바이트·인턴·봉사 경험에서 고름) ③ 그 경험이 지원 직무에 어떻게 이어지는지 ④ 입사 후 각오 한 문장.
-3. 사실만: 자기소개서·이력서·지원자가 직접 한 말에 있는 내용만 씁니다. 없는 경력·수치·자격을 지어내지 않습니다. 꼭 필요한 정보가 없으면 [활동 기간], [자격증 이름]처럼 대괄호 자리표시로 남겨 지원자가 채우게 합니다(최대 3곳).
+3. 사실만: 자기소개서·이력서·지원자가 직접 한 말에 있는 내용만 씁니다. 없는 경력·수치·자격·직업·기관을 지어내지 않습니다. 숫자는 서류나 지원자의 말에 있는 숫자만 씁니다. 꼭 필요한 정보가 없으면 [활동 기간], [자격증 이름]처럼 대괄호 자리표시로 남겨 지원자가 채우게 합니다(최대 3곳).
 4. 블라인드 면접: 이름·학교 이름·출신 지역·나이·가족·연락처는 넣지 않습니다. "안녕하십니까, 지원자 ○○○입니다" 같은 이름 소개 대신 "안녕하십니까, ○○를 갖춘 지원자입니다"처럼 시작합니다.
 5. 말하기 문장: 한 문장은 40자 안팎으로 짧게, "~습니다" 존댓말. 어려운 한자어·외래어·괄호·기호·이모지·번호 매기기 금지.
 6. 상투어 금지: "성실함과 책임감", "최선을 다하겠습니다", "열정" 같은 말을 근거 없이 쓰지 않습니다.
+7. 지원 목표: 대본 ③·④에서 말하는 직무·기관은 [지원 목표]에 적힌 것만 씁니다. [지원 목표]가 "정해지지 않음"이면 공무원·공공기관·병원 같은 특정 직업이나 기관 이름을 쓰지 말고 "지원한 직무"처럼 쓰거나 [지원 직무] 자리표시를 둡니다. 서류에 지원 분야가 적혀 있으면 그것이 가장 정확한 지원 목표입니다.
 
 [함께 돌려줄 것]
 - points: 이 대본에서 면접관 기억에 남아야 할 핵심 3가지(각 20자 이내 명사구).
@@ -163,6 +169,16 @@ const SYSTEM = `당신은 대학생 취업 면접을 지도해 온 면접 코치
 
 반드시 아래 JSON으로만 답합니다:
 {"script":"...", "points":["...","...","..."], "tips":["...","..."], "feedback":"..."}`;
+
+// 2026-11-16 대본에 나오면 서류에서 확인해야 하는 직업·기관 이름 (서류·학생 말·지원 목표에 없으면 '확인 필요')
+const JOB_WORDS = ["공무원", "공직", "민원", "공공기관", "공기업", "공단", "공사", "간호", "환자", "병원", "의료", "복지", "사회복지", "스타트업", "대기업", "중견기업", "은행", "금융", "교사", "교육청", "국회", "의회", "법원", "검찰", "경찰", "소방", "군무원", "속기"];
+function findUnverified(script: string, sources: string): string[] {
+  const src = sources.replace(/\s+/g, ""), out: string[] = [];
+  for (const w of JOB_WORDS) if (script.includes(w) && !src.includes(w)) out.push(w);
+  const srcNums = new Set((sources.replace(/,/g, "").match(/\d+(?:\.\d+)?/g) || []));
+  for (const n of (script.replace(/,/g, "").match(/\d+(?:\.\d+)?/g) || [])) if (!srcNums.has(n) && !out.includes(n)) out.push(n);
+  return out.slice(0, 8);
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -175,7 +191,10 @@ Deno.serve(async (req: Request) => {
   let body: any;
   try { body = await req.json(); } catch { return json({ error: "요청 본문이 JSON 형식이 아닙니다." }, 400); }
   const fieldId = String(body.field_id ?? "").trim();
-  const fieldName = String(body.field_name ?? "").trim().slice(0, 40) || "지원 분야";
+  const fieldName = String(body.field_name ?? "").trim().slice(0, 40);
+  const docTarget = String(body.doc_target ?? "").trim().slice(0, 60);
+  const targetOrg = String(body.target_org ?? "").trim().slice(0, 40);
+  const targetJob = String(body.target_job ?? "").trim().slice(0, 40);
   const resume = String(body.resume_summary ?? "").trim().slice(0, 2000);
   const cv = String(body.cv_summary ?? "").trim().slice(0, 1500);
   const draft = String(body.draft ?? "").trim().slice(0, 1500);
@@ -185,12 +204,18 @@ Deno.serve(async (req: Request) => {
   const lim = await checkDailyLimit(req);
   if (!lim.ok) return json({ error: "limit", limit: lim.status }, 429);
 
+  // 2026-11-16 지원 목표: 서류 > 학생이 정한 목표 > 실제로 연습한 분야. 분야 설명(FIELD_FOCUS)은 서류·목표가 없을 때만
+  const goal = docTarget ? `서류에 적힌 지원 분야: ${docTarget}${targetOrg || targetJob ? ` (학생이 정한 관심 기관·희망 직무: ${[targetOrg, targetJob].filter(Boolean).join(" · ")})` : ""}`
+    : (targetOrg || targetJob) ? `학생이 정한 관심 기관·희망 직무: ${[targetOrg, targetJob].filter(Boolean).join(" · ")}`
+    : fieldName ? `${fieldName} (학생이 최근에 연습한 분야)` : "정해지지 않음 — 서류에서도 지원 분야를 찾지 못했어요";
+  const focus = !docTarget && !targetOrg && !targetJob && fieldName && Object.prototype.hasOwnProperty.call(FIELD_FOCUS, fieldId) ? FIELD_FOCUS[fieldId] : "대학생 취업 면접. 지원 직무에 대한 이해, 구체적인 경험과 성과, 협업과 성장 가능성이 핵심입니다.";
+  const sources = [resume, cv, draft, docTarget, targetOrg, targetJob, focus === FIELD_FOCUS[fieldId] ? fieldName : ""].join("\n");
   const userPrompt = [
-    `[지원 분야] ${fieldName}\n${(Object.prototype.hasOwnProperty.call(FIELD_FOCUS, fieldId) ? FIELD_FOCUS[fieldId] : "") || "대학생 취업 면접. 지원 직무에 대한 이해, 구체적인 경험과 성과, 협업과 성장 가능성이 핵심입니다."}`,
+    `[지원 목표] ${goal}\n${focus}`,
     resume ? `[자기소개서 요약]\n${resume}` : "[자기소개서] 없음",
     cv ? `[이력서 요약 — 학력·경력·자격 (개인정보는 대본에 넣지 않음)]\n${cv}` : "[이력서] 없음",
     draft ? `[지원자가 직접 해 본 자기소개 (음성 인식 결과일 수 있어 오탈자가 있을 수 있음)]\n${draft}` : "[지원자가 직접 해 본 자기소개] 없음",
-    draft ? "지원자가 직접 한 자기소개의 표현과 경험을 최대한 살려 다듬어 주세요." : "서류 내용 중 지원 분야와 가장 잘 이어지는 경험을 골라 주세요.",
+    draft ? "지원자가 직접 한 자기소개의 표현과 경험을 최대한 살려 다듬어 주세요." : "서류 내용 중 지원 목표와 가장 잘 이어지는 경험을 골라 주세요.",
   ].join("\n\n");
 
   try {
@@ -216,8 +241,19 @@ Deno.serve(async (req: Request) => {
       if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; parsed = tryParse(content); }
     }
     if (!parsed) { console.warn("[자기소개 대본 해석 실패]", content.slice(0, 120)); return json({ error: "AI 응답을 해석하지 못했습니다.", raw: content.slice(0, 300) }, 502); }
-    const script = String(parsed.script ?? "").trim();
+    let script = String(parsed.script ?? "").trim();
     if (!script) return json({ error: "대본이 비어 있습니다." }, 502);
+    // 2026-11-16 서류에 없는 직업·기관 이름, 숫자가 들어갔는지 확인 → 있으면 그 말을 빼고 한 번만 다시 쓰게 함
+    let unverified = findUnverified(script, sources);
+    if (unverified.length && Date.now() - startedAt < 30000) {
+      console.warn("[서류에 없는 말 → 다시 쓰기]", unverified.join(", "));
+      const fixMsgs = [...msgs, { role: "assistant", content: JSON.stringify(parsed) }, { role: "user", content: `방금 대본에 서류·지원자의 말·지원 목표에 없는 말이 있어요: ${unverified.join(", ")}. 이 말들을 빼고, 서류에 있는 사실만으로 같은 규칙과 같은 JSON 형식으로 다시 써 주세요.` }];
+      const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, fixMsgs, 0.4, 2600);
+      if (again.res.ok) {
+        const d2 = await again.res.json(); const p2 = tryParse(d2?.choices?.[0]?.message?.content ?? "");
+        if (p2) { const s2 = String(p2.script ?? "").trim(); const u2 = findUnverified(s2, sources); if (s2 && u2.length <= unverified.length) { parsed = p2; script = s2; unverified = u2; modelUsed = again.modelUsed; } }
+      }
+    }
     const arr = (v: unknown, n: number) => Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean).slice(0, n) : [];
     return json({
       script,
@@ -226,6 +262,7 @@ Deno.serve(async (req: Request) => {
       feedback: String(parsed.feedback ?? "").trim(),
       model: modelUsed,
       limit: lim.status ?? null,
+      unverified,
     });
   } catch (e) {
     console.error("intro-coach 예외", e);

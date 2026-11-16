@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-13k';
+var APP_VERSION = '2026-11-16a';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -3703,7 +3703,8 @@ var APP_VERSION = '2026-11-13k';
   body.scroll-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
   .modal-overlay, .more-sheet{overscroll-behavior:contain;}
   .modal-overlay.active{overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  .modal-box, .modal-body, .setup-body{overscroll-behavior:contain;}
+  /* 2026-11-16 안쪽 칸(.modal-box·.modal-body)에는 contain을 두지 않음: 스크롤이 없는 안쪽 칸 위에 마우스를 두면 바깥 화면이 굴러가지 않았음
+     (내 정보·도움 요청·1분 자기소개 화면은 양쪽 빈 여백에서만 스크롤됨). 뒤 화면으로 번지는 것은 바깥 .modal-overlay의 contain이 막음 */
   .setup-reco{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px;padding:14px 16px;border:1px solid #f3cdbd;border-radius:12px;background:#fdf6f2;}
   .setup-reco[hidden]{display:none;}
   .setup-reco .sr-txt{flex:1 1 240px;min-width:0;}
@@ -25787,8 +25788,15 @@ const COACH_SEC_PER_CHAR = 0.2;   // 공백 뺀 1글자 ≈ 0.2초 (1분 ≈ 300
 function coachCharCount(t){ return String(t||'').replace(/\s/g,'').length; }
 function coachEstSec(t){ return Math.round(coachCharCount(t) * COACH_SEC_PER_CHAR); }
 function coachFieldInfo(){
-  const id = state.dashField || (state.selectedField && state.selectedField.id !== 'review' ? state.selectedField.id : null) || FIELDS[0].id;
-  const f = FIELDS.find(x=>x.id===id); return { id, name: f ? f.name : '' };
+  /* 2026-11-16 대본의 '지원 목표'는 ① 서류에 적힌 지원 분야·직무 ② 내 정보의 관심 기관·희망 직무 순서로만 정함(둘 다 없으면 정하지 않음).
+     예전에는 아무것도 고르지 않은 학생에게 분야 목록의 첫 칸(공무원)을 넣어 보내서, 서류에 없는 '공직자' 대본이 나왔음 */
+  const txt = [Coach.docs.resume, Coach.docs.cv].filter(Boolean).join('\n');
+  const m = txt.match(/지원\s*(?:분야|직무|부문|포지션)\s*[:：]?\s*([^\n|]{2,40})/);   // '영업관리 (식품·유통)'처럼 가운뎃점이 들어간 이름도 끝까지
+  const doc = m ? m[1].replace(/\s+/g, ' ').trim().slice(0, 40) : '';
+  let org = '', job = '';
+  try{ const pr = (typeof PrepSync !== 'undefined' && PrepSync.profile) || {}, pl = (typeof PracticeKit !== 'undefined' && PracticeKit.plan) || {}; org = String(pl.company_name || pr.org || '').slice(0, 40); job = String(pl.job || pr.job || '').slice(0, 40); }catch(_){}
+  // 최근에 연습한 분야는 쓰지 않음(그 분야 이름도 서류에 없는 말이 됨). 서류·내 목표가 없으면 [지원 직무] 빈칸으로 남김
+  return { id: '', name: '', org, job, doc, label: doc || [org, job].filter(Boolean).join(' ') };
 }
 async function openCoach(){
   { const h = document.getElementById('coach-hdr'); if(h) h.innerHTML = zpHdr('hub'); }
@@ -25845,7 +25853,8 @@ function coachRenderScript(){
   if(!has) return;
   const ta = document.getElementById('coach-script'); if(ta.value !== Coach.script) ta.value = Coach.script;
   document.getElementById('coach-saved').textContent = Coach.savedAt ? `· ${formatDateShort(Coach.savedAt)} 저장됨` : (Coach.dirty ? '· 아직 저장 안 됨' : '');
-  const fb = document.getElementById('coach-feedback'); fb.hidden = !Coach.feedback; fb.textContent = Coach.feedback ? '내가 한 자기소개 평가 · ' + Coach.feedback : '';
+  const fb = document.getElementById('coach-feedback'), wn = (Coach.warn || []).length ? `확인해 주세요 · 서류에서 찾지 못한 말: ${Coach.warn.join(', ')}` : '';
+  fb.hidden = !Coach.feedback && !wn; fb.textContent = [wn, Coach.feedback ? '내가 한 자기소개 평가 · ' + Coach.feedback : ''].filter(Boolean).join('\n'); fb.style.whiteSpace = 'pre-line';
   document.getElementById('coach-points').innerHTML = (Coach.points||[]).map(p=>`<span>${escapeHtml(p)}</span>`).join('');
   document.getElementById('coach-tips').innerHTML = (Coach.tips||[]).map(t=>`<li>${escapeHtml(t)}</li>`).join('');
   coachUpdateLen();
@@ -25857,7 +25866,8 @@ function coachUpdateLen(){
   el.className = 'coach-len ' + (sec >= 48 && sec <= 62 ? 'ok' : 'warn');
   document.getElementById('coach-ph').hidden = !/\[[^\]]{1,24}\]/.test(t);
 }
-function coachScriptInput(){ Coach.script = document.getElementById('coach-script').value; Coach.dirty = true; Coach.savedAt = null; coachUpdateLen(); document.getElementById('coach-saved').textContent = '· 아직 저장 안 됨'; }
+function coachScriptInput(){ Coach.script = document.getElementById('coach-script').value; Coach.dirty = true; Coach.savedAt = null; coachUpdateLen(); document.getElementById('coach-saved').textContent = '· 아직 저장 안 됨';
+  if((Coach.warn || []).length){ const n = Coach.warn.length; Coach.warn = Coach.warn.filter(w=>Coach.script.includes(w)); if(Coach.warn.length !== n){ const fb = document.getElementById('coach-feedback'), wn = Coach.warn.length ? `확인해 주세요 · 서류에서 찾지 못한 말: ${Coach.warn.join(', ')}` : ''; fb.textContent = [wn, Coach.feedback ? '내가 한 자기소개 평가 · ' + Coach.feedback : ''].filter(Boolean).join('\n'); fb.hidden = !fb.textContent; } } }   // 2026-11-16 고쳐서 없어진 말은 '확인해 주세요'에서 뺌
 function coachDraftInput(){
   const t = (document.getElementById('coach-draft')||{}).value || '';
   const m = document.getElementById('coach-draft-meta'); if(!m) return;
@@ -25888,6 +25898,26 @@ async function coachRecordDraft(){
    "한 줄 강점 → 근거 경험 → 직무 연결 → 각오" 순서의 1분(260~320자) 대본을 만듦. 없는 사실은 [ ]로 비워 둠.
    블라인드 면접 기준: 이름·학교·나이·연락처는 넣지 않음. */
 const LocalIntro = {
+  /** 2026-11-16 한림대: AI가 꺼져 있을 때 — 서류·내 말에 있는 문장만 골라 1분 대본 틀을 만듦 (속기사 문장·없는 직업 이름을 넣지 않음) */
+  makeGeneral({ resume, cv, draft, target }){
+    const src = [draft, resume, cv].filter(Boolean).join('\n');
+    const sents = src.replace(/\r/g, '').split(/\n+|(?<=[.!?])\s+/).map(x=>x.replace(/\s+/g, ' ').replace(/^\d+\.\s*/, '').trim())
+      .filter(x=>x.length >= 18 && x.length <= 120 && /(습니다|니다)\.?$/.test(x) && !/(생년|연락처|이메일|주소|@|010-|고등학교|안녕하십니까|저는\s*[가-힣]{2,4}입니다)/.test(x));
+    const score = x=>(/\d/.test(x) ? 2 : 0) + (/(인턴|실습|아르바이트|팀장|프로젝트|학회|동아리|봉사|근무|공모전|수상|개선|제안|정리|운영|기획|줄었|늘었|높였)/.test(x) ? 2 : 0) - (/(지원합니다|지원했습니다|되겠습니다|성장하겠습니다)$/.test(x) ? 3 : 0);
+    const len = a=>a.join('').replace(/\s/g, '').length;
+    const pick = []; sents.map((x, i)=>({ x, i, v: score(x) })).filter(o=>o.v >= 2).sort((a, b)=>b.v - a.v || a.i - b.i)
+      .forEach(o=>{ if(pick.length < 3 && len(pick.map(p=>p.x).concat(o.x)) <= 210) pick.push(o); });
+    pick.sort((a, b)=>a.i - b.i);
+    const tg = String(target || '').trim();
+    const S = [`안녕하십니까, [나를 보여 줄 강점 한 단어]을 갖춘 ${tg ? tg + ' ' : ''}지원자입니다.`];
+    if(pick.length) S.push(...pick.map(o=>o.x.replace(/^(그리고|또한|이후)\s+/, '')));
+    else S.push('[기간] 동안 [활동·기관]에서 [맡은 일]을 하며 [숫자로 된 성과]를 냈습니다.');
+    S.push(`이 경험을 살려 ${tg ? tg + ' 업무에서' : '[지원 직무]에서'} [입사 후 이루고 싶은 목표]를 이루겠습니다.`);
+    const script = S.join(' ').replace(/\s+/g, ' ').trim();
+    const points = ['강점 한 단어', pick[0] ? pick[0].x.replace(/[.]$/, '').slice(0, 20) : '근거 경험', tg ? tg.slice(0, 20) : '지원 직무'];
+    const tips = ['첫 문장은 외워 두고, 숨을 한 번 고른 뒤 천천히 시작하세요.', '기간·횟수·성과 같은 숫자는 또박또박 힘주어 말하세요.', '[ ] 부분은 내 실제 경험과 숫자로 바꿔 넣은 뒤 저장하세요.'];
+    return { script, points, tips, feedback: '', local: true };
+  },
   VALUE: {
     assembly: ['국회 회의록의 정확성', '발언의 뜻을 그대로 살리는 회의록으로 국회의 공식 기록을 지키겠습니다'],
     court: ['재판 기록의 정확성', '진술을 있는 그대로 담은 정확한 조서로 공정한 재판을 뒷받침하겠습니다'],
@@ -26007,8 +26037,8 @@ async function coachMake(){
     // AI가 꺼져 있으면: 서류·내 말에서 자격·경력·숫자를 뽑아 기본 대본을 만듦 (비용 0)
     try{
       const f = coachFieldInfo();
-      const r = LocalIntro.make({ resume: Coach.docs.resume, cv: Coach.docs.cv, draft, fieldId: f.id, fieldName: f.name });
-      Object.assign(Coach, { script: r.script, points: r.points, tips: r.tips, feedback: r.feedback, savedAt: null, dirty: true });
+      const r = DEMO_HALLYM_FIELDS ? LocalIntro.makeGeneral({ resume: Coach.docs.resume, cv: Coach.docs.cv, draft, target: f.label }) : LocalIntro.make({ resume: Coach.docs.resume, cv: Coach.docs.cv, draft, fieldId: f.id, fieldName: f.name });
+      Object.assign(Coach, { script: r.script, points: r.points, tips: r.tips, feedback: r.feedback, warn: [], savedAt: null, dirty: true });
       coachRenderScript();
       showToast('서류와 내 말에서 뽑은 기본 대본이에요. [ ] 부분과 말투를 내 경험에 맞게 고친 뒤 저장해 보세요.');
       Activity.log('intro_coach', { field: f.name, chars: coachCharCount(r.script), draft: !!draft, local: true });
@@ -26018,11 +26048,11 @@ async function coachMake(){
     return;
   }
   const btn = document.getElementById('coach-make');
-  Coach.busy = true; btn.disabled = true; btn.textContent = '대본 만드는 중… (10~20초)';
+  Coach.busy = true; btn.disabled = true; btn.textContent = '서류 확인하며 대본 만드는 중… (10~30초)';
   try{
     const f = coachFieldInfo();
-    const invoke = sb.functions.invoke('intro-coach', { body: { field_id: f.id, field_name: f.name, resume_summary: Coach.docs.resume || null, cv_summary: Coach.docs.cv || null, draft: draft || null } });
-    const timeout = new Promise((_, rej)=>setTimeout(()=>rej(new Error('응답 시간 초과 (45초)')), 45000));
+    const invoke = sb.functions.invoke('intro-coach', { body: { field_id: f.id || null, field_name: f.name || null, doc_target: f.doc || null, target_org: f.org || null, target_job: f.job || null, resume_summary: Coach.docs.resume || null, cv_summary: Coach.docs.cv || null, draft: draft || null } });
+    const timeout = new Promise((_, rej)=>setTimeout(()=>rej(new Error('응답 시간 초과 (70초)')), 70000));   // 2026-11-16 서류와 맞는지 확인하고 한 번 더 고쳐 쓰는 시간까지
     const { data, error } = await Promise.race([invoke, timeout]);
     if(error){
       let detail = error.message || String(error), lim = null;
@@ -26032,8 +26062,9 @@ async function coachMake(){
       throw new Error(detail);
     }
     if(!data || !data.script) throw new Error('대본을 받지 못했어요');
-    Object.assign(Coach, { script: data.script, points: data.points || [], tips: data.tips || [], feedback: data.feedback || '', savedAt: null, dirty: true });
+    Object.assign(Coach, { script: data.script, points: data.points || [], tips: data.tips || [], feedback: data.feedback || '', warn: (data.unverified || []).slice(0, 6), savedAt: null, dirty: true });
     coachRenderScript();
+    if(Coach.warn.length) showToast('서류에서 찾지 못한 말이 대본에 있어요: ' + Coach.warn.join(', ') + ' — 내 경험에 맞게 고쳐 주세요.', 'warn');
     const left = (data.limit && typeof data.limit.left === 'number' && !data.limit.admin) ? ` 오늘 ${data.limit.left}회 남았어요.` : '';
     showToast('1분 대본이 나왔어요. [ ] 부분과 말투를 고친 뒤 저장해 보세요.' + left);
     Activity.log('intro_coach', { field: f.name, chars: coachCharCount(data.script), draft: !!draft });
