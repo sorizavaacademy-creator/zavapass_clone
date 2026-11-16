@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-16c';
+var APP_VERSION = '2026-11-16d';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -3655,7 +3655,8 @@ var APP_VERSION = '2026-11-16c';
     .help-fab > span:not(.hq){display:none;}
     /* 2026-11-12 폰도 PC·태블릿과 똑같이 홈·연습하기 화면에 '의견·문제 보내기'와 '사용 안내'를 함께 보여 줌 (아래 여백을 늘려 내용을 가리지 않게) */
     body:not(:has(#screen-admin.active)) .screen.active > .zp-foot{padding-bottom:calc(20px + env(safe-area-inset-bottom)) !important;}   /* 2026-11-12 떠 있는 버튼 자리는 바닥글 위쪽 여백으로 옮김 (아래 빈 띠 없앰) */
-    body:has(#screen-result.active) .fb-fab{padding:11px !important;opacity:.85;} body:has(#screen-result.active) .fb-fab span{display:none;}
+    body:has(#screen-result.active) .fb-fab{display:none !important;}   /* 2026-11-17 폰 결과 화면: 떠 있는 버튼이 카드 글자를 가려서 숨기고, 결과 아래 버튼 줄에 '의견·문제 보내기'를 둠 */
+    #screen-result .rv-fb-m{display:inline-flex !important;justify-content:center;text-align:center;}
     #screen-dashboard.active{padding-bottom:0;}
     #toast-container{width:calc(100vw - 32px);}
     .toast{max-width:100%;}
@@ -6117,7 +6118,9 @@ html.ivv-dr-open{overflow:hidden;}
 #screen-result .rv-fail .rv-proc-t{color:#a12e28}
 #screen-result .rv-fail .rv-acts{margin-top:18px}
 #screen-result .rv-2col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:36px;align-items:start}
-#screen-result .rv-big{font-size:38px;line-height:1.3;font-weight:800;letter-spacing:-.03em;margin:0 0 16px;color:#2b2521;word-break:keep-all}
+#screen-result .rv-big{font-size:38px;line-height:1.3;font-weight:800;letter-spacing:-.03em;margin:0 0 16px;color:#2b2521;word-break:keep-all;text-wrap:balance}
+#screen-result .rv-big .nw{white-space:nowrap}   /* 2026-11-17 '30초~1분'이 물결표에서 갈라지지 않게 */
+#screen-result .rv-fb-m{display:none}
 #screen-result .rv-ex{font-size:14.5px;line-height:1.6;margin:0 0 12px;padding:12px 14px;background:#f3ede7;border-radius:10px} #screen-result .rv-ex b{margin-right:6px}
 #screen-result .rv-lines{list-style:none;margin:0 0 6px;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14.5px;line-height:1.6;color:#2b2521}
 #screen-result .rv-lines b{color:#6a5b51;font-weight:600;margin-right:4px}
@@ -12887,7 +12890,7 @@ async function renderDashboard(){
       .limit(50);
     if(!error && data){
       history = data.map(r=>({
-        id: r.id, fieldId: r.field_id, fieldName: r.field_name, mode: r.mode || null, nonverbal: r.nonverbal || null, setKind: r.set_kind || null, setOvertime: r.set_overtime == null ? null : !!r.set_overtime,
+        id: r.id, fieldId: r.field_id, fieldName: recKindName(Object.assign({}, r, { company_name: null })), mode: r.mode || null, nonverbal: r.nonverbal || null, setKind: r.set_kind || null, setOvertime: r.set_overtime == null ? null : !!r.set_overtime,
         durationLabel: r.duration_label || '', questionCount: r.question_count,
         dateLabel: `${formatDateFull(r.created_at)} · ${r.question_count}문항`,
         dateShort: formatDateShort(r.created_at), score: r.score, timestamp: new Date(r.created_at).getTime(),
@@ -14383,7 +14386,7 @@ const School = {
   },
   openRecord(rid, uid){
     const r = this.d.recs.find(x=>String(x.id) === String(rid)); if(!r) return;
-    state.historyRecords = [{ id: r.id, fieldName: r.company_name ? `${r.company_name} 맞춤` : r.field_name, score: r.score, durationLabel: r.duration_label || '', dateLabel: `${formatDateFull(r.created_at)} · ${r.question_count || 0}문항` }].concat((state.historyRecords || []).filter(h=>String(h.id) !== String(rid)));
+    state.historyRecords = [{ id: r.id, fieldName: recKindName(r), score: r.score, durationLabel: r.duration_label || '', dateLabel: `${formatDateFull(r.created_at)} · ${r.question_count || 0}문항` }].concat((state.historyRecords || []).filter(h=>String(h.id) !== String(rid)));
     state.recordBackFn = uid ? ()=>{ closeRecordModal(); this.openStudent(uid); } : ()=>{ closeRecordModal(); };
     this.closeStudent(); state.recordViewOther = true; openRecordDetail(rid, !!uid);   // 2026-11-13d 담당자가 보는 학생 기록: '학생 답변', 학생용 버튼 숨김
   },
@@ -16064,7 +16067,7 @@ function openRecordDetailFromList(recordId){
   if(!r) return;
   const u = (state.adminUsers||[]).find(x=>x.id===r.user_id);
   state.historyRecords = [{
-    id: r.id, fieldName: (u ? u.name+' · ' : '') + (r.field_name||''), score: r.score, durationLabel: r.duration_label||'',
+    id: r.id, fieldName: (u ? u.name+' · ' : '') + recKindName(r), score: r.score, durationLabel: r.duration_label||'',
     dateLabel: `${formatDateFull(r.created_at)} · ${r.question_count}문항`,
   }].concat((state.historyRecords||[]).filter(h=>String(h.id)!==String(recordId)));
   state.recordBackFn = null;
@@ -17394,7 +17397,7 @@ function openSetRecordFromAdmin(recordId, ev){
   const r = (state.adminRecords||[]).find(x=>String(x.id)===String(recordId));
   if(r){
     const u = (state.adminUsers||[]).find(x=>x.id===r.user_id);
-    state.historyRecords = [{ id:r.id, fieldName: (u && u.name ? u.name+' · ' : '') + (r.field_name||''), score:r.score, durationLabel:r.duration_label||'', dateLabel:`${formatDateFull(r.created_at)} · ${r.question_count}문항` }]
+    state.historyRecords = [{ id:r.id, fieldName: (u && u.name ? u.name+' · ' : '') + recKindName(r), score:r.score, durationLabel:r.duration_label||'', dateLabel:`${formatDateFull(r.created_at)} · ${r.question_count}문항` }]
       .concat((state.historyRecords||[]).filter(h=>String(h.id)!==String(recordId)));
   }
   state.recordBackFn = null;
@@ -21129,9 +21132,10 @@ function speakQuestion(text, onDone, opt){
   const voice = (opt && opt.voice) || pickKoreanVoice();
   if(voice) utter.voice = voice;
   let done = false;
-  const finish = ()=>{ if(done) return; done = true; clearTimeout(guard); if(onDone) onDone(); };
+  const finish = ()=>{ if(done) return; done = true; clearTimeout(guard); try{ ImvLip.end(); }catch(_){} if(onDone) onDone(); };
   utter.onend = finish;
   utter.onerror = finish;
+  try{ if(state.interviewMode === 'dialog'){ ImvLip.begin(utter.text, null, utter.rate); utter.onstart = ()=>ImvLip.started(); utter.onboundary = e=>{ if(e && e.charIndex != null) ImvLip.boundary(e.charIndex); }; } }catch(_){}   /* 2026-11-17 면접관 입 그림 */
   // 안전장치: 브라우저가 끝났다는 신호를 주지 않아도(탭 전환·크롬 버그) 글자 수 기준 예상 시간 + 4초 뒤에는 다음으로 진행
   const guard = setTimeout(()=>{ if(!done){ console.warn('[TTS] 종료 신호 없음 → 강제 진행'); try{ window.speechSynthesis.cancel(); }catch(_){} finish(); } }, Math.max(6000, utter.text.length * 220 + 4000));
   try{ if(window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(_){}
@@ -22986,7 +22990,8 @@ async function endInterview(){
   const durationLabel = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
   document.getElementById('rs-time').textContent = durText(durationLabel);
   document.getElementById('rs-count').textContent = `${state.currentQ}문항`;
-  { const cp = CompanyData.active(); document.getElementById('result-title').textContent = cp ? `${cp.talent.name} 맞춤 모의면접 결과` : state.selectedField.name + (state.interviewMode==='dialog' ? ' AI 대화 면접 결과' : ' 모의면접 결과'); }
+  { const cp = CompanyData.active(); const pu = curPurpose(), nm = pu === 'major' ? '전공·경험' : pu === 'review' ? '복습' : state.selectedField.name;   // 2026-11-17 전공·경험 면접에 계정 첫 분야 이름이 나오던 것 고침
+    document.getElementById('result-title').textContent = cp ? `${cp.talent.name} 맞춤 모의면접 결과` : nm + (state.interviewMode==='dialog' ? ' AI 대화 면접 결과' : ' 모의면접 결과'); }
   try{
     const modeChip = document.getElementById('result-mode-chip'); if(modeChip) modeChip.textContent = (state.demoResult ? '시연용 샘플 · ' : '') + (state.interviewMode==='dialog' ? 'AI 대화 면접' : '모의면접') + (state.interviewMode==='dialog' && state.dialogRealSet && !state.demoResult ? ' · ' + curRealSetName() + (StenoLoop.stats && StenoLoop.stats.setTimeUp ? ' (15분 초과)' : '') : '');
     const modeEl = document.getElementById('rs-mode'); if(modeEl) modeEl.textContent = `${state.difficulty||'중'} · ${(typeof AI_GRADING_ENABLED!=='undefined' && AI_GRADING_ENABLED && AiSwitch.on('ai_grading')) ? 'AI 채점' : '규칙 평가'}`;
@@ -23082,6 +23087,16 @@ function saveErrPermanent(e){
   const code = String(er.code||''), msg = String(er.message||'');
   return code === '42501' || /row-level security|violates|invalid input syntax|permission denied/i.test(msg);
 }
+/** 2026-11-17 면접 기록에 보일 이름: 기업 맞춤 > 전공·경험 > 복습 > 분야 이름 (예전 기록은 purpose가 없어서 분야 이름) */
+function recKindName(r){
+  if(!r) return '';
+  if(r.company_name) return `${r.company_name} 맞춤`;
+  if(r.purpose === 'major') return '전공·경험';
+  if(r.purpose === 'review') return '복습';
+  return r.field_name || '';
+}
+/** 지금 하는 면접의 종류 (저장용): review / major / job, 흐름 밖에서 시작한 면접이면 null */
+function curPurpose(){ const fc = state.flowCtx; return fc ? (fc.review ? 'review' : (fc.purpose || null)) : null; }
 function buildSavePayload(durationLabel){
   const rec = {
     user_id: state.currentUser.id,
@@ -23093,6 +23108,7 @@ function buildSavePayload(durationLabel){
     mode: state.interviewMode === 'dialog' ? 'dialog' : 'classic',
   };
   if(state.nonverbal) rec.nonverbal = state.nonverbal;
+  { const pu = curPurpose(); if(pu) rec.purpose = pu; }   // 2026-11-17 결과 제목에 실제 면접 종류
   if(state.aeReport) rec.ae_report = AeReport.compact(state.aeReport);   // 2026-11-05 면접 DB 5단계 종합 리포트
   { const cp = (typeof CompanyData !== 'undefined') ? CompanyData.active() : null; if(cp){ rec.company_id = cp.talent.id; rec.company_name = cp.talent.name; } }   // 2026-11-02z 기업 맞춤 면접이면 회사도 저장
   if(state.interviewMode === 'dialog' && state.dialogRealSet){ rec.set_kind = (state.selectedField && canRealSet(state.selectedField.id) ? state.selectedField.id : 'assembly') + '_real'; rec.set_overtime = !!state.setOvertime; if(state.setReview) rec.set_review = state.setReview; }
@@ -23120,6 +23136,7 @@ async function insertRecordRow(row){
   let { data, error } = await sb.from('interview_records').insert(recRow).select().single();
   if(error && /company_(id|name)/i.test(error.message||'')){ delete recRow.company_id; delete recRow.company_name; ({ data, error } = await sb.from('interview_records').insert(recRow).select().single()); }
   if(error && /ae_report/i.test(error.message||'')){ delete recRow.ae_report; ({ data, error } = await sb.from('interview_records').insert(recRow).select().single()); }
+  if(error && /purpose/i.test(error.message||'')){ delete recRow.purpose; ({ data, error } = await sb.from('interview_records').insert(recRow).select().single()); }
   if(error && /nonverbal/i.test(error.message||'')){ delete recRow.nonverbal; ({ data, error } = await sb.from('interview_records').insert(recRow).select().single()); }
   if(error && /set_(kind|overtime|review)/i.test(error.message||'')){
     console.warn('[interview_records 실전 세트 칸 없음 → 빼고 저장] SQL: supabase/sql/step16_set_review.sql');
@@ -23980,7 +23997,7 @@ const ResultView = {
     state.answerFace = ans.map((a, i)=>{ const it = nv.find(x=>x.i === (a.question_index != null ? a.question_index : i)); return it && (it.facePct || 0) >= 20 ? Object.assign({ frames: 9 }, it) : null; });   // 얼굴이 거의 안 잡힌 답변은 '측정 안 됨'
     state.currentQ = ans.length; state.questionCount = ans.length; state.startTime = new Date(rec.created_at).getTime(); state.flowCtx = null;
     state.lastAverageScore = rec.score || 0; state.savedRecordId = rec.id; state.saveDone = true; state.savePayload = null; state.pendingGrades = [];
-    const d = new Date(rec.created_at), title = rec.company_name ? `${rec.company_name} 맞춤 면접 결과` : `${rec.field_name || '모의면접'} 결과`;
+    const d = new Date(rec.created_at), title = rec.company_name ? `${rec.company_name} 맞춤 면접 결과` : rec.purpose === 'major' || rec.purpose === 'review' ? `${recKindName(rec)} 면접 결과` : `${rec.field_name || '모의면접'} 결과`;
     const set = (k, v)=>{ const e = document.getElementById(k); if(e) e.textContent = v; };
     set('result-title', title); set('rs-time', rec.duration_label ? durText(rec.duration_label) : ''); set('rs-grade', state.answerFeedback.some(a=>a.ae) ? AeReport.grade(rec.score || 0) : Rubric.grade(rec.score || 0)); set('rs-content', (rec.score || 0) + '점');
     this.histDate = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
@@ -24015,7 +24032,7 @@ const ResultView = {
       <div class="rv-head"><p class="rv-kick">${escapeHtml(kick2)}</p><p class="rv-meta">${escapeHtml(meta)}</p></div>
       <div class="rv-2col">
         <div class="rv-main">
-          <h1 class="rv-big">${escapeHtml(head)}</h1>
+          <h1 class="rv-big">${escapeHtml(head).replace(/(\S+~\S+)/g, '<span class="nw">$1</span>')}</h1>
           ${p ? `<p class="rv-ex"><b>이렇게 해 보세요</b> ${escapeHtml(p.tip.ex)}</p>` : ''}
           <ul class="rv-lines">${good ? `<li><b>잘한 점</b> ${escapeHtml(good)}</li>` : ''}${fix ? `<li><b>보완할 점</b> ${escapeHtml(fix)}</li>` : ''}</ul>
           ${grade && grade !== '–' ? `<p class="rv-grade">종합 <b>${escapeHtml(grade)}</b>${typeof state.lastAverageScore === 'number' && isFinite(state.lastAverageScore) ? ` · ${Math.round(state.lastAverageScore)}점` : ''} <span>A~E 평가 항목과 점수 계산은 그대로예요</span></p>` : ''}
@@ -24030,6 +24047,7 @@ const ResultView = {
         <button type="button" class="btn btn-outline" onclick="AnswerNote.open()">답변 노트에 정리</button>
         <button type="button" class="btn btn-outline" onclick="ResultView.show('ae', ${p ? p.i : 0})"${n ? '' : ' disabled'}>A~E 점수·비중·근거</button>
         ${canRw ? `<button type="button" class="btn btn-outline" onclick="ResultView.show('rw', ${p.i})">원본과 수정안 비교</button>` : ''}
+        <button type="button" class="btn btn-outline rv-fb-m" onclick="openFeedback()">의견·문제 보내기</button>
       </div>
       ${state.histView ? `<div class="rv-histnote"><p>저장된 기록으로 보여 줘요. 영상과 질문의 근거는 저장하지 않아서 이 화면에서는 볼 수 없어요.</p><div class="rv-acts">${state.histView.fromList ? '<button type="button" class="btn btn-outline" onclick="openAllHistory()">기록 목록으로</button>' : ''}<button type="button" class="btn btn-outline" onclick="openRecordDetailOld(${JSON.stringify(String(state.histView.id)).replace(/"/g, '&quot;')}, false)">예전 기록 창으로 보기</button></div></div>` : ''}`;
     const sv = document.getElementById('save-banner'), slot = box.querySelector('[data-slot="save"]'); if(sv && slot) slot.appendChild(sv);
@@ -25628,6 +25646,7 @@ const StenoVoice = {
         MobileAudio.beforeSpeak();
         const a = MobileAudio.element(src); this.audio = a;
         if(state.interviewMode === 'dialog') Persona.attachAudio(a, !!objUrl && !MobileAudio.isMobile);
+        try{ if(state.interviewMode === 'dialog') ImvLip.begin(sanitizeForSpeech(text), a); }catch(_){}   // 2026-11-17 면접관 입 그림
         await new Promise((res, rej)=>{
           a.onended = ()=>{ if(this.audio===a) this.audio=null; if(objUrl) URL.revokeObjectURL(objUrl); res(); };
           a.onerror = ()=>rej(new Error('저장된 음성 재생 실패'));
@@ -25663,6 +25682,7 @@ const StenoVoice = {
         MobileAudio.beforeSpeak();
         const a = MobileAudio.element(url); this.audio = a;
         if(state.interviewMode === 'dialog') Persona.attachAudio(a, !MobileAudio.isMobile);
+        try{ if(state.interviewMode === 'dialog') ImvLip.begin(tt, a); }catch(_){}   // 2026-11-17 면접관 입 그림
         a.onended = ()=>{ URL.revokeObjectURL(url); if(this.audio===a) this.audio=null; if(onDone) onDone(); };
         a.onerror = ()=>{ URL.revokeObjectURL(url); this.silentDone(text, onDone, '재생 실패'); };
         await playWithGate(a);
@@ -30798,7 +30818,7 @@ function openRecordDetailFromAdmin(recordId){
   if(r){
     // openRecordDetail이 참조하는 형태로 임시 등록
     state.historyRecords = [{
-      id: r.id, fieldName: r.field_name, score: r.score, durationLabel: r.duration_label||'',
+      id: r.id, fieldName: recKindName(r), score: r.score, durationLabel: r.duration_label||'',
       dateLabel: `${formatDateFull(r.created_at)} · ${r.question_count}문항`,
     }].concat((state.historyRecords||[]).filter(h=>String(h.id)!==String(recordId)));
   }
@@ -31985,6 +32005,116 @@ const IMV_PHOTOS = {
 const IMV_PANEL3 = IMV_PHOTOS['3'].src;
 function imvPreload(){ if(imvPreload.done) return; imvPreload.done = true; Object.values(IMV_PHOTOS).forEach(L=>{ try{ const i = new Image(); i.src = L.src; }catch(_){} }); }   // 준비 창에서 미리 받아 둠 (입장 때 회색 화면 방지)   // 'bright' = 밝은 실제 면접실 (기본) · 'dark' = 어두운 몰입형
 
+/* 2026-11-17 립싱크 입 모양 순서표 (글자 → 입 모양)
+   면접관이 할 말(질문·꼬리질문 글자)은 목소리를 만들기 전에 이미 정해져 있으므로, 한글 한 글자씩 모음·자음으로 나눠 입 모양을 정함.
+   ㅏ·ㅑ 크게 벌림 / ㅓ·ㅔ·ㅐ 중간 / ㅗ·ㅛ·ㅜ·ㅠ 오므림 / ㅣ·ㅡ 옆으로 좁게 / 첫소리·받침 ㅁ·ㅂ·ㅍ 입술 붙임 / 쉼표·마침표는 닫음.
+   시간: 타입캐스트(오디오)는 재생 위치·전체 길이에 맞춰 늘이고 줄이며, 브라우저 기본 목소리는 읽는 속도로 어림하고 단어 신호(boundary)가 오면 그 자리로 다시 맞춤.
+   질문 순서·내용과 상관없이 어떤 문장이든 그대로 동작. 소리 분석이 되면 소리가 쉬는 구간에는 입을 닫음 */
+const ImvLip = {
+  items: null, units: 0, el: null, rate: 1, t0: 0, shift: 0, on: false, endAt: 0,
+  SH: { A: { o: 1, w: 0.12, r: 0 }, E: { o: 0.66, w: 0.32, r: 0 }, EO: { o: 0.72, w: 0, r: 0.22 }, O: { o: 0.55, w: 0, r: 0.85 }, U: { o: 0.32, w: 0, r: 1 }, I: { o: 0.3, w: 0.75, r: 0 }, EU: { o: 0.22, w: 0.5, r: 0 } },
+  VOW: ['A','E','A','E','EO','E','EO','E','O','OA','OE','OE','O','U','UE','UE','UI','U','EU','I','I'],
+  build(text){
+    const out = []; let u = 0; const T = String(text || '');
+    const push = (it, d)=>{ it.s = u; it.d = d; it.i = it.i == null ? -1 : it.i; out.push(it); u += d; };
+    for(let i = 0; i < T.length; i++){
+      const ch = T[i], c = ch.charCodeAt(0);
+      if(c >= 0xAC00 && c <= 0xD7A3){
+        const k = c - 0xAC00, cho = Math.floor(k / 588), jung = Math.floor((k % 588) / 28), jong = k % 28;
+        push({ i, v: this.VOW[jung], b0: [6, 7, 8, 17].includes(cho), b1: [16, 17, 18, 11, 14].includes(jong), ng: jong === 21, jong: jong > 0 }, jong ? 1.18 : 1);
+      } else if(/[.?!。]/.test(ch)) push({ i, pause: true }, 2.2);
+      else if(/[,·;:…]/.test(ch)) push({ i, pause: true }, 1.4);
+      else if(/\s/.test(ch)){ if(out.length && !out[out.length - 1].pause) push({ i, pause: true, soft: true }, 0.3); }
+      else if(/[0-9]/.test(ch)) push({ i, v: 'E' }, 1.4);
+      else if(/[A-Za-z]/.test(ch)) push({ i, v: /[aeiouAEIOU]/.test(ch) ? 'A' : 'E' }, 0.75);
+    }
+    return { items: out, units: u };
+  },
+  /** 말하기 시작: el = 재생할 Audio(타입캐스트·저장된 음성), 없으면 브라우저 기본 목소리 */
+  begin(text, el, rate){
+    const b = this.build(text); this.items = b.items; this.units = Math.max(1, b.units); this.el = el || null; this.rate = rate || 1; this.shift = 0; this.on = true; this.t0 = performance.now() / 1000; this.endAt = 0;
+    if(el){ const off = ()=>{ if(this.el === el) this.end(); }; el.addEventListener('ended', off, { once: true }); el.addEventListener('pause', ()=>{ if(this.el === el && el.ended) this.end(); }); }
+  },
+  /** 브라우저 기본 목소리가 실제로 읽기 시작한 순간 */
+  started(){ if(this.on && !this.el){ this.t0 = performance.now() / 1000; this.shift = 0; } },
+  /** 브라우저 단어 신호: 지금 읽는 글자 위치로 다시 맞춤 */
+  boundary(ci){ if(!this.on || this.el || !this.items) return; const it = this.items.find(x=>x.i >= ci); if(!it) return; const now = performance.now() / 1000 - this.t0; this.shift = it.s * this.unitSec() - now; },
+  end(){ this.on = false; this.items = null; this.el = null; },
+  unitSec(){
+    const el = this.el;
+    if(el && isFinite(el.duration) && el.duration > 0.3) return Math.max(0.05, (el.duration - 0.12) / this.units);
+    return 1 / (6.1 * (this.rate || 1));
+  },
+  /** 지금 입 모양 { o: 벌림 0~1, w: 옆으로 0~1, r: 오므림 0~1 } — 말하는 중이 아니면 null */
+  sample(){
+    this._it = null; if(!this.on || !this.items) return null;
+    const el = this.el; let t;
+    if(el){ if(el.paused && !el.currentTime) return { o: 0, w: 0, r: 0 }; t = el.currentTime - 0.04; }
+    else t = performance.now() / 1000 - this.t0 + this.shift;
+    const us = this.unitSec(), x = t / us;
+    if(x < 0) return { o: 0, w: 0, r: 0 };
+    if(x > this.units + 0.5){ if(!el) this.end(); return { o: 0, w: 0, r: 0 }; }
+    let lo = 0, hi = this.items.length - 1, k = 0;
+    while(lo <= hi){ const m = (lo + hi) >> 1; if(this.items[m].s <= x){ k = m; lo = m + 1; } else hi = m - 1; }
+    const it = this.items[k]; this._it = it; if(!it || it.pause) return { o: 0, w: 0, r: 0 };
+    const p = Math.max(0, Math.min(1, (x - it.s) / it.d)); this._p = p; const S = this.SH, ss = (a, b, v)=>{ const q = Math.max(0, Math.min(1, (v - a) / (b - a))); return q * q * (3 - 2 * q); };
+    let sh;
+    if(it.v === 'OA' || it.v === 'OE' || it.v === 'UE' || it.v === 'UI'){ const a = S[it.v[0] === 'O' ? 'O' : 'U'], b = S[it.v === 'OA' ? 'A' : it.v === 'UI' ? 'I' : 'E'], m = ss(0.15, 0.55, p); sh = { o: a.o + (b.o - a.o) * m, w: a.w + (b.w - a.w) * m, r: a.r + (b.r - a.r) * m }; }
+    else sh = S[it.v] || S.E;
+    let o = sh.o * ss(0.02, 0.32, p) * (1 - 0.3 * ss(0.68, 1, p));
+    if(it.b0) o *= ss(0.18, 0.4, p);                 // ㅁ·ㅂ·ㅍ로 시작: 입술을 붙였다 뗌
+    if(it.b1) o *= 1 - ss(0.62, 0.88, p);            // 받침 ㅁ·ㅂ: 끝에서 입을 다묾
+    else if(it.jong && !it.ng) o *= 1 - 0.35 * ss(0.7, 1, p);
+    return { o, w: sh.w, r: sh.r };
+  },
+  /** 지금 보여 줄 입 그림 이름: X 닫힘 · A 아 · E 어/에 · O 오 · U 우 · I 이 */
+  viseme(){
+    const s = this.sample(); if(!s) return 'X';
+    const it = this._it; if(!it || it.pause || s.o < 0.14) return 'X';
+    const v = it.v, p = this._p || 0;
+    if(v === 'OA') return p < 0.4 ? 'O' : 'A'; if(v === 'OE') return p < 0.4 ? 'O' : 'E'; if(v === 'UE') return p < 0.4 ? 'U' : 'E'; if(v === 'UI') return p < 0.4 ? 'U' : 'I';
+    return v === 'A' ? 'A' : v === 'O' ? 'O' : v === 'U' ? 'U' : (v === 'I' || v === 'EU') ? 'I' : 'E';
+  },
+};
+/* 2026-11-17 면접관 입 그림 (한 번 만들어 둔 입 모양 사진을 글자에 맞춰 바꿔 끼움 · 면접 중 추가 비용 없음)
+   - imv-visemes.json: 사진 속 자리(예 '2a_1')마다 입 부분 상자 위치(사진 크기 대비 %)와 입 모양 6장(X 닫힘·A·E·O·U·I)
+   - 그 파일이 없으면 아무것도 하지 않음(지금처럼 정지 사진). 말하는 면접관만, 말하는 동안만 보임 */
+const ImvMouth = {
+  man: null, loading: null, el: null, seat: '', cur: '', raf: 0, imv: null, quiet: 0, last: 0,
+  base(){ return (typeof window !== 'undefined' && window.IMV_VIS_BASE) || ''; },
+  load(){ if(!this.loading) this.loading = fetch(this.base() + 'imv-visemes.json', { cache: 'no-cache' }).then(r=>r.ok ? r.json() : null).catch(()=>null).then(m=>{ this.man = m && m.seats ? m : null; return this.man; }); return this.loading; },
+  sync(imv, c){
+    this.imv = imv; const host = imv.el && imv.el.querySelector('#imv-photo-img'); if(!host) return;
+    if(!this.man){ this.load().then(m=>{ if(m && this.imv === imv) this.sync(imv, c); }); return; }
+    const seat = imv.mode === 'photo' ? imv.layout + '_' + c : '', S = this.man.seats[seat];
+    if(!this.el){ this.el = document.createElement('div'); this.el.className = 'imv-mp'; this.el.setAttribute('aria-hidden', 'true'); (this.man.visemes || ['X','A','E','O','U','I']).forEach(v=>{ const i = document.createElement('img'); i.alt = ''; i.dataset.v = v; i.decoding = 'async'; this.el.appendChild(i); }); }
+    if(this.el.parentNode !== host) host.appendChild(this.el);
+    if(!S){ this.el.hidden = true; this.seat = ''; return; }
+    this.el.hidden = false;
+    if(this.seat !== seat){ this.seat = seat; this.cur = ''; this.el.querySelectorAll('img').forEach(i=>{ i.src = this.base() + S.img[i.dataset.v]; i.classList.remove('on'); });
+      Object.keys(this.man.seats).filter(k=>k.indexOf(imv.layout + '_') === 0).forEach(k=>Object.values(this.man.seats[k].img).forEach(f=>{ const im = new Image(); im.src = this.base() + f; })); }
+    this.place(); this.start();
+  },
+  /** 사진이 화면에 놓인 자리(background-size:cover + background-position)를 따라 상자를 놓음 */
+  place(){
+    const imv = this.imv, S = this.man && this.man.seats[this.seat], host = this.el && this.el.parentNode; if(!imv || !S || !host) return;
+    const A = imv.layout === '3' ? 1535 / 863 : 16 / 9, w = host.clientWidth || 1, h = host.clientHeight || 1, I = Math.max(w, h * A), Ih = I / A;
+    const bp = String(host.style.backgroundPosition || '50% 42%').split(/\s+/), px = (parseFloat(bp[0]) || 50) / 100, py = (parseFloat(bp[1] || '42') || 42) / 100;
+    const ox = (w - I) * px, oy = (h - Ih) * py, b = S.box;
+    Object.assign(this.el.style, { left: (ox + b[0] / 100 * I).toFixed(1) + 'px', top: (oy + b[1] / 100 * Ih).toFixed(1) + 'px', width: (b[2] / 100 * I).toFixed(1) + 'px', height: (b[3] / 100 * Ih).toFixed(1) + 'px' });
+  },
+  start(){ if(this.raf) return; const loop = ts=>{ this.raf = requestAnimationFrame(loop); const dt = Math.min(0.1, (ts - (this.last || ts)) / 1000); this.last = ts; this.tick(dt); }; this.raf = requestAnimationFrame(loop); },
+  stop(){ if(this.raf) cancelAnimationFrame(this.raf); this.raf = 0; if(this.el) this.el.classList.remove('talk'); },
+  tick(dt){
+    const imv = this.imv; if(!imv || !imv.active || !this.el || this.el.hidden){ if(imv && !imv.active) this.stop(); return; }
+    const talking = imv.phaseCls === 'speaking' && typeof ImvLip !== 'undefined' && ImvLip.on;
+    this.el.classList.toggle('talk', talking);
+    let v = talking ? ImvLip.viseme() : 'X';
+    // 타입캐스트 소리를 분석할 수 있으면 소리가 끊긴 순간에는 입을 닫음
+    try{ if(talking && ImvLip.el && Persona.analyzable && Persona.analyser){ const tb = this._tb || (this._tb = new Uint8Array(Persona.analyser.fftSize)); Persona.analyser.getByteTimeDomainData(tb); let q = 0; for(let i = 0; i < tb.length; i++){ const x = (tb[i] - 128) / 128; q += x * x; } const rms = Math.sqrt(q / tb.length); this.quiet = rms < 0.012 ? this.quiet + dt : 0; if(this.quiet > 0.09) v = 'X'; } }catch(_){}
+    if(v !== this.cur){ this.cur = v; this.el.querySelectorAll('img').forEach(i=>i.classList.toggle('on', i.dataset.v === v)); }
+  },
+};
 /* 면접 전체 녹화 (이 기기 안에서만) */
 const ImvRec = {
   mr: null, chunks: [], t0: 0, marks: [], mime: '', micStream: null, url: '', blob: null, kind: '',
@@ -32264,6 +32394,7 @@ const Imv = {
     let p = 0.5; if(I - w > 1) p = Math.max(0, Math.min(1, (f * I - w / 2) / (I - w)));
     img.style.backgroundPosition = `${(p * 100).toFixed(2)}% 42%`;
     const sx = (f * I + (w - I) * p) / w * 100; ph.style.setProperty('--sx', sx.toFixed(2) + '%');
+    try{ ImvMouth.sync(this, c); }catch(e){ console.warn('[면접관 입 그림]', e && e.message); }
   },
   status(){
     if(!this.el) return; const t = this.el.querySelector('#imv-status-t'), st = this.el.querySelector('#imv-status');
@@ -32533,6 +32664,11 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv[data-phase="listening"] .imv-shade,#imv[data-phase="idle"] .imv-shade{opacity:.35}
 #imv .imv-spot{position:absolute;bottom:0;height:5px;width:22%;left:calc(var(--sx,50%) - 11%);border-radius:4px 4px 0 0;background:var(--acc);opacity:0;transition:left .8s cubic-bezier(.2,.7,.2,1),opacity .4s}
 #imv[data-phase="speaking"] .imv-spot{opacity:calc(.55 + var(--lv,0) * .45)}
+#imv .imv-mp{position:absolute;pointer-events:none;opacity:0;transition:opacity .14s ease,left .9s cubic-bezier(.2,.7,.2,1),top .9s cubic-bezier(.2,.7,.2,1);-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 52%,#000 58%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 52%,#000 58%,transparent 100%)}
+#imv .imv-mp.talk{opacity:1}
+#imv .imv-mp img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;opacity:0;transition:opacity .07s linear}
+#imv .imv-mp img.on{opacity:1}
+@media (prefers-reduced-motion:reduce){#imv .imv-mp{display:none}}
 /* 2026-11-17 누가 말하는지 또렷하게 (립싱크 대신): 말하는 면접관 쪽으로 조금 더 다가가고, 다른 면접관은 어둡게, 얼굴 아래 이름표에 목소리 막대 */
 #imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-photo-img{transform:scale(1.07)}
 #imv .imv-shade{background:radial-gradient(ellipse var(--sw,24%) 88% at var(--sx,50%) 58%,rgba(20,18,17,0) 52%,rgba(20,18,17,.5) 100%)}
