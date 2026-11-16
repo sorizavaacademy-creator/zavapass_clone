@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-16a';
+var APP_VERSION = '2026-11-16b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -7676,6 +7676,7 @@ html.sv-open{overflow:hidden;}
     <div class="lg-wrap">
       <section class="lg-intro">
         <a class="lg-brand" href="javascript:void(0)"><span class="d3-logo"><i class="d3-dot"></i>ZAVAPASS</span><span class="d3-org"><i class="d3-x">×</i>한림대학교</span></a>
+        <span class="zv-live" aria-hidden="true"><i></i>AI 면접관 3명 · 지금 바로 연습할 수 있어요</span>
         <h1 class="lg-h">나의 대학생활이, <br>나만의 면접 질문으로.</h1>
         <p class="lg-lead">전공 수업과 활동 경험을 바탕으로 질문을 받고,<br class="hide-m"> AI 면접관과 대화하며 면접을 준비하세요.</p>
         <ol class="lg-steps" aria-label="이렇게 준비해요">
@@ -7688,6 +7689,7 @@ html.sv-open{overflow:hidden;}
           <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span><strong>AI 면접관과 대화 연습</strong>질문을 듣고 말로 답하면 꼬리질문이 이어져요.</span></li>
           <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg><span><strong>피드백과 성장 확인</strong>답변 피드백을 받고 지난 면접과 비교해요.</span></li>
         </ul>
+        <figure class="zv-win zv-win-lg" aria-hidden="true"><img src="imv-panel3.jpg" alt="" loading="lazy" decoding="async"><span class="zv-rec"><i></i>LIVE</span><span class="zv-tag">AI 면접관 3명</span><p class="zv-sub">"전공 수업에서 가장 기억에 남는 프로젝트를 말씀해 주세요."</p><span class="zv-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></figure>
         <div class="lg-prev-wrap">
           <figure class="lg-prev" aria-label="면접 화면 예시">
             <figcaption class="lg-prev-cap">면접 화면 예시</figcaption>
@@ -7726,7 +7728,7 @@ html.sv-open{overflow:hidden;}
             <button type="submit" class="lg-submit" id="btn-login">로그인</button>
             <button type="button" class="lg-mode" id="login-mode" onclick="LoginId.toggle()">교직원·관리자, 이메일로 가입한 계정은 <b>이메일로 로그인</b> ›</button>
           </form>
-          <div class="lg-join"><button type="button" class="lg-join-btn" onclick="openSignup()">회원가입</button><button type="button" class="lg-join-btn" onclick="LoginHelp.open()">로그인 도움</button></div>
+          <div class="lg-join"><button type="button" class="lg-join-btn zv-tile zv-tile-on" onclick="openSignup()"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="4"/><path d="M3 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/></svg><span><b>회원가입</b><small>학번으로 1분이면 끝나요</small></span></button><button type="button" class="lg-join-btn zv-tile" onclick="LoginHelp.open()"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg><span><b>로그인 도움</b><small>학번·비밀번호 확인</small></span></button></div>
           <div class="hs-link-row"><button type="button" class="hs-link" onclick="HomeApp.open(true)"><img src="apple-touch-icon.png?v=27c" alt="">다음부터 바로 들어오기 · <span class="nw">홈 화면에 추가</span></button></div>
           <div class="lg-info">
             <p class="t">이용 안내</p>
@@ -7891,6 +7893,7 @@ html.sv-open{overflow:hidden;}
     <!-- 2026-11-11 홈 간결하게 (시안 1번 '홈'): 큰 문구 + 시작 버튼 2개 + 3단계 안내. 예전 홈 칸들은 지우지 않고 '다른 방식으로 연습할래요' 펼치기 안으로 -->
     <section class="hz-hero" id="hz-hero">
       <div class="hz-l">
+        <span class="zv-live" aria-hidden="true"><i></i>AI 면접관 대기 중</span>
         <h1 class="hz-h" id="hz-h">면접 준비,<br>내 경험에서 시작해요.</h1>
         <p class="hz-lead">수업에서 배운 것부터 활동하며 해낸 일까지.<br>나만의 경험을 면접관에게 들려주세요.</p>
         <div class="hz-acts">
@@ -7899,6 +7902,7 @@ html.sv-open{overflow:hidden;}
         </div>
         <div class="hz-ban" id="hz-ban"></div>
       </div>
+      <figure class="zv-win" aria-hidden="true"><img src="imv-panel2a.jpg" alt="" loading="lazy" decoding="async"><span class="zv-rec"><i></i>LIVE</span><span class="zv-tag">AI 면접관 2명</span><p class="zv-sub">"전공 수업에서 해낸 일을 1분 안에 소개해 주세요."</p><span class="zv-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></figure>
       <ol class="hz-steps" aria-label="이렇게 진행돼요">
         <li><i>1</i><div><b>나에게 맞게 준비</b><span>전공과 연습할 경험을 골라요.</span></div></li>
         <li><i>2</i><div><b>면접관과 대화</b><span>질문을 듣고 내 말로 답해요.</span></div></li>
@@ -7906,15 +7910,15 @@ html.sv-open{overflow:hidden;}
       </ol>
     </section>
     <div class="hz-foot" id="hz-foot1">
-      <button type="button" class="hz-more-btn" id="hz-more-btn" aria-expanded="false" aria-controls="hz-fold" onclick="HomeSimple.fold()"><i aria-hidden="true">▶</i>다른 방식으로 연습할래요</button>
+      <button type="button" class="hz-more-btn zv-tile" id="hz-more-btn" aria-expanded="false" aria-controls="hz-fold" onclick="HomeSimple.fold()"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/></svg><span><b>다른 방식으로 연습할래요</b><small>토론·발표 · 친구와 · 오늘의 한 질문</small></span></button>
       <!-- 2026-11-12z5 v3 시안: 큰 창 대신 바로 아래로 펼쳐지는 버튼 3개 (예전 창의 다른 도구는 위 메뉴 '연습하기' → '연습 도구 더 보기'에 그대로) -->
       <div class="hz-fold" id="hz-fold" hidden>
-        <button type="button" class="hz-sec" onclick="navGo('debate')">토론·발표</button>
-        <button type="button" class="hz-sec" onclick="Study.open()">친구와 연습</button>
-        <button type="button" class="hz-sec" onclick="DailyQ.open()">오늘의 한 질문</button>
+        <button type="button" class="hz-sec zv-tile" onclick="navGo('debate')"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M19 10h1a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v2l-3-2h-4"/></svg><span><b>토론·발표</b><small>주장하고 반론에 대응</small></span></button>
+        <button type="button" class="hz-sec zv-tile" onclick="Study.open()"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9.5" r="2.8"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M14.5 15.5a5 5 0 0 1 7 4.5"/></svg><span><b>친구와 연습</b><small>친구를 면접관으로 초대</small></span></button>
+        <button type="button" class="hz-sec zv-tile" onclick="DailyQ.open()"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b>오늘의 한 질문</b><small>짧게 하나만 답하기</small></span></button>
       </div>
-      <button type="button" class="hz-sec" onclick="navGo('materials')">내 자료 확인</button>
-      <button type="button" class="hz-sec" onclick="openAllHistory()">연습 기록 보기</button>
+      <button type="button" class="hz-sec zv-tile" onclick="navGo('materials')"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6l2 2h8v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg><span><b>내 자료 확인</b><small>경험·서류·답변 노트</small></span></button>
+      <button type="button" class="hz-sec zv-tile" onclick="openAllHistory()"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg><span><b>연습 기록 보기</b><small>완료한 면접 결과</small></span></button>
     </div>
     <!-- 2026-11-12 다시 방문한 홈 (시안 05): 면접 기록이 있으면 이 칸이 보이고 위 첫 방문 칸은 숨김 -->
     <section class="hz-ret" id="hz-ret" hidden aria-labelledby="hz-ret-h">
@@ -7929,13 +7933,13 @@ html.sv-open{overflow:hidden;}
         </select>
       </div>
       <div class="hz-ret-main">
-        <div class="hz-ret-l"><h2 class="hz-ret-big" id="hz-ret-big"></h2><div class="hz-ret-acts" id="hz-ret-acts"></div></div>
+        <div class="hz-ret-l"><span class="zv-live" aria-hidden="true"><i></i>AI 면접관 대기 중</span><h2 class="hz-ret-big" id="hz-ret-big"></h2><div class="hz-ret-acts" id="hz-ret-acts"></div><figure class="zv-win zv-win-s" aria-hidden="true"><img src="imv-panel2b.jpg" alt="" loading="lazy" decoding="async"><span class="zv-rec"><i></i>LIVE</span><span class="zv-tag">AI 면접관 2명</span><p class="zv-sub">"그 경험에서 본인이 맡은 역할은 무엇이었나요?"</p><span class="zv-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></figure></div>
         <aside class="hz-fix" id="hz-fix" hidden aria-label="지난 연습에서 고칠 한 가지"></aside>
       </div>
       <div class="hz-ret-foot">
-        <button type="button" class="hz-sec" onclick="navGo('growth')">나의 기록</button>
-        <button type="button" class="hz-sec" onclick="StartFlow.pickFromHome('job')">기관·직무 준비</button>
-        <button type="button" class="hz-sec" onclick="HomeTabs.open('dday')">면접 D-day</button>
+        <button type="button" class="hz-sec zv-tile" onclick="navGo('growth')"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg><span><b>나의 기록</b><small>점수 흐름과 지난 결과</small></span></button>
+        <button type="button" class="hz-sec zv-tile" onclick="StartFlow.pickFromHome('job')"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6M9 11h.01M15 11h.01"/></svg><span><b>기관·직무 준비</b><small>지원 기관에 맞춘 질문</small></span></button>
+        <button type="button" class="hz-sec zv-tile" onclick="HomeTabs.open('dday')"><svg class="zv-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg><span><b>면접 D-day</b><small>전날부터 다녀온 뒤까지</small></span></button>
       </div>
     </section>
     <div class="hz-pop" id="hz-pop" hidden>
@@ -10061,6 +10065,7 @@ html.sv-open{overflow:hidden;}
       </div>
       <div class="signup-login-link">이미 계정이 있으신가요? <a onclick="closeSignup()">로그인</a></div>
     </div>
+    <aside class="su-visual" aria-hidden="true"><img src="imv-panel1f.jpg" alt="" loading="lazy" decoding="async"><div class="su-v-in"><span class="zv-live"><i></i>가입하면 바로 시작</span><h3>가입은 1분,<br>첫 면접은 오늘.</h3><p>내 전공과 경험에 맞춘 질문으로 AI 면접관과 실제처럼 연습해요.</p><ul class="su-v-list"><li>학번이 로그인 아이디</li><li>내 전공·경험·서류에 맞춘 질문</li><li>끝나면 바로 피드백과 다시 보기</li></ul><ol class="su-v-steps"><li><i>1</i>계정</li><li><i>2</i>소속·연락</li><li><i>3</i>동의</li></ol></div></aside>
   </div>
 </div>
 
@@ -14792,7 +14797,11 @@ const StartFlow = {
   vHub(){ const row = (t, d, btn, act, solid)=>`<div class="fl-hub-row"><div><b>${t}</b><span>${d}</span></div><button type="button" class="btn ${solid ? 'btn-solid' : 'btn-outline'}" data-hub="${act}">${btn}</button></div>`;
     const tool = (t, d, act)=>`<button type="button" class="fl-hub-tool" data-hub="${act}"><b>${t}</b><span>${d}</span></button>`;
     return `${this.vHead('오늘은 어떻게 연습할까요?', '주요 면접부터 시작하고, 다른 방식은 필요할 때 골라요.')}
-    <div class="fl-hub">${row('AI 면접관과 연습', '전공·경험 또는 기관·직무에 맞춘 질문을 받아요.', '면접 준비하기', 'start', true)}${row('토론·발표 면접', '주장을 말하고 반론에 대응해요.', '유형 고르기', 'debate')}${row('친구와 함께 면접', '친구를 면접관으로 초대해요.', '친구 초대하기', 'study')}</div>
+    <div class="fl-hubv">
+      <button type="button" class="fl-hc fl-hc-main" data-hub="start"><img class="fl-hc-ph" src="imv-panel2a.jpg" alt=""><span class="zv-rec"><i></i>LIVE</span><span class="fl-hc-in"><span class="zv-live"><i></i>AI 면접관 대기 중</span><b>AI 면접관과 연습</b><span>전공·경험 또는 기관·직무에 맞춘 질문을 받아요. 실제 면접처럼 말로 답하고, 끝나면 바로 피드백을 받아요.</span><em class="fl-hc-go">면접 준비하기</em></span></button>
+      <button type="button" class="fl-hc fl-hc-sub fl-hc-db" data-hub="debate"><span class="fl-hc-art" aria-hidden="true"><svg viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h22a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H15l-6 5v-5H6a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3z"/><path d="M35 19h7a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-2v5l-6-5h-9a3 3 0 0 1-3-3v-1"/><path d="M10 19.5h12"/></svg></span><b>토론·발표 면접</b><span>주장을 말하고 AI의 반론에 대응해요.</span><em>유형 고르기</em></button>
+      <button type="button" class="fl-hc fl-hc-sub fl-hc-st" data-hub="study"><span class="fl-hc-art" aria-hidden="true"><svg viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="16" r="7"/><circle cx="33" cy="18" r="5.5"/><path d="M4 40a13 13 0 0 1 26 0M28 33a10 10 0 0 1 16 7"/></svg></span><b>친구와 함께 면접</b><span>친구를 면접관으로 초대해 서로 물어봐요.</span><em>친구 초대하기</em></button>
+    </div>
     <details class="fl-hub-more"><summary>짧게 먼저 해볼래요</summary><div class="fl-cta"><button type="button" class="btn btn-outline" data-hub="coach">1분 자기소개 코치</button><button type="button" class="btn btn-outline" data-hub="docq">서류 기반 질문</button></div></details>
     <details class="fl-hub-more"><summary>연습 도구 더 보기</summary><div class="fl-hub-tools">${tool('오늘의 질문 · 이번 주 목표', '추천 세트와 함께 보기', 'today')}${tool('면접 D-day', '전날·당일·다녀온 뒤', 'dday')}${tool('지난 면접 보완점', '낮았던 질문 다시 연습', 'review')}${tool('답변 노트', '유형별 내 최고 답변', 'note')}${tool('내 질문 모음', '담아 둔 질문 연습', 'bm')}${tool('내 경험', '경험 정리·입력', 'exp')}${tool('최근 면접 기록', '리포트 다시 보기', 'recent')}</div></details>`; },
   hubAct(a){ const s = this.s;
@@ -15188,6 +15197,10 @@ const StartFlow = {
       <dl class="fl-sum2">${co ? `<dt>지원</dt><dd>${co}</dd>` : ''}<dt>내 정보</dt><dd>${info}</dd><dt>경험</dt><dd>${u.length ? u.map(e=>escapeHtml(e.text)).join(', ') : '선택 안 함 (일반 질문)'}</dd>
         <dt>시간</dt><dd>${s.mode === 'real' ? '자기소개 60초 · 답변 90초' : '시간 제한 없음'}</dd><dt>화면</dt><dd>${view.length ? view.join(' · ') + ' 켬' : '내 얼굴·자막 끔'}</dd>${pq ? `<dt>미리 연습</dt><dd>${pq}</dd>` : ''}</dl>
       <p class="fl-panel-note">전공·경험과 기관·직무 모두 연습형·실전형으로 진행할 수 있어요.</p></aside>`; },
+  /** 2026-11-17 면접 입장 카드: 고른 면접관 사진(면접장과 같은 사진)으로 미리보기 창 */
+  vEntryWin(){ const s = this.s; let src = IMV_PHOTOS['3'].src, n = 3;
+    try{ const ppl = (s.people || []).map(id=>this.PEOPLE.find(x=>x.id === id)).filter(Boolean).slice(0, 3); if(ppl.length){ n = ppl.length; const lo = Imv.layoutFor(ppl.map(x=>Imv.P(x.id))); if(IMV_PHOTOS[lo.layout]) src = IMV_PHOTOS[lo.layout].src; } }catch(_){}
+    return `<figure class="zv-win zv-win-entry" aria-hidden="true"><img src="${src}" alt=""><span class="zv-rec"><i></i>LIVE</span><span class="zv-tag">AI 면접관 ${n}명</span><p class="zv-sub">"안녕하세요. 지금부터 면접을 시작하겠습니다."</p><span class="zv-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></figure>`; },
   /** 3단계 · 장치·녹화 점검 (시안 10). 카메라·마이크 칸은 기존 '면접 준비' 창의 것을 그대로 빌려 와서 씀 */
   vDev(){ const s = this.s;
     const ck = (id, on, t, d, dis)=>`<label class="fl-ck"><input type="checkbox" id="${id}"${on ? ' checked' : ''}${dis ? ' disabled' : ''}><span><b>${t}</b>${d ? `<small>${d}</small>` : ''}</span></label>`;
@@ -15206,7 +15219,8 @@ const StartFlow = {
         <div class="fl-vt"><button type="button" class="btn btn-outline" id="fl-vt-b">목소리 테스트</button><p class="fl-hint" id="fl-vt-out" aria-live="polite">"안녕하세요" 하고 한 문장 말해 보세요. 들린 말을 글자로 보여 줄 뿐, 채점하거나 면접 기록에 저장하지 않아요.</p></div>
         <button type="button" class="btn btn-outline" id="fl-recinfo-b" aria-expanded="${!!s.recInfo}" aria-controls="fl-recinfo">녹화·분석 안내 확인</button>
         <div class="fl-recinfo" id="fl-recinfo"${s.recInfo ? '' : ' hidden'}><p>녹화는 <b>이 기기(브라우저) 안에서만</b> 해요. 영상·음성 파일은 서버에 올리지 않고, 결과 화면에서 내 답변을 다시 보는 데만 써요.</p><p>카메라를 켜면 답하는 동안 표정·시선을 이 기기에서 분석해 결과에 짧은 피드백으로 보여 줘요. 저장되는 건 답변을 글자로 바꾼 내용과 채점 결과예요.</p><p>창을 닫거나 새로고침하면 녹화 파일은 사라져요. 필요하면 결과 화면에서 내려받아 두세요.</p></div>
-        <button type="button" class="btn btn-solid fl-enter" id="fl-enter" data-next>면접장 입장하기</button>
+        <div class="fl-entry">${this.vEntryWin()}<div class="fl-entry-b"><span class="zv-live"><i></i>면접관 ${Math.min(s.count || 2, 3)}명이 기다리고 있어요</span><b class="fl-entry-t">면접장이 준비됐어요</b><span class="fl-entry-s">${s.mode === 'real' ? '실전형' : '연습형'} · ${this.qn()}문항 · 입장하면 첫 질문이 바로 나와요</span>
+        <button type="button" class="btn btn-solid fl-enter" id="fl-enter" data-next>면접장 입장하기</button></div></div>
         <p class="fl-hint" id="fl-enter-note">${s.pip || s.cap ? `면접장에서 ${[s.pip ? '내 얼굴' : '', s.cap ? '자막' : ''].filter(Boolean).join('·')}이 켜진 채로 시작해요.` : '면접이 시작되면 본인 화면과 자막을 숨겨요. 면접 중 \'화면 옵션\'에서 켤 수 있어요.'}</p>
       </div>
     </div>`; },
@@ -32656,5 +32670,208 @@ loadRememberedEmail();
 tryRestoreSession();
 try{ AppUpdate.init(); }catch(e){ console.warn('AppUpdate', e); }
 </script>
+<!-- 2026-11-17 진입 화면 비주얼 (제안서 캡처용): 로그인·회원가입(신청)·홈·면접 입장 — 글자만 있던 버튼을 그림 판 위 움직이는 버튼으로.
+     기존 버튼의 id·onclick은 그대로라 기능은 같음. 움직임을 줄이도록 설정한 기기에서는 애니메이션을 끔 -->
+<style id="zv-css">
+:root{--zv-ink:#1b1512;--zv-card:#1d1512;--zv-acc:#e8532a;--zv-acc2:#c8441c;--zv-acc3:#a8361a;
+  --zv-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+  --zv-mic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0 0 14 0M12 18v3'/%3E%3C/svg%3E");
+  --zv-door:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3'/%3E%3C/svg%3E");}
+@keyframes zvShine{0%,58%{background-position:-160% 0,0 0}100%{background-position:260% 0,0 0}}
+@keyframes zvPulse{0%{box-shadow:0 12px 28px -10px rgba(200,68,28,.6),0 0 0 0 rgba(255,138,92,.38)}60%{box-shadow:0 12px 28px -10px rgba(200,68,28,.6),0 0 0 11px rgba(255,138,92,0)}100%{box-shadow:0 12px 28px -10px rgba(200,68,28,.6),0 0 0 0 rgba(255,138,92,0)}}
+@keyframes zvZoom{from{transform:scale(1.01)}to{transform:scale(1.08)}}
+@keyframes zvBlink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes zvLive{0%{box-shadow:0 0 0 0 rgba(74,222,128,.6)}80%,100%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
+@keyframes zvWave{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+@keyframes zvRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes zvSub{0%,8%{opacity:0;transform:translateY(6px)}16%,88%{opacity:1;transform:none}100%{opacity:0}}
+
+/* ── 움직이는 시작 버튼 (공통) ── */
+:is(#btn-login,#d3-home .hz-go,#modal-signup #su-next,#modal-flow #fl-enter){position:relative;display:inline-flex !important;align-items:center;justify-content:center;gap:12px;border:0 !important;color:#fff !important;font-weight:800 !important;letter-spacing:-.01em;cursor:pointer;overflow:hidden;isolation:isolate;
+  background-color:var(--zv-acc2) !important;background-image:linear-gradient(110deg,transparent 38%,rgba(255,255,255,.42) 50%,transparent 62%),linear-gradient(135deg,#f2652f 0%,var(--zv-acc2) 55%,var(--zv-acc3) 100%) !important;
+  background-size:250% 100%,100% 100% !important;background-repeat:no-repeat !important;background-position:-160% 0,0 0;
+  animation:zvShine 3.8s ease-in-out infinite,zvPulse 2.8s ease-out infinite;transition:transform .2s cubic-bezier(.2,.7,.2,1),filter .2s}
+:is(#btn-login,#d3-home .hz-go,#modal-signup #su-next,#modal-flow #fl-enter)::after{content:"";flex:none;width:19px;height:19px;background:currentColor;-webkit-mask:var(--zv-arrow) center/contain no-repeat;mask:var(--zv-arrow) center/contain no-repeat;transition:transform .22s cubic-bezier(.2,.7,.2,1)}
+:is(#d3-home .hz-go,#modal-flow #fl-enter)::before{content:"";flex:none;width:22px;height:22px;background:currentColor;-webkit-mask:var(--zv-mic) center/contain no-repeat;mask:var(--zv-mic) center/contain no-repeat}
+#modal-flow #fl-enter::before{-webkit-mask-image:var(--zv-door);mask-image:var(--zv-door)}
+:is(#btn-login,#d3-home .hz-go,#modal-signup #su-next,#modal-flow #fl-enter):hover{transform:translateY(-2px);filter:brightness(1.07) saturate(1.05)}
+:is(#btn-login,#d3-home .hz-go,#modal-signup #su-next,#modal-flow #fl-enter):hover::after{transform:translateX(5px)}
+:is(#btn-login,#d3-home .hz-go,#modal-signup #su-next,#modal-flow #fl-enter):active{transform:translateY(0) scale(.98)}
+:is(#btn-login,#d3-home .hz-go,#modal-signup #su-next,#modal-flow #fl-enter):focus-visible{outline:3px solid #ffc7b0;outline-offset:3px}
+#btn-login:disabled,#modal-flow #fl-enter.is-lock{animation:none !important;filter:grayscale(.35)}
+
+/* ── 면접 화면 창 (사진은 AI로 만든 예시 인물) ── */
+.zv-win{position:relative;margin:0;border-radius:16px;overflow:hidden;aspect-ratio:16/10;background:#111;box-shadow:0 34px 70px -26px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.1)}
+.zv-win img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transform-origin:50% 38%;animation:zvZoom 16s ease-in-out infinite alternate}
+.zv-win::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32) 0%,transparent 26%,transparent 52%,rgba(0,0,0,.78) 100%);pointer-events:none}
+.zv-rec,.zv-tag{position:absolute;top:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(10,8,7,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;font-size:11.5px;font-weight:800;letter-spacing:.06em;border:1px solid rgba(255,255,255,.14)}
+.zv-rec{left:12px} .zv-tag{right:12px;letter-spacing:0;font-weight:700}
+.zv-rec i{width:7px;height:7px;border-radius:50%;background:#ff4d3a;animation:zvBlink 1.4s ease-in-out infinite}
+.zv-sub{position:absolute;left:18px;right:18px;bottom:40px;z-index:2;margin:0;color:#fff;font-size:15px;font-weight:600;line-height:1.5;letter-spacing:-.01em;text-shadow:0 1px 3px rgba(0,0,0,.55);animation:zvSub 7s ease-in-out infinite}
+.zv-wave{position:absolute;left:18px;bottom:16px;z-index:2;display:flex;gap:3px;align-items:flex-end;height:16px}
+.zv-wave i{width:3px;height:100%;border-radius:2px;background:#ffb59a;transform-origin:bottom;animation:zvWave 1.05s ease-in-out infinite}
+.zv-wave i:nth-child(2){animation-delay:-.2s}.zv-wave i:nth-child(3){animation-delay:-.45s}.zv-wave i:nth-child(4){animation-delay:-.1s}.zv-wave i:nth-child(5){animation-delay:-.6s}.zv-wave i:nth-child(6){animation-delay:-.3s}.zv-wave i:nth-child(7){animation-delay:-.75s}.zv-wave i:nth-child(8){animation-delay:-.15s}.zv-wave i:nth-child(9){animation-delay:-.5s}
+.zv-live{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:6px 12px 6px 10px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#f4ece6;font-size:13px;font-weight:700;letter-spacing:-.01em}
+.zv-live i{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:zvLive 1.8s ease-out infinite}
+.zv-tile svg{flex:none}
+
+/* ── 1) 로그인 (첫 화면) ── */
+#screen-login.v3 .lg-intro{position:relative;overflow:hidden;isolation:isolate;margin-right:28px;padding:34px 36px 34px !important;border-radius:22px;color:#fff;
+  background:radial-gradient(110% 90% at 0% 0%,rgba(232,83,42,.38) 0%,rgba(232,83,42,0) 55%),radial-gradient(80% 70% at 100% 100%,rgba(232,83,42,.16) 0%,rgba(232,83,42,0) 60%),linear-gradient(160deg,#2a1c15 0%,#1b1411 55%,#120e0c 100%)}
+#screen-login.v3 .lg-intro::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;-webkit-mask:linear-gradient(180deg,#000,transparent 70%);mask:linear-gradient(180deg,#000,transparent 70%)}
+#screen-login.v3 .lg-intro .lg-brand .d3-logo,#screen-login.v3 .lg-intro .lg-brand .d3-org{color:#fff !important}
+#screen-login.v3 .lg-intro .zv-live{margin-top:26px}
+#screen-login.v3 .lg-intro .lg-h{color:#fff !important;margin-top:16px !important;font-size:clamp(30px,3.1vw,42px) !important;animation:zvRise .6s both}
+#screen-login.v3 .lg-intro .lg-lead{color:rgba(255,255,255,.78) !important;animation:zvRise .6s .08s both}
+#screen-login.v3 .lg-intro .zv-win-lg{margin-top:24px;animation:zvRise .7s .16s both}
+#screen-login.v3 .lg-intro .lg-steps{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0 0 !important;padding:0;border:0 !important}
+#screen-login.v3 .lg-intro .lg-steps li{display:block !important;margin:0 !important;padding:12px 14px !important;border:1px solid rgba(255,255,255,.14) !important;border-radius:12px;background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#screen-login.v3 .lg-intro .lg-steps li::before,#screen-login.v3 .lg-intro .lg-steps li::after{display:none !important}
+#screen-login.v3 .lg-intro .lg-steps i{display:inline-grid !important;place-items:center;width:22px;height:22px;margin:0 0 8px !important;border-radius:50%;background:var(--zv-acc) !important;color:#fff !important;font-style:normal;font-size:12px;font-weight:800;position:static !important}
+#screen-login.v3 .lg-intro .lg-steps b{display:block;color:#fff !important;font-size:14.5px}
+#screen-login.v3 .lg-intro .lg-steps span{display:block;color:rgba(255,255,255,.66) !important;font-size:12.5px;margin-top:2px}
+#screen-login.v3 .lg-intro .lg-feat,#screen-login.v3 .lg-intro .lg-prev-wrap{display:none !important}
+#screen-login.v3 .lg-submit{height:54px !important;border-radius:12px !important;font-size:16.5px !important;width:100%}
+#screen-login.v3 .lg-join{border-top:0 !important;padding-top:4px !important;display:grid !important;grid-template-columns:1fr 1fr;gap:10px}
+#screen-login.v3 .lg-join .zv-tile{height:auto !important;display:flex;align-items:center;gap:12px;padding:12px 14px !important;border-radius:12px !important;text-align:left;border:1px solid var(--c-line,#e6e4e0) !important;background:#fff;transition:transform .18s,box-shadow .18s,border-color .18s}
+#screen-login.v3 .lg-join .zv-tile svg{width:38px;height:38px;padding:8px;border-radius:10px;background:#f6f1ed;color:#7a4a35;box-sizing:border-box;transition:background .18s,color .18s}
+#screen-login.v3 .lg-join .zv-tile span{display:flex;flex-direction:column;min-width:0} #screen-login.v3 .lg-join .zv-tile b{font-size:15px;color:#1c1c1e} #screen-login.v3 .lg-join .zv-tile small{font-size:12.5px;color:#7a7470;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#screen-login.v3 .lg-join .zv-tile:hover{transform:translateY(-2px);border-color:#e8b9a6 !important;box-shadow:0 10px 22px -14px rgba(200,68,28,.55)}
+#screen-login.v3 .lg-join .zv-tile:hover svg,#screen-login.v3 .lg-join .zv-tile-on svg{background:#fde9e1;color:var(--zv-acc2)}
+@media(max-width:900px){
+  #screen-login.v3 .lg-intro{display:contents !important}
+  #screen-login.v3 .lg-intro .zv-win-lg,#screen-login.v3 .lg-intro .zv-live{display:none !important}
+  #screen-login.v3 .lg-intro .lg-h{color:var(--c-ink,#1c1c1e) !important} #screen-login.v3 .lg-intro .lg-lead{color:var(--c-ink-2,#45454a) !important}
+  #screen-login.v3 .lg-intro .lg-brand .d3-logo,#screen-login.v3 .lg-intro .lg-brand .d3-org{color:inherit !important}
+  #screen-login.v3 .lg-intro .lg-steps{display:none !important}
+}
+@media(max-width:420px){ #screen-login.v3 .lg-join{grid-template-columns:1fr} }
+
+/* ── 2) 회원가입 (신청) ── */
+@media(min-width:1000px){
+  #modal-signup .signup-box{max-width:1160px !important;display:grid !important;grid-template-columns:minmax(0,1fr) minmax(320px,400px);column-gap:56px;align-items:start;padding-left:clamp(16px,4vw,32px) !important;padding-right:clamp(16px,4vw,32px) !important}
+  #modal-signup .signup-box > :not(.su-visual){grid-column:1}
+  #modal-signup .su-visual{grid-column:2;grid-row:1 / span 6;position:sticky;top:24px;margin-top:8px}
+}
+#modal-signup .su-visual{position:relative;overflow:hidden;isolation:isolate;min-height:600px;border-radius:22px;color:#fff;background:#1b1411;box-shadow:0 34px 70px -30px rgba(43,25,15,.55)}
+#modal-signup .su-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;z-index:-2;animation:zvZoom 18s ease-in-out infinite alternate}
+#modal-signup .su-visual::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(20,14,11,.2) 0%,rgba(20,14,11,.1) 30%,rgba(20,14,11,.82) 62%,rgba(20,14,11,.95) 100%)}
+#modal-signup .su-v-in{position:absolute;inset:auto 0 0 0;padding:28px 28px 26px;display:flex;flex-direction:column;gap:12px}
+#modal-signup .su-visual h3{margin:4px 0 0;font-size:30px;line-height:1.25;font-weight:800;letter-spacing:-.025em}
+#modal-signup .su-visual p{margin:0;color:rgba(255,255,255,.78);font-size:14.5px;line-height:1.6}
+#modal-signup .su-v-list{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:8px}
+#modal-signup .su-v-list li{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:600}
+#modal-signup .su-v-list li::before{content:"";flex:none;width:20px;height:20px;border-radius:50%;background:rgba(74,222,128,.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234ade80' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat}
+#modal-signup .su-v-steps{list-style:none;margin:8px 0 0;padding:14px 0 0;border-top:1px solid rgba(255,255,255,.14);display:flex;gap:6px}
+#modal-signup .su-v-steps li{flex:1;display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.55);font-weight:600}
+#modal-signup .su-v-steps i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.3);font-style:normal;font-size:11.5px;font-weight:800}
+#modal-signup:not([data-st]) .su-v-steps li:nth-child(1),#modal-signup[data-st="1"] .su-v-steps li:nth-child(1),#modal-signup[data-st="2"] .su-v-steps li:nth-child(-n+2),#modal-signup[data-st="3"] .su-v-steps li{color:#fff}
+#modal-signup:not([data-st]) .su-v-steps li:nth-child(1) i,#modal-signup[data-st="1"] .su-v-steps li:nth-child(1) i,#modal-signup[data-st="2"] .su-v-steps li:nth-child(-n+2) i,#modal-signup[data-st="3"] .su-v-steps li i{background:var(--zv-acc);border-color:var(--zv-acc);color:#fff}
+#modal-signup #su-next{min-height:50px;padding:0 26px !important;border-radius:12px !important;font-size:16px !important}
+@media(max-width:999px){ #modal-signup .su-visual{min-height:250px;margin:4px 0 22px;order:-1} #modal-signup .su-visual h3{font-size:24px} #modal-signup .su-visual p,#modal-signup .su-v-list{display:none} #modal-signup .signup-box{display:flex !important;flex-direction:column} #modal-signup .su-visual{order:2} #modal-signup .su-brand{order:0} #modal-signup .su-top{order:1} #modal-signup .modal-body{order:3} #modal-signup .modal-foot{order:4} }
+
+/* ── 3) 홈 메인 ── */
+#d3-home .hz-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:clamp(18px,3vh,32px);padding:clamp(30px,4.5vw,52px) !important;border:0 !important;border-radius:24px;color:#fff;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.05fr) !important;grid-template-areas:"l w" "s s";gap:28px clamp(28px,4vw,56px) !important;align-items:center;
+  background:radial-gradient(90% 120% at 0% 0%,rgba(232,83,42,.4) 0%,rgba(232,83,42,0) 55%),radial-gradient(70% 90% at 100% 100%,rgba(232,83,42,.18) 0%,rgba(232,83,42,0) 60%),linear-gradient(155deg,#2a1c15 0%,#1b1411 55%,#120e0c 100%)}
+#d3-home .hz-hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;-webkit-mask:linear-gradient(120deg,#000,transparent 60%);mask:linear-gradient(120deg,#000,transparent 60%)}
+#d3-home .hz-hero .hz-l{grid-area:l;display:flex;flex-direction:column;gap:0;animation:zvRise .6s both}
+#d3-home .hz-hero .zv-win{grid-area:w;animation:zvRise .7s .1s both}
+#d3-home .hz-hero .hz-h{color:#fff !important;margin-top:18px !important}
+#d3-home .hz-hero .hz-lead{color:rgba(255,255,255,.76) !important}
+#d3-home .hz-hero .hz-acts{gap:12px !important;margin-top:26px}
+#d3-home .hz-hero .hz-sec,#d3-home .hz-ret-l .hz-sec{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.24) !important;color:#fff !important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .18s,transform .18s,border-color .18s}
+#d3-home .hz-hero .hz-sec:hover,#d3-home .hz-ret-l .hz-sec:hover{background:rgba(255,255,255,.16) !important;border-color:rgba(255,255,255,.45) !important;transform:translateY(-2px)}
+#d3-home .hz-hero .hz-steps{grid-area:s;display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 !important;padding:0 !important;border:0 !important;counter-reset:none}
+#d3-home .hz-hero .hz-steps li{display:flex !important;gap:12px;align-items:flex-start;margin:0 !important;padding:14px 16px !important;border:1px solid rgba(255,255,255,.13) !important;border-radius:14px;background:rgba(255,255,255,.05);transition:background .2s,transform .2s}
+#d3-home .hz-hero .hz-steps li:hover{background:rgba(255,255,255,.09);transform:translateY(-2px)}
+#d3-home .hz-hero .hz-steps li::before,#d3-home .hz-hero .hz-steps li::after{display:none !important}
+#d3-home .hz-hero .hz-steps i{flex:none;display:grid !important;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--zv-acc) !important;color:#fff !important;font-style:normal;font-size:12.5px;font-weight:800;position:static !important;margin:0 !important;border:0 !important}
+#d3-home .hz-hero .hz-steps b{color:#fff !important;font-size:15px} #d3-home .hz-hero .hz-steps span{color:rgba(255,255,255,.66) !important;font-size:13px}
+#d3-home .hz-go{min-height:62px !important;padding:0 30px !important;border-radius:14px !important;font-size:17.5px !important}
+/* 다시 방문 */
+#d3-home .hz-ret-main{align-items:stretch !important}
+#d3-home .hz-ret-l{position:relative;isolation:isolate;overflow:hidden;display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);grid-template-areas:"live w" "big w" "acts w";align-content:center;gap:0 32px;padding:clamp(26px,3.4vw,40px) !important;border-radius:22px;color:#fff;
+  background:radial-gradient(90% 120% at 0% 0%,rgba(232,83,42,.4) 0%,rgba(232,83,42,0) 55%),linear-gradient(155deg,#2a1c15 0%,#1b1411 55%,#120e0c 100%)}
+#d3-home .hz-ret-l > .zv-live{grid-area:live} #d3-home .hz-ret-l .hz-ret-big{grid-area:big;color:#fff !important;margin:16px 0 0 !important;animation:zvRise .6s both} #d3-home .hz-ret-l .hz-ret-acts{grid-area:acts;margin-top:24px !important;gap:10px !important} #d3-home .hz-ret-l .zv-win{grid-area:w;align-self:center;animation:zvRise .7s .1s both}
+#d3-home .hz-ret-l .zv-sub{display:none}
+#d3-home .hz-ret-l > .zv-live,#d3-home .hz-hero .hz-l > .zv-live{justify-self:start;align-self:flex-start;width:auto}
+@media(min-width:861px){ #d3-home .hz-ret-l{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) !important} }
+#d3-home .hz-fix{display:flex !important;flex-direction:column;justify-content:center}
+#d3-home .hz-ret-l .hz-ret-big{font-size:clamp(28px,2.7vw,38px) !important;line-height:1.22 !important}
+#d3-home .hz-ret-l .hz-ret-acts{display:flex !important;flex-wrap:wrap;align-items:center}
+#d3-home .hz-ret-l .zv-win{aspect-ratio:4/3}
+#d3-home .hz-ret-acts .hz-go{min-height:56px !important;padding:0 24px !important;font-size:16.5px !important}
+#d3-home .hz-fix{border-radius:22px !important}
+/* 아래 바로가기 타일 */
+#d3-home :is(.hz-ret-foot,.hz-foot) .zv-tile{display:flex !important;align-items:center;gap:12px;min-height:72px !important;padding:12px 18px 12px 14px !important;border-radius:14px !important;border:1px solid var(--c-line,#e6e4e0) !important;background:#fff !important;color:#1c1c1e !important;text-align:left;font-weight:600;transition:transform .18s,box-shadow .18s,border-color .18s}
+#d3-home :is(.hz-ret-foot,.hz-foot) .zv-tile svg{width:42px;height:42px;padding:9px;border-radius:12px;background:#f6f1ed;color:#7a4a35;box-sizing:border-box;transition:background .18s,color .18s,transform .18s}
+#d3-home :is(.hz-ret-foot,.hz-foot) .zv-tile span{display:flex;flex-direction:column;min-width:0} #d3-home :is(.hz-ret-foot,.hz-foot) .zv-tile b{font-size:15.5px;font-weight:700} #d3-home :is(.hz-ret-foot,.hz-foot) .zv-tile small{font-size:12.5px;color:#7a7470;font-weight:500}
+#d3-home :is(.hz-ret-foot,.hz-foot) .zv-tile:hover{transform:translateY(-3px);border-color:#e8b9a6 !important;box-shadow:0 14px 26px -18px rgba(200,68,28,.6)}
+#d3-home :is(.hz-ret-foot,.hz-foot) .zv-tile:hover svg{background:#fde9e1;color:var(--zv-acc2);transform:rotate(-6deg) scale(1.05)}
+#d3-home .hz-foot .hz-more-btn.zv-tile[aria-expanded="true"]{border-color:#e8b9a6 !important;background:#fff7f3 !important}
+#d3-home .hz-foot .hz-more-btn.zv-tile[aria-expanded="true"] svg{background:#fde9e1;color:var(--zv-acc2)}
+#d3-home .hz-fold{gap:10px !important}
+@media(max-width:640px){ #d3-home .hz-foot{display:grid !important;grid-template-columns:1fr !important;gap:10px !important} #d3-home .hz-fold:not([hidden]){display:grid !important;grid-template-columns:1fr !important} #d3-home :is(.hz-foot,.hz-fold) .zv-tile{width:100% !important;min-height:64px !important} }
+@media(min-width:641px){ #d3-home .hz-ret-foot{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px !important} #d3-home .hz-ret-foot .zv-tile{width:auto !important} }
+@media(max-width:860px){
+  #d3-home .hz-hero{grid-template-columns:1fr !important;grid-template-areas:"l" "w" "s"}
+  #d3-home .hz-hero .hz-steps{grid-template-columns:1fr}
+  #d3-home .hz-ret-l{grid-template-columns:1fr;grid-template-areas:"live" "big" "acts" "w"} #d3-home .hz-ret-l .zv-win{margin-top:22px}
+}
+@media(max-width:640px){ #d3-home .hz-hero{border-radius:18px;padding:24px 18px !important;margin-top:12px} #d3-home .hz-ret-l{border-radius:18px;padding:22px 18px !important} #d3-home .hz-ret-foot{display:grid !important;grid-template-columns:1fr !important;gap:10px !important} #d3-home .hz-ret-foot .zv-tile{min-height:64px !important} }
+
+/* ── 4) 면접 입장 (3단계 장치 점검) ── */
+#modal-flow .fl-entry{position:relative;isolation:isolate;overflow:hidden;margin-top:6px;border-radius:20px;color:#fff;background:radial-gradient(100% 120% at 0% 0%,rgba(232,83,42,.38) 0%,rgba(232,83,42,0) 55%),linear-gradient(155deg,#2a1c15 0%,#1b1411 55%,#120e0c 100%);box-shadow:0 28px 56px -30px rgba(43,25,15,.7)}
+#modal-flow .fl-entry .zv-win{border-radius:0;aspect-ratio:16/8;box-shadow:none}
+#modal-flow .fl-entry .zv-sub{font-size:14px;bottom:34px}
+#modal-flow .fl-entry-b{display:flex;flex-direction:column;gap:8px;padding:18px 20px 20px}
+#modal-flow .fl-entry-b .zv-live{font-size:12.5px}
+#modal-flow .fl-entry-t{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-top:4px}
+#modal-flow .fl-entry-s{font-size:13.5px;color:rgba(255,255,255,.7)}
+#modal-flow .fl-entry #fl-enter{align-self:stretch !important;width:100%;min-height:56px;margin-top:8px;padding:0 22px !important;border-radius:12px !important;font-size:17px !important}
+
+
+/* ── 메인 흐름: 연습하기(면접 고르기) ── */
+#modal-flow .fl-hubv{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-rows:1fr 1fr;gap:14px;margin-top:8px}
+#modal-flow .fl-hc{position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;cursor:pointer;border-radius:20px;overflow:hidden;isolation:isolate;transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s,border-color .22s}
+#modal-flow .fl-hc-main{grid-row:1 / span 2;min-height:400px;justify-content:flex-end;border:0;color:#fff;background:#1b1411;box-shadow:0 30px 60px -30px rgba(43,25,15,.7)}
+#modal-flow .fl-hc-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;z-index:-2;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+#modal-flow .fl-hc-main::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(18,13,11,.15) 0%,rgba(18,13,11,.2) 35%,rgba(18,13,11,.86) 72%,rgba(18,13,11,.95) 100%)}
+#modal-flow .fl-hc-main:hover .fl-hc-ph{transform:scale(1.05)}
+#modal-flow .fl-hc-main:hover{transform:translateY(-3px);box-shadow:0 36px 70px -30px rgba(43,25,15,.8)}
+#modal-flow .fl-hc-in{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:26px 28px 28px}
+#modal-flow .fl-hc-main b{font-size:28px;font-weight:800;letter-spacing:-.025em;margin-top:6px}
+#modal-flow .fl-hc-main .fl-hc-in > span:not(.zv-live){font-size:15px;line-height:1.55;color:rgba(255,255,255,.78);max-width:520px}
+#modal-flow .fl-hc-go{display:inline-flex;align-items:center;gap:12px;margin-top:12px;min-height:56px;padding:0 26px;border-radius:14px;font-style:normal;font-size:17px;font-weight:800;color:#fff;
+  background-color:var(--zv-acc2);background-image:linear-gradient(110deg,transparent 38%,rgba(255,255,255,.42) 50%,transparent 62%),linear-gradient(135deg,#f2652f 0%,var(--zv-acc2) 55%,var(--zv-acc3) 100%);background-size:250% 100%,100% 100%;background-repeat:no-repeat;background-position:-160% 0,0 0;
+  animation:zvShine 3.8s ease-in-out infinite,zvPulse 2.8s ease-out infinite}
+#modal-flow .fl-hc-go::before{content:"";width:22px;height:22px;background:currentColor;-webkit-mask:var(--zv-mic) center/contain no-repeat;mask:var(--zv-mic) center/contain no-repeat}
+#modal-flow .fl-hc-go::after{content:"";width:19px;height:19px;background:currentColor;-webkit-mask:var(--zv-arrow) center/contain no-repeat;mask:var(--zv-arrow) center/contain no-repeat;transition:transform .22s}
+#modal-flow .fl-hc-main:hover .fl-hc-go::after{transform:translateX(5px)}
+#modal-flow .fl-hc-sub{gap:6px;padding:22px 22px 20px;border:1px solid #e6ddd5;background:#fff;color:#2b2521}
+#modal-flow .fl-hc-art{display:grid;place-items:center;width:64px;height:64px;margin-bottom:8px;border-radius:18px;transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+#modal-flow .fl-hc-db .fl-hc-art{color:#c8441c;background:linear-gradient(135deg,#fff1ea,#fbd9ca)}
+#modal-flow .fl-hc-st .fl-hc-art{color:#2f6d5a;background:linear-gradient(135deg,#ecf7f2,#cfeadf)}
+#modal-flow .fl-hc-sub b{font-size:18px;font-weight:800;letter-spacing:-.02em}
+#modal-flow .fl-hc-sub > span:not(.fl-hc-art){font-size:14px;color:#6a5b51;line-height:1.5}
+#modal-flow .fl-hc-sub em{margin-top:auto;padding-top:10px;display:inline-flex;align-items:center;gap:8px;font-style:normal;font-size:14.5px;font-weight:700;color:#c8441c}
+#modal-flow .fl-hc-sub em::after{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--zv-arrow) center/contain no-repeat;mask:var(--zv-arrow) center/contain no-repeat;transition:transform .2s}
+#modal-flow .fl-hc-st em{color:#2f6d5a}
+#modal-flow .fl-hc-sub::before{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(232,83,42,.12),rgba(232,83,42,0) 70%);z-index:-1;transition:transform .4s}
+#modal-flow .fl-hc-st::before{background:radial-gradient(circle,rgba(47,109,90,.12),rgba(47,109,90,0) 70%)}
+#modal-flow .fl-hc-sub:hover{transform:translateY(-3px);border-color:#e8b9a6;box-shadow:0 18px 34px -22px rgba(200,68,28,.55)}
+#modal-flow .fl-hc-st:hover{border-color:#b5d8c9;box-shadow:0 18px 34px -22px rgba(47,109,90,.5)}
+#modal-flow .fl-hc-sub:hover .fl-hc-art{transform:rotate(-6deg) scale(1.06)} #modal-flow .fl-hc-sub:hover em::after{transform:translateX(4px)} #modal-flow .fl-hc-sub:hover::before{transform:scale(1.3)}
+#modal-flow .fl-hc:focus-visible{outline:3px solid #ffc7b0;outline-offset:3px}
+@media(max-width:760px){ #modal-flow .fl-hubv{grid-template-columns:1fr;grid-template-rows:auto} #modal-flow .fl-hc-main{grid-row:auto;min-height:340px} #modal-flow .fl-hc-main b{font-size:24px} #modal-flow .fl-hc-in{padding:22px 20px 22px} }
+/* 휴대폰: 시작 버튼 글자가 세로로 꺾이지 않게 */
+#d3-home .hz-go{white-space:nowrap}
+@media(max-width:640px){ #d3-home .hz-ret-acts .hz-go,#d3-home .hz-hero .hz-go{width:100% !important} #d3-home .hz-ret-l .hz-ret-acts{flex-direction:column;align-items:stretch} #d3-home .hz-ret-l .hz-sec{width:100%} }
+@media (prefers-reduced-motion:reduce){
+  :is(#btn-login,#d3-home .hz-go,#modal-signup #su-next,#modal-flow #fl-enter),.zv-win img,.zv-rec i,.zv-live i,.zv-wave i,.zv-sub,#modal-signup .su-visual img,#screen-login.v3 .lg-intro *,#d3-home .hz-hero *,#d3-home .hz-ret-l *,#modal-flow .fl-hc-go{animation:none !important}
+}
+</style>
+
 </body>
 </html>
