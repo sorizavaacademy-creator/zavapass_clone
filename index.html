@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-17j';
+var APP_VERSION = '2026-11-17k';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -32818,7 +32818,7 @@ const ImvLoop = {
   sync(imv){
     this.imv = imv; const host = imv.el && imv.el.querySelector('#imv-photo-img'); if(!host) return;
     let C = null; try{ C = this.cfg(imv); }catch(_){}
-    try{ if(C && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) C = null; }catch(_){}
+    // 2026-11-17k 기기의 '애니메이션 줄이기' 설정이어도 면접관 영상은 재생함 (윈도우에서 애니메이션 효과를 끈 PC·원격 접속 PC에서 영상이 통째로 꺼지던 것). 면접관 영상은 장식이 아니라 면접 내용임
     if(!C){ this.off(); return; }
     this.host = host;
     if(!this.box){ this.box = document.createElement('div'); this.box.className = 'imv-lv'; this.box.setAttribute('aria-hidden', 'true'); }
@@ -32881,6 +32881,12 @@ const ImvLoop = {
     if(want){ const v = this.vids[want]; if(sk) this.follow(v, true); else { if(want !== 'idle' && !resume){ try{ v.currentTime = 0; }catch(_){} } try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } }
     if(prev && this.vids[prev]) setTimeout(()=>{ const v = this.vids && this.vids[prev]; if(!v) return; v.classList.remove('was'); if(this.cur !== prev && prev !== 'idle'){ try{ v.pause(); }catch(_){} } }, 450);
   },
+  /** 영상 재생 상태 (활동 기록에 한 번 남김 — 영상이 안 나오는 기기를 찾아 고치는 용도. 개인 정보 없음) */
+  diag(){ const v = this.vids || {}, st = {}; Object.keys(v).forEach(k=>{ const e = v[k]; st[k] = [e.readyState, e.dataset.ok ? 1 : 0, e.dataset.bad ? 1 : 0, e.paused ? 1 : 0, e.error ? e.error.code : 0, (e.currentSrc || '').split('/').pop().split('?')[0]].join(','); });
+    let rm = null; try{ rm = matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(_){}
+    let cp = ''; try{ const t = document.createElement('video'); cp = [t.canPlayType('video/mp4; codecs="avc1.4d401f"'), t.canPlayType('video/webm; codecs="vp9"')].join('|'); }catch(_){}
+    const imv = this.imv || (typeof Imv !== 'undefined' ? Imv : null); let cfg = false; try{ cfg = !!(imv && this.cfg(imv)); }catch(_){}
+    return { ver: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '', layout: imv && imv.layout, mode: imv && imv.mode, media: !!(imv && imv.media && imv.media.loops), cfg, cur: this.cur || '', on: !!(this.host && this.host.classList.contains('lv-on')), vids: st, rm, cp, vis: document.visibilityState }; },
   note(on){ const n = this.imv && this.imv.el && this.imv.el.querySelector('#imv-opt-note'); if(!n) return; if(!this.note0) this.note0 = n.textContent; const t = on ? this.NOTE : this.note0; if(n.dataset.k !== (on ? '1' : '0')){ n.dataset.k = on ? '1' : '0'; n.textContent = t; } },
   off(){
     if(this.timer){ clearInterval(this.timer); this.timer = 0; }
@@ -33090,7 +33096,7 @@ const Imv = {
     return { layout, col };
   },
   /** 시작·끝 멘트를 말할 사람: 3명 사진에서는 왼쪽(여성 얼굴) 자리 — 그 문장에 입 모양을 맞춘 영상이 있음. 그 밖에는 첫째(진행) 면접관 */
-  hostIdx(){ try{ if(this.active && this.mode === 'photo' && this.layout === '3' && this.col){ const k = this.col.indexOf(0); if(k >= 0) return k; } }catch(_){} return 0; },
+  hostIdx(){ try{ if(this.active && this.mode === 'photo' && (this.layout === '3' || this.layout === '2a') && this.col){ const k = this.col.indexOf(0); if(k >= 0) return k; } }catch(_){} return 0; },
   posFor(layout, c, n){ if(n === 1) return ''; const L = IMV_PHOTOS[layout]; if(n === 2) return (L && L.x[c] < 50) ? '왼쪽' : '오른쪽'; return this.POS[c] || ''; },
   posName(k){ const c = this.col ? this.col[k] : k, n = this.people.length; if(n === 1) return '';
     if(this.mode === 'photo' && n === 2){ const L = IMV_PHOTOS[this.layout]; return (L && L.x[c] < 50) ? '왼쪽' : '오른쪽'; }
@@ -33107,6 +33113,7 @@ const Imv = {
   begin(){
     if(!(this.armed || this.want())) return false;
     this.armed = false; this.active = true; this.loadMedia().then(()=>{ try{ if(this.active) this.fitPhoto(); }catch(_){} });
+    clearTimeout(this._lvT); this._lvT = setTimeout(()=>{ try{ if(this.active) Activity.log('imv_video', ImvLoop.diag()); }catch(_){} }, 8000);   // 2026-11-17k 영상 재생 상태 한 번 기록
     const el = this.build(); this.seats();
     const pr = this.isPractice = this.practice();
     this.capOn = false; this.mineOn = false; this.mineText = ''; this.isFu = false; this.fuPrep = false; this.noteUntil = 0;   // 2026-11-12 시안 규칙: 자막·내 답변·내 화면은 기본으로 숨기고 화면 옵션에서 켬 (연습형도 같음) this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';

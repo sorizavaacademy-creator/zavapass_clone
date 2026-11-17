@@ -41,6 +41,106 @@
      "audio": "hf3-close-hr.mp3"
     }
    ]
+  },
+  "2a": {
+   "idle": [
+    "hf2a-idle.mp4",
+    "hf2a-idle.webm"
+   ],
+   "talk": {
+    "0": [
+     "hf2a-talk0.mp4",
+     "hf2a-talk0.webm"
+    ],
+    "1": [
+     "hf2a-talk1.mp4",
+     "hf2a-talk1.webm"
+    ]
+   },
+   "sync": [
+    {
+     "text": "안녕하세요. 오늘 면접을 진행할 면접관입니다. 편안한 마음으로 답변해 주세요.",
+     "seat": 0,
+     "voice": "tc_673eca75a1aae856ff42b80e",
+     "video": [
+      "hf2a-open.mp4",
+      "hf2a-open.webm"
+     ],
+     "audio": "hf3-open-hr.mp3"
+    },
+    {
+     "text": "수고하셨습니다. 면접을 마치겠습니다.",
+     "seat": 0,
+     "voice": "tc_673eca75a1aae856ff42b80e",
+     "video": [
+      "hf2a-close.mp4",
+      "hf2a-close.webm"
+     ],
+     "audio": "hf3-close-hr.mp3"
+    }
+   ]
+  },
+  "2b": {
+   "idle": [
+    "hf2b-idle.mp4",
+    "hf2b-idle.webm"
+   ],
+   "talk": {
+    "1": [
+     "hf2b-talk1.mp4",
+     "hf2b-talk1.webm"
+    ],
+    "2": [
+     "hf2b-talk2.mp4",
+     "hf2b-talk2.webm"
+    ]
+   }
+  },
+  "1f": {
+   "idle": [
+    "hf1f-idle.mp4",
+    "hf1f-idle.webm"
+   ],
+   "talk": {
+    "0": [
+     "hf1f-talk0.mp4",
+     "hf1f-talk0.webm"
+    ]
+   },
+   "sync": [
+    {
+     "text": "안녕하세요. 오늘 면접을 진행할 면접관입니다. 편안한 마음으로 답변해 주세요.",
+     "seat": 0,
+     "voice": "tc_673eca75a1aae856ff42b80e",
+     "video": [
+      "hf1f-open.mp4",
+      "hf1f-open.webm"
+     ],
+     "audio": "hf3-open-hr.mp3"
+    },
+    {
+     "text": "수고하셨습니다. 면접을 마치겠습니다.",
+     "seat": 0,
+     "voice": "tc_673eca75a1aae856ff42b80e",
+     "video": [
+      "hf1f-close.mp4",
+      "hf1f-close.webm"
+     ],
+     "audio": "hf3-close-hr.mp3"
+    }
+   ]
+  },
+  "1m": {
+   "idle": [
+    "hf1m-idle.mp4",
+    "hf1m-idle.webm"
+   ],
+   "talk": {
+    "1": [
+     "hf1m-talk1.mp4",
+     "hf1m-talk1.webm"
+    ]
+   }
   }
  }
 }
