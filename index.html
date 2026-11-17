@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-17i';
+var APP_VERSION = '2026-11-17j';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -15586,11 +15586,11 @@ const StartFlow = {
         <div class="fl-vt"><button type="button" class="btn btn-outline" id="fl-vt-b">목소리 테스트</button><p class="fl-hint" id="fl-vt-out" aria-live="polite">"안녕하세요" 하고 한 문장 말해 보세요. 들린 말을 글자로 보여 줄 뿐, 채점하거나 면접 기록에 저장하지 않아요.</p></div>
         <button type="button" class="btn btn-outline" id="fl-recinfo-b" aria-expanded="${!!s.recInfo}" aria-controls="fl-recinfo">녹화·분석 안내 확인</button>
         <div class="fl-recinfo" id="fl-recinfo"${s.recInfo ? '' : ' hidden'}><p>녹화는 <b>이 기기(브라우저) 안에서만</b> 해요. 영상·음성 파일은 서버에 올리지 않고, 결과 화면에서 내 답변을 다시 보는 데만 써요.</p><p>카메라를 켜면 답하는 동안 표정·시선을 이 기기에서 분석해 결과에 짧은 피드백으로 보여 줘요. 저장되는 건 답변을 글자로 바꾼 내용과 채점 결과예요.</p><p>창을 닫거나 새로고침하면 녹화 파일은 사라져요. 필요하면 결과 화면에서 내려받아 두세요.</p></div>
-        <div class="fl-entry">${this.vEntryWin()}<div class="fl-entry-b"><span class="zv-live"><i></i>면접관 ${Math.min(s.count || 2, 3)}명이 기다리고 있어요</span><b class="fl-entry-t">면접장이 준비됐어요</b><span class="fl-entry-s">${s.mode === 'real' ? '실전형' : '연습형'} · ${this.qn()}문항 · 입장하면 첫 질문이 바로 나와요</span>
-        <button type="button" class="btn btn-solid fl-enter" id="fl-enter" data-next>면접장 입장하기</button></div></div>
-        <p class="fl-hint" id="fl-enter-note">${s.pip || s.cap ? `면접장에서 ${[s.pip ? '내 얼굴' : '', s.cap ? '자막' : ''].filter(Boolean).join('·')}이 켜진 채로 시작해요.` : '면접이 시작되면 본인 화면과 자막을 숨겨요. 면접 중 \'화면 옵션\'에서 켤 수 있어요.'}</p>
       </div>
-    </div>`; },
+    </div>
+    <div class="fl-entry fl-entry-w">${this.vEntryWin()}<div class="fl-entry-b"><span class="zv-live"><i></i>면접관 ${Math.min(s.count || 2, 3)}명이 기다리고 있어요</span><b class="fl-entry-t">면접장이 준비됐어요</b><span class="fl-entry-s">${s.mode === 'real' ? '실전형' : '연습형'} · ${this.qn()}문항 · 입장하면 첫 질문이 바로 나와요</span>
+        <button type="button" class="btn btn-solid fl-enter" id="fl-enter" data-next>면접장 입장하기</button></div></div>
+    <p class="fl-hint" id="fl-enter-note">${s.pip || s.cap ? `면접장에서 ${[s.pip ? '내 얼굴' : '', s.cap ? '자막' : ''].filter(Boolean).join('·')}이 켜진 채로 시작해요.` : '면접이 시작되면 본인 화면과 자막을 숨겨요. 면접 중 \'화면 옵션\'에서 켤 수 있어요.'}</p>`; },
   /** 3단계를 열 때: 기존 준비 창을 보이지 않게 열어 마이크·카메라 점검을 시작 (이미 열려 있으면 칸만 다시 붙임) */
   devOpen(){ const s = this.s;
     if(!state.flEmbed){ const { fid } = this.prepare(); state.flEmbed = true; this._mic = ''; this._devKey = ''; this._camN = undefined;
@@ -15656,6 +15656,7 @@ const StartFlow = {
     const tyck = document.getElementById('fl-ck-typed');
     const ty = document.getElementById('fl-typed'); if(ty) ty.onclick = ()=>{ s.typed = true; if(tyck) tyck.checked = true; this._devKey = ''; this.devCheck(); };
     const tf = document.getElementById('fl-typed-off'); if(tf) tf.onclick = ()=>{ s.typed = false; if(tyck) tyck.checked = false; this._devKey = ''; try{ startMicLevelAnim(); }catch(_){} setTimeout(()=>this.devCheck(), 1200); };
+    { const mc = document.getElementById('fl-ck-mic'); if(mc){ mc.checked = !s.typed; const lb = mc.closest('label'), sm = lb && lb.querySelector('small'); if(lb) lb.classList.toggle('is-off', !!s.typed); if(sm) sm.textContent = s.typed ? '글로 답하는 동안은 마이크를 쓰지 않아요' : '면접관 질문에 말로 답해요'; } }   // 2026-11-17j
     const en = document.getElementById('fl-enter'); if(en){ const lock = mic !== 'ok' && !s.typed; en.classList.toggle('is-lock', lock); en.setAttribute('aria-disabled', String(lock)); en.textContent = s.typed ? '면접장 입장하기 (글로 답하기)' : '면접장 입장하기'; }
   },
   /** 목소리 테스트: 들린 말을 글자로만 보여 줌. 채점·저장·기록 없음 */
@@ -33825,6 +33826,24 @@ html.cvd .ui-sw[aria-checked="true"]{background:#1d5fa8}
 #modal-flow .fl-entry-t{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-top:4px}
 #modal-flow .fl-entry-s{font-size:13.5px;color:rgba(255,255,255,.7)}
 #modal-flow .fl-entry #fl-enter{align-self:stretch !important;width:100%;min-height:56px;margin-top:8px;padding:0 22px !important;border-radius:12px !important;font-size:17px !important}
+/* 2026-11-17j 장치 점검 비율: 두 칸을 같은 폭으로, 카메라 칸은 낮게(꺼져 있으면 더 낮게), 입장 칸은 두 칸 아래에 가로로 넓게 — 왼쪽은 짧고 오른쪽만 길게 늘어지던 것 */
+@media(min-width:721px){ #modal-flow .fl-dev{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} }
+#modal-flow .fl-dev .fl-camslot{min-height:120px}
+#modal-flow .fl-dev .fl-camslot .setup-cam-box{aspect-ratio:16/9}
+#modal-flow .fl-dev .fl-camslot .setup-cam-box:not(.on){aspect-ratio:16/5.5}
+#modal-flow .fl-ck.is-off > span{opacity:.6}
+#modal-flow .fl-entry-w{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);align-items:stretch;margin-top:28px}
+#modal-flow .fl-entry-w .zv-win{aspect-ratio:auto;height:100%;min-height:200px;margin:0}
+#modal-flow .fl-entry-w .zv-win img{width:100%;height:100%;object-fit:cover}
+#modal-flow .fl-entry-w .fl-entry-b{justify-content:center;padding:24px 30px}
+#modal-flow .fl-entry-w #fl-enter{align-self:flex-start !important;width:auto;min-width:min(100%,340px)}
+#modal-flow #fl-enter-note{margin-top:12px}
+@media(max-width:720px){
+  #modal-flow .fl-entry-w{grid-template-columns:1fr}
+  #modal-flow .fl-entry-w .zv-win{aspect-ratio:16/8;height:auto;min-height:0}
+  #modal-flow .fl-entry-w .fl-entry-b{padding:18px 20px 20px}
+  #modal-flow .fl-entry-w #fl-enter{align-self:stretch !important;width:100%;min-width:0}
+}
 
 
 /* ── 메인 흐름: 연습하기(면접 고르기) ── */

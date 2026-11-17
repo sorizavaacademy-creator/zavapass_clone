@@ -452,6 +452,7 @@ window.ZP_EN = {
 "문제가 있어요": "I have a problem",
 "마이크 사용": "Use microphone",
 "면접관 질문에 말로 답해요": "Answer the interviewers by speaking",
+"글로 답하는 동안은 마이크를 쓰지 않아요": "The microphone is not used while you type your answers",
 "카메라 사용": "Use camera",
 "끄면 소리만으로 면접해요": "When off, the interview is audio only",
 "내 모습 녹화하기": "Record myself",
