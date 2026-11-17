@@ -18,6 +18,7 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import { createClient } from 'npm:@supabase/supabase-js@2.118.0';
 import { loadCompanyPack, buildCompanyBlock } from '../_shared/company_prompt.ts';
+import { logAiRes } from '../_shared/ai_log.ts';
 
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') ?? '';
 const OPENAI_MODEL = Deno.env.get('OPENAI_MODEL') ?? 'gpt-5.6-luna';
@@ -209,7 +210,9 @@ Deno.serve(async (req: Request) => {
   ].filter(Boolean).join('\n\n');
 
   try {
-    const { res, modelUsed } = await callOpenAI([{ role: 'system', content: buildSystem(fieldKey, panelIds, company) }, { role: 'user', content: userPrompt }], 1400);
+    const msgs = [{ role: 'system', content: buildSystem(fieldKey, panelIds, company) }, { role: 'user', content: userPrompt }];
+    const tA = Date.now(); const { res, modelUsed } = await callOpenAI(msgs, 1400);
+    logAiRes({ fn: 'set-review', step: '실전 세트 총평', userId: user.id }, msgs, res, modelUsed, tA);   // 2026-11-17 AI 요청·응답 기록
     if (!res.ok) { const t = await res.text(); console.error('OpenAI 오류', res.status, t); return json({ error: `OpenAI API 오류 (${res.status})` }, 502); }
     const data = await res.json();
     const content: string = data?.choices?.[0]?.message?.content ?? '';

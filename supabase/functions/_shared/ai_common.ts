@@ -1,6 +1,8 @@
 // 2026-11-05 클론(ZAVAPASS-clone) 전용: 면접 DB 서버 함수(pick-questions 등)가 함께 쓰는 도우미
 // OpenAI 호출·로그인 확인·승인 확인·응답 모양. grade-answer에 있던 것과 같은 동작 (그 함수는 그대로 둠)
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.118.0";
+import { type AiCtx, logAi } from "./ai_log.ts";
+import { guardMsgs, leaked } from "./guard.ts";
 
 export const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 export const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";
@@ -105,9 +107,11 @@ function buildBody(model: string, messages: unknown[], temperature: number, maxT
   return body;
 }
 /** OpenAI에 JSON으로 묻고 JSON으로 받음. 실패하면 이유를 담아 throw */
-export async function askJson(system: string, user: string, opt: { temperature?: number; maxTokens?: number; timeoutMs?: number; reasoning?: string } = {}): Promise<{ data: Record<string, unknown>; model: string }> {
+export async function askJson(system: string, user: string, opt: { temperature?: number; maxTokens?: number; timeoutMs?: number; reasoning?: string; log?: AiCtx; guard?: boolean } = {}): Promise<{ data: Record<string, unknown>; model: string }> {
   if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY가 설정되지 않았어요");
   const messages = [{ role: "system", content: system }, { role: "user", content: user }];
+  const t0 = Date.now();   // 2026-11-17 AI 요청·응답 기록 (opt.log 를 넘긴 함수만)
+  const rec = (status: string, http: number, response: string, usage: unknown, error = "") => { if (opt.log) logAi({ ...opt.log, model, messages, status, http, ms: Date.now() - t0, response, usage: usage as never, error }); };
   const maxTokens = opt.maxTokens ?? 2500, temperature = opt.temperature ?? 0.3;
   const send = (body: Record<string, unknown>) => {
     const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), opt.timeoutMs ?? 40000);
@@ -115,6 +119,7 @@ export async function askJson(system: string, user: string, opt: { temperature?:
       method: "POST", signal: ctl.signal, headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify(body),
     }).finally(() => clearTimeout(t));
   };
+  if (opt.guard && opt.log) await guardMsgs(opt.log, messages);   // 2026-11-17 지시문 차단: 학생 쪽 글에 AI에게 내리는 지시가 있으면 안내를 붙이고 기록
   let model = OPENAI_MODEL, body = buildBody(model, messages, temperature, maxTokens);
   if (opt.reasoning && isNewGen(model)) body.reasoning_effort = opt.reasoning;   // 2026-11-17 '생각 짧게'(none·low): 빨리 답해야 하는 함수만 넘김
   let res = await send(body);
@@ -134,12 +139,16 @@ export async function askJson(system: string, user: string, opt: { temperature?:
     const t = await res.clone().text();
     if (/model|not found|does not exist/i.test(t)) { model = FALLBACK_MODEL; body = buildBody(model, messages, temperature, maxTokens); res = await send(body); }
   }
-  if (!res.ok) throw new Error(`OpenAI ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const out = await res.json();
+  if (!res.ok) { const et = (await res.text()).slice(0, 500); rec("error", res.status, "", null, et); throw new Error(`OpenAI ${res.status}: ${et.slice(0, 200)}`); }
+  let out = await res.json();
   let content = out?.choices?.[0]?.message?.content ?? "";
   if (!content && isNewGen(model)) {   // 추론형 모델이 생각에 토큰을 다 써서 빈 답이면 한 번 더 넉넉하게
     body.max_completion_tokens = Math.round(maxTokens * 1.8);
-    const r2 = await send(body); if (r2.ok) content = (await r2.json())?.choices?.[0]?.message?.content ?? "";
+    const r2 = await send(body); if (r2.ok) { out = await r2.json(); content = out?.choices?.[0]?.message?.content ?? ""; }
   }
-  try { return { data: JSON.parse(content), model }; } catch { throw new Error("AI 응답이 JSON이 아니에요: " + String(content).slice(0, 120)); }
+  if (opt.guard && opt.log && leaked(opt.log, messages, String(content), "응답을 버리고 오류로 돌려줌")) { rec("error", res.status, "", out?.usage, "AI 응답에 내부 지시문이 섞여 버림"); throw new Error("AI 응답을 쓸 수 없어요. 다시 시도해 주세요."); }
+  let data: Record<string, unknown>;
+  try { data = JSON.parse(content); } catch { rec(content ? "error" : "empty", res.status, String(content), out?.usage, "AI 응답이 JSON이 아님"); throw new Error("AI 응답이 JSON이 아니에요: " + String(content).slice(0, 120)); }
+  rec("ok", res.status, String(content), out?.usage);
+  return { data, model };
 }

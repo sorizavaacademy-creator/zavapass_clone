@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
       const userMsg = `${head}\n\n[이미 정해진 질문]\n${fixed.join("\n") || "(없음)"}\n\n[질문 원문]\n${line}`;
       let it: { i: number; ok: boolean; text?: string; lang?: string; reason?: string } | undefined;
       try {
-        const { data } = await askJson(SYSTEM(safety), userMsg, { maxTokens: 1200, timeoutMs: 25000 });
+        const { data } = await askJson(SYSTEM(safety), userMsg, { maxTokens: 1200, timeoutMs: 25000, log: { fn: "pick-questions", step: "질문 다듬기", userId: user.id } });
         it = (Array.isArray(data.items) ? data.items as typeof it[] : []).find((x) => x && Number(x.i) === 0);
       } catch (e) { aiError = (e as Error).message; return; }
       const text = cleanText(it?.text, 200);

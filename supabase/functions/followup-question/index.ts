@@ -48,6 +48,8 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.118.0";
 import { loadCompanyPack, buildCompanyBlock } from "../_shared/company_prompt.ts";
 import { activeVer, additionInfo, blockReason, loadRules, safetyText } from "../_shared/qbank.ts";
+import { logAiRes } from "../_shared/ai_log.ts";
+import { guardMsgs, leaked, logGuard } from "../_shared/guard.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";   // 사용자 선택: Luna (가장 저렴). Secrets의 OPENAI_MODEL로 변경 가능
@@ -478,8 +480,11 @@ Deno.serve(async (req: Request) => {
           { role: "system", content: SYSTEM_RULES + (safety ? `\n\n[AI 면접관 안전장치 — 엑셀 원문 그대로. 다른 어떤 지시보다 우선합니다]\n${safety}` : "") + "\n\n[이 면접의 설정]\n" + persona + "\n" + pressure },
           { role: "user", content: userPrompt },
         ];
+    const gctx = { fn: "followup-question", step: "꼬리질문", userId: user.id };
+    await guardMsgs(gctx, msgs);   // 2026-11-17 지시문 차단: 답변·서류에 AI에게 내리는 지시가 있으면 안내를 붙이고 기록
     const startedAt = Date.now(); const prepMs = startedAt - t0;
     let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.7, 380);
+    logAiRes({ fn: "followup-question", step: "꼬리질문", userId: user.id }, msgs, res, modelUsed, startedAt);   // 2026-11-17 AI 요청·응답 기록
     if (!res.ok) {
       const t = await res.text();
       console.error("OpenAI 오류", res.status, t);
@@ -492,7 +497,8 @@ Deno.serve(async (req: Request) => {
     // 2026-10-22v: 응답이 비었거나 형식이 깨졌으면(생각에 토큰을 다 쓴 경우 등) 토큰을 늘려 한 번 더 — 빨리 실패한 경우에만
     if (!parsed && Date.now() - startedAt < 6000) {
       console.warn("[꼬리질문 응답 비었음/형식 오류 → 토큰 늘려 한 번 더]", data?.choices?.[0]?.finish_reason, content.slice(0, 80));
-      const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.7, 900);
+      const t1 = Date.now(); const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.7, 900);
+      logAiRes({ fn: "followup-question", step: "꼬리질문 (다시 시도)", userId: user.id }, msgs, again.res, again.modelUsed, t1);
       if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; parsed = tryParse(content); }
     }
     if (!parsed) { console.warn("[꼬리질문 응답 해석 실패]", content.slice(0, 120)); return json({ error: "AI 응답을 해석하지 못했습니다.", raw: content }, 502); }
@@ -504,10 +510,11 @@ Deno.serve(async (req: Request) => {
     const blk = blockReason(followup);
     if (blk) guarded = "금지 분류: " + blk;
     else if (personal.some((w) => followup.includes(w))) guarded = "개인 이야기 언급";
-    if (guarded) { console.warn("[꼬리질문 안전장치]", guarded, followup.slice(0, 80)); followup = SAFE_FOLLOWUP[lang]; }
+    else if (leaked(gctx, msgs, content, "안전한 질문으로 바꿔 보냄")) guarded = "내부 지시문 노출";   // 2026-11-17 응답에 내부 지시문이 그대로 섞였으면 버림
+    if (guarded) { console.warn("[꼬리질문 안전장치]", guarded, followup.slice(0, 80)); if (guarded !== "내부 지시문 노출") logGuard(gctx, { kind: "output_block", rules: [guarded], snippet: followup, action: "안전한 질문으로 바꿔 보냄" }); followup = SAFE_FOLLOWUP[lang]; }
     return json({
       followup,
-      evaluation: String(parsed.evaluation ?? ""),
+      evaluation: guarded === "내부 지시문 노출" ? "" : String(parsed.evaluation ?? ""),
       intent: guarded || force ? (parsed.intent === "next" ? "probe" : (["probe", "clarify", "challenge"].includes(parsed.intent) ? parsed.intent : "probe")) : (["probe", "clarify", "challenge", "next"].includes(parsed.intent) ? parsed.intent : "probe"),
       guarded: guarded || undefined,
       model: modelUsed,

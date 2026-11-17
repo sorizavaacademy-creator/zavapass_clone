@@ -113,7 +113,7 @@ Deno.serve(async (req: Request) => {
   try {
     if (action === "open") {
       for (let t = 0; t < 2; t++) {
-        const { data } = await askJson(OPEN, user_, { maxTokens: 1200, timeoutMs: 30000, temperature: 0.7 });
+        const { data } = await askJson(OPEN, user_, { maxTokens: 1200, timeoutMs: 30000, temperature: 0.7, log: { fn: "debate-coach", step: "토론 여는 말", userId: user.id } });
         const members = (Array.isArray(data.members) ? data.members : []).slice(0, 3).map((m: any, i: number) => ({ who: `지원자 ${"ABC"[i]}`, view: cleanText(m?.view, 16), text: cleanText(m?.text, 240) })).filter((m) => m.text && !blockReason(m.text));
         if (members.length === 3) return json({ members });
       }
@@ -121,7 +121,7 @@ Deno.serve(async (req: Request) => {
     }
     if (action === "rebut" && kind === "group") {
       for (let t = 0; t < 2; t++) {
-        const { data } = await askJson(GROUP_REPLY, user_, { maxTokens: 1200, timeoutMs: 30000, temperature: 0.6 });
+        const { data } = await askJson(GROUP_REPLY, user_, { maxTokens: 1200, timeoutMs: 30000, temperature: 0.6, log: { fn: "debate-coach", step: "토론 이어 말하기", userId: user.id } });
         const remarks = (Array.isArray(data.remarks) ? data.remarks : []).slice(0, 2).map((m: any) => ({ who: /^지원자 [ABC]$/.test(String(m?.who ?? "")) ? String(m.who) : "지원자 B", text: cleanText(m?.text, 260).replace(/(^|[\s.])[ABC]님,\s*(?=[^?]*\?\s*$)/, "$1D님, ") })).filter((m) => m.text && !blockReason(m.text));   // "A님, …정리하면 좋을까요?"처럼 다른 AI에게 묻는 건 D에게로
         if (remarks.length) return json({ remarks });
       }
@@ -129,13 +129,13 @@ Deno.serve(async (req: Request) => {
     }
     if (action === "rebut") {
       for (let t = 0; t < 2; t++) {
-        const { data } = await askJson(REBUT(kind), user_, { maxTokens: 900, timeoutMs: 30000, temperature: 0.5 });
+        const { data } = await askJson(REBUT(kind), user_, { maxTokens: 900, timeoutMs: 30000, temperature: 0.5, log: { fn: "debate-coach", step: "반박", userId: user.id } });
         const rebut = cleanText(data.rebut, 300);
         if (rebut && !blockReason(rebut)) return json({ rebut, point: cleanText(data.point, 40) });
       }
       return json({ rebut: kind === "pt" ? "발표하신 방안을 실제로 실행할 때 가장 어려운 점은 무엇이고, 어떻게 보완하시겠어요?" : "반대 입장에서는 그 방안이 오히려 부담을 키울 수 있다고 봅니다. 이에 대해 어떻게 생각하시나요?", point: "" });
     }
-    const { data } = await askJson(FEEDBACK(kind), user_, { maxTokens: 1800, timeoutMs: 45000, temperature: 0.3 });
+    const { data } = await askJson(FEEDBACK(kind), user_, { maxTokens: 1800, timeoutMs: 45000, temperature: 0.3, log: { fn: "debate-coach", step: "토론·PT 피드백", userId: user.id } });
     const ax = (data.axes ?? {}) as Record<string, unknown>;
     const n = (v: unknown) => Math.max(1, Math.min(5, Math.round(Number(v) || 1)));
     const list = (v: unknown) => (Array.isArray(v) ? v : []).map((x) => cleanText(x, 200)).filter((x) => x && !blockReason(x)).slice(0, 3);

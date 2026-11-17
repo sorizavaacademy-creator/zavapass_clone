@@ -29,6 +29,8 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.118.0";
 import { loadCompanyPack, buildCompanyBlock } from "../_shared/company_prompt.ts";
 import { activeVer, additionInfo, blockReason } from "../_shared/qbank.ts";
+import { logAiRes } from "../_shared/ai_log.ts";
+import { guardMsgs, leaked } from "../_shared/guard.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";   // 사용자 선택: Luna (가장 저렴). Secrets의 OPENAI_MODEL로 변경 가능
@@ -505,16 +507,21 @@ Deno.serve(async (req: Request) => {
       { role: "user", content: aeUser },
     ];
     try {
-      let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.2, 2500);
+      const gA = { fn: "grade-answer", step: "A~E 채점", userId: user.id };
+      await guardMsgs(gA, msgs);   // 2026-11-17 지시문 차단: 답변에 점수를 바꾸라는 말 등이 있으면 안내를 붙이고 기록
+      const tA = Date.now(); let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.2, 2500);
+      logAiRes({ fn: "grade-answer", step: "A~E 채점", userId: user.id }, msgs, res, modelUsed, tA);   // 2026-11-17 AI 요청·응답 기록
       if (res.ok) {
         let data = await res.json();
         let content: string = data?.choices?.[0]?.message?.content ?? "";
+        if (leaked(gA, msgs, content, "응답을 버리고 다시 채점함")) content = "";
         let parsed: any = null; try { parsed = JSON.parse(content); } catch { parsed = null; }
         let built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer), answer.replace(/\s/g, "").length) : null;
         if (!built) {
           console.warn("[A~E 응답 형식 오류 → 한 번 더]", content.slice(0, 120));
-          const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.2, 4000);
-          if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; try { parsed = JSON.parse(content); } catch { parsed = null; } built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer), answer.replace(/\s/g, "").length) : null; }
+          const tB = Date.now(); const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.2, 4000);
+          logAiRes({ fn: "grade-answer", step: "A~E 채점 (다시 시도)", userId: user.id }, msgs, again.res, again.modelUsed, tB);
+          if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; if (leaked(gA, msgs, content, "응답을 버림")) content = ""; modelUsed = again.modelUsed; try { parsed = JSON.parse(content); } catch { parsed = null; } built = parsed ? aeBuild(parsed, R, qbType, langNote, prior, noAnswer(answer), answer.replace(/\s/g, "").length) : null; }
         }
         if (built) {
           return json({
@@ -535,7 +542,10 @@ Deno.serve(async (req: Request) => {
           { role: "system", content: SYSTEM_PROMPT + (companyBlock ? `\n\n[기업 맞춤 면접 참고 — 인재상·평가 포인트만 참고하고, 위 배점과 JSON 형식은 그대로 지킵니다]\n${companyBlock}` : "") },
           { role: "user", content: userPrompt },
         ];
-    let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.3, 2000);
+    const gC = { fn: "grade-answer", step: "채점", userId: user.id };
+    await guardMsgs(gC, msgs);   // 2026-11-17 지시문 차단
+    const tC = Date.now(); let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.3, 2000);
+    logAiRes({ fn: "grade-answer", step: "채점", userId: user.id }, msgs, res, modelUsed, tC);   // 2026-11-17 AI 요청·응답 기록
 
     if (!res.ok) {
       const errText = await res.text();
@@ -548,10 +558,12 @@ Deno.serve(async (req: Request) => {
 
     let data = await res.json();
     let content: string = data?.choices?.[0]?.message?.content ?? "";
+    if (leaked(gC, msgs, content, "응답을 버리고 다시 채점함")) content = "";
     if (!content.trim()) {
       console.warn("빈 응답 → 토큰을 늘려 다시 시도", data?.choices?.[0]?.finish_reason);
-      const retry = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.3, 3500);
-      if (retry.res.ok) { data = await retry.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = retry.modelUsed; }
+      const tD = Date.now(); const retry = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.3, 3500);
+      logAiRes({ fn: "grade-answer", step: "채점 (다시 시도)", userId: user.id }, msgs, retry.res, retry.modelUsed, tD);
+      if (retry.res.ok) { data = await retry.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; if (leaked(gC, msgs, content, "응답을 버림")) content = ""; modelUsed = retry.modelUsed; }
     }
 
     let parsed: Record<string, unknown>;

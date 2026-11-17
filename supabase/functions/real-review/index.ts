@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
   if (!lim.ok) return json({ error: "limit", limit: lim.status }, 429);
   const user_ = `[실제 면접] ${org || "기관 미입력"}${round ? ` · ${round}` : ""}\n${items.map((x, i) => `${i + 1}. 질문: ${x.q}\n   내 답(기억나는 대로): ${x.a || "(기억 안 남)"}`).join("\n")}\n\n[아쉬웠던 점] ${regret || "(없음)"}`;
   try {
-    const { data } = await askJson(SYSTEM, user_, { maxTokens: 1600, timeoutMs: 45000, temperature: 0.3 });
+    const { data } = await askJson(SYSTEM, user_, { maxTokens: 1600, timeoutMs: 45000, temperature: 0.3, log: { fn: "real-review", step: "실전 면접 복기", userId: user.id } });
     const ok = (s: string) => s && !blockReason(s);
     const list = (v: unknown, n: number) => (Array.isArray(v) ? v : []).map((x) => cleanText(x, 200)).filter(ok).slice(0, n);
     const followups = (Array.isArray(data.followups) ? data.followups : []).map((f: any) => ({ q: cleanText(f?.q, 200), why: cleanText(f?.why, 200) })).filter((f) => ok(f.q)).slice(0, 5);

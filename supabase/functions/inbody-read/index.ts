@@ -115,7 +115,7 @@ Deno.serve(async (req: Request) => {
     const list = its.map((x) => `- [${x.group || "기타"}] ${maskIds(x.label).text}: ${maskIds(x.value).text}`).join("\n");
     const t1 = Date.now();
     try {
-      const { data, model } = await askJson(SYSTEM_Q, `${hint0 ? `[학생이 고른 정보] ${hint0}\n\n` : ""}[리포트 항목]\n${list}`, { maxTokens: 1800, timeoutMs: 40000, temperature: 0.3, reasoning: Deno.env.get("INBODY_REASONING") || "low" });
+      const { data, model } = await askJson(SYSTEM_Q, `${hint0 ? `[학생이 고른 정보] ${hint0}\n\n` : ""}[리포트 항목]\n${list}`, { maxTokens: 1800, timeoutMs: 40000, temperature: 0.3, reasoning: Deno.env.get("INBODY_REASONING") || "low", log: { fn: "inbody-read", step: "리포트 질문 다시 만들기", userId: user.id }, guard: true });
       const questions = (Array.isArray(data.questions) ? data.questions : []).map((x: any) => ({ q: cleanText(x?.q, 140), basis: cleanText(x?.basis, 60), why: cleanText(x?.why, 100) }))
         .filter((x) => x.q.length >= 12 && x.basis && !blockReason(x.q) && !PII.test(x.q) && !PII.test(x.basis)).slice(0, 6);
       if (!questions.length) return json({ error: "no_questions", message: "질문을 만들지 못했어요. 다시 눌러 주세요." }, 502);
@@ -131,7 +131,7 @@ Deno.serve(async (req: Request) => {
   const hint = [cleanText(p.dept, 40) ? `학과: ${cleanText(p.dept, 40)}` : "", cleanText(p.target, 60) ? `준비하는 분야·직무: ${cleanText(p.target, 60)}` : ""].filter(Boolean).join(" / ");
   const t0 = Date.now();
   try {
-    const { data, model } = await askJson(SYSTEM, `${hint ? `[학생이 고른 정보] ${hint}\n\n` : ""}[리포트]\n${masked.text}`, { maxTokens: 4000, timeoutMs: 55000, temperature: 0.2, reasoning: Deno.env.get("INBODY_REASONING") || "low" });
+    const { data, model } = await askJson(SYSTEM, `${hint ? `[학생이 고른 정보] ${hint}\n\n` : ""}[리포트]\n${masked.text}`, { maxTokens: 4000, timeoutMs: 55000, temperature: 0.2, reasoning: Deno.env.get("INBODY_REASONING") || "low", log: { fn: "inbody-read", step: "리포트 읽기", userId: user.id }, guard: true });
     const f = (data.fields ?? {}) as Record<string, unknown>;
     const gmaxRaw = num(f.gpa_max, 4, 4.5); const gpa_max = gmaxRaw === 4 || gmaxRaw === 4.3 || gmaxRaw === 4.5 ? gmaxRaw : 4.5;
     const ts = /^Lv[1-8]$/.test(String(f.toeic_speaking ?? "")) ? String(f.toeic_speaking) : null;

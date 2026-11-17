@@ -60,7 +60,7 @@ Deno.serve(async (req: Request) => {
   if (!lim.ok) return json({ error: "limit", limit: lim.status }, 429);
   const user_ = `[답변 노트]\n${notes.map((n) => `- (${n.cat} · ${CAT[n.cat]}) 질문: ${n.question}\n  답: ${n.answer}`).join("\n")}\n\n[서류 - 이력서]\n${resume || "(없음)"}\n\n[서류 - 자기소개서]\n${cv || "(없음)"}`;
   try {
-    const { data } = await askJson(SYSTEM, user_, { maxTokens: 1800, timeoutMs: 45000, temperature: 0.2 });
+    const { data } = await askJson(SYSTEM, user_, { maxTokens: 1800, timeoutMs: 45000, temperature: 0.2, log: { fn: "note-check", step: "메모 점검", userId: user.id } });
     const ok = (s: string) => s && !blockReason(s);
     const mismatches = (Array.isArray(data.mismatches) ? data.mismatches : []).slice(0, 4).map((m: any) => ({ cat: CAT[m?.cat] ? String(m.cat) : "job", note: cleanText(m?.note, 120), doc: cleanText(m?.doc, 120), tip: cleanText(m?.tip, 200) })).filter((m) => ok(m.tip) && (m.note || m.doc));
     const missing = (Array.isArray(data.missing) ? data.missing : []).slice(0, 3).map((m: any) => ({ strength: cleanText(m?.strength, 60), where: CAT[m?.where] ? String(m.where) : "pers", tip: cleanText(m?.tip, 200) })).filter((m) => ok(m.strength) && ok(m.tip));

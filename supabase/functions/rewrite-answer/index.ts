@@ -7,6 +7,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.118.0";
 import { loadCompanyPack, buildCompanyBlock } from "../_shared/company_prompt.ts";
+import { logAiRes } from "../_shared/ai_log.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";   // 사용자 선택: Luna (가장 저렴). Secrets의 OPENAI_MODEL로 변경 가능
@@ -236,12 +237,14 @@ Deno.serve(async (req: Request) => {
     { role: "user", content: userPrompt },
   ];
   try {
-    let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.4, 2500);
+    const tA = Date.now(); let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.4, 2500);
+    logAiRes({ fn: "rewrite-answer", step: "답변 다듬기", userId: user.id }, msgs, res, modelUsed, tA);   // 2026-11-17 AI 요청·응답 기록
     if (!res.ok) { const t = await res.text(); console.error("OpenAI API 오류:", res.status, t); return json({ error: `OpenAI API 오류 (${res.status}): ${t.slice(0, 300)}` }, 502); }
     let data = await res.json();
     let content: string = data?.choices?.[0]?.message?.content ?? "";
     if (!content.trim()) {
-      const retry = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.4, 4000);
+      const tB = Date.now(); const retry = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.4, 4000);
+      logAiRes({ fn: "rewrite-answer", step: "답변 다듬기 (다시 시도)", userId: user.id }, msgs, retry.res, retry.modelUsed, tB);
       if (retry.res.ok) { data = await retry.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = retry.modelUsed; }
     }
     let parsed: Record<string, unknown>;

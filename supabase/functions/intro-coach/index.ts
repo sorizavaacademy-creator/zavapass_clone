@@ -30,6 +30,7 @@
 // 배포: verify_jwt 끔 (함수 안에서 로그인 토큰을 직접 확인)
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { logAiRes } from "../_shared/ai_log.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 const OPENAI_MODEL = Deno.env.get("OPENAI_MODEL") ?? "gpt-5.6-luna";
@@ -226,6 +227,7 @@ Deno.serve(async (req: Request) => {
     const startedAt = Date.now();
     // 2026-10-22v: 1600 → 2600 (추론형 모델이 생각에 토큰을 먼저 써서 대본이 비는 경우가 있었음)
     let { res, modelUsed } = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.6, 2600);
+    logAiRes({ fn: "intro-coach", step: "자기소개 대본", userId: user.id }, msgs, res, modelUsed, startedAt);   // 2026-11-17 AI 요청·응답 기록
     if (!res.ok) {
       const t = await res.text();
       console.error("OpenAI 오류", res.status, t);
@@ -237,7 +239,8 @@ Deno.serve(async (req: Request) => {
     let parsed: any = tryParse(content);
     if (!parsed && Date.now() - startedAt < 20000) {
       console.warn("[자기소개 대본 비었음/형식 오류 → 토큰 늘려 한 번 더]", data?.choices?.[0]?.finish_reason, content.slice(0, 80));
-      const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.6, 4000);
+      const t1 = Date.now(); const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, msgs, 0.6, 4000);
+      logAiRes({ fn: "intro-coach", step: "자기소개 대본 (다시 시도)", userId: user.id }, msgs, again.res, again.modelUsed, t1);
       if (again.res.ok) { data = await again.res.json(); content = data?.choices?.[0]?.message?.content ?? ""; modelUsed = again.modelUsed; parsed = tryParse(content); }
     }
     if (!parsed) { console.warn("[자기소개 대본 해석 실패]", content.slice(0, 120)); return json({ error: "AI 응답을 해석하지 못했습니다.", raw: content.slice(0, 300) }, 502); }
@@ -248,7 +251,8 @@ Deno.serve(async (req: Request) => {
     if (unverified.length && Date.now() - startedAt < 30000) {
       console.warn("[서류에 없는 말 → 다시 쓰기]", unverified.join(", "));
       const fixMsgs = [...msgs, { role: "assistant", content: JSON.stringify(parsed) }, { role: "user", content: `방금 대본에 서류·지원자의 말·지원 목표에 없는 말이 있어요: ${unverified.join(", ")}. 이 말들을 빼고, 서류에 있는 사실만으로 같은 규칙과 같은 JSON 형식으로 다시 써 주세요.` }];
-      const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, fixMsgs, 0.4, 2600);
+      const t2 = Date.now(); const again = await callOpenAI(OPENAI_API_KEY, OPENAI_MODEL, fixMsgs, 0.4, 2600);
+      logAiRes({ fn: "intro-coach", step: "자기소개 대본 (서류에 없는 말 빼기)", userId: user.id }, fixMsgs, again.res, again.modelUsed, t2);
       if (again.res.ok) {
         const d2 = await again.res.json(); const p2 = tryParse(d2?.choices?.[0]?.message?.content ?? "");
         if (p2) { const s2 = String(p2.script ?? "").trim(); const u2 = findUnverified(s2, sources); if (s2 && u2.length <= unverified.length) { parsed = p2; script = s2; unverified = u2; modelUsed = again.modelUsed; } }
