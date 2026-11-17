@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-17d';
+var APP_VERSION = '2026-11-17e';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -6369,6 +6369,11 @@ html.ivv-dr-open{overflow:hidden;}
 .ib-rp-sum{margin:8px 0 0;font-size:13.5px;line-height:1.6;color:#2b2521}
 .ib-rp-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;margin-top:12px}
 .ib-rp-g small{display:block;font-size:12px;font-weight:700;color:#8a7b70;margin-bottom:3px}
+/* 2026-11-17 읽은 값 고치기 */
+.ib-rp-eh{margin:14px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px} .ib-rp-eh b{font-size:14px} .ib-rp-eh small{font-size:12.5px;color:#6a5b51}
+.ib-rp-lk{border:0;background:none;color:#b23c17;font:inherit;font-size:13px;font-weight:600;text-decoration:underline;cursor:pointer;padding:4px 2px} .ib-rp-lk:disabled{opacity:.5;cursor:default}
+.ib-rp-items.ed{grid-template-columns:minmax(0,1fr)} .ib-rp-items.ed .ib-rp-g li{align-items:center;border-bottom:0;padding:2px 0} .ib-rp-items.ed .ib-rp-g li span{flex:0 0 30%} .ib-rp-in{flex:1 1 auto;min-width:0;height:34px;padding:0 9px;border:1px solid #d9cfc6;border-radius:8px;font:inherit;font-size:13px;font-weight:600;text-align:right;background:#fff} .ib-rp-in:focus{outline:2px solid #e8b9a6;border-color:#c8441c}
+.ib-rp-eb{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .ib-rp-g ul{list-style:none;margin:0;padding:0} .ib-rp-g li{display:flex;justify-content:space-between;gap:10px;font-size:13px;line-height:1.5;padding:3px 0;border-bottom:1px dashed #efe7df}
 .ib-rp-g li span{color:#4a4039} .ib-rp-g li b{font-weight:600;text-align:right}
 .ib-rp-qs{margin-top:14px;background:#f6f1ec;border-radius:12px;padding:12px 14px}
@@ -14116,17 +14121,63 @@ const Inbody = {
       <p class="ib-rp-st" id="ib-rp-st" role="status"></p>
       <div id="ib-rp-view">${this.reportView()}</div></div>`; },
   reportView(){ const r = this.report(); if(!r) return '';
+    const ed = !!this._rpEdit;   // 2026-11-17 읽은 값 고치기 (스캔본처럼 숫자를 틀리게 읽은 경우)
     const groups = []; (r.items || []).forEach(x=>{ const g = x.group || '그 밖의 항목'; let o = groups.find(y=>y.g === g); if(!o) groups.push(o = { g, L: [] }); o.L.push(x); });
     const when = r.at ? formatDateFull(r.at) : '';
     return `<div class="ib-rp-done">
       <p class="ib-rp-file"><span class="fl-badge ib-rp-ok">리포트 반영됨</span><b>${escapeHtml(r.file || '리포트')}</b><small>${escapeHtml(when)}${(r.items || []).length ? ` · 항목 ${(r.items || []).length}개` : ''}${r.masked ? ` · 개인정보 ${r.masked}곳 가림` : ''}</small><button type="button" class="ib-rp-del" id="ib-rp-del">리포트 지우기</button></p>
       ${r.summary ? `<p class="ib-rp-sum">${escapeHtml(r.summary)}</p>` : ''}
-      ${groups.length ? `<div class="ib-rp-items">${groups.map(o=>`<div class="ib-rp-g"><small>${escapeHtml(o.g)}</small><ul>${o.L.map(x=>`<li><span>${escapeHtml(x.label)}</span><b>${escapeHtml(x.value)}</b></li>`).join('')}</ul></div>`).join('')}</div>` : ''}
-      ${r.questions.length ? `<div class="ib-rp-qs"><p class="ib-rp-qh"><b>이 리포트에서 나오는 면접 질문</b><small>면접을 시작하면 이 가운데 2개가 근거 항목과 함께 나오고, 꼬리질문도 이 질문에 붙어요.</small></p><ol>${r.questions.map(x=>`<li><p>${escapeHtml(x.q)}</p><span class="ib-rp-basis">근거 · ${escapeHtml(x.basis)}</span>${x.why ? `<small>${escapeHtml(x.why)}</small>` : ''}</li>`).join('')}</ol></div>` : ''}
+      ${groups.length ? `<p class="ib-rp-eh"><b>리포트에서 읽은 항목</b>${ed ? '<small>틀리게 읽은 값을 고쳐 주세요. 값을 비우면 그 항목은 빠져요.</small>' : `<button type="button" class="ib-rp-lk" id="ib-rp-edit">읽은 값 고치기</button>${r.edited_at ? '<small>직접 고친 값이 있어요</small>' : ''}`}</p>
+      <div class="ib-rp-items${ed ? ' ed' : ''}">${groups.map(o=>`<div class="ib-rp-g"><small>${escapeHtml(o.g)}</small><ul>${o.L.map(x=>`<li><span>${escapeHtml(x.label)}</span>${ed ? `<input type="text" class="ib-rp-in" data-i="${(r.items || []).indexOf(x)}" value="${escapeHtml(x.value)}" maxlength="60" aria-label="${escapeHtml(x.label)} 값">` : `<b>${escapeHtml(x.value)}</b>`}</li>`).join('')}</ul></div>`).join('')}</div>
+      ${ed ? '<div class="ib-rp-eb"><button type="button" class="btn btn-solid btn-sm" id="ib-rp-save">저장하고 질문 다시 만들기</button><button type="button" class="btn btn-outline btn-sm" id="ib-rp-cancel">취소</button></div>' : ''}` : ''}
+      ${r.questions.length ? `<div class="ib-rp-qs"><p class="ib-rp-qh"><b>이 리포트에서 나오는 면접 질문</b><small>면접을 시작하면 이 가운데 2개가 근거 항목과 함께 나오고, 꼬리질문도 이 질문에 붙어요.</small>${ed ? '' : '<button type="button" class="ib-rp-lk" id="ib-rp-requ">질문 다시 만들기</button>'}</p><ol>${r.questions.map(x=>`<li><p>${escapeHtml(x.q)}</p><span class="ib-rp-basis">근거 · ${escapeHtml(x.basis)}</span>${x.why ? `<small>${escapeHtml(x.why)}</small>` : ''}</li>`).join('')}</ol></div>` : ''}
     </div>`; },
   bindReport(){
     const f = document.getElementById('ib-rp-file'); if(f) f.onchange = ()=>{ const file = f.files && f.files[0]; f.value = ''; if(file) this.readReport(file); };
     const del = document.getElementById('ib-rp-del'); if(del) del.onclick = ()=>this.removeReport();
+    const on = (id, fn)=>{ const b = document.getElementById(id); if(b) b.onclick = fn; };
+    on('ib-rp-edit', ()=>{ this._rpEdit = true; this.redrawReport(); const i = document.querySelector('#ib-rp-view .ib-rp-in'); if(i) i.focus(); });
+    on('ib-rp-cancel', ()=>{ this._rpEdit = false; this.redrawReport(); });
+    on('ib-rp-save', ()=>this.saveReportEdit(false));
+    on('ib-rp-requ', ()=>this.saveReportEdit(true));
+  },
+  redrawReport(){ const v = document.getElementById('ib-rp-view'); if(v){ v.innerHTML = this.reportView(); this.bindReport(); } },
+  /** 2026-11-17 읽은 값을 고친 뒤(또는 그대로) 그 항목으로 면접 질문을 다시 만듦. AI가 실패해도 고친 값은 저장 */
+  async saveReportEdit(regenOnly){
+    const r = this.report(); if(!r || this._rpBusy) return; this._rpBusy = true;
+    const say = (m, cls)=>{ const st = document.getElementById('ib-rp-st'); if(st){ st.textContent = m; st.className = 'ib-rp-st' + (cls ? ' ' + cls : ''); } };
+    const t0 = Date.now();
+    try{
+      let items = (r.items || []).map(x=>Object.assign({}, x)), changed = 0;
+      if(!regenOnly){
+        document.querySelectorAll('#ib-rp-view .ib-rp-in').forEach(inp=>{ const i = +inp.dataset.i, v = String(inp.value || '').replace(/\s+/g, ' ').trim().slice(0, 60); if(items[i] && items[i].value !== v){ items[i].value = v; changed++; } });
+        items = items.filter(x=>x.value);
+        if(!changed){ this._rpEdit = false; this.redrawReport(); say('바뀐 값이 없어요.'); return; }
+      }
+      document.querySelectorAll('#ib-rp-save, #ib-rp-cancel, #ib-rp-requ, #ib-rp-edit').forEach(b=>{ b.disabled = true; });
+      say(regenOnly ? '질문을 다시 만드는 중이에요… 10~20초쯤 걸려요.' : '고친 값으로 질문을 다시 만드는 중이에요… 10~20초쯤 걸려요.');
+      const fs = (typeof StartFlow !== 'undefined' && StartFlow.s) || {};
+      let data = null, fail = '';
+      try{
+        const { data: d, error } = await Promise.race([sb.functions.invoke('inbody-read', { body: { items, dept: (fs.major && fs.major.dept) || '', target: (this.d && this.d.target_role) || '' } }), new Promise((_, rej)=>setTimeout(()=>rej(new Error('시간이 오래 걸려요')), 50000))]);
+        if(error){ let msg = error.message || ''; try{ const j = await error.context.json(); if(j && j.error === 'limit') msg = '오늘 쓸 수 있는 AI 횟수를 다 썼어요'; else if(j && j.message) msg = j.message; }catch(_){} throw new Error(msg || '질문을 만들지 못했어요'); }
+        if(!d || d.error) throw new Error((d && (d.message || d.error)) || '질문을 만들지 못했어요');
+        data = d;
+      }catch(e){ fail = (e && e.message) || '질문을 만들지 못했어요'; console.warn('[리포트 질문 다시 만들기]', e); }
+      if(regenOnly && !(data && (data.questions || []).length)){ say('질문을 다시 만들지 못했어요. ' + fail + ' 잠시 뒤 다시 눌러 주세요.', 'warn'); return; }
+      const rep2 = Object.assign({}, r, { items: (data && (data.items || []).length) ? data.items.slice(0, 30) : items });
+      if(changed) rep2.edited_at = new Date().toISOString();
+      const newQ = !!(data && (data.questions || []).length);
+      if(newQ){ rep2.questions = data.questions.slice(0, 6); if(data.summary) rep2.summary = data.summary; }
+      const { error: se } = await sb.from('career_inbody').update({ report: rep2, updated_at: new Date().toISOString() }).eq('user_id', state.currentUser.id);
+      if(se){ say('저장하지 못했어요. ' + friendlyErr(se), 'warn'); return; }
+      this.d = Object.assign({}, this.d || {}, { report: rep2 }); this._rpEdit = false; this.redrawReport();
+      try{ localStorage.removeItem('zp_ibq_off'); }catch(_){}
+      try{ Activity.log('inbody_report_edit', { changed, regen: newQ, ms: Date.now() - t0 }); }catch(_){}
+      say(newQ ? (changed ? `값 ${changed}개를 고치고 질문 ${rep2.questions.length}개를 다시 만들었어요.` : `질문 ${rep2.questions.length}개를 다시 만들었어요.`) : `값 ${changed}개는 고쳤지만 질문은 다시 만들지 못했어요(${fail}). '질문 다시 만들기'를 눌러 주세요.`, newQ ? 'ok' : 'warn');
+      try{ if(typeof StartFlow !== 'undefined' && StartFlow.s && !StartFlow.s.page) StartFlow.render(); }catch(_){}
+    }catch(e){ console.warn('[리포트 값 고치기]', e); say('고치지 못했어요. 잠시 뒤 다시 해 주세요.', 'warn'); }
+    finally{ this._rpBusy = false; document.querySelectorAll('#ib-rp-save, #ib-rp-cancel, #ib-rp-requ, #ib-rp-edit').forEach(b=>{ b.disabled = false; }); }
   },
   async readReport(file){
     if(this._rpBusy) return; this._rpBusy = true;
@@ -15133,7 +15184,7 @@ const StartFlow = {
   pickChips(){ const s = this.s, pressure = this._press || 'normal';
     const pick = (row, val, type)=>{ const r = document.getElementById(row); const c = r && r.querySelector(`.chip[data-val="${val}"]`); if(c && !c.classList.contains('sel')) selectChip(c, type); };
     pick('chip-realset', 'normal', 'realset'); pick('chip-timed', s.mode === 'real' ? 'real' : 'free', 'timed'); pick('chip-pressure', pressure, 'pressure'); pick('chip-diff', s.diff, 'diff'); pick('chip-followups', (FLOW_DIFFS[s.diff] || FLOW_DIFFS['중']).fu, 'followups');
-    if(!(state.flowCtx && state.flowCtx.qbank)) pick('chip-count', String(s.qcount || 5), 'count');
+    if(!(state.flowCtx && state.flowCtx.qbank)){ pick('chip-count', String(s.qcount || 5), 'count'); state.questionCount = s.qcount || 5; }   // 2문항(짧게)는 예전 준비 창에 칩이 없어 값을 직접 넣음
   },
   /** (예전 방식) 창을 닫고 '면접 준비' 창을 따로 엶 — 다른 곳에서 부를 때를 위해 남겨 둠 */
   finish(){
@@ -15396,7 +15447,7 @@ const StartFlow = {
     const card = (k, t, d)=>`<button type="button" class="fl-mode" data-mode="${k}" aria-pressed="${s.mode === k}"><b>${t}</b><span>${d}</span></button>`;
     const count = s.review ? `<div class="fl-f"><span class="fl-lbl">복습할 질문 · ${s.review.list.length}개</span><ol class="fl-rvlist">${s.review.list.map(x=>`<li>${escapeHtml(x.q)}</li>`).join('')}</ol><p class="fl-hint">${escapeHtml(s.review.label)}이에요. 결과는 '복습 면접' 기록으로 따로 저장돼요.</p></div>`
       : qb ? `<div class="fl-f"><span class="fl-lbl">질문 수</span><p class="fl-fixed">8문항 · 이 면접은 질문 순서가 정해져 있어요</p></div>`
-      : `<div class="fl-f"><label for="fl-qcount">질문 수</label><select id="fl-qcount">${[3,5,10].map(n=>`<option value="${n}"${n === s.qcount ? ' selected' : ''}>${n}문항</option>`).join('')}</select></div>`;
+      : `<div class="fl-f"><label for="fl-qcount">질문 수</label><select id="fl-qcount">${[2,3,5,10].map(n=>`<option value="${n}"${n === s.qcount ? ' selected' : ''}>${n === 2 ? '2문항 (짧게)' : n + '문항'}</option>`).join('')}</select>${s.qcount === 2 ? '<p class="fl-hint">질문 2개와 꼬리질문 1개로 짧게 진행해요. 인바디 리포트를 올렸다면 리포트 근거 질문 2개가 나와요.</p>' : ''}</div>`;   /* 2026-11-17 2문항(짧게): 시연·맛보기용 */
     const tg = (k, t, d)=>`<button type="button" class="fl-tg" data-tg="${k}" role="switch" aria-checked="${!!s[k]}" aria-pressed="${!!s[k]}"><span><b>${t}</b><small>${d}</small></span><i class="sw" aria-hidden="true"></i></button>`;
     return `${this.vHead(s.review ? '복습 면접, 어떻게 연습할까요?' : '어떻게 연습할까요?', s.review ? '고른 질문으로 다시 면접해요. 진행 방식만 고르면 돼요.' : '목적과 진행 방식은 각각 선택해요.')}
     <div class="fl-2col">
@@ -15446,7 +15497,7 @@ const StartFlow = {
         <div class="fl-devsel"${s.devSel ? '' : ' hidden'} id="fl-devsel"><div data-slot="micsel"></div><div data-slot="camsel"></div></div>
       </div>
       <div class="fl-col">
-        <div class="fl-cks">${ck('fl-ck-mic', true, '마이크 사용 · 필수', '면접관 질문에 말로 답해요', false).replace('<label class="fl-ck">', '<label class="fl-ck fl-ck-fixed">').replace('type="checkbox"', 'type="checkbox" onclick="return false" aria-readonly="true"')}${ck('fl-ck-cam', s.cam, '카메라 사용 · 선택', '끄면 소리만으로 면접해요')}${ck('fl-ck-rec', s.rec, '내 모습 녹화하기 · 선택', '카메라를 켠 경우 끝난 뒤 영상으로, 끈 경우 소리로 다시 볼 수 있어요. 끄면 녹화·표정 분석을 하지 않아요.')}</div>
+        <div class="fl-cks">${ck('fl-ck-mic', true, '마이크 사용 · 기본', '면접관 질문에 말로 답해요', false).replace('<label class="fl-ck">', '<label class="fl-ck fl-ck-fixed">').replace('type="checkbox"', 'type="checkbox" onclick="return false" aria-readonly="true"')}${ck('fl-ck-typed', s.typed, '글로 답하기 · 선택', '켜면 마이크 없이 모든 답을 글로 적어요. 주변이 시끄럽거나 소리가 잘 안 잡힐 때 써요. 채점은 똑같이 해요.')}${ck('fl-ck-cam', s.cam, '카메라 사용 · 선택', '끄면 소리만으로 면접해요')}${ck('fl-ck-rec', s.rec, '내 모습 녹화하기 · 선택', '카메라를 켠 경우 끝난 뒤 영상으로, 끈 경우 소리로 다시 볼 수 있어요. 끄면 녹화·표정 분석을 하지 않아요.')}</div>
         <div class="fl-vt"><button type="button" class="btn btn-outline" id="fl-vt-b">목소리 테스트</button><p class="fl-hint" id="fl-vt-out" aria-live="polite">"안녕하세요" 하고 한 문장 말해 보세요. 들린 말을 글자로 보여 줄 뿐, 채점하거나 면접 기록에 저장하지 않아요.</p></div>
         <button type="button" class="btn btn-outline" id="fl-recinfo-b" aria-expanded="${!!s.recInfo}" aria-controls="fl-recinfo">녹화·분석 안내 확인</button>
         <div class="fl-recinfo" id="fl-recinfo"${s.recInfo ? '' : ' hidden'}><p>녹화는 <b>이 기기(브라우저) 안에서만</b> 해요. 영상·음성 파일은 서버에 올리지 않고, 결과 화면에서 내 답변을 다시 보는 데만 써요.</p><p>카메라를 켜면 답하는 동안 표정·시선을 이 기기에서 분석해 결과에 짧은 피드백으로 보여 줘요. 저장되는 건 답변을 글자로 바꾼 내용과 채점 결과예요.</p><p>창을 닫거나 새로고침하면 녹화 파일은 사라져요. 필요하면 결과 화면에서 내려받아 두세요.</p></div>
@@ -15475,6 +15526,7 @@ const StartFlow = {
     const cam = document.getElementById('fl-ck-cam'), rec = document.getElementById('fl-ck-rec');
     if(cam) cam.onchange = ()=>{ s.cam = cam.checked; const sw = document.getElementById('switch-cam'); if(sw){ sw.checked = s.cam; try{ onSetupCamToggle(s.cam); }catch(_){} } };
     if(rec) rec.onchange = ()=>{ s.rec = rec.checked; };
+    { const ty = document.getElementById('fl-ck-typed'); if(ty) ty.onchange = ()=>{ s.typed = ty.checked; this._devKey = ''; this.devCheck(); try{ Activity.log('flow_typed', { on: !!s.typed }); }catch(_){} }; }   // 2026-11-17 처음부터 글로 답하기
     const ds = document.getElementById('fl-devsel-b'); if(ds) ds.onclick = ()=>{ s.devSel = !s.devSel; ds.setAttribute('aria-expanded', String(s.devSel)); document.getElementById('fl-devsel').hidden = !s.devSel; };
     const ri = document.getElementById('fl-recinfo-b'); if(ri) ri.onclick = ()=>{ s.recInfo = !s.recInfo; ri.setAttribute('aria-expanded', String(s.recInfo)); document.getElementById('fl-recinfo').hidden = !s.recInfo; };
     const vt = document.getElementById('fl-vt-b'); if(vt) vt.onclick = ()=>this.voiceTest();
@@ -15506,7 +15558,7 @@ const StartFlow = {
         <div class="fl-cta fl-cta-s"><button type="button" class="btn btn-solid" id="fl-mic-re">바꿨어요 · 다시 확인</button><button type="button" class="btn btn-outline" id="fl-typed">글로 답하며 진행하기</button></div>
         <p class="fl-hint">'글로 답하며 진행하기'를 고르면 면접관 질문은 그대로 듣고, 답은 글로 적어요. 채점도 똑같이 해요.</p></div>`);
     } else if(s.typed){
-      parts.push(`<div class="fl-al" role="status"><b>글로 답하며 진행해요</b><p>면접장에서 질문을 듣고 답을 글로 적어 주세요. 마이크를 허용했다면 '다시 마이크 쓰기'를 눌러요.</p><div class="fl-cta fl-cta-s"><button type="button" class="btn btn-outline" id="fl-typed-off">다시 마이크 쓰기</button></div></div>`);
+      parts.push(`<div class="fl-al" role="status"><b>글로 답하며 진행해요</b><p>면접장에서 질문을 듣고 답을 글로 적어 주세요. 말로 답하려면 '다시 마이크 쓰기'를 눌러요.</p><div class="fl-cta fl-cta-s"><button type="button" class="btn btn-outline" id="fl-typed-off">다시 마이크 쓰기</button></div></div>`);
     }
     if(cam === 'none'){
       parts.push(`<div class="fl-al" role="status"><b>카메라를 찾지 못했어요</b><p>카메라 없이 소리만으로 면접을 진행해요. 이번에는 녹화도 하지 않아요. 카메라를 연결했다면 새로고침한 뒤 다시 들어와 주세요.</p></div>`);
@@ -15516,9 +15568,10 @@ const StartFlow = {
     }
     box.innerHTML = parts.join(''); box.hidden = !parts.length;
     const re = document.getElementById('fl-mic-re'); if(re) re.onclick = ()=>{ this._devKey = ''; try{ micCheck.srTested = false; startMicLevelAnim(); }catch(_){} setTimeout(()=>this.devCheck(), 1200); };
-    const ty = document.getElementById('fl-typed'); if(ty) ty.onclick = ()=>{ s.typed = true; this._devKey = ''; this.devCheck(); };
-    const tf = document.getElementById('fl-typed-off'); if(tf) tf.onclick = ()=>{ s.typed = false; this._devKey = ''; try{ startMicLevelAnim(); }catch(_){} setTimeout(()=>this.devCheck(), 1200); };
-    const en = document.getElementById('fl-enter'); if(en){ const lock = mic !== 'ok' && !s.typed; en.classList.toggle('is-lock', lock); en.setAttribute('aria-disabled', String(lock)); en.textContent = s.typed && mic !== 'ok' ? '면접장 입장하기 (글로 답하기)' : '면접장 입장하기'; }
+    const tyck = document.getElementById('fl-ck-typed');
+    const ty = document.getElementById('fl-typed'); if(ty) ty.onclick = ()=>{ s.typed = true; if(tyck) tyck.checked = true; this._devKey = ''; this.devCheck(); };
+    const tf = document.getElementById('fl-typed-off'); if(tf) tf.onclick = ()=>{ s.typed = false; if(tyck) tyck.checked = false; this._devKey = ''; try{ startMicLevelAnim(); }catch(_){} setTimeout(()=>this.devCheck(), 1200); };
+    const en = document.getElementById('fl-enter'); if(en){ const lock = mic !== 'ok' && !s.typed; en.classList.toggle('is-lock', lock); en.setAttribute('aria-disabled', String(lock)); en.textContent = s.typed ? '면접장 입장하기 (글로 답하기)' : '면접장 입장하기'; }
   },
   /** 목소리 테스트: 들린 말을 글자로만 보여 줌. 채점·저장·기록 없음 */
   voiceTest(){ const out = document.getElementById('fl-vt-out'), b = document.getElementById('fl-vt-b'); if(!out || !b) return;
@@ -15542,7 +15595,7 @@ const StartFlow = {
   voiceStop(){ clearTimeout(this._vtT); const r = this._vt; this._vt = null; if(r){ try{ r.abort(); }catch(_){} } const b = document.getElementById('fl-vt-b'); if(b) b.textContent = '목소리 테스트'; },
   /** '면접장 입장하기': 이 흐름에서 고른 화면·녹화 설정을 넘기고 기존 시작 버튼과 똑같이 시작 */
   enter(){ const s = this.s;
-    state.imvPrefs = { cap: !!s.cap, pip: !!s.pip }; state.recPref = !!s.rec; state.flTyped = !!(s.typed && this._mic !== 'ok');
+    state.imvPrefs = { cap: !!s.cap, pip: !!s.pip }; state.recPref = !!s.rec; state.flTyped = !!s.typed;   // 2026-11-17 마이크가 되더라도 '글로 답하기'를 고르면 처음부터 글로
     this.voiceStop(); this._entering = true;
     try{ SetupFlow.go(); }catch(e){ this._entering = false; console.warn('[면접 시작]', e); showToast('면접을 시작하지 못했어요. 다시 눌러 주세요.'); } },
 };
@@ -22088,6 +22141,13 @@ async function runDialogInterview(){
   if(!resume && !realSet && !opt.questions){ try{ await Promise.race([Inbody.ensure(), new Promise(r=>setTimeout(r, 2500))]); ibQs = Inbody.pickReportQs(2); }catch(e){ console.warn('[인바디 리포트 질문]', e); }
     if(ibQs.length){ opt.extraQuestions = ibQs.concat(opt.extraQuestions || []); opt.replaceN = ibQs.length;
       opt.fuIbOnly = state.dialogFollowups !== 0; } }   // 꼬리질문은 리포트 질문에만 1개씩 (꼬리질문 '없음'을 골랐으면 그대로 없음)
+  // 2026-11-17 2문항(짧게): 질문 2개 + 꼬리질문은 첫 질문에 1개만. 리포트 질문이 2개 있으면 그 둘만, 1개면 일반 질문 1개 + 리포트 질문 1개, 없으면 일반 질문 2개
+  if(!resume && !realSet && !opt.questions && state.questionCount === 2 && !QBank.on()){
+    opt.fuShort = state.dialogFollowups !== 0; delete opt.fuIbOnly; delete opt.replaceN; delete opt.extraQuestions;
+    if(ibQs.length >= 2){ opt.questions = ibQs.slice(0, 2); opt.count = 2; }
+    else if(ibQs.length === 1){ opt.extraQuestions = ibQs.slice(); opt.count = 1; }
+    else opt.count = 2;
+  }
   // 2026-11-05 면접 DB: 대기업·공기업 기업·직무 맞춤 면접은 질문은행 8문항 (미리 뽑아 둔 것, 없으면 지금 뽑음)
   state.qbPick = null;
   if(!resume && !realSet && !opt.questions && QBank.on()){
@@ -26783,6 +26843,7 @@ const StenoLoop = {
       const CLOSING = /(마지막으로|하고\s*싶은\s*(말|말씀)|궁금한\s*점|덧붙이고\s*싶은|면접을\s*마치며)/;
       const isClosing = i=>{ const x = questions[i]; return !!x && (x.qtype === '마무리' || x.slot === 7 || CLOSING.test(String(x.q || x.spoken || ''))); };
       const eligible = i=>!!questions[i] && !isClosing(i);
+      const shortFuAt = this.opt.fuShort ? questions.findIndex((_, i)=>!isClosing(i)) : -1;   // 2026-11-17 2문항(짧게): 꼬리질문은 첫 질문에 1개만
       this.stats.followupUsed = 0;
       const fuPlan = dyn ? null : (()=>{
         const total = Number.isFinite(this.opt.followupTotal) ? Math.max(0, this.opt.followupTotal|0) : null;
@@ -26819,7 +26880,7 @@ const StenoLoop = {
         let history = [], lastAsk = q.q;
         // 영어 질문은 꼬리질문도 영어로 (꼬리질문 문장이 한국어면 한국어로). 2026-11-05e 학생이 '한국어로 답할게요'를 누르면 그 질문은 한국어로 받아 적고 꼬리질문도 한국어로
         const langNow = ()=> this._langOverride || (q.lang === 'en' && !/[가-힣]/.test(lastAsk) ? 'en' : 'ko');
-        const fuCap = isClosing(qi) ? 0 : (this.opt.fuIbOnly && !dyn) ? ((questions[qi] && questions[qi].ib) ? 1 : 0) : dyn ? (eligible(qi) ? dyn.perQ : 0) : (fuPlan ? (fuPlan.has(qi) ? 1 : 0) : this.opt.maxFollowups);
+        const fuCap = isClosing(qi) ? 0 : (this.opt.fuShort && !dyn) ? (qi === shortFuAt ? 1 : 0) : (this.opt.fuIbOnly && !dyn) ? ((questions[qi] && questions[qi].ib) ? 1 : 0) : dyn ? (eligible(qi) ? dyn.perQ : 0) : (fuPlan ? (fuPlan.has(qi) ? 1 : 0) : this.opt.maxFollowups);
         for(let f=0; f<=fuCap && !this.aborted; f++){
           this._curLimit = this.opt.realMode ? realLimitMs(f===0 ? q.q : lastAsk, f>0) : this.opt.maxAnswerMs;
           this._curLang = langNow() === 'en' ? 'en-US' : 'ko-KR';   // 2026-11-05 영어로 물으면 영어로 받아 적음
@@ -32556,7 +32617,7 @@ const Imv = {
           <div class="imv-cap" id="imv-cap" hidden></div>
           <div class="imv-mine" id="imv-mine" hidden aria-live="polite"><span class="imv-mine-l">내 답변</span><p id="imv-mine-t"></p></div>
           <div class="imv-lang" id="imv-lang" hidden><button type="button" onclick="Imv.lang()">영어 질문 · 한국어로 답할게요</button></div>
-          <div class="imv-typed" id="imv-typed" hidden><textarea id="imv-typed-ta" rows="3" placeholder="마이크를 쓸 수 없어 글로 답해 주세요"></textarea></div>
+          <div class="imv-typed" id="imv-typed" hidden><textarea id="imv-typed-ta" rows="3" placeholder="여기에 답변을 적고 '답변 제출'을 눌러 주세요"></textarea></div>
           <div class="imv-ac" id="imv-ac" hidden role="alertdialog"><p id="imv-ac-t"></p><div><button type="button" class="k" onclick="AnsConfirm.keep()">이어서 말하기</button><button type="button" class="d" onclick="AnsConfirm.done()">답변 마치기</button></div></div>
           <div class="imv-pip" id="imv-pip" hidden><video id="imv-pip-v" muted playsinline autoplay></video><span>내 화면</span></div>
         </div>

@@ -70,6 +70,21 @@ const SYSTEM = `너는 대학 취업지원센터의 면접 준비 도우미다. 
 JSON으로만 답한다:
 {"is_report":true,"fields":{"grade":null,"gpa":null,"gpa_max":null,"major_gpa":null,"toeic":null,"toeic_speaking":null,"opic":null,"other_lang":null,"certs":[],"intern_months":null,"projects":null,"activities":null,"awards":null,"volunteer_hours":null,"target_role":null},"items":[{"group":"","label":"","value":""}],"questions":[{"q":"","basis":"","why":""}],"summary":""}`;
 
+/** 고친 항목으로 질문만 다시 만들 때 쓰는 지시문 (위 SYSTEM의 3)·4)·지킬 것과 같은 기준) */
+const SYSTEM_Q = `너는 대학 취업지원센터의 면접 준비 도우미다. 학생의 역량 진단 리포트에서 읽은 [리포트 항목](분류 · 항목 이름: 값)을 보고 면접 질문을 만든다. 값은 학생이 직접 확인해 고친 것이므로 적힌 그대로 믿는다.
+1) questions: 면접관이 이 항목을 보고 물을 만한 질문 6개. 각 질문은 항목 하나를 근거로 한다.
+   분류가 겹치지 않게 고른다(수강·성적, 프로젝트·포트폴리오, 역량, 성향 검사, 자격·어학, 상담·진로 가운데 있는 것).
+   q: 존댓말 한 문장(80자 이내, 물음표로 끝). 항목 값을 문장에 자연스럽게 넣는다. 강점 항목 4개, 낮거나 비어 있는 항목 2개 정도로 섞는다.
+      성향 검사는 사람을 유형으로 단정하지 않고 "검사에서 ○○ 유형이 높게 나왔는데, 실제 경험에서 그 모습이 드러난 사례"처럼 묻는다.
+   basis: 근거가 된 항목과 값(예: "의사소통 역량 58점 · 학과 평균 71점"), 40자 이내. 주어진 항목에 있는 것만. 분류 이름은 붙이지 않는다.
+   why: 이 질문으로 무엇을 확인하려는지 한 문장(60자 이내).
+2) summary: 항목에서 눈에 띄는 점 한 문장(강점 하나와 보완점 하나).
+지킬 것:
+- [학번], [이름], [번호] 같은 가린 표시는 값으로 쓰지 않는다. 이름·학번·주소·연락처·가족·건강·종교·출신지역·병역·성별·나이는 묻지 않는다.
+- 항목에 없는 사실을 지어내지 않는다. 숫자는 적힌 그대로 쓴다.
+- 질문은 학생을 깎아내리지 않는다. 낮은 항목은 "어떻게 보완하고 있는지"를 묻는다.
+JSON으로만 답한다: {"questions":[{"q":"","basis":"","why":""}],"summary":""}`;
+
 const OPIC = ["NL", "NM", "NH", "IL", "IM1", "IM2", "IM3", "IH", "AL"];
 const num = (v: unknown, min: number, max: number, int = false): number | null => {
   if (v === null || v === undefined || v === "") return null;
@@ -88,6 +103,25 @@ Deno.serve(async (req: Request) => {
   if (!ap.ok) return json({ error: "not_approved", reason: ap.reason, message: NOT_APPROVED_MSG[ap.reason ?? "pending"] ?? NOT_APPROVED_MSG.pending }, 403);
   let p: Record<string, unknown> = {};
   try { p = await req.json(); } catch { return json({ error: "요청 본문이 JSON이 아니에요" }, 400); }
+  // 2026-11-17 읽은 값을 학생이 고친 뒤(또는 그대로) 그 항목으로 질문만 다시 만듦: { items:[{group,label,value}], dept?, target? } → { items, questions, summary }
+  if (Array.isArray(p.items)) {
+    const its = (p.items as any[]).map((x) => ({ group: cleanText(x?.group, 20), label: cleanText(x?.label, 40), value: cleanText(x?.value, 60) }))
+      .filter((x) => x.label && x.value && !PII.test(x.label) && !PII.test(x.value) && !blockReason(x.label + " " + x.value)).slice(0, 30);
+    if (!its.length) return json({ error: "no_items", message: "질문을 만들 항목이 없어요." }, 400);
+    const day0 = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+    const lim0 = await checkUsageLimit(req, `inbody-${day0}`);
+    if (!lim0.ok) return json({ error: "limit", limit: lim0.status }, 429);
+    const hint0 = [cleanText(p.dept, 40) ? `학과: ${cleanText(p.dept, 40)}` : "", cleanText(p.target, 60) ? `준비하는 분야·직무: ${cleanText(p.target, 60)}` : ""].filter(Boolean).join(" / ");
+    const list = its.map((x) => `- [${x.group || "기타"}] ${maskIds(x.label).text}: ${maskIds(x.value).text}`).join("\n");
+    const t1 = Date.now();
+    try {
+      const { data, model } = await askJson(SYSTEM_Q, `${hint0 ? `[학생이 고른 정보] ${hint0}\n\n` : ""}[리포트 항목]\n${list}`, { maxTokens: 1800, timeoutMs: 40000, temperature: 0.3, reasoning: Deno.env.get("INBODY_REASONING") || "low" });
+      const questions = (Array.isArray(data.questions) ? data.questions : []).map((x: any) => ({ q: cleanText(x?.q, 140), basis: cleanText(x?.basis, 60), why: cleanText(x?.why, 100) }))
+        .filter((x) => x.q.length >= 12 && x.basis && !blockReason(x.q) && !PII.test(x.q) && !PII.test(x.basis)).slice(0, 6);
+      if (!questions.length) return json({ error: "no_questions", message: "질문을 만들지 못했어요. 다시 눌러 주세요." }, 502);
+      return json({ mode: "items", items: its, questions, summary: blockReason(String(data.summary ?? "")) ? "" : cleanText(data.summary, 160), model, ms: Date.now() - t1 });
+    } catch (e) { return json({ error: "ai_failed", message: (e as Error).message.slice(0, 200) }, 502); }
+  }
   const raw = typeof p.text === "string" ? p.text.replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, " ").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim().slice(0, 24000) : "";
   if (raw.replace(/\s/g, "").length < 60) return json({ error: "too_short", message: "리포트에서 읽은 글자가 너무 적어요. 글자가 또렷한 PDF로 다시 올려 주세요." }, 400);
   const masked = maskIds(raw);
