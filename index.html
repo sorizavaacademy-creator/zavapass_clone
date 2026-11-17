@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-17h';
+var APP_VERSION = '2026-11-17i';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -33769,6 +33769,11 @@ html.cvd .ui-sw[aria-checked="true"]{background:#1d5fa8}
 #d3-home .hz-hero .zv-win{grid-area:w;animation:zvRise .7s .1s both}
 #d3-home .hz-hero .hz-h{color:#fff !important;margin-top:18px !important}
 #d3-home .hz-hero .hz-lead{color:rgba(255,255,255,.76) !important}
+/* 2026-11-17i 처음 방문 홈: 큰 제목이 화면 폭을 따라 계속 커져서(칸 폭은 고정) 3줄로 꺾이고 전체가 확대돼 보이던 것 — 제목은 2줄에 들어가는 크기까지만, 칸은 내용 높이만큼 */
+#d3-home .hz-hero{flex:0 0 auto !important}
+#d3-home .hz-hero .hz-h{font-size:clamp(31px,3.5vw,46px) !important;line-height:1.26 !important}
+#d3-home .hz-hero .hz-lead{font-size:clamp(15.5px,1.25vw,17px) !important}
+#d3-home .hz-hero .hz-go{min-height:58px !important}
 #d3-home .hz-hero .hz-acts{gap:12px !important;margin-top:26px}
 #d3-home .hz-hero .hz-sec,#d3-home .hz-ret-l .hz-sec{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.24) !important;color:#fff !important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .18s,transform .18s,border-color .18s}
 #d3-home .hz-hero .hz-sec:hover,#d3-home .hz-ret-l .hz-sec:hover{background:rgba(255,255,255,.16) !important;border-color:rgba(255,255,255,.45) !important;transform:translateY(-2px)}
