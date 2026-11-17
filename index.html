@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-17b';
+var APP_VERSION = '2026-11-17c';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -11138,7 +11138,9 @@ function browserInfo(){
   const ul = uaLabel(ua); const iosApple = ul.ios || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   if(!inApp && ul.ios && ul.iosOther){ return { name: ul.browser === 'Chrome' ? '크롬' : ul.browser, inApp, mobile, speech:false, level:'bad', text:`${ul.device}의 ${ul.browser === 'Chrome' ? '크롬' : ul.browser}에서는 음성 인식이 되지 않아요. 사파리로 열어 주세요. (주소: ${location.host}${location.pathname})` }; }
   if(inApp){ level = 'bad'; text = `${inApp} 앱 안에서 열린 창이에요. 마이크와 음성 인식이 막혀 있어요. 오른쪽 위 ⋮(또는 공유 버튼) → "다른 브라우저로 열기"를 눌러 크롬이나 사파리로 열어 주세요.`; }
+  else if(!speech && typeof ServerStt !== 'undefined' && ServerStt.ok()){ level = 'warn'; text = `${josa(name,'이에요/예요')}. 말한 답변을 서버에서 글자로 바꿔요. 글자가 몇 초 늦게 나올 수 있어요. 크롬이나 엣지에서는 바로바로 나와요.`; }   // 2026-11-17 서버 음성 인식
   else if(!speech){ level = 'bad'; text = `${josa(name,'은/는')} 실시간 음성 인식을 지원하지 않아요. 크롬 또는 엣지로 열어 주세요.`; }
+  else if((name==='웨일' || name==='오페라' || name==='삼성 인터넷') && typeof ServerStt !== 'undefined' && ServerStt.ok()){ level = 'warn'; text = `${josa(name,'이에요/예요')}. 말한 답변을 서버에서 글자로 바꿔요. 글자가 몇 초 늦게 나올 수 있어요. 크롬${mobile ? '' : '이나 엣지'}에서는 바로바로 나와요.`; }   // 2026-11-17 서버 음성 인식
   else if(name==='웨일' || name==='오페라' || (name==='삼성 인터넷')){ level = 'warn'; text = `${name}에서는 말이 글자로 바뀌지 않는 경우가 많아요. 크롬${mobile ? '' : ' 또는 엣지'}로 열어 주세요.`; }
   else if(name==='크롬' || name==='엣지'){ level = 'ok'; text = `${name}${mobile ? ' (휴대폰)' : ''} — 권장 브라우저예요.` + (mobile ? ' 가능하면 PC에서 하시면 더 편해요.' : ''); }
   else if(name==='사파리' && mobile){ level = 'warn'; text = '아이폰 사파리예요. 되기는 하지만 음성 인식이 가끔 끊길 수 있어요. 가능하면 PC 크롬·엣지를 권장해요.'; }
@@ -15408,6 +15410,12 @@ const StartFlow = {
   voiceTest(){ const out = document.getElementById('fl-vt-out'), b = document.getElementById('fl-vt-b'); if(!out || !b) return;
     if(this._vt){ this.voiceStop(); return; }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR && ServerStt.ok()){   // 2026-11-17 서버 음성 인식으로 확인 (말이 끝나면 글자로 보여 줌)
+      b.textContent = '듣는 중… (누르면 멈춤)'; out.textContent = '말해 보세요… 말을 마치면 글자로 보여 드려요.';
+      const fin = t=>{ if(this._vt && this._vt.srv) this._vt = null; const bb = document.getElementById('fl-vt-b'); if(bb) bb.textContent = '목소리 테스트'; const o = document.getElementById('fl-vt-out'); if(o) o.textContent = t ? `들린 말: "${t}" · 목소리 점검을 마쳤어요. 이 브라우저는 말을 마친 뒤 글자로 바꿔요.` : '소리가 들리지 않았어요. 조금 더 크게 다시 해 보세요.'; };
+      this._vt = { srv:true, abort(){ try{ StenoListener.stop('manual'); }catch(_){} } };
+      StenoListener.start({ onState: n=>{ if(n === 'transcribing'){ const o = document.getElementById('fl-vt-out'); if(o) o.textContent = '글자로 바꾸는 중…'; } }, onError: ()=>{}, onEnd: r=>fin((r && r.text) || '') }, { silenceMs: 1600, maxMs: 9000, noSpeechMs: 7000 }).then(ok=>{ if(!ok) fin(''); });
+      return; }
     if(!SR){ out.textContent = '이 브라우저는 말을 글자로 바꾸지 못해요. 크롬이나 엣지에서 해 보세요. 면접은 글로 답하며 진행할 수 있어요.'; return; }
     let txt = ''; const r = new SR(); r.lang = 'ko-KR'; r.interimResults = true; r.continuous = false; this._vt = r;
     b.textContent = '듣는 중… (누르면 멈춤)'; out.textContent = '말해 보세요…';
@@ -21999,6 +22007,8 @@ async function runDialogInterview(){
       if(d.name==='pause'){ dialogPhase('listening', '잠시 멈췄어요 · 이어서 말하거나 "답변 완료"'); stopBtn.classList.add('nudge'); }
       else if(d.name==='resume'){ dialogPhase('listening', '답변 인식 중…'); stopBtn.classList.remove('nudge'); }
       else if(d.name==='waiting'){ dialogPhase('listening', '생각을 정리한 뒤 말씀하세요 · 넘어가려면 "답변 완료"'); }
+      else if(d.name==='transcribing'){ dialogPhase('thinking', '답변을 글자로 바꾸는 중…'); }   // 2026-11-17 서버 음성 인식
+      else if(d.name==='server'){ if(!state.srvSttHintShown){ state.srvSttHintShown = true; showToast('이 브라우저에서는 말하는 도중 몇 초 간격으로 글자가 나오고, 답변이 끝나면 한 번 더 정확히 받아 적어요.', 'info'); } }
       else if(d.name==='quiet'){ if(!state.quietHintShown){ state.quietHintShown = true; showToast('목소리가 작게 들려요. 마이크에 20~30cm 정도로 가까이 말하면 더 정확하게 알아들어요.', 'info'); } }
       else if(d.name==='silence') dialogPhase('listening', `말이 멈췄어요 · ${d.extra!=null?d.extra.toFixed(1):''}초 후 다음으로`);
       else if(d.name==='speaking' && !StenoListener._pauseHint && !(StenoListener.opt && StenoListener.opt.manualEnd)) dialogPhase('listening','답변 인식 중…');
@@ -25332,13 +25342,33 @@ const StenoDialog = {
  *   2) 음성 인식 결과 도착 시각: 마지막 글자가 들어온 뒤 silenceMs+여유 동안 새 결과가 없으면 종료 (음량 측정이 안 되는 환경 대비)
  * 안전장치: 아무 말도 없으면 noSpeechMs 뒤 종료(reason 'no-speech'), maxMs를 넘기면 강제 종료(reason 'max')
  * ============================================================ */
+/* 2026-11-17 서버 음성 인식: 브라우저 기본 음성 인식이 없는 브라우저(Firefox 등)에서 답변을 녹음해 서버(stt 함수)에서 글자로 받음.
+ *   크롬·엣지처럼 기본 음성 인식이 있는 브라우저는 예전 그대로. 서버 엔진은 지금 임시(OpenAI), 자체 엔진(HAIV)으로 바꿀 수 있게 서버에서 나눠 둠 */
+const ServerStt = {
+  off:false, last:null, log:[],
+  ok(){ return !this.off && !!(window.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia); },
+  async transcribe(blob, o){ o = o || {};
+    const fd = new FormData(); fd.append('file', blob, 'answer'); fd.append('lang', /^en/i.test(o.lang || '') ? 'en' : 'ko'); fd.append('final', o.final === false ? '0' : '1');
+    try{ if(state.startTime) fd.append('interview_id', String(state.startTime)); }catch(_){}
+    const t0 = Date.now();
+    const { data, error } = await Promise.race([sb.functions.invoke('stt', { body: fd }), new Promise((_, rej)=>setTimeout(()=>rej(new Error('서버 음성 인식이 늦어요')), o.timeoutMs || 30000))]);
+    if(error){ let j = null; try{ j = await error.context.json(); }catch(_){} const e = new Error((j && (j.message || j.error)) || error.message || 'stt'); e.code = j && j.error; if(e.code === 'engine_not_configured') this.off = true; throw e; }
+    if(!data || data.error) throw new Error((data && (data.message || data.error)) || 'stt');
+    this.last = { ms: Date.now() - t0, engineMs: data.ms, bytes: blob.size, final: o.final !== false, at: Date.now() }; this.log.push(this.last); if(this.log.length > 40) this.log.shift();
+    return String(data.text || '').trim();
+  }
+};
 const StenoListener = {
   active:false, rec:null, stream:null, ctx:null, raf:null, timers:{}, cb:{}, opt:{},
   transcript:'', interim:'', spokeAt:0, firstSpeechAt:0, startedAt:0, level:0, lastVoiceAt:0, silenceSince:0,
 
   defaults: { silenceMs:1800, noSpeechMs:8000, maxMs:90000, minSpeechMs:800, levelThreshold:0.045, lang:'ko-KR' },
 
-  supported(){ return !!(window.SpeechRecognition || window.webkitSpeechRecognition); },
+  /** 브라우저 기본 음성 인식으로 들을지. 기본 인식이 없거나(Firefox), 있어도 글자로 잘 안 바뀌는 브라우저(삼성 인터넷·웨일·오페라)는 서버 음성 인식으로 */
+  native(){ if(!(window.SpeechRecognition || window.webkitSpeechRecognition)) return false;
+    try{ if(ServerStt.ok() && /SamsungBrowser|Whale\/|OPR\//.test(navigator.userAgent || '')) return false; }catch(_){}
+    return true; },
+  supported(){ return this.native() || ServerStt.ok(); },   // 2026-11-17 기본 음성 인식이 없어도 서버 음성 인식으로 들을 수 있으면 지원
 
   async start(cb, opt){
     if(this.active) this.stop('restart');
@@ -25347,18 +25377,19 @@ const StenoListener = {
     this._pauseHint = false; this._waitHint = false; this._voiceAt = 0; this._srRestarted = false; this._nosrFired = false; this.failKind = ''; this._peak = 0; this._spk = 0; this._quietHint = false; this._loudMs = 0;
     this.startedAt = Date.now(); this.active = true; this._vs = null;   // 2026-11-12 음량: 말하는 동안 0.25초마다 평균 소리 크기
     if(!this.supported()){ this._fail('이 브라우저는 음성 인식을 지원하지 않아요. 크롬 또는 엣지를 사용해 주세요.'); return false; }
+    this._srv = !this.native(); this._srvBusy = false; this._srvN = 0; this._srvAt = 0; this._srvHeard = false; this._recChunks = null;   // 서버 음성 인식으로 듣는 중인지
 
     // 1) 실제 음량 측정 (실패해도 음성 인식만으로 진행) — 공용 마이크 스트림을 같이 씀 (2026-10-14)
     //    트랙 시작을 지원하지 않는 휴대폰은 음성 인식이 마이크를 따로 열어야 하므로 측정·녹음 없이 진행 (이중 캡처 → 인식 안 됨 방지)
     try{
-      if(MobileAudio.isMobile && !SR_TRACK_OK){ try{ stopRehearsalMeter(); }catch(_){} try{ MicStream.close(); }catch(_){} throw new Error('mobile-no-track'); }
+      if(MobileAudio.isMobile && !SR_TRACK_OK && !this._srv){ try{ stopRehearsalMeter(); }catch(_){} try{ MicStream.close(); }catch(_){} throw new Error('mobile-no-track'); }
       const gen = (this._gen = (this._gen||0) + 1);
       this.stream = await MicStream.get('live');
       if(!this.active || gen !== this._gen){ if(gen === this._gen) MicStream.release('live'); if(gen === this._gen) this.stream = null; return false; }
       const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC();
       const src = this.ctx.createMediaStreamSource(this.stream); const an = this.ctx.createAnalyser(); an.fftSize = 1024; src.connect(an);
       const buf = new Uint8Array(an.fftSize);
-      if(this.opt.record) this._startRecording(this.stream);
+      if(this.opt.record || this._srv) this._startRecording(this.stream);   // 서버 음성 인식은 녹음한 소리를 보내야 하므로 항상 녹음
       const loop = ()=>{
         if(!this.active) return;
         an.getByteTimeDomainData(buf); let sum=0; for(let i=0;i<buf.length;i++){ const v=(buf[i]-128)/128; sum+=v*v; }
@@ -25381,6 +25412,12 @@ const StenoListener = {
     }
 
     // 2) 음성 인식
+    if(this._srv){   // 2026-11-17 서버 음성 인식: 말하는 도중 몇 초마다 지금까지의 소리를 보내 글자를 보여 주고, 답변이 끝나면 전체를 한 번 더 받아 적음 (stop)
+      if(!this.stream || !this._mr){ this.failKind = 'srv-mic'; this._fail('마이크 소리를 녹음하지 못했어요. 답변을 직접 입력해 주세요.'); return false; }
+      this._srvAt = Date.now(); this.timers.srv = setInterval(()=>this._srvInterim(), 1000);
+      this._state('listening'); this._state('server');
+      return true;
+    }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const rec = new SR(); rec.lang = this.opt.lang; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 3;
     const ko = /^ko/i.test(this.opt.lang || 'ko'), fx = t=>ko ? fixSpeech(t) : t;   // 2026-11-05 영어 답변에는 한국어 바로잡기·용어 힌트를 쓰지 않음
@@ -25420,10 +25457,24 @@ const StenoListener = {
     return true;
   },
 
+  /** 서버 음성 인식: 말하는 도중 6초마다(최대 12번) 지금까지 녹음한 소리를 보내 글자를 받아 보여 줌 */
+  async _srvInterim(){
+    if(!this.active || !this._srv || this._srvBusy) return; const now = Date.now();
+    if(!this.firstSpeechAt || now - this._srvAt < 6000 || this._srvN >= 12) return;
+    if(this._srvHeard && now - this.lastVoiceAt > 6000) return;   // 말이 멈춘 뒤에는 다시 보내지 않음
+    const ch = this._recChunks; if(!ch || !ch.length) return;
+    const blob = new Blob(ch.slice(), { type: this._recType || 'audio/webm' }); if(blob.size < 4000) return;   // 아직 녹음된 소리가 거의 없음
+    this._srvBusy = true; this._srvAt = now; this._srvN++;
+    try{
+      const t = await ServerStt.transcribe(blob, { final:false, lang: this.opt.lang, timeoutMs: 20000 });
+      if(this.active && this._srv && t){ this.interim = /^ko/i.test(this.opt.lang || 'ko') ? fixSpeech(t) : t; this._srvHeard = true; this.spokeAt = Date.now(); this._state('speaking'); if(this.cb.onInterim) this.cb.onInterim(this.interim); }
+    }catch(e){ console.warn('[서버 음성 인식 · 말하는 도중]', e && e.message); }
+    finally{ this._srvBusy = false; }
+  },
   _checkEnd(now){
     const o = this.opt;
     // 목소리(음량)는 들리는데 8초 넘게 글자가 안 오면: 음성 인식을 한 번 다시 시작, 그래도 없으면 직접 입력으로 (2026-10-14)
-    if(this._voiceAt && !this.spokeAt && (this._loudMs||0) > 5000 && now - this._voiceAt > 8000 && now - this.lastVoiceAt < 2500){
+    if(!this._srv && this._voiceAt && !this.spokeAt && (this._loudMs||0) > 5000 && now - this._voiceAt > 8000 && now - this.lastVoiceAt < 2500){
       if(!this._srRestarted){ this._srRestarted = true; this._voiceAt = now; this._loudMs = 0; console.warn('[StenoListener] 목소리는 들리는데 결과 없음 → 다시 시작'); try{ if(this.rec) this.rec.stop(); }catch(_){} }
       else if(!this._nosrFired){ this._nosrFired = true; this.failKind = 'nosr'; try{ Feedback.auto('음성 인식(라이브)', 'nosr: 음량은 들어오는데 결과 없음 (track=' + (this._srTrack?'y':'n') + ')'); }catch(_){} if(this.cb.onError) this.cb.onError('마이크 소리는 들어오는데 글자로 바뀌지 않아요. 이번 답변은 직접 입력해 주세요.'); return this.stop('error'); }
     }
@@ -25437,7 +25488,7 @@ const StenoListener = {
     if(o.manualEnd){
       // 말이 멈춰도 끝내지 않음 → 면접자가 "답변 완료"를 눌러야 다음으로
       const quiet = now - Math.max(this.lastVoiceAt, this.spokeAt);
-      const haveText = !!(this.transcript || this.interim);
+      const haveText = !!(this.transcript || this.interim || (this._srv && this.firstSpeechAt));
       if(quiet > 2500 && haveText && !this._pauseHint){ this._pauseHint = true; this._state('pause'); }
       else if(quiet < 600 && this._pauseHint){ this._pauseHint = false; this._state('resume'); }
       return;
@@ -25445,7 +25496,7 @@ const StenoListener = {
     // 조용해진 시간 = 음량과 인식 결과 중 더 최근 활동 기준
     const lastActivity = Math.max(this.lastVoiceAt, this.spokeAt);
     const quiet = now - lastActivity;
-    const haveText = !!(this.transcript || this.interim);
+    const haveText = !!(this.transcript || this.interim || (this._srv && this.firstSpeechAt));
     if(quiet > 350 && haveText) this._state('silence', Math.max(0, (o.silenceMs - quiet)/1000));
     // 음성 인식 결과는 말한 뒤 1초쯤 늦게 도착하므로 글자가 아직 없으면 조금 더 기다림
     const needed = haveText ? o.silenceMs : o.silenceMs + 1200;
@@ -25463,6 +25514,7 @@ const StenoListener = {
       const type = types.find(t=>{ try{ return MediaRecorder.isTypeSupported(t); }catch(_){ return false; } });
       const mr = type ? new MediaRecorder(stream, { mimeType:type, audioBitsPerSecond:48000 }) : new MediaRecorder(stream);
       const chunks = []; const t0 = Date.now();
+      this._recChunks = chunks; this._recType = mr.mimeType || type || '';   // 서버 음성 인식이 말하는 도중에도 쓸 수 있게
       mr.ondataavailable = e=>{ if(e.data && e.data.size) chunks.push(e.data); };
       this._recPromise = new Promise(res=>{
         mr.onstop = ()=>{ const blob = chunks.length ? new Blob(chunks, { type: mr.mimeType || type || 'audio/webm' }) : null; res(blob ? { blob, ms: Date.now()-t0 } : null); };
@@ -25478,7 +25530,8 @@ const StenoListener = {
     this.active = false;
     if(this.rec){ try{ this.rec.onend=null; this.rec.stop(); }catch(_){} this.rec=null; }
     if(this.raf) cancelAnimationFrame(this.raf); this.raf=null;
-    if(this.timers.poll) clearInterval(this.timers.poll); this.timers={};
+    if(this.timers.poll) clearInterval(this.timers.poll); if(this.timers.srv) clearInterval(this.timers.srv); this.timers={};
+    const srv = !!this._srv; this._srv = false;
     let audio = null;
     if(this._mr){ try{ if(this._mr.state !== 'inactive') this._mr.stop(); audio = this._recPromise; }catch(_){ audio = null; } this._mr = null; this._recPromise = null; }
     if(this.stream){ try{ MicStream.release('live'); }catch(_){} this.stream=null; }
@@ -25488,8 +25541,19 @@ const StenoListener = {
     const durMs = this.firstSpeechAt ? Date.now()-this.firstSpeechAt : 0;
     const timing = { listenStart:this.startedAt, firstSpeech:this.firstSpeechAt||null, lastSpeech:Math.max(this.spokeAt, this.lastVoiceAt)||null, endAt:Date.now() };
     try{ const v = volSummary(this._vs, this.opt.levelThreshold); if(v) timing.vol = v; }catch(_){}
+    const parts = audio && (this.opt.record || !srv) ? [audio] : [];
+    // 2026-11-17 서버 음성 인식: 답변이 끝나면 녹음 전체를 서버로 보내 받아 적은 뒤 알림 (잠깐 멈춤·오류로 끝난 경우는 지금까지 받은 글자 그대로)
+    if(srv && audio && this.firstSpeechAt && !['restart','error','aborted'].includes(reason || '')){
+      const cb = this.cb, lang = this.opt.lang, ko = /^ko/i.test(lang || 'ko'), why = reason || 'manual';
+      const done = t=>{ const tx = t != null ? t : text; try{ if(cb.onFinal) cb.onFinal(tx); }catch(_){} if(cb.onEnd) cb.onEnd({ reason: why, text: tx, durMs, timing, audioParts: parts }); };
+      try{ if(cb.onState) cb.onState('transcribing'); }catch(_){}
+      Promise.resolve(audio).then(a=>(a && a.blob && a.blob.size > 800) ? ServerStt.transcribe(a.blob, { final:true, lang }) : null)
+        .then(t=>done(t != null ? (ko ? fixSpeech(t) : t) : null), e=>{ console.warn('[서버 음성 인식 · 답변 끝]', e && e.message);
+          try{ if(cb.onError) cb.onError(e && e.code === 'limit' ? '오늘 쓸 수 있는 음성 인식 횟수를 다 썼어요. 답변을 직접 입력해 주세요.' : '답변을 글자로 바꾸지 못했어요. 받아 적힌 내용을 확인하고 필요하면 직접 고쳐 주세요.'); }catch(_){} done(null); });
+      return;
+    }
     if(this.cb.onFinal) this.cb.onFinal(text);
-    if(this.cb.onEnd) this.cb.onEnd({ reason: reason||'manual', text, durMs, timing, audioParts: audio ? [audio] : [] });
+    if(this.cb.onEnd) this.cb.onEnd({ reason: reason||'manual', text, durMs, timing, audioParts: parts });
   },
 };
 
