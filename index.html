@@ -6372,8 +6372,16 @@ html.ivv-dr-open{overflow:hidden;}
 /* 2026-11-17 읽은 값 고치기 */
 .ib-rp-eh{margin:14px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px} .ib-rp-eh b{font-size:14px} .ib-rp-eh small{font-size:12.5px;color:#6a5b51}
 .ib-rp-lk{border:0;background:none;color:#b23c17;font:inherit;font-size:13px;font-weight:600;text-decoration:underline;cursor:pointer;padding:4px 2px} .ib-rp-lk:disabled{opacity:.5;cursor:default}
-.ib-rp-items.ed{grid-template-columns:minmax(0,1fr)} .ib-rp-items.ed .ib-rp-g li{align-items:center;border-bottom:0;padding:2px 0} .ib-rp-items.ed .ib-rp-g li span{flex:0 0 30%} .ib-rp-in{flex:1 1 auto;min-width:0;height:34px;padding:0 9px;border:1px solid #d9cfc6;border-radius:8px;font:inherit;font-size:13px;font-weight:600;text-align:right;background:#fff} .ib-rp-in:focus{outline:2px solid #e8b9a6;border-color:#c8441c}
+.ib-rp-items.ed{grid-template-columns:repeat(2,minmax(0,1fr))} @media(max-width:900px){ .ib-rp-items.ed{grid-template-columns:minmax(0,1fr)} }
+#modal-flow .fl-ib1{display:block} #modal-flow .fl-ib1 > .fl-panel.fl-panel-bar{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;padding:14px 20px;margin:0 0 18px;min-height:0;height:auto} #modal-flow .fl-ib1 > .fl-panel-bar > div:first-child{flex:1 1 360px;min-width:0} #modal-flow .fl-ib1 > .fl-panel-bar p{margin:2px 0 0} #modal-flow .fl-ib1 > .fl-panel-bar .fl-cta{margin:0;flex:none}
+#modal-flow .fl-ib1 .ib-rp-items{grid-template-columns:repeat(3,minmax(0,1fr))} @media(max-width:1100px){ #modal-flow .fl-ib1 .ib-rp-items{grid-template-columns:repeat(2,minmax(0,1fr))} } @media(max-width:640px){ #modal-flow .fl-ib1 .ib-rp-items{grid-template-columns:minmax(0,1fr)} }
+#modal-flow .fl-ib1 .ib-rp-items.ed{grid-template-columns:repeat(2,minmax(0,1fr))} @media(max-width:900px){ #modal-flow .fl-ib1 .ib-rp-items.ed{grid-template-columns:minmax(0,1fr)} }
+.ib-rp-items.ed .ib-rp-g li{align-items:center;border-bottom:0;padding:2px 0} .ib-rp-items.ed .ib-rp-g li span{flex:0 0 30%} .ib-rp-in{flex:1 1 auto;min-width:0;min-height:34px;padding:7px 9px;border:1px solid #d9cfc6;border-radius:8px;font:inherit;font-size:13px;font-weight:600;line-height:1.4;text-align:left;background:#fff;resize:none;overflow:hidden;display:block;box-sizing:border-box}
+@media(max-width:640px){ .ib-rp-items.ed .ib-rp-g li{flex-direction:column;align-items:stretch;gap:3px;padding:4px 0} .ib-rp-items.ed .ib-rp-g li span{flex:none} } .ib-rp-in:focus{outline:2px solid #e8b9a6;border-color:#c8441c}
 .ib-rp-eb{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.ib-rp-add{margin-top:12px;padding-top:10px;border-top:1px dashed #e3d9cf} .ib-rp-add > small{display:block;font-size:12.5px;font-weight:700;color:#6a5b51;margin-bottom:6px}
+.ib-rp-ar{display:flex;gap:6px;margin-bottom:6px} .ib-rp-ar select,.ib-rp-ar input{height:34px;border:1px solid #d9cfc6;border-radius:8px;font:inherit;font-size:13px;padding:0 8px;background:#fff;min-width:0} .ib-rp-ar select{flex:0 0 150px} .ib-rp-al{flex:1 1 40%} .ib-rp-av{flex:1 1 40%}
+@media(max-width:640px){ .ib-rp-ar{flex-wrap:wrap} .ib-rp-ar select{flex:1 1 100%} }
 .ib-rp-g ul{list-style:none;margin:0;padding:0} .ib-rp-g li{display:flex;justify-content:space-between;gap:10px;font-size:13px;line-height:1.5;padding:3px 0;border-bottom:1px dashed #efe7df}
 .ib-rp-g li span{color:#4a4039} .ib-rp-g li b{font-weight:600;text-align:right}
 .ib-rp-qs{margin-top:14px;background:#f6f1ec;border-radius:12px;padding:12px 14px}
@@ -14128,8 +14136,9 @@ const Inbody = {
       <p class="ib-rp-file"><span class="fl-badge ib-rp-ok">리포트 반영됨</span><b>${escapeHtml(r.file || '리포트')}</b><small>${escapeHtml(when)}${(r.items || []).length ? ` · 항목 ${(r.items || []).length}개` : ''}${r.masked ? ` · 개인정보 ${r.masked}곳 가림` : ''}</small><button type="button" class="ib-rp-del" id="ib-rp-del">리포트 지우기</button></p>
       ${r.summary ? `<p class="ib-rp-sum">${escapeHtml(r.summary)}</p>` : ''}
       ${groups.length ? `<p class="ib-rp-eh"><b>리포트에서 읽은 항목</b>${ed ? '<small>틀리게 읽은 값을 고쳐 주세요. 값을 비우면 그 항목은 빠져요.</small>' : `<button type="button" class="ib-rp-lk" id="ib-rp-edit">읽은 값 고치기</button>${r.edited_at ? '<small>직접 고친 값이 있어요</small>' : ''}`}</p>
-      <div class="ib-rp-items${ed ? ' ed' : ''}">${groups.map(o=>`<div class="ib-rp-g"><small>${escapeHtml(o.g)}</small><ul>${o.L.map(x=>`<li><span>${escapeHtml(x.label)}</span>${ed ? `<input type="text" class="ib-rp-in" data-i="${(r.items || []).indexOf(x)}" value="${escapeHtml(x.value)}" maxlength="60" aria-label="${escapeHtml(x.label)} 값">` : `<b>${escapeHtml(x.value)}</b>`}</li>`).join('')}</ul></div>`).join('')}</div>
-      ${ed ? '<div class="ib-rp-eb"><button type="button" class="btn btn-solid btn-sm" id="ib-rp-save">저장하고 질문 다시 만들기</button><button type="button" class="btn btn-outline btn-sm" id="ib-rp-cancel">취소</button></div>' : ''}` : ''}
+      <div class="ib-rp-items${ed ? ' ed' : ''}">${groups.map(o=>`<div class="ib-rp-g"><small>${escapeHtml(o.g)}</small><ul>${o.L.map(x=>`<li><span>${escapeHtml(x.label)}</span>${ed ? `<textarea class="ib-rp-in" rows="1" data-i="${(r.items || []).indexOf(x)}" maxlength="60" aria-label="${escapeHtml(x.label)} 값">${escapeHtml(x.value)}</textarea>` : `<b>${escapeHtml(x.value)}</b>`}</li>`).join('')}</ul></div>`).join('')}</div>
+      ${ed ? `<div class="ib-rp-add" id="ib-rp-add"><small>빠진 항목 추가 (그래프 안의 점수처럼 읽지 못한 값)</small>${[0,1,2].map(()=>this.addRowHtml()).join('')}<button type="button" class="ib-rp-lk" id="ib-rp-more">+ 한 줄 더</button></div>
+      <div class="ib-rp-eb"><button type="button" class="btn btn-solid btn-sm" id="ib-rp-save">저장하고 질문 다시 만들기</button><button type="button" class="btn btn-outline btn-sm" id="ib-rp-cancel">취소</button></div>` : ''}` : ''}
       ${r.questions.length ? `<div class="ib-rp-qs"><p class="ib-rp-qh"><b>이 리포트에서 나오는 면접 질문</b><small>면접을 시작하면 이 가운데 2개가 근거 항목과 함께 나오고, 꼬리질문도 이 질문에 붙어요.</small>${ed ? '' : '<button type="button" class="ib-rp-lk" id="ib-rp-requ">질문 다시 만들기</button>'}</p><ol>${r.questions.map(x=>`<li><p>${escapeHtml(x.q)}</p><span class="ib-rp-basis">근거 · ${escapeHtml(x.basis)}</span>${x.why ? `<small>${escapeHtml(x.why)}</small>` : ''}</li>`).join('')}</ol></div>` : ''}
     </div>`; },
   bindReport(){
@@ -14137,11 +14146,15 @@ const Inbody = {
     const del = document.getElementById('ib-rp-del'); if(del) del.onclick = ()=>this.removeReport();
     const on = (id, fn)=>{ const b = document.getElementById(id); if(b) b.onclick = fn; };
     on('ib-rp-edit', ()=>{ this._rpEdit = true; this.redrawReport(); const i = document.querySelector('#ib-rp-view .ib-rp-in'); if(i) i.focus(); });
+    document.querySelectorAll('#ib-rp-view textarea.ib-rp-in').forEach(t=>{ const fit = ()=>{ t.style.height = 'auto'; t.style.height = Math.max(34, t.scrollHeight + 2) + 'px'; }; t.addEventListener('input', ()=>{ if(/\n/.test(t.value)) t.value = t.value.replace(/\n+/g, ' '); fit(); }); fit(); });   // 긴 값은 칸이 아래로 늘어남
     on('ib-rp-cancel', ()=>{ this._rpEdit = false; this.redrawReport(); });
     on('ib-rp-save', ()=>this.saveReportEdit(false));
+    on('ib-rp-more', ()=>{ const m = document.getElementById('ib-rp-more'); if(m && document.querySelectorAll('#ib-rp-add .ib-rp-ar').length < 10) m.insertAdjacentHTML('beforebegin', this.addRowHtml()); });
     on('ib-rp-requ', ()=>this.saveReportEdit(true));
   },
   redrawReport(){ const v = document.getElementById('ib-rp-view'); if(v){ v.innerHTML = this.reportView(); this.bindReport(); } },
+  RP_GROUPS: ['역량','수강·성적','프로젝트·비교과·포트폴리오','성향 검사','자격·수상·어학','상담 이력','진로·기타'],
+  addRowHtml(){ return `<div class="ib-rp-ar"><select class="ib-rp-ag" aria-label="분류">${this.RP_GROUPS.map(g=>`<option>${g}</option>`).join('')}</select><input type="text" class="ib-rp-al" maxlength="40" placeholder="항목 이름 (예: 소통협력 역량)" aria-label="항목 이름"><input type="text" class="ib-rp-av" maxlength="60" placeholder="값 (예: 86.6점 · 학과 평균 72.4)" aria-label="값"></div>`; },
   /** 2026-11-17 읽은 값을 고친 뒤(또는 그대로) 그 항목으로 면접 질문을 다시 만듦. AI가 실패해도 고친 값은 저장 */
   async saveReportEdit(regenOnly){
     const r = this.report(); if(!r || this._rpBusy) return; this._rpBusy = true;
@@ -14152,6 +14165,7 @@ const Inbody = {
       if(!regenOnly){
         document.querySelectorAll('#ib-rp-view .ib-rp-in').forEach(inp=>{ const i = +inp.dataset.i, v = String(inp.value || '').replace(/\s+/g, ' ').trim().slice(0, 60); if(items[i] && items[i].value !== v){ items[i].value = v; changed++; } });
         items = items.filter(x=>x.value);
+        document.querySelectorAll('#ib-rp-add .ib-rp-ar').forEach(row=>{ const g = row.querySelector('.ib-rp-ag').value, l = row.querySelector('.ib-rp-al').value.replace(/\s+/g, ' ').trim().slice(0, 40), v = row.querySelector('.ib-rp-av').value.replace(/\s+/g, ' ').trim().slice(0, 60); if(l && v && items.length < 30){ items.push({ group: g, label: l, value: v }); changed++; } });
         if(!changed){ this._rpEdit = false; this.redrawReport(); say('바뀐 값이 없어요.'); return; }
       }
       document.querySelectorAll('#ib-rp-save, #ib-rp-cancel, #ib-rp-requ, #ib-rp-edit').forEach(b=>{ b.disabled = true; });
@@ -14190,7 +14204,10 @@ const Inbody = {
       const mk = this.mask(text);
       say(`항목을 찾는 중이에요… 보통 20초쯤 걸려요.${mk.n ? ` (학번·이름 등 ${mk.n}곳은 가리고 읽어요)` : ''}`);
       const fs = (typeof StartFlow !== 'undefined' && StartFlow.s) || {};
-      const body = { text: mk.text.slice(0, 24000), dept: (fs.major && fs.major.dept) || '', target: (this.d && this.d.target_role) || '' };
+      const ocr = !!DocText.lastOcr;
+      // 스캔본(사진 속 글자를 읽은 것)은 그래프 숫자의 짝이 섞이기 쉬워, AI에게 주의 문구를 글 앞에 붙여 보냄
+      const OCR_NOTE = '[읽는 방법 주의] 아래 글은 스캔한 그림에서 글자를 읽은 것이라 줄 순서가 섞여 있고 오타가 있을 수 있다. 그래프에서 나온 숫자는 어느 항목의 값인지 분명할 때만 쓴다. 숫자와 항목 이름의 짝이 분명하지 않으면 그 숫자는 items와 questions에 넣지 않는다(틀린 짝을 만드는 것보다 빼는 것이 낫다).\n\n';
+      const body = { text: (ocr ? OCR_NOTE : '') + mk.text.slice(0, 24000 - (ocr ? OCR_NOTE.length : 0)), dept: (fs.major && fs.major.dept) || '', target: (this.d && !this.d.report && this.d.target_role) || '' };   // 앞서 올린 리포트에서 온 희망 직무는 보내지 않음 (다른 학생 리포트에 섞이지 않게)
       const { data, error } = await Promise.race([sb.functions.invoke('inbody-read', { body }), new Promise((_, rej)=>setTimeout(()=>rej(new Error('리포트를 읽는 데 시간이 오래 걸려요. 잠시 뒤 다시 올려 주세요.')), 75000))]);
       if(error){ let msg = error.message || ''; try{ const j = await error.context.json(); if(j && j.error === 'limit') msg = '오늘 쓸 수 있는 AI 횟수를 다 썼어요. 내일 다시 해 주세요.'; else if(j && j.message) msg = j.message; }catch(_){} throw new Error(msg || '리포트를 읽지 못했어요'); }
       if(!data || data.error) throw new Error((data && (data.message || data.error)) || '리포트를 읽지 못했어요');
@@ -14203,14 +14220,17 @@ const Inbody = {
       row.gpa_max = F.gpa != null ? (F.gpa_max || 4.5) : 4.5;
       if(F.target_role) row.target_role = F.target_role; else if(this.d && this.d.report) row.target_role = null;   // 앞서 올린 리포트의 희망 직무가 남지 않게
       row.certs = (Array.isArray(F.certs) ? F.certs : []).map(c=>({ name: String(c).slice(0, 40) })).slice(0, 15);
-      row.report = { file: String(file.name || '리포트').slice(0, 80), at: new Date().toISOString(), items: (data.items || []).slice(0, 30), questions: (data.questions || []).slice(0, 6), summary: data.summary || '', masked: (mk.n || 0) + (data.masked || 0), filled: n };
+      row.report = { file: String(file.name || '리포트').slice(0, 80), at: new Date().toISOString(), items: (data.items || []).slice(0, 30), questions: (data.questions || []).slice(0, 6), summary: data.summary || '', masked: (mk.n || 0) + (data.masked || 0), filled: n, ocr };
       const { error: se } = await sb.from('career_inbody').upsert(row, { onConflict:'user_id' });
       if(se) throw new Error('읽은 내용을 저장하지 못했어요. ' + friendlyErr(se));
       this.d = Object.assign({}, this.d || {}, row); this.loaded = true; this.peers = null;
       try{ Activity.log('inbody_report', { fields: n, items: row.report.items.length, questions: row.report.questions.length, masked: row.report.masked, ms: Date.now() - t0 }); }catch(_){}
       this._rpBusy = false;
       await this.renderMy();
-      say(`리포트를 반영했어요. 칸 ${n}개를 채웠고 질문 ${row.report.questions.length}개를 만들었어요. 리포트에 없는 칸은 비워 두었어요. 틀린 칸은 고친 뒤 '인바디 저장'을 눌러 주세요.`, 'ok');
+      const noComp = !row.report.items.some(x=>x.group === '역량');
+      say(`리포트를 반영했어요. 칸 ${n}개를 채웠고 질문 ${row.report.questions.length}개를 만들었어요. 리포트에 없는 칸은 비워 두었어요. 틀린 칸은 고친 뒤 '인바디 저장'을 눌러 주세요.`
+        + (ocr ? ' 스캔본이라 숫자를 틀리게 읽었을 수 있어요. 아래 \'읽은 값 고치기\'로 꼭 확인해 주세요.' : '')
+        + (noComp ? ' 역량 점수는 찾지 못했어요. 그래프 그림 안에만 있다면 \'읽은 값 고치기\'에서 항목을 추가해 주세요.' : ''), 'ok');
       try{ if(typeof StartFlow !== 'undefined' && StartFlow.s && !StartFlow.s.page) StartFlow.render(); }catch(_){}
     }catch(e){ console.warn('[인바디 리포트]', e); say((e && e.message) || '리포트를 읽지 못했어요.', 'warn'); }
     finally{ this._rpBusy = false; const l2 = document.getElementById('ib-rp-lb'); if(l2) l2.classList.remove('busy'); }
@@ -15051,8 +15071,8 @@ const StartFlow = {
         : `<div class="fl-empty"><b>아직 질문을 만들 서류가 없어요</b><p>자기소개서나 이력서를 올리면 문장·경력에서 맞춤 질문을 찾아요.</p><button type="button" class="btn btn-outline" data-pga="docs">서류 올리기</button></div>`}
       <div class="fl-cta fl-cta-line"><button type="button" class="btn btn-outline" data-pga="docs">자료 바꾸기</button></div>`; }
     if(pg === 'ib') return `${this.vHead('커리어 인바디·학교 자료', '리포트를 올리면 자동으로 채워져요. 직접 입력해도 돼요.')}<p><span class="fl-badge">리포트 올리기 · 직접 입력</span></p>
-      <div class="fl-2col"><div class="fl-col"><div id="mp-ib"></div></div>
-        <aside class="fl-panel"><b class="fl-panel-t">질문에 사용될 정보 확인</b><p>리포트에서 읽은 항목과 직접 입력한 항목만 면접 질문과 결과 조언에 써요. 리포트의 학번·이름은 가리고 읽고, 저장하지 않아요.</p><div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="start">면접 준비로</button></div></aside></div>`;
+      <div class="fl-ib1"><aside class="fl-panel fl-panel-bar"><div><b class="fl-panel-t">질문에 사용될 정보 확인</b><p>리포트에서 읽은 항목과 직접 입력한 항목만 면접 질문과 결과 조언에 써요. 리포트의 학번·이름은 가리고 읽고, 저장하지 않아요.</p></div><div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="start">면접 준비로</button></div></aside>
+        <div class="fl-col"><div id="mp-ib"></div></div></div>`;   /* 2026-11-17 리포트 항목이 길어 오른쪽이 비던 것 → 한 단으로 넓게, 안내는 위쪽 가로 띠로 */
     return ''; },
   async pageAct(a){ const s = this.s;
     if(a === 'start'){ if(s.pageFrom === 'step'){ s.page = ''; s.pageFrom = ''; this.render(); return; } s.page = ''; s.hub = false; s.step = 0; this.render(); return; }
@@ -17369,17 +17389,17 @@ const DocText = {
     if(!this.ok(file.name)) throw this.fail(`${this.LABEL} 파일만 읽을 수 있어요.`);
     if(file.size > 20 * 1024 * 1024) throw this.fail('파일이 너무 커요. 20MB 이하로 올려 주세요.');
     const k = this.kind(file.name);
-    let text = '';
+    let text = ''; this.lastOcr = false;   // 2026-11-17 사진 속 글자를 읽었는지(스캔본) — 리포트 읽기에서 주의 안내에 씀
     try{
       if(k === 'pdf'){
         say('파일을 읽는 중이에요…');
         text = await extractPdfText(file);
-        if(this.korLen(text) < 40){ say('글자를 고를 수 없는 스캔 PDF예요. 사진 속 글자를 읽는 중이에요 (처음 한 번은 20~40초 걸려요)…'); text = await this.ocrPdf(file, say); }
+        if(this.korLen(text) < 40){ say('글자를 고를 수 없는 스캔 PDF예요. 사진 속 글자를 읽는 중이에요 (처음 한 번은 20~40초 걸려요)…'); text = await this.ocrPdf(file, say); this.lastOcr = true; }
       }else if(k === 'docx'){ say('워드 파일을 읽는 중이에요…'); text = await this.docx(file); }
       else if(k === 'hwpx'){ say('한글 파일을 읽는 중이에요…'); text = await this.hwpx(file); }
       else if(k === 'hwp'){ say('한글 파일을 읽는 중이에요…'); text = await this.hwp(file); }
       else if(k === 'doc'){ say('워드 파일을 읽는 중이에요…'); text = await this.doc(file); }
-      else { say('사진 속 글자를 읽는 중이에요 (처음 한 번은 20~40초 걸려요)…'); text = await this.ocr([file], say); }
+      else { say('사진 속 글자를 읽는 중이에요 (처음 한 번은 20~40초 걸려요)…'); text = await this.ocr([file], say); this.lastOcr = true; }
     }catch(e){
       if(e && e.friendly) throw e;
       console.warn('[서류 읽기]', k, e);

@@ -890,5 +890,12 @@ window.ZP_EN = {
 "질문을 다시 만드는 중이에요… #~#초쯤 걸려요.": "Regenerating questions… about #–# sec.",
 "값 #개를 고치고 질문 #개를 다시 만들었어요.": "Fixed # value(s) and regenerated # questions.",
 "질문 #개를 다시 만들었어요.": "Regenerated # questions.",
-"바뀐 값이 없어요.": "No values were changed."
+"바뀐 값이 없어요.": "No values were changed.",
+"빠진 항목 추가 (그래프 안의 점수처럼 읽지 못한 값)": "Add missing items (values that could not be read, such as scores inside charts)",
+"+ 한 줄 더": "+ Add a row",
+"항목 이름 (예: 소통협력 역량)": "Item name (e.g. Communication competency)",
+"값 (예: #점 · 학과 평균 #)": "Value (e.g. # pts · dept. average #)",
+"분류": "Category",
+"항목 이름": "Item name",
+"값": "Value"
 };
