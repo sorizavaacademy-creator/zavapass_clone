@@ -26,7 +26,7 @@ export function adminClient(): SupabaseClient {
   return createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 }
 
-export async function requireUser(req: Request): Promise<{ id: string } | null> {
+export async function requireUser(req: Request): Promise<{ id: string; email?: string } | null> {
   const auth = req.headers.get("Authorization") ?? "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
   if (!token || !SUPABASE_URL || token === SUPABASE_ANON_KEY) return null;
@@ -34,7 +34,7 @@ export async function requireUser(req: Request): Promise<{ id: string } | null> 
     const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, { headers: { Authorization: `Bearer ${token}`, apikey: SUPABASE_ANON_KEY } });
     if (!r.ok) return null;
     const u = await r.json();
-    return u && u.id ? { id: u.id } : null;
+    return u && u.id ? { id: u.id, email: typeof u.email === "string" ? u.email : undefined } : null;
   } catch { return null; }
 }
 
@@ -58,6 +58,45 @@ export async function requireApproved(userId: string): Promise<{ ok: boolean; re
 export const NOT_APPROVED_MSG: Record<string, string> = {
   pending: "담당자 승인 후 사용할 수 있어요.", expired: "이용 기간이 끝나 사용할 수 없어요.", no_profile: "등록 정보가 없는 계정이에요.",
 };
+
+/* 2026-11-17 외부 AI로 보내기 전 가리기 (서버가 DB에서 직접 읽은 글에 씀. 화면이 보내는 글은 화면에서 먼저 가림)
+ *   본인 이름·학번(알면)과 전화·이메일·주민번호·'성명: ○○○' 꼴을 표시로 바꾸고, map에 되돌릴 글자를 남김 */
+export function maskPII(text: string, me: { name?: string; sid?: string } = {}, map: Map<string, string> = new Map()): string {
+  let out = String(text || "");
+  const put = (orig: string, tag: string): string => {
+    if (tag === "[이름]" || tag === "[학번]") { if (!map.has(tag)) map.set(tag, orig); return tag; }
+    for (const [k, v] of map) if (v === orig && k.startsWith(tag.slice(0, -1))) return k;
+    let i = 1; while (map.has(`${tag.slice(0, -1)}#${i}]`)) i++; const key = `${tag.slice(0, -1)}#${i}]`; map.set(key, orig); return key;
+  };
+  const nm = String(me.name || "").replace(/\s/g, "");
+  if (/^[가-힣]{3,5}$/.test(nm)) out = out.replace(new RegExp(nm.split("").join("\\s?"), "g"), () => put(String(me.name), "[이름]"));
+  else if (/^[가-힣]{2}$/.test(nm)) out = out.replace(new RegExp(`(?<![가-힣])${nm}(?=(입니다|이라고|라고|이에요|예요|이고|이며|입니|\\s|[.,!?]|$))`, "g"), () => put(String(me.name), "[이름]"));
+  const sid = String(me.sid || "");
+  if (/^[A-Za-z]?\d{6,12}$/.test(sid)) out = out.replace(new RegExp(`(?<!\\d)${sid}(?!\\d)`, "g"), () => put(sid, "[학번]"));
+  out = out.replace(/\b\d{6}\s?-\s?[1-4]\d{6}\b/g, (m) => put(m, "[주민번호]"));
+  out = out.replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, (m) => put(m, "[이메일]"));
+  out = out.replace(/\b01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}\b/g, (m) => put(m, "[전화]"));
+  out = out.replace(/((?:성\s*명|학생\s*명|성함|(?<![가-힣] ?)이\s*름)\s*[:：]\s*)([가-힣](?: ?[가-힣]){1,3}(?![가-힣]))/g, (_m, a, v) => a + put(v, "[성명]"));
+  out = out.replace(/((?:학\s*번|학생\s*번호|수험\s*번호)\s*[:：]?\s*)([A-Za-z]?\d[\d-]{5,14})/g, (_m, a, v) => a + put(v, "[번호]"));
+  return out;
+}
+/** 가린 표시를 원래 글자로 (응답을 학생에게 돌려주기 전) */
+export function unmaskPII<T>(v: T, map: Map<string, string>): T {
+  if (!map.size) return v;
+  if (typeof v === "string") { let out: string = v; if (out.indexOf("[") < 0) return v; for (const [k, orig] of map) out = out.split(k).join(orig); return out as unknown as T; }
+  if (Array.isArray(v)) return v.map((x) => unmaskPII(x, map)) as unknown as T;
+  if (v && typeof v === "object") { const o: Record<string, unknown> = {}; for (const k in v as Record<string, unknown>) o[k] = unmaskPII((v as Record<string, unknown>)[k], map); return o as T; }
+  return v;
+}
+/** 본인 이름(프로필)과 학번(로그인 아이디) — 가릴 때 씀. 못 읽으면 빈 값 */
+export async function whoIs(user: { id: string; email?: string }): Promise<{ name: string; sid: string }> {
+  let name = "";
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=name`, { headers: { apikey: SERVICE_ROLE_KEY, Authorization: `Bearer ${SERVICE_ROLE_KEY}` } });
+    if (r.ok) name = String((await r.json())?.[0]?.name ?? "");
+  } catch { /* 이름 없이 진행 */ }
+  return { name, sid: String(user.email || "").split("@")[0] };
+}
 
 function isNewGen(model: string) { return /^(gpt-5|o\d|gpt-6)/i.test(model); }
 function buildBody(model: string, messages: unknown[], temperature: number, maxTokens: number) {

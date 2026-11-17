@@ -2,8 +2,9 @@
 //  학생이 노트에 모은 답(유형별 하나씩)과 본인이 올린 이력서·자기소개서(user_resumes, 본인 권한으로 읽음)를 비교해
 //  ① 서로 어긋나는 곳(역할·기간·숫자·경험 내용) ② 서류에 있는데 답에서 빠진 강점 ③ 한 줄 총평을 돌려줌
 //  사실을 지어내지 않고, 개인 신상은 다루지 않음. AI 사용 한도는 하루 note-날짜로 셈
+//  2026-11-17 외부 AI로 보내기 전에 서류 속 이름·학번·연락처를 가리고, 응답은 되돌려서 돌려줌
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { askJson, cleanText, corsHeaders, json, NOT_APPROVED_MSG, requireApproved, requireUser, SUPABASE_ANON_KEY, SUPABASE_URL } from "../_shared/ai_common.ts";
+import { askJson, cleanText, corsHeaders, json, maskPII, NOT_APPROVED_MSG, requireApproved, requireUser, SUPABASE_ANON_KEY, SUPABASE_URL, unmaskPII, whoIs } from "../_shared/ai_common.ts";
 import { blockReason } from "../_shared/qbank.ts";
 
 async function checkUsageLimit(req: Request, key: string): Promise<{ ok: boolean; status?: Record<string, unknown> }> {
@@ -30,6 +31,7 @@ const SYSTEM = `너는 대학생 취업 면접 코치다. 학생의 [답변 노�
 - 실제로 적힌 글만 근거로 한다. 없는 내용을 지어내지 않는다. 어긋남이 없으면 빈 배열을 준다.
 - 나이·가족·출신지·종교·정치·외모·건강·병역·성별 같은 개인 신상은 다루지 않는다.
 - 존댓말로, 학생을 탓하지 않는다.
+- [이름], [학번], [전화#1] 같은 표시는 가려 둔 개인정보다. 그대로 두고 내용을 추측하지 않는다.
 JSON으로만 답한다: {"mismatches":[{"cat":"exp","note":"","doc":"","tip":""}],"missing":[{"strength":"","where":"pers","tip":""}],"summary":""}`;
 
 Deno.serve(async (req: Request) => {
@@ -50,6 +52,9 @@ Deno.serve(async (req: Request) => {
     if (r.ok) { const row = (await r.json())?.[0] ?? {}; resume = cleanText(row.resume_text, 5000); cv = cleanText(row.cv_text, 6000); }
   } catch { /* 서류 없음으로 처리 */ }
   if (!resume && !cv) return json({ error: "no_docs", message: "올려 둔 이력서·자기소개서가 없어요. 마이페이지에서 먼저 올려 주세요." }, 400);
+  // 2026-11-17 외부 AI로 보내기 전에 서류 속 이름·학번·연락처를 가림 (답변 노트는 화면에서 이미 가려서 옴). 응답은 되돌려서 돌려줌
+  const pii = new Map<string, string>(); const me = await whoIs(user);
+  resume = maskPII(resume, me, pii); cv = maskPII(cv, me, pii);
   const day = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
   const lim = await checkUsageLimit(req, `note-${day}`);
   if (!lim.ok) return json({ error: "limit", limit: lim.status }, 429);
@@ -59,6 +64,6 @@ Deno.serve(async (req: Request) => {
     const ok = (s: string) => s && !blockReason(s);
     const mismatches = (Array.isArray(data.mismatches) ? data.mismatches : []).slice(0, 4).map((m: any) => ({ cat: CAT[m?.cat] ? String(m.cat) : "job", note: cleanText(m?.note, 120), doc: cleanText(m?.doc, 120), tip: cleanText(m?.tip, 200) })).filter((m) => ok(m.tip) && (m.note || m.doc));
     const missing = (Array.isArray(data.missing) ? data.missing : []).slice(0, 3).map((m: any) => ({ strength: cleanText(m?.strength, 60), where: CAT[m?.where] ? String(m.where) : "pers", tip: cleanText(m?.tip, 200) })).filter((m) => ok(m.strength) && ok(m.tip));
-    return json({ mismatches, missing, summary: blockReason(String(data.summary ?? "")) ? "" : cleanText(data.summary, 200), docs: { resume: !!resume, cv: !!cv } });
+    return json(unmaskPII({ mismatches, missing, summary: blockReason(String(data.summary ?? "")) ? "" : cleanText(data.summary, 200), docs: { resume: !!resume, cv: !!cv }, masked: pii.size }, pii));
   } catch (e) { return json({ error: "ai_failed", message: (e as Error).message.slice(0, 200) }, 502); }
 });

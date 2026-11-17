@@ -13,7 +13,8 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-17c';
+var APP_VERSION = '2026-11-17d';
+try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -6345,7 +6346,9 @@ html.ivv-dr-open{overflow:hidden;}
 .hp-list{display:grid} .hp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:18px 0;border-bottom:1px solid #ded5ce;align-items:center}
 .hp-row b{display:block;font-size:16px;color:#2b2521} .hp-row span{display:block;font-size:13.5px;color:#6a5b51;margin-top:3px}
 .hp-st{font-style:normal;font-size:12.5px;font-weight:600;color:#6a5b51;background:#f3ede7;border-radius:6px;padding:3px 8px;justify-self:end} .hp-st.stop{color:#a12e28}
-.hp-acts{grid-column:1 / -1}
+.hp-acts{grid-column:1 / -1;display:flex;align-items:center;gap:10px;flex-wrap:wrap} .hp-acts .btn{width:auto}
+.hp-del{border:0;background:none;color:#8a3b25;font:inherit;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:8px 6px;min-height:40px}
+.hp-wipe{margin-top:22px;padding:16px 18px;border:1px solid #e3d9cf;border-radius:12px;background:#fbf7f3;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap} .hp-wipe p{margin:0;font-size:13px;line-height:1.6;color:#6a5b51;flex:1 1 260px} .hp-wipe p b{display:block;color:#2b2521;font-size:14px} .hp-wipe .btn{width:auto;flex:0 0 auto}
 #d3-growth .gw-head .gw-prev{flex:none;align-self:flex-start;margin-left:auto}
 /* 2026-11-12z6 전체 정렬 다듬기 */
 #d3-growth .gw-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:16px} #d3-growth .gw-head > div:first-child{grid-column:1;grid-row:1 / span 2}
@@ -7767,7 +7770,7 @@ html.sv-open{overflow:hidden;}
         </div>
       </section>
     </div>
-    <footer class="lg-foot"><span class="lg-foot-l"><span>한림대학교 취업진로지원센터</span></span><span class="lg-foot-r"><button type="button" class="lg-precheck" onclick="openPrecheck()">시작 전 점검 — 브라우저·마이크·소리 확인하기 ›</button></span></footer>
+    <footer class="lg-foot"><span class="lg-foot-l"><span>한림대학교 취업진로지원센터</span></span><span class="lg-foot-r"><button type="button" class="lg-precheck" id="lg-lang" onclick="I18n.set(I18n.lang==='en'?'ko':'en')" aria-label="Language">English</button><button type="button" class="lg-precheck" onclick="openPrecheck()">시작 전 점검 — 브라우저·마이크·소리 확인하기 ›</button></span></footer>
   </div>
 </section>
 
@@ -9848,6 +9851,9 @@ html.sv-open{overflow:hidden;}
         <h3 class="mp-sec-t" id="mp-ib-t">커리어 인바디 <small>학점·어학·자격·경험을 적어 두면 면접 예상 질문과 결과 조언에 써요. 학교 커리어 인바디와 연동되면 자동으로 채워져요</small></h3>
         <button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('ib'); BackTo.set('flow')">커리어 인바디 열기</button>
       </section>
+      <details class="mp-fold" id="mp-ui-fold"><summary>화면 설정</summary>
+        <div class="ui-pref" id="ui-pref"></div>
+      </details>
       <details class="mp-fold"><summary>계정·로그인 관리</summary>
       <h3 class="mp-sec-t mp-sec-info">로그인 계정</h3>
       <div class="mp-info-grid">
@@ -10227,6 +10233,114 @@ if(typeof window.supabase === 'undefined'){   // 2026-10-22v 부품을 세 곳 �
     (document.body || document.documentElement).appendChild(d); }catch(_){}
 }
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+/* ---------------- 2026-11-17 외부 AI로 보내기 전 학번·이름 가리기 (AiMask) ----------------
+ * AI 서버 함수로 보내는 글(답변·서류·질문)에서 본인 이름·학번·전화·이메일·주민번호를 표시([이름]·[학번]…)로 바꿔 보내고,
+ * 돌아온 결과에서는 다시 원래 글자로 되돌려 화면에 보여 줌. 서버가 DB에서 직접 읽는 서류(note-check)는 서버에서 가림. */
+const AiMask = {
+  FN: new Set(['grade-answer','followup-question','rewrite-answer','intro-coach','debate-coach','real-review','set-review','pick-questions','note-check','inbody-read']),
+  count: 0, last: null,
+  /** 글 하나를 가림. map: 표시 → 원래 글자 (되돌릴 때 씀) */
+  text(t, map){
+    if(typeof t !== 'string' || t.length < 2) return t;
+    const u = (typeof state !== 'undefined' && state.currentUser) || {}; let out = t;
+    const put = (orig, tag)=>{ if(tag === '[이름]' || tag === '[학번]'){ if(!map.has(tag)) map.set(tag, orig); return tag; }
+      for(const [k, v] of map) if(v === orig && k.startsWith(tag.slice(0, -1))) return k;
+      let i = 1; while(map.has(tag.slice(0, -1) + i + ']')) i++; const key = tag.slice(0, -1) + i + ']'; map.set(key, orig); return key; };
+    const nm = String(u.name || '').replace(/\s/g, '');
+    if(/^[가-힣]{3,5}$/.test(nm)) out = out.replace(new RegExp(nm.split('').join('\\s?'), 'g'), ()=>put(u.name, '[이름]'));
+    else if(/^[가-힣]{2}$/.test(nm)) out = out.replace(new RegExp('(?<![가-힣])' + nm + '(?=(입니다|이라고|라고|이에요|예요|이고|이며|입니|\\s|[.,!?]|$))', 'g'), ()=>put(u.name, '[이름]'));   // 두 글자 이름은 낱말과 겹칠 수 있어 앞뒤를 봄
+    const sid = String(u.email || '').split('@')[0];
+    if(/^[A-Za-z]?\d{6,12}$/.test(sid)) out = out.replace(new RegExp('(?<!\\d)' + sid + '(?!\\d)', 'g'), ()=>put(sid, '[학번]'));
+    out = out.replace(/\b\d{6}\s?-\s?[1-4]\d{6}\b/g, m=>put(m, '[주민번호]'));
+    out = out.replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, m=>put(m, '[이메일]'));
+    out = out.replace(/\b01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}\b/g, m=>put(m, '[전화]'));
+    out = out.replace(/((?:성\s*명|학생\s*명|성함|(?<![가-힣] ?)이\s*름)\s*[:：]\s*)([가-힣](?: ?[가-힣]){1,3}(?![가-힣]))/g, (m, a, v)=>a + put(v, '[성명]'));
+    out = out.replace(/((?:학\s*번|학생\s*번호|수험\s*번호)\s*[:：]?\s*)([A-Za-z]?\d[\d-]{5,14})/g, (m, a, v)=>a + put(v, '[번호]'));
+    return out;
+  },
+  deep(v, map){
+    if(typeof v === 'string') return this.text(v, map);
+    if(Array.isArray(v)) return v.map(x=>this.deep(x, map));
+    if(v && typeof v === 'object' && Object.getPrototypeOf(v) === Object.prototype){ const o = {}; for(const k in v) o[k] = this.deep(v[k], map); return o; }
+    return v;
+  },
+  undo(v, map){
+    if(typeof v === 'string'){ if(v.indexOf('[') < 0) return v; let out = v; for(const [k, orig] of map) out = out.split(k).join(orig); return out; }
+    if(Array.isArray(v)) return v.map(x=>this.undo(x, map));
+    if(v && typeof v === 'object' && Object.getPrototypeOf(v) === Object.prototype){ const o = {}; for(const k in v) o[k] = this.undo(v[k], map); return o; }
+    return v;
+  },
+  install(){
+    try{
+      const FP = Object.getPrototypeOf(sb.functions), orig = FP.invoke; if(!orig || FP._aiMask) return; FP._aiMask = true;
+      FP.invoke = async function(name, opt){
+        const b = opt && opt.body;
+        if(!AiMask.FN.has(name) || !b || typeof b !== 'object' || Object.getPrototypeOf(b) !== Object.prototype) return orig.call(this, name, opt);
+        let map = new Map(), body = b; try{ body = AiMask.deep(b, map); }catch(e){ console.warn('[가리기]', e); map = new Map(); body = b; }
+        if(map.size){ AiMask.count += map.size; AiMask.last = { fn: name, n: map.size, tags: [...map.keys()], at: Date.now() }; }
+        const r = await orig.call(this, name, map.size ? Object.assign({}, opt, { body }) : opt);
+        if(map.size && r && r.data && typeof r.data === 'object'){ try{ r.data = AiMask.undo(r.data, map); }catch(e){ console.warn('[가린 글 되돌리기]', e); } }
+        return r;
+      };
+    }catch(e){ console.warn('[AiMask 설치 실패]', e); }
+  }
+};
+AiMask.install();
+/* ---------------- 2026-11-17 화면 영어판 (I18n) ----------------
+ * 화면 글자는 한국어로 그려진 뒤, 언어가 English면 i18n-en.js의 표(한국어 → 영어)로 바꿔 보여 줌.
+ *  - 숫자는 #로 바꿔서 찾음: "질문 2 / 5" → 표의 "질문 # / #" → "Question 2 / 5"
+ *  - ' · '로 이어진 글은 조각마다 따로 바꿈 (회사 이름처럼 표에 없는 조각은 그대로)
+ *  - 면접 질문·답변·AI 피드백 같은 내용 글은 표에 없으므로 한국어 그대로 (1단계: 화면 글자만)
+ *  언어를 바꾸면 새로 고침. 이 기기에 기억(zp_lang). */
+const I18n = {
+  lang: (()=>{ try{ return localStorage.getItem('zp_lang') === 'en' ? 'en' : 'ko'; }catch(_){ return 'ko'; } })(),
+  D: null, collect: false, miss: new Set(),
+  set(l){ try{ localStorage.setItem('zp_lang', l === 'en' ? 'en' : 'ko'); }catch(_){} location.reload(); },
+  one(k){ const D = this.D; if(!D) return null;
+    if(D[k] != null) return D[k];
+    const nums = []; const tk = k.replace(/\d+(?:[.,:]\d+)*/g, m=>{ nums.push(m); return '#'; });
+    const tv = D[tk]; if(tv == null) return null;
+    let i = 0; return tv.replace(/#(\d)?/g, (m, d)=>d ? (nums[+d - 1] != null ? nums[+d - 1] : '') : (nums[i] != null ? nums[i++] : '')); },
+  t(raw, tag){ if(!raw || !/[가-힣]/.test(raw)) return null;
+    const k = raw.replace(/\s+/g, ' ').trim(); if(!k) return null;
+    let v = tag ? this.one(k + '@' + tag) : null;   /* 같은 낱말이 자리에 따라 뜻이 다르면 "시간@i"처럼 태그를 붙인 줄을 먼저 씀 */
+    if(v == null) v = this.one(k);
+    if(v == null && k.indexOf(' · ') > 0){ let hit = false; const parts = k.split(' · ').map(x=>{ if(!/[가-힣]/.test(x)) return x; const y = this.one(x.trim()); if(y != null){ hit = true; return y; } if(this.collect) this.miss.add(x.trim()); return x; }); if(hit) v = parts.join(' · '); else return null; }
+    if(v == null){ if(this.collect && k.length <= 160) this.miss.add(k); return null; }
+    return raw.match(/^\s*/)[0] + v + raw.match(/\s*$/)[0]; },
+  node(n){
+    if(n.nodeType === 3){ const p = n.parentNode; if(!p || /^(SCRIPT|STYLE|TEXTAREA)$/.test(p.nodeName)) return; const v = this.t(n.nodeValue, p.nodeName.toLowerCase()); if(v != null && v !== n.nodeValue) n.nodeValue = v; return; }
+    if(n.nodeType !== 1 || /^(SCRIPT|STYLE)$/.test(n.nodeName)) return;
+    if(n.id && /^(setup-cam-msg|resume-drop-label|rec-log|au-pw-code|lg-lang)$/.test(n.id)) return;   /* 화면 글자를 다시 읽어 판단하는 칸은 바꾸지 않음 */
+    for(const a of ['placeholder','title','aria-label','alt']){ const x = n.getAttribute(a); if(x && /[가-힣]/.test(x)){ const v = this.t(x); if(v != null && v !== x) n.setAttribute(a, v); } }
+    if(n.nodeName === 'TEXTAREA') return;   /* 입력 칸: 안내 글자(placeholder)만 바꾸고, 사용자가 쓴 글은 건드리지 않음 */
+    for(let c = n.firstChild; c; c = c.nextSibling) this.node(c); },
+  watch(){
+    this.node(document.body);
+    new MutationObserver(ms=>{ for(const m of ms){ try{ if(m.type === 'characterData') this.node(m.target); else if(m.type === 'attributes') this.node(m.target); else m.addedNodes.forEach(x=>this.node(x)); }catch(_){} } })
+      .observe(document.body, { childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['placeholder','title','aria-label'] });
+    const tr = m=>{ const s = String(m == null ? '' : m); const whole = this.t(s); if(whole != null) return whole; return s.split('\n').map(x=>{ const y = this.t(x); return y != null ? y : x; }).join('\n'); };
+    const oc = window.confirm.bind(window), oa = window.alert.bind(window); window.confirm = m=>oc(tr(m)); window.alert = m=>oa(tr(m)); },
+  start(){
+    try{ const lb = document.getElementById('lg-lang'); if(lb) lb.textContent = this.lang === 'en' ? '한국어' : 'English'; }catch(_){}
+    try{ if(/[?&]i18ncollect=1/.test(location.search)){ this.collect = true; this.lang = 'en'; this.D = {}; } }catch(_){}
+    if(this.lang !== 'en') return;
+    document.documentElement.lang = 'en'; document.documentElement.classList.add('lang-en');
+    const go = ()=>{ if(document.body) this.watch(); else document.addEventListener('DOMContentLoaded', ()=>this.watch()); };
+    if(this.collect) return go();
+    const s = document.createElement('script'); s.src = 'i18n-en.js?v=' + encodeURIComponent(typeof APP_VERSION !== 'undefined' ? APP_VERSION : ''); s.onload = ()=>{ this.D = window.ZP_EN || {}; go(); }; s.onerror = ()=>{ console.warn('[영어판] 번역 표를 불러오지 못했어요'); };
+    document.head.appendChild(s); }
+};
+I18n.start();
+/* ---------------- 2026-11-17 화면 설정 (UiPref): 색약용 화면 — 이 기기에 기억 ---------------- */
+const UiPref = {
+  cvd(){ try{ return localStorage.getItem('zp_cvd') === '1'; }catch(_){ return false; } },
+  setCvd(on){ try{ localStorage.setItem('zp_cvd', on ? '1' : '0'); }catch(_){} document.documentElement.classList.toggle('cvd', !!on); this.render();
+    try{ showToast(on ? '색약용 화면을 켰어요.' : '색약용 화면을 껐어요.', 'ok'); }catch(_){} try{ Activity.log('ui_pref', { cvd: !!on }); }catch(_){} },
+  render(){ const b = document.getElementById('ui-pref'); if(!b) return; const on = this.cvd();
+    b.innerHTML = `<div class="ui-pref-row"><div><b>색약용 화면</b><small>초록색으로 보여 주던 표시를 파란색으로 바꾸고, 색으로만 구분하던 곳에 ✓ · ! · × 기호를 붙여요. 이 기기에 기억해요.</small></div><button type="button" class="ui-sw" role="switch" aria-checked="${on}" aria-label="색약용 화면" onclick="UiPref.setCvd(${!on})"></button></div>
+      <div class="ui-pref-row"><div><b>언어 · Language</b><small>화면 글자를 영어로 바꿔요. 면접 질문과 피드백 내용은 한국어로 나와요. 바꾸면 화면을 새로 불러와요.</small></div><div class="ui-seg" role="group" aria-label="언어"><button type="button" aria-pressed="${I18n.lang !== 'en'}" onclick="I18n.set('ko')">한국어</button><button type="button" aria-pressed="${I18n.lang === 'en'}" onclick="I18n.set('en')">English</button></div></div>`; }
+};
 
 /* ---------------- AI 채점 설정 ----------------
  * true  : Supabase Edge Function 'grade-answer'(OpenAI)로 채점 시도. 실패하면 로컬 채점으로 자동 대체.
@@ -16340,9 +16454,36 @@ const HistoryPage = {
     let dr = null; try{ dr = InterviewDraft.load(); }catch(_){}
     const draftRow = dr && (!this.f || dr.fieldName === this.f) ? `<div class="hp-row"><div><b>${esc(dr.fieldName || '면접')}</b><span>답변 ${(dr.asks || []).filter(a=>String(a.answer || '').trim()).length}개 저장 · 이 기기에 보관 중</span></div><em class="hp-st stop">중단</em><div class="hp-acts"><button type="button" class="btn btn-solid" onclick="PracticeKit.close(); InterviewDraft.offer()">이어서 연습</button></div></div>` : '';
     b.innerHTML = `<div class="hp-filters"><label class="fl-f"><span>면접 목적</span><select id="hp-f"><option value="">전체</option>${kinds.map(k=>`<option${k === this.f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select></label></div>
-      ${draftRow || L.length ? `<div class="hp-list">${draftRow}${L.map(h=>`<div class="hp-row"><div><b>${esc(h.fieldName)}</b><span>${esc(h.dateLabel)}${h.durationLabel ? ' · ' + esc(durText(h.durationLabel)) : ''}</span></div><em class="hp-st">완료 · ${h.score}점</em><div class="hp-acts"><button type="button" class="btn btn-outline" onclick="PracticeKit.close(); openRecordDetail('${h.id}', true)">결과 보기</button></div></div>`).join('')}</div>`
+      ${draftRow || L.length ? `<div class="hp-list">${draftRow}${L.map(h=>`<div class="hp-row"><div><b>${esc(h.fieldName)}</b><span>${esc(h.dateLabel)}${h.durationLabel ? ' · ' + esc(durText(h.durationLabel)) : ''}</span></div><em class="hp-st">완료 · ${h.score}점</em><div class="hp-acts"><button type="button" class="btn btn-outline" onclick="PracticeKit.close(); openRecordDetail('${h.id}', true)">결과 보기</button><button type="button" class="hp-del" onclick="HistoryPage.del('${h.id}')">기록 삭제</button></div></div>`).join('')}</div>
+        ${L.length ? `<div class="hp-wipe"><p><b>면접 기록 지우기</b> 지운 기록은 답변·점수·피드백까지 함께 없어지고 되돌릴 수 없어요. 학교 담당자 화면의 내 기록에서도 사라져요.</p><button type="button" class="btn btn-outline" onclick="HistoryPage.delAll()">모든 면접 기록 삭제</button></div>` : ''}`
         : '<div class="qa-empty"><b class="zs-t">아직 연습 기록이 없어요</b><span>첫 면접을 마치면 결과를 확인할 수 있어요.</span><button type="button" class="d3-btn d3-btn-ghost" onclick="PracticeKit.close(); StartFlow.open()">첫 면접 시작</button></div>'}`;
-    const sel = document.getElementById('hp-f'); if(sel) sel.onchange = ()=>{ this.f = sel.value; this.render(); }; }
+    const sel = document.getElementById('hp-f'); if(sel) sel.onchange = ()=>{ this.f = sel.value; this.render(); }; },
+  /* 2026-11-17 세션 삭제: 학생이 자기 면접 기록을 직접 지움 (답변은 기록과 함께 지워지고, 그 면접의 '다시 답하기' 기록도 지움) */
+  async _wipe(ids){ const uid = state.currentUser && state.currentUser.id; if(!uid || !ids.length) return 0;
+    try{ await sb.from('answer_retries').delete().eq('user_id', uid).in('record_id', ids); }catch(e){ console.warn('[다시 답하기 기록 지우기]', e); }
+    const { data, error } = await sb.from('interview_records').delete().eq('user_id', uid).in('id', ids).select('id');
+    if(error) throw error;
+    const gone = new Set((data || []).map(x=>String(x.id)));
+    state.historyRecords = (state.historyRecords || []).filter(h=>!gone.has(String(h.id)));
+    if(state.savedRecordId && gone.has(String(state.savedRecordId))) state.savedRecordId = null;
+    try{ Activity.log('record_delete', { n: gone.size }); }catch(_){}
+    return gone.size; },
+  async del(id, fromResult){
+    if(!confirm('이 면접 기록을 지울까요?\n답변·점수·피드백이 함께 지워지고 되돌릴 수 없어요.')) return;
+    try{ const n = await this._wipe([id]); if(!n) return showToast('지우지 못했어요. 잠시 뒤 다시 해 주세요.', 'warn');
+      showToast('면접 기록을 지웠어요.', 'ok');
+      if(fromResult){ state.histView = null; try{ await renderDashboard(); }catch(_){} showScreen('screen-dashboard'); try{ HistoryPage.open(); }catch(_){} return; }
+      this.render(); try{ renderDashboard(); }catch(_){}
+    }catch(e){ showToast('지우지 못했어요. ' + friendlyErr(e), 'warn'); } },
+  async delAll(){ const uid = state.currentUser && state.currentUser.id; if(!uid) return;
+    if(!confirm('모든 면접 기록을 지울까요?\n지금까지의 답변·점수·피드백이 모두 지워지고 되돌릴 수 없어요.')) return;
+    if(!confirm('정말 모두 지울까요? 이 작업은 취소할 수 없어요.')) return;
+    try{ const { data, error } = await sb.from('interview_records').select('id').eq('user_id', uid).limit(1000); if(error) throw error;
+      const ids = (data || []).map(x=>x.id); let n = 0; for(let i = 0; i < ids.length; i += 100) n += await this._wipe(ids.slice(i, i + 100));
+      try{ await sb.from('answer_retries').delete().eq('user_id', uid); }catch(_){}
+      state.historyRecords = [];
+      showToast(n ? `면접 기록 ${n}건을 모두 지웠어요.` : '지울 기록이 없어요.', 'ok'); this.f = ''; this.render(); try{ renderDashboard(); }catch(_){}
+    }catch(e){ showToast('지우지 못했어요. ' + friendlyErr(e), 'warn'); } }
 };
 function openAllHistory(){
   if(state.currentUser && !state.currentUser.isAdmin){ HistoryPage.open(); return; }
@@ -18514,6 +18655,7 @@ async function openMyPage(){
   PageNav.drop('mypage');
   const u = state.currentUser;
   if(!u) return;
+  try{ UiPref.render(); }catch(_){}   // 2026-11-17 화면 설정 (색약용 화면)
   document.getElementById('mp-name').textContent = u.name || '';
   document.getElementById('mp-email').textContent = LoginId.label(u.email || '');   // 2026-11-09c 학번 계정은 '학번 20231234'
   { const r = document.getElementById('mp-cemail-row'), v = document.getElementById('mp-cemail'); if(r && v){ r.hidden = !u.contactEmail; v.textContent = u.contactEmail || ''; } }
@@ -24178,7 +24320,7 @@ const ResultView = {
         ${canRw ? `<button type="button" class="btn btn-outline" onclick="ResultView.show('rw', ${p.i})">원본과 수정안 비교</button>` : ''}
         <button type="button" class="btn btn-outline rv-fb-m" onclick="openFeedback()">의견·문제 보내기</button>
       </div>
-      ${state.histView ? `<div class="rv-histnote"><p>저장된 기록으로 보여 줘요. 영상과 질문의 근거는 저장하지 않아서 이 화면에서는 볼 수 없어요.</p><div class="rv-acts">${state.histView.fromList ? '<button type="button" class="btn btn-outline" onclick="openAllHistory()">기록 목록으로</button>' : ''}<button type="button" class="btn btn-outline" onclick="openRecordDetailOld(${JSON.stringify(String(state.histView.id)).replace(/"/g, '&quot;')}, false)">예전 기록 창으로 보기</button></div></div>` : ''}`;
+      ${state.histView ? `<div class="rv-histnote"><p>저장된 기록으로 보여 줘요. 영상과 질문의 근거는 저장하지 않아서 이 화면에서는 볼 수 없어요.</p><div class="rv-acts">${state.histView.fromList ? '<button type="button" class="btn btn-outline" onclick="openAllHistory()">기록 목록으로</button>' : ''}<button type="button" class="btn btn-outline" onclick="openRecordDetailOld(${JSON.stringify(String(state.histView.id)).replace(/"/g, '&quot;')}, false)">예전 기록 창으로 보기</button>${state.currentUser && !state.currentUser.isAdmin ? `<button type="button" class="hp-del" onclick="HistoryPage.del(${JSON.stringify(String(state.histView.id)).replace(/"/g, '&quot;')}, true)">이 기록 삭제</button>` : ''}</div></div>` : ''}`;
     const sv = document.getElementById('save-banner'), slot = box.querySelector('[data-slot="save"]'); if(sv && slot) slot.appendChild(sv);
   },
   /* ── 22 질문별 답변 분석 ── */
@@ -33013,6 +33155,51 @@ try{ AppUpdate.init(); }catch(e){ console.warn('AppUpdate', e); }
 </script>
 <!-- 2026-11-17 진입 화면 비주얼 (제안서 캡처용): 로그인·회원가입(신청)·홈·면접 입장 — 글자만 있던 버튼을 그림 판 위 움직이는 버튼으로.
      기존 버튼의 id·onclick은 그대로라 기능은 같음. 움직임을 줄이도록 설정한 기기에서는 애니메이션을 끔 -->
+<style id="lang-en-css">
+/* 2026-11-17 영어판: 글자가 길어져 넘치는 곳만 손봄 */
+html.lang-en #screen-login.v3 .lg-join .zv-tile{flex:1 1 0;min-width:0;}
+html.lang-en #screen-login.v3 .lg-join .zv-tile small{white-space:normal;overflow:visible;line-height:1.35;}
+/* 글자를 모양(CSS)으로 그리는 곳은 번역 표가 닿지 않아 여기서 바꿈 */
+html.lang-en body.hdr-min #screen-dashboard .d3-user-btn::before{content:"My info" !important;}
+html.lang-en body:not(.is-admin-ui):not(.hdr-min):not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn::before{content:"\25B6  My menu" !important;}
+html.lang-en body:not(:has(#screen-admin.active)) #screen-dashboard .d3-user-btn::before, html.lang-en body:not(:has(#screen-admin.active)) #screen-practice .d3-user-btn::before{content:"\25B6  My menu" !important;}
+html.lang-en .hm-mode[aria-pressed="true"]::after, html.lang-en .fl-pick[aria-pressed="true"]::after{content:"\2713  Selected";}
+html.lang-en .pr-co summary::after{content:' · show';} html.lang-en .pr-co[open] summary::after{content:' · hide';}
+html.lang-en .iv-co summary::after{content:'Show company info';} html.lang-en .iv-co[open] summary::after{content:'Collapse';}
+html.lang-en .ivv-adv > summary::after{content:'Expand \25BC';} html.lang-en .ivv-adv[open] > summary::after{content:'Collapse \25B2';}
+</style>
+<style id="cvd-css">
+/* 2026-11-17 색약용 화면: 내 정보 → 화면 설정에서 켬 (html.cvd). 초록 계열을 파랑 계열로 바꾸고, 색만으로 구분하던 상태 글에 기호를 붙임.
+   아래 auto 구간은 scripts/gen_cvd.py가 만든 것 (CSS를 고치면 다시 돌림) */
+/* cvd:auto-start */
+html.cvd{--teal-600:#084892;--teal-100:#d4e2f2;--success:#1759a5}html.cvd .login-bg{background:radial-gradient(900px 520px at 12% 8%, rgba(61,107,240,.42), transparent 62%),
+      radial-gradient(760px 480px at 88% 92%, rgba(8,72,146,.34), transparent 60%),
+      radial-gradient(520px 320px at 70% 12%, rgba(185,114,12,.16), transparent 60%),
+      linear-gradient(160deg, #0B1226 0%, #0A0F1C 55%, #0C1A2B 100%)}html.cvd .login-waves .wv2{stroke:rgba(8,72,146,.5)}html.cvd .login-orb.o2{background:rgba(8,72,146,.5)}html.cvd .login-title-accent{background:linear-gradient(90deg,#7FA2FF,#5895da)}html.cvd .su-match.ok{color:#2a527f}html.cvd .hero-banner{background:radial-gradient(900px 420px at 88% -25%, rgba(61,107,240,.38), transparent 60%),
+      radial-gradient(680px 380px at -5% 120%, rgba(8,72,146,.30), transparent 55%),
+      linear-gradient(165deg, var(--navy-950), var(--navy-900))}html.cvd .activity-cal .cal-cell.l1{background:#b6cce6}html.cvd .activity-cal .cal-cell.l2{background:#588cc7}html.cvd .live-dot-nav{box-shadow:0 0 0 3px rgba(15,87,170,.18)}html.cvd .online-dot{box-shadow:0 0 0 3px rgba(15,87,170,.18)}html.cvd .tl-ev .ev-tag.login{background:#e9f0f9}html.cvd .tcl-chip.q{background:#edf2f7;color:#2a4b70}html.cvd .tcl-chip.saved{background:#e8eff7;color:#1e4878}html.cvd .tcg-state{background:#edf2f7;color:#1e4878}html.cvd .vs{--vs-ok:#2a527f;--vs-ok-bg:#e5ecf5}html.cvd .diag-verdict.ok{background:#e9f0f9;border-color:rgba(15,87,170,.35)}html.cvd .rehearsal-badge{background:rgba(8,72,146,.18);border:1px solid rgba(8,72,146,.4)}html.cvd .interview-wrap.light{--rh-green:#0751a6;--rh-green-soft:#e2ecf8}html.cvd .interview-wrap.light .cam-preview::before{background:radial-gradient(60% 80% at 30% 100%,rgba(47,123,246,.10),transparent 70%),radial-gradient(50% 70% at 80% 90%,rgba(7,81,166,.10),transparent 70%)}html.cvd .interview-wrap.light .rh-meter-bar i{background:linear-gradient(90deg,#196dce,var(--rh-green))}html.cvd .interview-wrap.light #btn-mic:not(.active-off){box-shadow:0 8px 18px rgba(7,81,166,.25)}html.cvd .li-connect.joined b{background:rgba(7,81,166,.92)}html.cvd .qcard-source-badge.bank{background:rgba(8,72,146,.18)}html.cvd .rp-col.good{background:rgba(15,87,170,.07);border:1px solid rgba(15,87,170,.25)}html.cvd .axis-chip.good{border-color:rgba(15,87,170,.4)}html.cvd .gr-cmp .gp-up{color:#0f4786}html.cvd #screen-dashboard .hero-inner{background:linear-gradient(135deg,#FFFFFF 0%,#EEF4FF 55%,#e7eef7 100%)}html.cvd #screen-dashboard .hero-deco .b2{background:radial-gradient(circle,#b6d0ee,transparent 70%)}html.cvd .hero-eyebrow::before{background:#0751a6;box-shadow:0 0 0 3px rgba(7,81,166,.18)}html.cvd #screen-dashboard .section-title::before{background:linear-gradient(180deg,#3B8BFF,#0751a6)}html.cvd .lbp-deco{background:radial-gradient(420px 260px at 90% -10%, rgba(61,107,240,.35), transparent 65%),
+               radial-gradient(360px 240px at -10% 110%, rgba(8,72,146,.28), transparent 65%)}html.cvd .lbp-features li > .lbp-ic{background:linear-gradient(135deg, rgba(61,107,240,.55), rgba(8,72,146,.45))}html.cvd .lbp-steps i{background:linear-gradient(135deg,#3D6BF0,#084892)}html.cvd .result-hero-deco{background:radial-gradient(360px 200px at 100% 0%, rgba(59,139,255,.14), transparent 65%), radial-gradient(260px 180px at 0% 100%, rgba(8,72,146,.10), transparent 65%)}html.cvd #screen-result .result-head span.badge,html.cvd .result-hero .badge{color:#084892;background:#dce7f4}html.cvd #screen-result .result-summary-line{background:#e8eff6;color:#084892;border:1px solid #cddbec}html.cvd .rhg-grade.Ap,html.cvd .rhg-grade.A{color:#5895da}html.cvd .setup-step-tag.ok{background:#dce7f4;color:#084892;border-color:#cddbec}html.cvd .toast.ok .toast-ic{background:rgba(23,89,165,.25);color:#79ade9}html.cvd .login-split.v2 .lbp-deco{background:radial-gradient(520px 320px at 105% -5%, rgba(61,107,240,.42), transparent 62%), radial-gradient(420px 280px at -5% 105%, rgba(8,72,146,.34), transparent 62%), radial-gradient(300px 200px at 40% 70%, rgba(127,162,255,.10), transparent 60%)}html.cvd .lbp-eyebrow i{background:#5895da;box-shadow:0 0 0 4px rgba(88,149,218,.18)}html.cvd .lpv-avatar{background:linear-gradient(135deg, rgba(61,107,240,.7), rgba(8,72,146,.6))}html.cvd .lpv-ring{border:2px solid rgba(88,149,218,.55)}html.cvd .lpv-foot{color:#5895da}html.cvd .lpv-score .lpv-score-grade{color:#5895da}html.cvd .lpv-bar i:nth-child(3){background:#5895da}html.cvd .lpv-face .lpv-ring{border:2px solid rgba(88,149,218,.5)}html.cvd .lpv-tag i{background:#5895da}html.cvd .lpv-listen{color:#5895da}html.cvd .lpv-listen i{background:#5895da;box-shadow:0 0 0 3px rgba(88,149,218,.18)}html.cvd .lpv-pills span:before{background:linear-gradient(135deg,#7FA2FF,#5895da)}html.cvd .bm-ai{background:linear-gradient(135deg,#3D6BF0,#084892)}html.cvd .login-spot{background:radial-gradient(closest-side, rgba(61,107,240,.22), rgba(8,72,146,.10) 55%, transparent 75%)}html.cvd .login-dots i:nth-child(4){background:rgba(88,149,218,.55);box-shadow:0 0 12px rgba(88,149,218,.6)}html.cvd .login-dots i:nth-child(6){background:rgba(88,149,218,.5)}html.cvd .ps-tab-st .d.on{background:#0f57aa;box-shadow:0 0 0 2px rgba(15,87,170,.18)}html.cvd .ps-ai-state.on{background:#e5eef8;color:#084182}html.cvd .ps-switch:has(input:checked){border-color:#9bbadd;background:#f2f7fc}html.cvd .ps-switch:has(input:checked) .ps-sw-ic{background:#dce7f4;color:#084182}html.cvd .ps-switch:has(input:checked) .ps-sw-cost{border-top-color:#c5d7eb}html.cvd .ps-switch:has(input:checked) .ps-sw-cost b{color:#084182}html.cvd .ps-cost-table td.tot{color:#084182}html.cvd .sw input:checked + i{background:#0f57aa}html.cvd .ov-todo-empty{color:#084182;background:#e5eef8}html.cvd .ov-on{color:#084182}html.cvd .ov-spark-kpi span.up{color:#084182}html.cvd .ov-spark-bars .bar.today i{background:linear-gradient(180deg,#327cd0,#084182)}html.cvd .ov-spark-bars .bar.today b{color:#084182}html.cvd .ov-spark-bars .bar.today em{color:#084182}html.cvd .uf-legend .ev-tag.login{background:#e9f0f9}html.cvd .fb-all:before{color:#084182}html.cvd .score-pill.hi{background:#dce7f4;color:#084182}html.cvd .trend.up{background:#dce7f4;color:#084182}html.cvd .score-chart-svg circle.hi{fill:#084182}html.cvd .admin-stat.live:before{background:linear-gradient(180deg,#327cd0,#084182) !important}html.cvd .admin-stat.live .num{color:#084182 !important}html.cvd .lc-day.today em{color:#084182}html.cvd .av.practice{background:#dce7f4;color:#084182}html.cvd .st-pill.practice{background:#dce7f4;color:#084182}html.cvd .tl-chip.ok{background:#e5eef8;border-color:#c5d7eb}html.cvd .tl-chip.ok b{color:#084182}html.cvd .tl-last .ev-tag.login{background:#e9f0f9}html.cvd .fb-card.q{border-left-color:#084182}html.cvd .fb-kind.q{background:#e5eef8;color:#084182}html.cvd .fb-status.done{color:#084182;background:#e5eef8}html.cvd .pv-next.setup{background:var(--c-ok-bg,#e5ecf5);color:var(--c-ok,#2a527f)}html.cvd .live-pulse{background:#0f57aa;box-shadow:0 0 0 3px rgba(15,87,170,.2)}html.cvd .qa-empty.ok{color:#084182}html.cvd .as-ok{color:#8aaed8;background:rgba(138,174,216,.12)}html.cvd .as-live{color:#8aaed8}html.cvd .as-live i{background:#478cdb;box-shadow:0 0 0 3px rgba(71,140,219,.2)}html.cvd .as-bar-open{background:#478cdb}html.cvd .as-legend .dot.open{background:#478cdb}html.cvd .as-mini .as-dot{background:#478cdb;box-shadow:0 0 0 3px rgba(71,140,219,.2)}html.cvd .as-mini .live .as-k,html.cvd .as-mini .live .as-u{color:#8aaed8}html.cvd .us-chip.ok{color:#8aaed8;background:rgba(138,174,216,.12)}html.cvd .us-diff.up b{color:#478cdb}html.cvd .us-goal{border-top:1px dashed rgba(138,174,216,.55)}html.cvd .us-goal span{color:#8aaed8}html.cvd .us-goal-key{border-top:1px dashed #8aaed8}html.cvd .gw-kpi .v .d{color:var(--c-ok,#2a527f);background:#e6edf4}html.cvd .gw-same .sm .up{color:var(--c-ok,#2a527f)}html.cvd #screen-result.v3 .r4-grade .r4-delta{color:#8aaed8}html.cvd .r4-tile.ok .n{color:var(--c-ok,#2a527f)}html.cvd .r4-pill{background:var(--c-ok-soft,#e6edf4);color:var(--c-ok,#2a527f)}html.cvd .r4-times .band{background:var(--c-ok-soft,#e6edf4)}html.cvd .r4-chips span.ok{background:var(--c-ok-soft,#e6edf4);color:var(--c-ok,#2a527f)}html.cvd #screen-admin.v3{--c-ok:#2a527f;--c-ok-bg:#e6edf4}html.cvd body.v3-ui{--c-ok:#2a527f;--c-ok-bg:#e6edf4}html.cvd #screen-practice.v3{--c-ok:#2a527f;--c-ok-bg:#e6edf4}html.cvd #screen-interview.rh3{--c-ok:#2a527f;--c-ok-bg:#e6edf4}html.cvd #screen-login.v3{--c-ok:#2a527f;--c-ok-bg:#e6edf4}html.cvd .su-idtag-g{background:#edf2f7 !important;color:#2a527f !important}html.cvd .pc-pill.ok{background:#e6edf4;color:#2a527f}html.cvd #modal-newpw .pw-rules span.ok{background:#e6edf4;color:#2a527f}html.cvd .au-pw-state.done{color:var(--c-ok,#2a527f)}html.cvd #screen-dashboard.v3 .d3-today.done{border-color:#cdd9e7;background:#f4f7fa}html.cvd .bt-pill.hot{background:#e6edf4;color:#2a527f}html.cvd .sr-col.good{background:#edf2f7}html.cvd .sr-col.good b{color:#2a527f}html.cvd .coach-docs li.ok b{color:#2a527f}html.cvd .coach-len.ok{color:#2a527f}html.cvd .coach-bar-mark{background:#2a527f}html.cvd .coach-result .cr.ok b{color:#2a527f}html.cvd .tl-row{background:#e6edf4;color:#2a527f}html.cvd #screen-result.v3{--c-ok:#2a527f;--c-ok-bg:#e6edf4}html.cvd #screen-result.v3 .result-hero .badge{border:1px solid #cdd9e7}html.cvd #screen-result.v3 .rhg-grade.Ap,html.cvd #screen-result.v3 .rhg-grade.A{color:#79a6da !important}html.cvd #screen-result.v3 .axis-chip.good{border-color:#bcccdf !important}html.cvd .sc-tips li.good{color:#1a497f}html.cvd .nv-col.good{background:#edf2f8}html.cvd .nv-col.good b{color:#1a497f}html.cvd .gr-head .up,html.cvd .gr-prev i.up{color:#084182}html.cvd .gr-chip.up{background:#e2ebf5;color:#084182}html.cvd .gr-ax .db .seg.up{background:#9bb7d7}html.cvd .gr-d.up::before{color:#084182}html.cvd .ur-done-ic{background:#e8eff7;color:#0e437f}
+html.cvd .hs-good span:before{color:#2a527f}html.cvd .update-bar .ub-dot{background:#478cdb;box-shadow:0 0 0 4px rgba(71,140,219,.2)}html.cvd .mb-pop .mb-tg{background:#2a527f}html.cvd .mb-pop .mb-sel{color:#2a527f;background:#e6edf4}html.cvd .mb-state.ok{color:#2a527f}html.cvd .hq-score.b4 b{color:#2a527f}html.cvd .hq-score.b4 .hq-bar i{background:#3869a1}html.cvd .hq-ans em.b4{color:#2a527f}html.cvd #screen-pending .pd-steps li.done{background:#f2f5f9;border-color:#cdd9e7}html.cvd #screen-pending .pd-steps li.done span{color:var(--c-ok, #2a527f)}html.cvd #screen-pending .pd-note.ok{color:var(--c-ok, #2a527f)}html.cvd #screen-pending .pd-copy-hint.ok{color:var(--c-ok, #2a527f)}
+html.cvd .rr-card,html.cvd .rr-box,html.cvd .rr-nudge-box,html.cvd #screen-pending,html.cvd #admin-view-reports,html.cvd #admin-view-approvals,html.cvd .beta-rate{--rr-ok:#2a527f;--rr-ok-bg:#e6edf4}html.cvd #screen-admin .uf-chip.t-ok .uf-dot{color:#2a527f}html.cvd .fb-notify.ok{color:#2a527f}html.cvd .nt-ok{background:#2a527f}html.cvd .nt-state.on{background:#e6edf4;color:#2a527f}html.cvd .fb-reply > summary small{color:#2a527f}html.cvd .tcu-tag.bonus{background:#e6edf4;color:#2a527f}html.cvd .q-fb-nv{color:#2b435e}html.cvd .rr-drawer{--rr-ok:#2a527f;--rr-ok-bg:#e6edf4}html.cvd .ra-rbar .p,html.cvd .ra-rleg .p{background:#2a527f}html.cvd #admin-view-reports,html.cvd #admin-view-reportcall{--rr-ok:#2a527f;--rr-ok-bg:#e6edf4}html.cvd .sc-chip.up b{color:#084182}html.cvd .score-chart-svg .b.hi{fill:#e2ebf5}html.cvd #screen-admin .score-chart-svg circle.hi{fill:#084182}
+html.cvd #screen-admin .admin-menu-btn[data-group="results"],html.cvd #screen-admin[data-ag="results"]{--g:#0f57aa;--g-soft:#e1ebf6;--g-ink:#0f4786}
+html.cvd .ans-meter.good .am-bar i{background:#2862a5}html.cvd .ans-meter.good .am-lbl{color:#1d4e86}html.cvd .sf-past-ex b{color:#1d4e86}html.cvd #pd-wait[data-st="sent"] .pd-chip{background:#e7edf4;color:#184170}html.cvd #pd-wait[data-st="sent"] .pd-chip i{background:#2a527f}html.cvd .pd-flow li.done{color:#1d4e86}html.cvd .pd-flow li.done i{background:#2a527f;border-color:#2a527f}html.cvd .pd-flow li.done::after{background:#9bb5d3}html.cvd .pd-sent-card{background:#f2f5f9;border:1px solid #cdd9e7}html.cvd .fl-steps b.done em{background:#295382}html.cvd #screen-admin{--schl-up:#295382}html.cvd .schl-tag.ok{background:#e7eef5;color:#20436a}html.cvd .r-dept{background:#edf2f7;color:#20436a}html.cvd .pk-delta.up{background:#e2eaf4;color:#1d4067}html.cvd .pk-ax td.up{color:#1d4067}html.cvd .dbt-good > b{color:#1a497f !important}html.cvd .dbt-ex{background:#f1f5f9}html.cvd .dbt-ex b{color:#1c3450}html.cvd .dbp-steps li.done{background:#e2eaf4;color:#1d4067}html.cvd .dbp-steps li.done::before{color:#1d4067}html.cvd .dbt-av[data-w="B"]{background:#1a497f}html.cvd .pk-s b{color:#1d4067}html.cvd .pk-two section.ai{background:#f2f5f9;border-color:#cdd9e7}html.cvd .pk-dt ins{color:#1a3a5f;background:#dce7f3}html.cvd .pk-lg.ins{background:#dce7f3;color:#1a3a5f}html.cvd .pk-prog i{background:#295382}html.cvd .pk-chk input{accent-color:#295382}html.cvd .qb-good{border-color:#bccee3;background:#fbfcfe}html.cvd .qb-check td.ok{color:#1d4067}html.cvd .qb-st.active{background:#e2eaf4;color:#1d4067}html.cvd .qb-acts p{color:#1d4067}html.cvd .qb-done{background:#e2eaf4;color:#1d4067}html.cvd .pk-grow{border:1.5px solid #cdd9e7}html.cvd .pk-grow > b{color:#1d4067}html.cvd .pk-grow li::before{color:#295382}html.cvd .ec-bar li.done{color:#1d4067}html.cvd .ec-bar li.done em{background:#295382}html.cvd .ec-dot.done{border-color:#cdd9e7;background:#f2f5f9;color:#1d4067}html.cvd .ec-chips span{background:#e2eaf4;color:#1d4067}html.cvd .ec-ck li.ok::before{color:#295382}html.cvd .ec-draft{background:#f2f5f9;border-color:#cdd9e7 !important}html.cvd .ec-draft ins{color:#1a3a5f;background:#dce7f3}html.cvd .fl-ec.on{border-color:#cdd9e7;background:#f2f5f9;color:#1d4067}html.cvd .ivv-api.ok i{background:#295382}html.cvd .ivv-tag.ok{background:#e2eaf4;color:#1d4067}html.cvd .ivv-check li.ok i{color:#295382}html.cvd .ivv-check li.ok span{background:#e2eaf4;color:#1d4067}html.cvd .ib-st.ok{color:#295382}html.cvd .ib-certs-top span.has{background:#e9eff6;color:#295382}html.cvd .fl-doc-n .ok{color:#295382}html.cvd .fl-doc-st.ok{color:#295382}html.cvd .pr-prog i{background:#295382}html.cvd .pr-q .st.ok{color:#295382}html.cvd .pr-why{background:#edf1f6}html.cvd .pr-why b{color:#295382}html.cvd .pr-timer.ok{color:#295382}html.cvd #screen-result .up{color:#294a70}html.cvd #screen-result .rv-diff ins{background:#e6ecf2;color:#294a70}html.cvd .ib-rp-st.ok{color:#295382}html.cvd .fl-badge.ib-rp-ok{color:#1e436d;background:#e3eaf3;border-color:#cddae8}html.cvd #modal-flow .dev-pill.ok{background:#e6ecf2;color:#294a70}html.cvd .ae-grade.g0{background:#e4ecf5;color:#123c6d}html.cvd .q-grade.ae.g0{background:#e4ecf5;color:#123c6d}html.cvd .co-vd.ok{background:#e5ecf3;color:#295382}html.cvd .sf-test-out p{background:#f1f5f9}html.cvd .af-fixed{color:#1d4e86;background:#e1ebf6}html.cvd .af-pair b{color:#1d4e86}html.cvd .rq-ok{background:#e1ebf6;color:#0f4786}html.cvd #d3-stats .as-bars span.today{background:#478cdb}html.cvd #d3-stats .as-bars span.ghost.today{background:repeating-linear-gradient(135deg,#2b435e 0 5px,#273548 5px 10px)}html.cvd .an-src.fix{background:#e2eaf4;color:#1d4067}html.cvd .an-ok{color:#1d4067}html.cvd .f10-prog i.done{background:#1a497f}html.cvd .f10-fb.good{color:#1a497f !important}html.cvd .dq-bar.done{border-color:#bcd0e6;background:#f4f7fb}html.cvd .dq-bar.done .dq-tag{background:#1a497f}html.cvd .dq-bar.done .dq-go{color:#1a497f}html.cvd .st-badge.on{background:#e2eaf4;color:#1d4067}html.cvd .st-made > b{color:#1a497f}html.cvd .net-banner.back{border-left-color:#2a527f}html.cvd .net-banner.back .nb-ic{color:#2a527f}html.cvd .sg-prog i.done{background:#1a497f}html.cvd .sg-vst.on{background:#1a497f}html.cvd .sv-st.on{background:#1a497f}
+html.cvd .zv-live i{background:#428fe6}html.cvd #modal-signup .su-v-list li::before{background:rgba(66,143,230,.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234ade80' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat}html.cvd #modal-flow .fl-hc-st .fl-hc-art{color:#2a4c72;background:linear-gradient(135deg,#ebf1f8,#cddbec)}html.cvd #modal-flow .fl-hc-st em{color:#2a4c72}html.cvd #modal-flow .fl-hc-st::before{background:radial-gradient(circle,rgba(42,76,114,.12),rgba(42,76,114,0) 70%)}html.cvd #modal-flow .fl-hc-st:hover{border-color:#b2c5db;box-shadow:0 18px 34px -22px rgba(42,76,114,.5)}
+/* cvd:auto-end */
+html.cvd :is(.ib-st.ok,.ib-rp-st.ok,.fl-doc-st.ok,.resume-status.ok,#modal-flow .dev-pill.ok,.setup-step-tag.ok,.coach-len.ok,.pc-pill.ok,.status-chip.ok,.su-match.ok,.hp-st:not(.stop))::before{content:"\2713\00a0";font-weight:800}
+html.cvd :is(.ib-st.warn,.ib-rp-st.warn,.fl-doc-st.warn,.resume-status.warn,#modal-flow .dev-pill.warn,.setup-step-tag.warn,.coach-len.warn,.tl-row.warn,.dchip.warn,.pc-pill.warn,.sf-hint.warn,.lg-browser.warn)::before{content:"!\00a0";font-weight:800}
+html.cvd :is(#modal-flow .dev-pill.err,.setup-step-tag.err,.tl-row.bad,.pc-pill.bad,.hp-st.stop,.lg-browser.bad,.ra-res.fail)::before{content:"\00d7\00a0";font-weight:800}
+html.cvd :is(#screen-result .up,.gr-chip.up,.pk-delta.up,.trend.up)::before{content:"\25b2\00a0";font-size:.8em}
+html.cvd :is(#screen-result .down,.gr-chip.down,.pk-delta.down,.trend.down)::before{content:"\25bc\00a0";font-size:.8em}
+/* 화면 설정 (내 정보) */
+.ui-pref{display:grid;gap:10px;margin:6px 0 4px}
+.ui-pref-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 14px;border:1px solid #e3d9cf;border-radius:12px;background:#fff}
+.ui-pref-row b{display:block;font-size:14.5px;color:#2b2521} .ui-pref-row small{display:block;font-size:12.5px;line-height:1.5;color:#6a5b51;margin-top:2px}
+.ui-sw{flex:none;position:relative;width:46px;height:26px;border-radius:999px;border:0;background:#cfc6bd;cursor:pointer;transition:background .15s}
+.ui-sw::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s}
+.ui-sw[aria-checked="true"]{background:#bf401a} .ui-sw[aria-checked="true"]::after{transform:translateX(20px)}
+html.cvd .ui-sw[aria-checked="true"]{background:#1d5fa8}
+.ui-seg{flex:none;display:inline-flex;border:1px solid #d9cfc5;border-radius:10px;overflow:hidden} .ui-seg button{border:0;background:#fff;padding:8px 14px;font:inherit;font-size:13.5px;font-weight:600;color:#4a4039;cursor:pointer} .ui-seg button[aria-pressed="true"]{background:#2b2521;color:#fff}
+</style>
 <style id="zv-css">
 :root{--zv-ink:#1b1512;--zv-card:#1d1512;--zv-acc:#e8532a;--zv-acc2:#c8441c;--zv-acc3:#a8361a;
   --zv-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
