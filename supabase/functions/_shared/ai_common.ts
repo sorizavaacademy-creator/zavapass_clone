@@ -66,7 +66,7 @@ function buildBody(model: string, messages: unknown[], temperature: number, maxT
   return body;
 }
 /** OpenAI에 JSON으로 묻고 JSON으로 받음. 실패하면 이유를 담아 throw */
-export async function askJson(system: string, user: string, opt: { temperature?: number; maxTokens?: number; timeoutMs?: number } = {}): Promise<{ data: Record<string, unknown>; model: string }> {
+export async function askJson(system: string, user: string, opt: { temperature?: number; maxTokens?: number; timeoutMs?: number; reasoning?: string } = {}): Promise<{ data: Record<string, unknown>; model: string }> {
   if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY가 설정되지 않았어요");
   const messages = [{ role: "system", content: system }, { role: "user", content: user }];
   const maxTokens = opt.maxTokens ?? 2500, temperature = opt.temperature ?? 0.3;
@@ -77,8 +77,16 @@ export async function askJson(system: string, user: string, opt: { temperature?:
     }).finally(() => clearTimeout(t));
   };
   let model = OPENAI_MODEL, body = buildBody(model, messages, temperature, maxTokens);
+  if (opt.reasoning && isNewGen(model)) body.reasoning_effort = opt.reasoning;   // 2026-11-17 '생각 짧게'(none·low): 빨리 답해야 하는 함수만 넘김
   let res = await send(body);
   if (res.status >= 500 || res.status === 429) { await new Promise((r) => setTimeout(r, 700)); res = await send(body); }
+  for (const next of ["low", null]) {   // 모델이 그 값을 거부하면 low로, 그것도 거부하면 빼고 다시
+    if (res.status !== 400 || !("reasoning_effort" in body)) break;
+    const t = await res.clone().text();
+    if (!/reasoning/i.test(t)) break;
+    if (next && body.reasoning_effort !== next) body.reasoning_effort = next; else delete body.reasoning_effort;
+    res = await send(body);
+  }
   if (res.status === 400) {
     const t = await res.clone().text();
     if (/temperature|max_tokens|max_completion_tokens|unsupported/i.test(t)) { delete body.temperature; delete body.max_tokens; body.max_completion_tokens = maxTokens; res = await send(body); }
