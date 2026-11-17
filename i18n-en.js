@@ -897,5 +897,6 @@ window.ZP_EN = {
 "값 (예: #점 · 학과 평균 #)": "Value (e.g. # pts · dept. average #)",
 "분류": "Category",
 "항목 이름": "Item name",
-"값": "Value"
+"값": "Value",
+"면접관 영상은 AI로 만든 예시예요. 입 모양은 실제 말소리와 꼭 맞지 않을 수 있어요.": "The interviewer videos are AI-generated examples. Lip movement may not exactly match the spoken words."
 };

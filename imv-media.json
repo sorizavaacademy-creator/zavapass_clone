@@ -1,1 +1,46 @@
-{}
+{
+ "loops": {
+  "3": {
+   "idle": [
+    "hf3-idle.mp4",
+    "hf3-idle.webm"
+   ],
+   "talk": {
+    "0": [
+     "hf3-talk0.mp4",
+     "hf3-talk0.webm"
+    ],
+    "1": [
+     "hf3-talk1.mp4",
+     "hf3-talk1.webm"
+    ],
+    "2": [
+     "hf3-talk2.mp4",
+     "hf3-talk2.webm"
+    ]
+   },
+   "sync": [
+    {
+     "text": "안녕하세요. 오늘 면접을 진행할 면접관입니다. 편안한 마음으로 답변해 주세요.",
+     "seat": 0,
+     "voice": "tc_673eca75a1aae856ff42b80e",
+     "video": [
+      "hf3-open.mp4",
+      "hf3-open.webm"
+     ],
+     "audio": "hf3-open-hr.mp3"
+    },
+    {
+     "text": "수고하셨습니다. 면접을 마치겠습니다.",
+     "seat": 0,
+     "voice": "tc_673eca75a1aae856ff42b80e",
+     "video": [
+      "hf3-close.mp4",
+      "hf3-close.webm"
+     ],
+     "audio": "hf3-close-hr.mp3"
+    }
+   ]
+  }
+ }
+}
