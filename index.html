@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-17a';
+var APP_VERSION = '2026-11-17b';
 </script>
 <script>
 /* 2026-10-20l 카카오톡 등 앱 안의 창(인앱 브라우저)으로 열면 카메라·마이크·음성 인식이 막힘
@@ -25404,7 +25404,10 @@ const StenoListener = {
       this.failKind = e.error || 'error';
       this._fail(micErrorMessage(e).text);
     };
-    rec.onend = ()=>{ if(this.active){ const d = this.timers.netErr ? Math.min(6000, 800 * this.timers.netErr) : 300; setTimeout(()=>{ if(!this.active) return;
+    rec.onend = ()=>{ if(this.active){
+      // 2026-11-17 인식이 끊겨 다시 시작할 때(인터넷이 잠깐 끊김 등) 아직 확정되지 않은 글자가 사라지던 것 고침: 끊기기 전까지 받아 적은 글자를 답변에 남김
+      if(this.interim){ this.transcript = fx(joinSpeech(this.transcript, this.interim)); this.interim = ''; try{ if(this.cb.onInterim) this.cb.onInterim(this.transcript); }catch(_){} }
+      const d = this.timers.netErr ? Math.min(6000, 800 * this.timers.netErr) : 300; setTimeout(()=>{ if(!this.active) return;
       if(this._srTrack && this._srTrack.readyState !== 'live') this._srTrack = null;   // 트랙이 끝났으면(권한 만료·장치 분리) 기본 마이크로
       try{ this._srTrack ? rec.start(this._srTrack) : rec.start(); }
       catch(e){ if(this._srTrack){ this._srTrack = null; try{ rec.start(); return; }catch(_){} } this.timers.restartFail = (this.timers.restartFail||0) + 1; if(this.timers.restartFail >= 2){ this.failKind = 'restart'; this._fail('음성 인식을 다시 시작하지 못했어요. 답변을 직접 입력해 주세요.'); } } }, d); } };
