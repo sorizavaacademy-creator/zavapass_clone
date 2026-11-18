@@ -98,47 +98,47 @@
   },
   "1f": {
    "idle": [
-    "hf1f-idle.mp4",
-    "hf1f-idle.webm"
+    "v1f-idle.mp4",
+    "v1f-idle.webm"
    ],
    "talk": {
     "0": [
-     "hf1f-talk0.mp4",
-     "hf1f-talk0.webm"
+     "v1f-talk0.mp4",
+     "v1f-talk0.webm"
     ]
    },
    "sync": [
     {
-     "text": "안녕하세요. 오늘 면접을 진행할 면접관입니다. 편안한 마음으로 답변해 주세요.",
+     "text": "안녕하세요. 오늘 면접을 진행할 면접관입니다. 편안한 마음으로 답변해 주세요. 그럼 시작하겠습니다.",
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "hf1f-open.mp4",
-      "hf1f-open.webm"
+      "v1f-open.mp4",
+      "v1f-open.webm"
      ],
-     "audio": "hf3-open-hr.mp3"
+     "audio": "v-open-hr.mp3"
     },
     {
      "text": "수고하셨습니다. 면접을 마치겠습니다.",
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "hf1f-close.mp4",
-      "hf1f-close.webm"
+      "v1f-close.mp4",
+      "v1f-close.webm"
      ],
-     "audio": "hf3-close-hr.mp3"
+     "audio": "v-close-hr.mp3"
     }
    ]
   },
   "1m": {
    "idle": [
-    "hf1m-idle.mp4",
-    "hf1m-idle.webm"
+    "v1m-idle.mp4",
+    "v1m-idle.webm"
    ],
    "talk": {
     "1": [
-     "hf1m-talk1.mp4",
-     "hf1m-talk1.webm"
+     "v1m-talk1.mp4",
+     "v1m-talk1.webm"
     ]
    }
   }

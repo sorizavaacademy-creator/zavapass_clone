@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-18b';
+var APP_VERSION = '2026-11-18c';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -15191,10 +15191,10 @@ const StartFlow = {
     if(prev.people && prev.people.length){ this.s.people = prev.people.slice(); this.s.count = prev.count || prev.people.length; }
     this.minPeople(); this.render();
   },
-  /** 2026-11-18 면접관은 2명 또는 3명 (1명 선택지 없앰): 1명만 들어 있으면 추천 순서로 한 명을 채움 */
+  /** 2026-11-18 면접관은 1~3명 (1명 선택지를 뺐다가 다시 살림): 비어 있으면 추천 순서로 한 명을 채우고, 인원 수를 고른 사람 수에 맞춤 */
   minPeople(){ const s = this.s; if(!s) return; if(!Array.isArray(s.people)) s.people = [];
-    for(const id of ['hr','lead','exec','senior','data','press']){ if(s.people.length >= 2) break; if(!s.people.includes(id)) s.people.push(id); }
-    if((s.count || 0) < 2) s.count = 2; if(s.count < s.people.length) s.count = Math.min(3, s.people.length); },
+    if(!s.people.length) s.people.push('hr'); s.people = s.people.slice(0, 3);
+    if(!(s.count >= 1)) s.count = s.people.length; if(s.count < s.people.length) s.count = s.people.length; },
   /** 위 메뉴·로고를 누르면 준비 화면을 닫고 그 화면으로 */
   leave(go){ this.close(); try{ go && go(); }catch(_){} },
   myMenu(e){ const m = document.getElementById('fl-my-menu'), b = document.getElementById('fl-my-btn'); if(!m) return; const open = (e && e.stopPropagation) ? (e.stopPropagation(), m.hidden) : (e === true); m.hidden = !open; if(b) b.setAttribute('aria-expanded', String(open)); },
@@ -15245,7 +15245,7 @@ const StartFlow = {
     return (s.kind === 'job' && fid && QBank.applies(fid)) ? { talentId: s.job.companyId || null, companyName: s.job.company || null, grp: QBank.FIELDS[fid], job: s.job.jobcat || QBank.guessJob(s.job.role), role: (s.job.role || '').trim() || null, eng: !!s.job.eng, mood: this.mood() } : null; },
   /** 고른 내용을 면접 맥락(state.flowCtx)으로 정리 · 질문 미리 뽑기 (예전 '확인' 다음에 하던 일) */
   prepare(){
-    const s = this.s; this.minPeople();   // 어떤 길로 들어와도 면접관은 2명 이상
+    const s = this.s; this.minPeople();   // 어떤 길로 들어와도 면접관이 1명 이상
     if(s.review){   // 복습: 정해진 질문만 · 기관 질문은행·경험은 쓰지 않음
       const ps0 = s.people.map(id=>(this.PEOPLE.find(p=>p.id===id) || {}).p || 'normal'), pr0 = ps0.includes('hard') ? 'hard' : ps0.every(x=>x === 'soft') ? 'soft' : 'normal';
       state.flowCtx = { purpose: s.kind, review: true, mode: s.mode, interviewers: s.people.slice(), interviewerCount: s.count, pressure: pr0, diff: s.diff, major: { dept: s.major.dept, grade: s.major.grade }, experiences: [], job: null, qbank: null };
@@ -15317,7 +15317,7 @@ const StartFlow = {
       if(s.job.companyId && !fieldCompanies(s.job.field, CompanyData._list || []).some(x=>x.id === s.job.companyId)){ s.job.companyId = ''; s.job.company = ''; } });
     on('[data-use]', b=>{ const a = s.use, i = a.indexOf(b.dataset.use); i < 0 ? a.push(b.dataset.use) : a.splice(i,1); });
     on('[data-del]', b=>{ this.exps = this.exps.filter(e=>e.id !== b.dataset.del); s.use = s.use.filter(x=>x !== b.dataset.del); if(s.expId === b.dataset.del){ s.expId = ''; s.expText = ''; } try{ PrepSync.save(); }catch(_){} });
-    on('[data-count]', b=>{ const n = Math.max(2, +b.dataset.count || 2); s.count = n;   // 늘리면 추천 순서(인사팀장 → 현업 팀장 → 임원)로 채우고, 줄이면 뒤에서부터 뺌
+    on('[data-count]', b=>{ const n = Math.max(1, +b.dataset.count || 1); s.count = n;   // 늘리면 추천 순서(인사팀장 → 현업 팀장 → 임원)로 채우고, 줄이면 뒤에서부터 뺌
       for(const id of ['hr','lead','exec','senior','data','press']){ if(s.people.length >= n) break; if(!s.people.includes(id)) s.people.push(id); } s.people = s.people.slice(0, n); s.spk = 0; });
     body.querySelectorAll('[data-person]').forEach(b=>b.onclick = ()=>{ const id = b.dataset.person, i = s.people.indexOf(id);
       if(i >= 0){ if(s.count === 1) return; s.people.splice(i,1); }
@@ -15509,7 +15509,7 @@ const StartFlow = {
   /** 2단계 접기 '면접관·시간·난이도 바꾸기' 안쪽 (예전 '면접관·설정' 단계 내용 그대로) */
   vMore(){ const s = this.s;
     return `${this.vMood()}
-    <div class="fl-grid"><div class="fl-f"><span class="fl-lbl">면접관 인원</span><div class="fl-chips">${[2,3].map(n=>`<button type="button" class="fl-chip" data-count="${n}" aria-pressed="${n===s.count}">${n}명</button>`).join('')}</div></div></div>
+    <div class="fl-grid"><div class="fl-f"><span class="fl-lbl">면접관 인원</span><div class="fl-chips">${[1,2,3].map(n=>`<button type="button" class="fl-chip" data-count="${n}" aria-pressed="${n===s.count}">${n}명</button>`).join('')}</div></div></div>
     <div class="fl-f"><div class="fl-row"><span class="fl-lbl">면접관 ${s.count}명 고르기 (${s.people.length}/${s.count})</span>${s.count>1?'<span class="fl-sub">처음 고른 면접관이 진행을 맡아요</span>':''}</div>
     <div class="fl-people">${this.PEOPLE.map(x=>{ const k = s.people.indexOf(x.id); return `<button type="button" class="fl-person" data-person="${x.id}" aria-pressed="${k>=0}">${k>=0&&s.count>1?`<span class="ord">${k+1}</span>`:''}<span class="av" style="background:${x.c}">${this.ini(x)}</span><span class="n">${x.n}</span><span class="m">${x.m}</span><span class="q">${x.q}</span></button>`; }).join('')}</div></div>
     <div class="fl-f wide"><span class="fl-lbl">시간</span><p class="fl-sub">${s.mode === 'real' ? '실전형: 자기소개 60초 · 답변 90초 (실제 면접처럼 정해져 있어요)' : s.mode === 'practice' ? '연습형: 시간 제한 없이 답해요' : '연습형은 시간 제한이 없고, 실전형은 자기소개 60초 · 답변 90초예요'}</p></div>
@@ -28023,8 +28023,8 @@ const IvVoice = {
   people(){ return StartFlow.PEOPLE; },
   /* 2026-11-17 면접장 사진 속 얼굴 3명: 목소리와 높낮이는 얼굴에 고정 (자리 0 왼쪽 여성 · 1 가운데 남성 · 2 오른쪽 남성) */
   FACE_IDS: ['faceleft', 'facemid', 'faceright'],
-  FACES: [ { id:'faceleft', n:'왼쪽 얼굴', a:'왼', m:'여성 · 중년', q:'2명·3명 사진의 여성 면접관', c:'#8A6F5C', face:true },
-    { id:'facemid', n:'가운데 얼굴', a:'중', m:'남성 · 나이 있는 쪽', q:'2명·3명 사진의 가운데 남성 면접관', c:'#3F4E63', face:true },
+  FACES: [ { id:'faceleft', n:'왼쪽 얼굴', a:'왼', m:'여성 · 중년', q:'1명·2명·3명 사진의 여성 면접관', c:'#8A6F5C', face:true },
+    { id:'facemid', n:'가운데 얼굴', a:'중', m:'남성 · 나이 있는 쪽', q:'1명·2명·3명 사진의 가운데 남성 면접관', c:'#3F4E63', face:true },
     { id:'faceright', n:'오른쪽 얼굴', a:'오', m:'남성 · 젊은 쪽', q:'2명·3명 사진의 오른쪽 남성 면접관', c:'#5B6B7A', face:true } ],
   all(){ return this.FACES.concat(this.people()); },
   isFace(pid){ return this.FACE_IDS.includes(pid); },
