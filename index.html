@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-18c';
+var APP_VERSION = '2026-11-18d';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -32688,14 +32688,17 @@ const IMV_THEME = 'bright';
 /* 면접장 사진 (AI로 만든 예시 · 실제 인물 아님). 3명 사진 하나에서 1·2명용을 잘라 씀 — 바꾸려면 같은 이름 파일만 교체
    사진 속 자리(col): 0 왼쪽 여성 · 1 가운데 진행 · 2 오른쪽. x = 그 사람의 가로 위치(%) */
 const IMV_PHOTOS = {
-  '3':  { src: 'imv-panel3.jpg',  x: { 0: 18, 1: 50, 2: 83 }, sw: 24 },
-  '2a': { src: 'imv-panel2a.jpg', x: { 0: 26, 1: 74 }, sw: 32 },
-  '2b': { src: 'imv-panel2b.jpg', x: { 1: 27, 2: 75 }, sw: 32 },
-  '1f': { src: 'imv-panel1f.jpg', x: { 0: 44 }, sw: 0 },   // 2026-11-18 덜 가깝게 다시 자름 (얼굴이 가운데보다 조금 왼쪽)
-  '1m': { src: 'imv-panel1m.jpg', x: { 1: 50 }, sw: 0 },
+  '3':  { src: 'imv-panel3.jpg?v=18d',  x: { 0: 18, 1: 50, 2: 83 }, sw: 24 },
+  '2a': { src: 'imv-panel2a.jpg?v=18d', x: { 0: 26, 1: 74 }, sw: 32 },
+  '2b': { src: 'imv-panel2b.jpg?v=18d', x: { 1: 27, 2: 75 }, sw: 32 },
+  '1f': { src: 'imv-panel1f.jpg?v=18d', x: { 0: 44 }, sw: 0 },   // 2026-11-18 덜 가깝게 다시 자름 (얼굴이 가운데보다 조금 왼쪽)
+  '1m': { src: 'imv-panel1m.jpg?v=18d', x: { 1: 50 }, sw: 0 },
 };
 const IMV_PANEL3 = IMV_PHOTOS['3'].src;
-function imvPreload(){ if(imvPreload.done) return; imvPreload.done = true; Object.values(IMV_PHOTOS).forEach(L=>{ try{ const i = new Image(); i.src = L.src; }catch(_){} }); try{ ImvLoop.warm(); }catch(_){} }   // 준비 창에서 미리 받아 둠 (입장 때 회색 화면 방지)   // 'bright' = 밝은 실제 면접실 (기본) · 'dark' = 어두운 몰입형
+function imvPreload(){   // 2026-11-18d 고른 면접관 구성의 사진·영상만 미리 받음 (영상을 풀HD로 올리면서 다섯 구성을 다 받으면 약 30MB라 느린 인터넷에서 부담)
+  let lay = ''; try{ let ppl = IvPanel.people(); if(!ppl.length) ppl = [{ id: 'hr' }, { id: 'lead' }]; lay = Imv.layoutFor(ppl.slice(0, 3).map(x=>Imv.P(x.id))).layout; }catch(_){}
+  imvPreload.seen = imvPreload.seen || {}; if(imvPreload.seen[lay || '*']) return; imvPreload.seen[lay || '*'] = true;
+  (lay && IMV_PHOTOS[lay] ? [IMV_PHOTOS[lay]] : Object.values(IMV_PHOTOS)).forEach(L=>{ try{ const i = new Image(); i.src = L.src; }catch(_){} }); try{ ImvLoop.warm(lay); }catch(_){} }   // 준비 창에서 미리 받아 둠 (입장 때 회색 화면 방지)   // 'bright' = 밝은 실제 면접실 (기본) · 'dark' = 어두운 몰입형
 
 /* 2026-11-17 립싱크 입 모양 순서표 (글자 → 입 모양)
    면접관이 할 말(질문·꼬리질문 글자)은 목소리를 만들기 전에 이미 정해져 있으므로, 한글 한 글자씩 모음·자음으로 나눠 입 모양을 정함.
@@ -32818,7 +32821,8 @@ const ImvLoop = {
   NOTE: '면접관 영상은 AI로 만든 예시예요. 입 모양은 실제 말소리와 꼭 맞지 않을 수 있어요.', note0: '',
   cfg(imv){ const m = imv.media && imv.media.loops; const C = m && imv.mode === 'photo' ? m[imv.layout] : null; return C && C.idle ? C : null; },
   /** 준비 창에서 미리 받아 둠 (입장하자마자 영상이 보이게) */
-  warm(){ try{ Imv.loadMedia().then(m=>{ const L = m && m.loops; if(!L || this._warm) return; this._warm = true; Object.values(L).forEach(C=>[C.idle].concat(Object.values(C.talk || {}), (C.sync || []).map(x=>x.audio)).filter(Boolean).forEach(u=>{ try{ fetch(Array.isArray(u) ? u[0] : u).catch(()=>{}); }catch(_){} })); }); }catch(_){} },
+  warm(lay){ try{ Imv.loadMedia().then(m=>{ const L = m && m.loops; if(!L) return; const key = lay && L[lay] ? lay : '*'; this._warm = this._warm || {}; if(this._warm[key] || this._warm['*']) return; this._warm[key] = true;
+      (key === '*' ? Object.values(L) : [L[key]]).forEach(C=>[C.idle].concat(Object.values(C.talk || {}), (C.sync || []).map(x=>x.video), (C.sync || []).map(x=>x.audio)).filter(Boolean).forEach(u=>{ try{ fetch(Array.isArray(u) ? u[0] : u).catch(()=>{}); }catch(_){} })); }); }catch(_){} },   // 2026-11-18d 고른 구성만 (시작·끝 멘트 영상도 함께)
   sync(imv){
     this.imv = imv; const host = imv.el && imv.el.querySelector('#imv-photo-img'); if(!host) return;
     let C = null; try{ C = this.cfg(imv); }catch(_){}
