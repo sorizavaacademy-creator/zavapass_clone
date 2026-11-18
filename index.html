@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-18f';
+var APP_VERSION = '2026-11-18g';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -21900,11 +21900,15 @@ const FaceCoach = {
     if(pitch > 90) pitch -= 180; else if(pitch < -90) pitch += 180;
     return { yaw, pitch };
   },
+  /** 2026-11-18g 정면·시선 아래·옆·위는 한 화면을 셋 중 하나로만 세므로 합이 100%여야 함. 따로 반올림하면 99%·101%가 될 수 있어 남는 1%를 소수점이 큰 쪽에 줌 */
+  split3(a, b, c){ const t = (a || 0) + (b || 0) + (c || 0); if(!(t > 0)) return [0, 0, 0];
+    const raw = [a, b, c].map(x=>(x || 0) / t * 100), out = raw.map(Math.floor); let left = 100 - out.reduce((s, x)=>s + x, 0);
+    raw.map((x, i)=>[x - out[i], i]).sort((p, q)=>q[0] - p[0]).forEach(([, i])=>{ if(left > 0){ out[i]++; left--; } }); return out; },
   summarize(acc){
     if(!acc || acc.n < 3) return null;
     const pct = (x, d)=> d ? Math.round(x / d * 100) : 0;
-    const f = acc.face;
-    return { frames: acc.n, facePct: pct(f, acc.n), frontPct: pct(acc.front, f), downPct: pct(acc.down, f), awayPct: pct(acc.away, f),
+    const f = acc.face, [fp, dp, ap] = this.split3(acc.front, acc.down, acc.away);
+    return { frames: acc.n, facePct: pct(f, acc.n), frontPct: fp, downPct: dp, awayPct: ap,
              smile: f ? Math.round(acc.smile / f * 100) / 100 : 0, centeredPct: pct(acc.centered, f), farPct: pct(acc.far, f), nearPct: pct(acc.near, f),
              multiPct: pct(acc.multi, f), movePct: pct(acc.move, f), lowPct: pct(acc.low, f), handPct: acc.handN >= 3 ? pct(acc.hand, acc.handN) : null };
   },
@@ -21916,7 +21920,8 @@ const FaceCoach = {
     const avg = k => Math.round(xs.reduce((s,x)=>s + x[k] * x.frames, 0) / W);
     const fw = xs.reduce((s,x)=>s + x.frames * x.facePct / 100, 0) || 1;
     const avgF = k => Math.round(xs.reduce((s,x)=>s + x[k] * x.frames * x.facePct / 100, 0) / fw);
-    return { v:1, frames: W, answers: xs.length, facePct: avg('facePct'), frontPct: avgF('frontPct'), downPct: avgF('downPct'), awayPct: avgF('awayPct'),
+    const rawF = k => xs.reduce((s,x)=>s + (x[k] || 0) * x.frames * x.facePct / 100, 0) / fw, [fp, dp, ap] = this.split3(rawF('frontPct'), rawF('downPct'), rawF('awayPct'));   // 2026-11-18g 합 100%
+    return { v:1, frames: W, answers: xs.length, facePct: avg('facePct'), frontPct: fp, downPct: dp, awayPct: ap,
              smile: Math.round(xs.reduce((s,x)=>s + x.smile * x.frames * x.facePct / 100, 0) / fw * 100) / 100,
              centeredPct: avgF('centeredPct'), farPct: avgF('farPct'), nearPct: avgF('nearPct'),
              multiPct: avgF('multiPct') || 0, movePct: avgF('movePct') || 0, lowPct: avgF('lowPct') || 0,
