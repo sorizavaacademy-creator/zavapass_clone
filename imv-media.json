@@ -2,21 +2,21 @@
  "loops": {
   "3": {
    "idle": [
-    "w3-idle.mp4",
-    "w3-idle.webm"
+    "x3-idle.mp4",
+    "x3-idle.webm"
    ],
    "talk": {
     "0": [
-     "w3-talk0.mp4",
-     "w3-talk0.webm"
+     "x3-talk0.mp4",
+     "x3-talk0.webm"
     ],
     "1": [
-     "w3-talk1.mp4",
-     "w3-talk1.webm"
+     "x3-talk1.mp4",
+     "x3-talk1.webm"
     ],
     "2": [
-     "w3-talk2.mp4",
-     "w3-talk2.webm"
+     "x3-talk2.mp4",
+     "x3-talk2.webm"
     ]
    },
    "sync": [
@@ -25,8 +25,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "w3-open.mp4",
-      "w3-open.webm"
+      "x3-open.mp4",
+      "x3-open.webm"
      ],
      "audio": "v-open-hr.mp3"
     },
@@ -35,8 +35,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "w3-close.mp4",
-      "w3-close.webm"
+      "x3-close.mp4",
+      "x3-close.webm"
      ],
      "audio": "v-close-hr.mp3"
     }
@@ -44,17 +44,17 @@
   },
   "2a": {
    "idle": [
-    "w2a-idle.mp4",
-    "w2a-idle.webm"
+    "x2a-idle.mp4",
+    "x2a-idle.webm"
    ],
    "talk": {
     "0": [
-     "w2a-talk0.mp4",
-     "w2a-talk0.webm"
+     "x2a-talk0.mp4",
+     "x2a-talk0.webm"
     ],
     "1": [
-     "w2a-talk1.mp4",
-     "w2a-talk1.webm"
+     "x2a-talk1.mp4",
+     "x2a-talk1.webm"
     ]
    },
    "sync": [
@@ -63,8 +63,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "w2a-open.mp4",
-      "w2a-open.webm"
+      "x2a-open.mp4",
+      "x2a-open.webm"
      ],
      "audio": "v-open-hr.mp3"
     },
@@ -73,8 +73,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "w2a-close.mp4",
-      "w2a-close.webm"
+      "x2a-close.mp4",
+      "x2a-close.webm"
      ],
      "audio": "v-close-hr.mp3"
     }
@@ -82,29 +82,29 @@
   },
   "2b": {
    "idle": [
-    "w2b-idle.mp4",
-    "w2b-idle.webm"
+    "x2b-idle.mp4",
+    "x2b-idle.webm"
    ],
    "talk": {
     "1": [
-     "w2b-talk1.mp4",
-     "w2b-talk1.webm"
+     "x2b-talk1.mp4",
+     "x2b-talk1.webm"
     ],
     "2": [
-     "w2b-talk2.mp4",
-     "w2b-talk2.webm"
+     "x2b-talk2.mp4",
+     "x2b-talk2.webm"
     ]
    }
   },
   "1f": {
    "idle": [
-    "w1f-idle.mp4",
-    "w1f-idle.webm"
+    "x1f-idle.mp4",
+    "x1f-idle.webm"
    ],
    "talk": {
     "0": [
-     "w1f-talk0.mp4",
-     "w1f-talk0.webm"
+     "x1f-talk0.mp4",
+     "x1f-talk0.webm"
     ]
    },
    "sync": [
@@ -113,8 +113,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "w1f-open.mp4",
-      "w1f-open.webm"
+      "x1f-open.mp4",
+      "x1f-open.webm"
      ],
      "audio": "v-open-hr.mp3"
     },
@@ -123,8 +123,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "w1f-close.mp4",
-      "w1f-close.webm"
+      "x1f-close.mp4",
+      "x1f-close.webm"
      ],
      "audio": "v-close-hr.mp3"
     }
@@ -132,13 +132,13 @@
   },
   "1m": {
    "idle": [
-    "w1m-idle.mp4",
-    "w1m-idle.webm"
+    "x1m-idle.mp4",
+    "x1m-idle.webm"
    ],
    "talk": {
     "1": [
-     "w1m-talk1.mp4",
-     "w1m-talk1.webm"
+     "x1m-talk1.mp4",
+     "x1m-talk1.webm"
     ]
    }
   }

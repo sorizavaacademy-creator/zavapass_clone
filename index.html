@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-18e';
+var APP_VERSION = '2026-11-18f';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -15289,6 +15289,7 @@ const StartFlow = {
   },
   render(){
     const s = this.s, body = document.getElementById('fl-body');
+    try{ if(s && s.step >= 2 && !s.hub && !s.page && Array.isArray(s.people) && s.people.length) imvPreload(s.people); }catch(_){}   // 2026-11-18f 면접관을 고른 화면부터 그 구성의 영상을 미리 받음
     const prevStep = this._shown; this._shown = (s.hub ? 'hub' : s.page ? 'pg-' + s.page : s.step) + ':' + (s.sub || '');
     { const nv = document.querySelectorAll('#modal-flow .fl-nav a'); nv.forEach((x, i)=>{ if(i === (s.page ? 3 : 1)) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current'); }); }
     if(s.page){ if(s.page === 'mat') s.pageFrom = 'mat'; document.getElementById('fl-steps').innerHTML = ''; try{ PrepRoom.stop(); }catch(_){} this.devLeave();
@@ -26456,7 +26457,9 @@ const StenoVoice = {
     const ms = Math.min(9000, Math.max(2500, String(text||'').length * 90));
     setTimeout(()=>{ if(onDone) onDone(); }, ms);
   },
-  stop(){ if(this.audio){ try{ this.audio.pause(); }catch(_){} this.audio=null; } stopSpeaking(); },
+  stop(){ if(this.audio){ try{ const a = this.audio;   // 2026-11-18f 말이 끝나기 전에 끊긴 횟수를 세어 둠 (면접장 영상 상태 기록에 함께 남김 — '질문이 덜 읽혔는데 넘어감' 점검용)
+      if(state.interviewMode === 'dialog' && !a.paused && !a.ended && a.currentTime > 0.3 && isFinite(a.duration) && a.duration - a.currentTime > 0.5){ this.cuts = (this.cuts || 0) + 1; this.lastCut = [+a.currentTime.toFixed(1), +a.duration.toFixed(1)]; }
+      a.pause(); }catch(_){} this.audio=null; } stopSpeaking(); },
 };
 /* 2026-11-12z7 미리 만든 목소리를 몇 번 썼는지 (점검용) */
 const PreVoice = { made:0, hit:0 };
@@ -32776,8 +32779,9 @@ const IMV_PHOTOS = {
   '1m': { src: 'imv-panel1m.jpg?v=18d', x: { 1: 50 }, sw: 0 },
 };
 const IMV_PANEL3 = IMV_PHOTOS['3'].src;
-function imvPreload(){   // 2026-11-18d 고른 면접관 구성의 사진·영상만 미리 받음 (영상을 풀HD로 올리면서 다섯 구성을 다 받으면 약 30MB라 느린 인터넷에서 부담)
-  let lay = ''; try{ let ppl = IvPanel.people(); if(!ppl.length) ppl = [{ id: 'hr' }, { id: 'lead' }]; lay = Imv.layoutFor(ppl.slice(0, 3).map(x=>Imv.P(x.id))).layout; }catch(_){}
+function imvPreload(pids){   // 2026-11-18d 고른 면접관 구성의 사진·영상만 미리 받음 (영상을 풀HD로 올리면서 다섯 구성을 다 받으면 약 30MB라 느린 인터넷에서 부담)
+  // 2026-11-18f pids = 새 준비 화면에서 지금 고른 면접관 (고르자마자 받기 시작해 면접장에 들어가기 전에 다 받게)
+  let lay = ''; try{ let ids = Array.isArray(pids) && pids.length ? pids.slice() : IvPanel.people().map(x=>x.id); if(!ids.length) ids = ['hr', 'lead']; lay = Imv.layoutFor(ids.slice(0, 3).map(id=>Imv.P(id))).layout; }catch(_){}
   try{ AiTopic.load(); }catch(_){}   // 2026-11-18e AI 관련 질문 목록 미리 읽기
   imvPreload.seen = imvPreload.seen || {}; if(imvPreload.seen[lay || '*']) return; imvPreload.seen[lay || '*'] = true;
   (lay && IMV_PHOTOS[lay] ? [IMV_PHOTOS[lay]] : Object.values(IMV_PHOTOS)).forEach(L=>{ try{ const i = new Image(); i.src = L.src; }catch(_){} }); try{ ImvLoop.warm(lay); }catch(_){} }   // 준비 창에서 미리 받아 둠 (입장 때 회색 화면 방지)   // 'bright' = 밝은 실제 면접실 (기본) · 'dark' = 어두운 몰입형
@@ -32904,7 +32908,31 @@ const ImvLoop = {
   cfg(imv){ const m = imv.media && imv.media.loops; const C = m && imv.mode === 'photo' ? m[imv.layout] : null; return C && C.idle ? C : null; },
   /** 준비 창에서 미리 받아 둠 (입장하자마자 영상이 보이게) */
   warm(lay){ try{ Imv.loadMedia().then(m=>{ const L = m && m.loops; if(!L) return; const key = lay && L[lay] ? lay : '*'; this._warm = this._warm || {}; if(this._warm[key] || this._warm['*']) return; this._warm[key] = true;
-      (key === '*' ? Object.values(L) : [L[key]]).forEach(C=>[C.idle].concat(Object.values(C.talk || {}), (C.sync || []).map(x=>x.video), (C.sync || []).map(x=>x.audio)).filter(Boolean).forEach(u=>{ try{ fetch(Array.isArray(u) ? u[0] : u).catch(()=>{}); }catch(_){} })); }); }catch(_){} },   // 2026-11-18d 고른 구성만 (시작·끝 멘트 영상도 함께)
+      (key === '*' ? Object.values(L) : [L[key]]).forEach(C=>{
+        // 2026-11-18f 처음 말할 때 쓰는 순서로 받음: 듣는 영상 → 시작 멘트 영상·소리 → 말하는 영상 → 끝 멘트
+        const sy = Array.isArray(C.sync) ? C.sync : [];
+        [C.idle].concat(sy.slice(0, 1).map(x=>x.video), Object.values(C.talk || {}), sy.slice(1).map(x=>x.video)).filter(Boolean).forEach(u=>{ try{ this.grab(this.one(u)); }catch(_){} });
+        sy.map(x=>x.audio).filter(Boolean).forEach(u=>{ try{ fetch(u).catch(()=>{}); }catch(_){} }); }); }); }catch(_){} },   // 2026-11-18d 고른 구성만 (시작·끝 멘트 영상도 함께)
+  /* 2026-11-18f 영상 파일을 통째로 받아 기기 안 주소(blob)로 재생함.
+     예전에는 영상 주소를 그대로 재생해서 ① 인터넷이 느리면 인사말이 시작된 뒤에야 영상이 준비돼 말하는 도중에 화면이 바뀌고(입 모양 어긋남)
+     ② 말하는 영상이 처음 나올 때마다 인터넷에서 나머지를 다시 받아 멈칫했음. 통째로 받아 두면 재생 중에는 인터넷을 쓰지 않음 */
+  blob: {}, _bp: {}, waitedMs: 0,
+  /** 여러 형식 가운데 이 기기에서 재생할 주소 하나 */
+  one(u){ if(!Array.isArray(u)) return u; if(this._mp4 == null){ let ok = false; try{ ok = !!document.createElement('video').canPlayType('video/mp4; codecs="avc1.64002A"'); }catch(_){} this._mp4 = ok; }
+    return (this._mp4 ? u.find(x=>!/\.webm(\?|$)/.test(x)) : u.find(x=>/\.webm(\?|$)/.test(x))) || u[0]; },
+  /** 한 번에 하나씩, 부른 순서대로 받음 (인터넷이 느릴 때 먼저 필요한 영상이 먼저 끝나게). 같은 주소는 한 번만 */
+  grab(u){ if(!u) return Promise.resolve(''); if(this._bp[u]) return this._bp[u];
+    const run = ()=>fetch(u).then(r=>{ if(!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
+      .then(b=>{ const t = /\.webm(\?|$)/.test(u) ? 'video/webm' : 'video/mp4'; this.blob[u] = URL.createObjectURL(/^video\//.test(b.type || '') ? b : new Blob([b], { type: t })); return this.blob[u]; })
+      .catch(e=>{ console.warn('[면접관 영상 받기 실패]', u, e && e.message); delete this._bp[u]; return ''; });
+    this._bp[u] = (this._tail || Promise.resolve()).then(run); this._tail = this._bp[u].catch(()=>{});
+    return this._bp[u]; },
+  okNow(k){ const v = this.vids && this.vids[k]; return !!v && !v.dataset.bad && (v.dataset.ok === '1' || v.readyState >= 3); },
+  /** 처음 말을 시작하기 전에 필요한 영상이 준비될 때까지 잠깐 기다림 (최대 ms). 영상을 못 쓰는 기기·실패한 영상은 기다리지 않음 */
+  async waitReady(keys, ms){ const t0 = Date.now();
+    const done = k=>{ const v = this.vids && this.vids[k]; return !v || !!v.dataset.bad || v.dataset.ok === '1' || v.readyState >= 3; };
+    while(Date.now() - t0 < ms){ if(!this.vids || !Imv.active || keys.every(done)) break; await new Promise(r=>setTimeout(r, 120)); }
+    this.waitedMs = Date.now() - t0; return !!this.vids && keys.every(k=>this.okNow(k)); },
   sync(imv){
     this.imv = imv; const host = imv.el && imv.el.querySelector('#imv-photo-img'); if(!host) return;
     let C = null; try{ C = this.cfg(imv); }catch(_){}
@@ -32921,10 +32949,15 @@ const ImvLoop = {
         v.addEventListener('error', ()=>{ v.dataset.bad = '1'; });
         v.addEventListener('loadeddata', ()=>{ v.dataset.ok = '1'; });   // 한 번 준비되면 계속 쓸 수 있음 (되풀이하며 처음으로 돌아가는 순간에 잠깐 '준비 안 됨'으로 보이는 것 무시)
         v.addEventListener('canplay', ()=>{ if(k !== 'idle' && this.cur !== k){ try{ v.pause(); }catch(_){} } }, { once: true });
-        if(Array.isArray(url)){ url.forEach(u=>{ const so = document.createElement('source'); so.src = u; so.type = /\.webm(\?|$)/.test(u) ? 'video/webm' : 'video/mp4'; v.appendChild(so); }); const last = v.lastElementChild; if(last) last.addEventListener('error', ()=>{ v.dataset.bad = '1'; }); }   // 앞에서부터 재생할 수 있는 형식을 씀
-        else v.src = url;
+        const go = ()=>{ try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} };   // 휴대폰은 재생을 걸어야 받기 시작함 (소리 없는 영상이라 허용됨)
+        const direct = ()=>{   // 통째로 받지 못했을 때: 예전처럼 주소를 그대로 재생
+          if(Array.isArray(url)){ url.forEach(u=>{ const so = document.createElement('source'); so.src = u; so.type = /\.webm(\?|$)/.test(u) ? 'video/webm' : 'video/mp4'; v.appendChild(so); }); const last = v.lastElementChild; if(last) last.addEventListener('error', ()=>{ v.dataset.bad = '1'; }); try{ v.load(); }catch(_){} }   // 앞에서부터 재생할 수 있는 형식을 씀
+          else v.src = url; go(); };
         this.box.appendChild(v); this.vids[k] = v;
-        try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){}   // 휴대폰은 재생을 걸어야 받기 시작함 (소리 없는 영상이라 허용됨)
+        // 2026-11-18f 통째로 받은 영상을 기기 안 주소로 재생 (다 받을 때까지는 사진이 보임)
+        const u1 = this.one(url);
+        if(this.blob[u1]){ v.src = this.blob[u1]; go(); }
+        else this.grab(u1).then(b=>{ if(!this.vids || this.vids[k] !== v) return; if(b){ v.src = b; go(); } else direct(); });
       };
       add('idle', C.idle); Object.keys(C.talk || {}).forEach(c=>add('t' + c, C.talk[c]));
       (Array.isArray(C.sync) ? C.sync : []).forEach((x, i)=>add('s' + i, x.video, true));   // 정해진 말(첫인사·끝인사)에 입 모양을 맞춘 영상
@@ -32944,8 +32977,9 @@ const ImvLoop = {
   /** 정해진 말 영상은 목소리 재생 위치를 따라감. 조금 벌어지면 재생 속도를 살짝 바꿔 맞추고, 많이 벌어졌을 때만 위치를 옮김
       (위치를 자주 옮기면 영상이 그때마다 멈칫해서 아예 못 움직일 수 있음 → 옮기는 중에는 기다리고, 한 번 옮기면 1.2초 동안 다시 옮기지 않음) */
   follow(v, force){ try{ const a = ImvLip.el; if(a && isFinite(a.currentTime)){ const now = Date.now(), d = v.currentTime - a.currentTime, ad = Math.abs(d);
+        if(!force && !v.seeking){ const q = this.st || (this.st = { n: 0, sum: 0, max: 0, seek: 0 }); q.n++; q.sum += ad; if(ad > q.max) q.max = ad; }   // 2026-11-18f 점검용: 소리와 영상이 벌어진 정도
         if(v.seeking && now - (v._sk || 0) < 1500){ /* 옮기는 중 */ }
-        else if(force || (ad > 0.45 && now - (v._sk || 0) > 1200)){ v._sk = now; v.playbackRate = 1; v.currentTime = Math.max(0, Math.min(a.currentTime + 0.08, (v.duration || 1e9) - 0.05)); }
+        else if(force || (ad > 0.45 && now - (v._sk || 0) > 1200)){ v._sk = now; if(!force && this.st) this.st.seek++; v.playbackRate = 1; v.currentTime = Math.max(0, Math.min(a.currentTime + 0.08, (v.duration || 1e9) - 0.05)); }
         else if(ad > 0.05) v.playbackRate = d > 0 ? 0.9 : 1.1;
         else if(ad <= 0.03) v.playbackRate = 1; } }catch(_){}
     if(v.paused && !v.ended){ try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } },
@@ -32958,7 +32992,7 @@ const ImvLoop = {
     if(this._c !== c){ this._c = c; this.talkAt = 0; }   // 말하는 사람이 바뀌면 앞사람의 '방금까지 말함' 여유를 넘겨받지 않음 (새 사람 입이 소리보다 먼저 움직이는 것 방지)
     const now = Date.now(); if(talking) this.talkAt = now; else if(this.talkAt && now - this.talkAt < 350 && ph) talking = true;   // 목소리가 잠깐 끊겨도(0.35초 안) 말하는 영상 유지
     const ok = k=>{ const v = this.vids[k]; return !!v && !v.dataset.bad && (v.dataset.ok === '1' || v.readyState >= 2); };
-    const sy = this._sync, sk = talking && sy && ok(sy.key) ? sy.key : '';
+    const sy = this._sync, sk = talking && sy && !sy.novid && ok(sy.key) ? sy.key : '';   // 2026-11-18f novid = 이 말을 시작할 때 맞춤 영상이 준비되지 않았음 → 도중에 바꾸지 않고 끝까지 일반 말하는 영상
     let hush = false; try{ const el = ImvLip.el, fresh = !!el && Persona._qa === el && performance.now() - (Persona._qAt || 0) < 300;   // 지금 나오는 소리를 방금(0.3초 안) 읽었을 때만 믿음
       hush = talking && !sk && !!el && (fresh ? Persona.quiet : el.currentTime < 0.2); }catch(_){}   // 아직 못 읽었으면 첫 0.2초(소리 앞의 빈 구간)만 입을 다묾   // 말하는 중인데 말소리가 잠깐 쉼 (문장 사이·쉼표)
     const want = sk || (talking && !hush && ok('t' + c) ? 't' + c : ok('idle') ? 'idle' : '');
@@ -32976,7 +33010,13 @@ const ImvLoop = {
     let rm = null; try{ rm = matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(_){}
     let cp = ''; try{ const t = document.createElement('video'); cp = [t.canPlayType('video/mp4; codecs="avc1.4d401f"'), t.canPlayType('video/webm; codecs="vp9"')].join('|'); }catch(_){}
     const imv = this.imv || (typeof Imv !== 'undefined' ? Imv : null); let cfg = false; try{ cfg = !!(imv && this.cfg(imv)); }catch(_){}
-    return { ver: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '', layout: imv && imv.layout, mode: imv && imv.mode, media: !!(imv && imv.media && imv.media.loops), cfg, cur: this.cur || '', on: !!(this.host && this.host.classList.contains('lv-on')), vids: st, rm, cp, vis: document.visibilityState }; },
+    // 2026-11-18f 점검용 값: 첫 말 전에 기다린 시간 · 통째로 받은 영상 수 · 맞춤 영상 어긋남 · 빠진 프레임 · 끊긴 목소리 · 기기 사양
+    let fr = ''; try{ const e = v[this.cur || 'idle'] || v.idle, q = e && e.getVideoPlaybackQuality ? e.getVideoPlaybackQuality() : null; if(q) fr = q.droppedVideoFrames + '/' + q.totalVideoFrames; }catch(_){}
+    const q2 = this.st, dr = q2 && q2.n ? [+(q2.sum / q2.n).toFixed(2), +q2.max.toFixed(2), q2.seek] : null;
+    let net = ''; try{ const c = navigator.connection; if(c) net = (c.effectiveType || '') + ' ' + (c.downlink || ''); }catch(_){}
+    let cut = 0, lastCut = null; try{ cut = StenoVoice.cuts || 0; lastCut = StenoVoice.lastCut || null; }catch(_){}
+    return { ver: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '', layout: imv && imv.layout, mode: imv && imv.mode, media: !!(imv && imv.media && imv.media.loops), cfg, cur: this.cur || '', on: !!(this.host && this.host.classList.contains('lv-on')), vids: st, rm, cp, vis: document.visibilityState,
+      w: this.waitedMs || 0, bl: Object.keys(this.blob || {}).length, dr, fr, cut, lastCut, cpu: navigator.hardwareConcurrency || 0, net, px: [innerWidth, innerHeight, +(devicePixelRatio || 1).toFixed(2)] }; },
   note(on){ const n = this.imv && this.imv.el && this.imv.el.querySelector('#imv-opt-note'); if(!n) return; if(!this.note0) this.note0 = n.textContent; const t = on ? this.NOTE : this.note0; if(n.dataset.k !== (on ? '1' : '0')){ n.dataset.k = on ? '1' : '0'; n.textContent = t; } },
   off(){
     if(this.timer){ clearInterval(this.timer); this.timer = 0; }
@@ -33204,6 +33244,8 @@ const Imv = {
     if(!(this.armed || this.want())) return false;
     this.armed = false; this.active = true; this.loadMedia().then(()=>{ try{ if(this.active) this.fitPhoto(); }catch(_){} });
     clearTimeout(this._lvT); this._lvT = setTimeout(()=>{ try{ if(this.active) Activity.log('imv_video', ImvLoop.diag()); }catch(_){} }, 8000);   // 2026-11-17k 영상 재생 상태 한 번 기록
+    clearTimeout(this._lvT2); this._lvT2 = setTimeout(()=>{ try{ if(this.active) Activity.log('imv_video', Object.assign({ at: 45 }, ImvLoop.diag())); }catch(_){} }, 45000);   // 2026-11-18f 인사말·첫 질문이 지난 뒤 한 번 더 (어긋남·끊김 값이 쌓인 뒤)
+    try{ ImvLoop.st = null; StenoVoice.cuts = 0; StenoVoice.lastCut = null; }catch(_){}
     const el = this.build(); this.seats();
     const pr = this.isPractice = this.practice();
     this.capOn = false; this.mineOn = false; this.mineText = ''; this.isFu = false; this.fuPrep = false; this.noteUntil = 0;   // 2026-11-12 시안 규칙: 자막·내 답변·내 화면은 기본으로 숨기고 화면 옵션에서 켬 (연습형도 같음) this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';
@@ -33441,8 +33483,12 @@ const Imv = {
       if(my !== Imv._sTok) return;
       const url = Imv.videoFor(text);
       if(url){ st.call(this); Imv._sTok = my; if(Imv.playVideo(url, onDone)) return; }
+      // 2026-11-18f 이 면접에서 처음 말하기 전에, 듣는 영상과 지금 말할 영상이 준비될 때까지 기다림 (최대 7초). 인터넷이 느려도 말하는 도중에 화면이 바뀌지 않게
+      if(ImvLoop.vids && ImvLoop._waitKey !== ImvLoop.key){ ImvLoop._waitKey = ImvLoop.key;
+        try{ const s0 = ImvLoop.syncFor(text), c0 = Imv.col ? Imv.col[Imv.cur < 0 ? 0 : Imv.cur] : 0; await ImvLoop.waitReady(['idle', s0 ? s0.key : 't' + c0], 7000); }catch(_){}
+        if(my !== Imv._sTok) return; }
       // 2026-11-17 정해진 말(첫인사·끝인사): 그 문장에 입 모양을 맞춘 영상이 있으면, 영상을 맞출 때 쓴 목소리 파일을 재생하고 영상이 그 소리를 따라감
-      { const se = ImvLoop.syncFor(text); if(se){ ImvLoop._sync = se; const fin = function(){ if(ImvLoop._sync === se) ImvLoop._sync = null; if(onDone) return onDone.apply(this, arguments); }; return sp.call(this, text, fin, Object.assign({}, opts || {}, { url: se.audio })); } }
+      { const se = ImvLoop.syncFor(text); if(se){ se.novid = !ImvLoop.okNow(se.key); ImvLoop._sync = se; const fin = function(){ if(ImvLoop._sync === se) ImvLoop._sync = null; if(onDone) return onDone.apply(this, arguments); }; return sp.call(this, text, fin, Object.assign({}, opts || {}, { url: se.audio })); } }
       // 목소리가 재생되지 않으면(TTS 실패·미지원 브라우저) 질문을 못 들으니 자막을 자동으로 켬
       const t0 = Date.now(), done = function(){ if(Imv.active && text && String(text).length > 8 && Date.now() - t0 < 700) Imv.voiceFail(); if(onDone) return onDone.apply(this, arguments); };
       return sp.call(this, text, done, opts);
