@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-18d';
+var APP_VERSION = '2026-11-18e';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -8606,6 +8606,11 @@ html.sv-open{overflow:hidden;}
               <span class="ps-sw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16 9.5"/></svg></span>
               <span class="ps-sw-body"><b>AI 채점</b><small>답변마다 점수와 예시 문장이 들어간 피드백을 만들어요. 꺼지면 규칙 기반 6축 채점만 해요.</small><span class="ps-sw-cost" id="ai-cost-grading"></span></span>
               <span class="sw"><input type="checkbox" id="ai-grading-toggle" onchange="aiToggle('ai_grading', this)"><i></i></span>
+            </label>
+            <label class="ps-switch" for="ai-topic-toggle">
+              <span class="ps-sw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 7V4M9.5 12h.01M14.5 12h.01M10 15h4"/></svg></span>
+              <span class="ps-sw-body"><b>AI 관련 면접 질문 넣기</b><small>면접마다 "AI를 어떻게 활용해 봤는지" 같은 질문을 1개(9문항 이상이면 2개) 넣어요. 2문항 짧은 면접에는 넣지 않아요. 질문은 질문은행의 'AI 활용' 묶음 36개에서 골라요.</small></span>
+              <span class="sw"><input type="checkbox" id="ai-topic-toggle" onchange="aiToggle('ai_topic', this)"><i></i></span>
             </label>
           </div>
           <div class="ps-cost" id="ai-cost-table"></div>
@@ -22458,6 +22463,7 @@ async function runDialogInterview(){
       if(d.q.custom){ const dn = d.q.doc === 'cv' ? '이력서' : '자기소개서'; badge.textContent = d.q.slotName ? `실전 세트 · ${dn} 기반` : `${dn} 기반`; badge.className='qcard-source-badge resume'; }
       else if(d.q.ib){ badge.textContent = `인바디 리포트 근거 · ${d.q.ib.basis}`; badge.className='qcard-source-badge resume'; }   // 2026-11-17
       else if(d.q.past){ badge.textContent = `${d.q.past.company} 면접 기출 · ${d.q.past.when}`; badge.className='qcard-source-badge resume'; }   // 2026-11-05
+      else if(d.q.aiq){ badge.textContent = 'AI 활용 질문'; badge.className='qcard-source-badge resume'; }   // 2026-11-18e
       else if(d.q.qb){ badge.textContent = `${d.q.qb.company || (d.q.qb.grp ? d.q.qb.grp : '기업')} 면접 질문 · ${d.q.qtype || ''}${d.q.lang === 'en' && d.q.qtype !== '영어' ? ' · 영어 질문' : ''}`; badge.className='qcard-source-badge resume'; }   // 2026-11-05 면접 DB
       else if(d.q.co){ badge.textContent = '기업 맞춤 질문'; badge.className='qcard-source-badge resume'; }
       else { badge.textContent = d.q.slotName ? `실전 세트 · ${d.q.slotName}` : state.selectedField.id==='review' ? '복습 문항' : '문제은행 출제'; badge.className='qcard-source-badge bank'; }
@@ -25426,7 +25432,7 @@ const AI_COST = {
   won(n){ const v = n < 10 ? Math.round(n*10)/10 : Math.round(n); return v.toLocaleString() + '원'; },
 };
 const AiSwitch = {
-  settings: { ai_followup:false, ai_grading:false }, loaded:false, limits:{ daily:10, total:120 },
+  settings: { ai_followup:false, ai_grading:false, ai_topic:true }, loaded:false, limits:{ daily:10, total:120 },   // 2026-11-18e ai_topic = AI 관련 면접 질문 넣기 (기본 켜짐)
   guard: { enabled:true, month_cap:30000, min_left_pct:10, user_cap:1500 },   // 2026-10-21j 타입캐스트 크레딧 안전장치 (app_settings.tts_guard)
   async load(){
     try{
@@ -27108,6 +27114,8 @@ const StenoLoop = {
         if(this.opt.replaceN){ let k = this.opt.replaceN;   // 2026-11-17 인바디 리포트 질문은 가운데 일반 질문과 바꿈 (첫 질문·마지막 질문은 그대로)
           for(let i = questions.length - 2; i >= 1 && k > 0; i--){ const x = questions[i]; if(!x.ib && !x.custom && !x.past && !x.co && !x.qb && !x.role){ questions.splice(i, 1); k--; } } }
       }
+      // 2026-11-18e AI 관련 면접 질문: 3문항 이상이면 1개, 9문항 이상이면 2개를 가운데 일반 질문 자리에 넣음 (2문항·이어하기·복습·실전 세트 제외)
+      try{ await Promise.race([AiTopic.load(), new Promise(r=>setTimeout(r, 2500))]); questions = AiTopic.mix(questions, this.opt); }catch(e){ console.warn('[AI 관련 질문]', e); }
       emit('questions', {list:questions, source:StenoDialog.lastSource});
       // 2026-11-12z7 인사말과 첫 질문 목소리를 미리 만들기 시작 (인사말이 나오는 동안 첫 질문이 준비됨). 둘 다 진행 면접관(첫째)이 말함
       try{ const p0 = IvPanel.people()[0], pid0 = p0 ? p0.id : null; const q0 = questions[(this.opt.resume && this.opt.resume.startIndex) || 0];
@@ -30274,6 +30282,78 @@ const QBankAdmin = {
   /** 사용 중·바로 전 판 말고 오래된 판은 조금씩 지움 (뒤에서 조용히) */
   async purge(){ try{ for(let k = 0; k < 30; k++){ const n = await this.call('qb_import_purge', { p_limit: 20000 }); if(!n) break; } }catch(e){ console.warn('[면접 DB 정리]', e); } },
 };
+/* ---------------- 2026-11-18e AI 관련 면접 질문 ----------------
+   질문은행의 'AI 활용' 묶음(qb_additions ADD-9001~, company_key 'AI00') 36개에서 면접마다 1개(9문항 이상이면 2개)를 골라
+   가운데 일반 질문 자리에 넣음. 2문항(짧게)·이어하기·복습·실전 세트에는 넣지 않음. 관리자 AI 설정의 'AI 관련 면접 질문 넣기'로 끌 수 있음.
+   서버는 질문 번호(qb.qid)로 질문 의도·평가 포인트·예상 꼬리질문을 읽어 꼬리질문과 채점에 씀 (학생 화면에는 질문 문장만 내려옴)
+   묶음: 공통 · 보건의료 · 공공행정 · 경영사무 · IT데이터 — 학생이 고른 분야·직무·전공에 맞는 묶음 60%, 공통 40% */
+const AiTopic = {
+  list: null, _p: null,
+  on(){ return !(typeof AiSwitch !== 'undefined' && AiSwitch.settings && AiSwitch.settings.ai_topic === false); },
+  load(){
+    if(this._p) return this._p;
+    this._p = Promise.resolve(sb.rpc('list_ai_questions')).then(({ data, error })=>{ if(error) throw error; this.list = Array.isArray(data) ? data : []; return this.list; })
+      .catch(e=>{ console.warn('[AI 관련 질문 목록]', e && e.message); this._p = null; return this.list || []; });
+    return this._p;
+  },
+  /** 이 면접에 맞는 묶음 ('' = 공통만) */
+  group(){
+    const fc = state.flowCtx || {}, fid = state.selectedField ? state.selectedField.id : '';
+    let dept = ''; try{ dept = (StartFlow.s && StartFlow.s.major && StartFlow.s.major.dept) || (state.currentUser && state.currentUser.dept) || ''; }catch(_){}
+    const qb = fc.qbank || {}, job = [qb.job, qb.role, fc.job && fc.job.role, fc.job && fc.job.title].filter(x=>typeof x === 'string').join(' ');
+    const HEALTH = /간호|보건|의학|의예|의료|임상병리|방사선|물리치료|작업치료|언어치료|언어병리|언어재활|청각|재활|약학|치위생|응급구조/;
+    const IT = /컴퓨터|소프트웨어|데이터|인공지능|정보과학|정보통신|전산|빅데이터|통계/;
+    if(fc.purpose === 'major'){
+      if(HEALTH.test(dept)) return '보건의료'; if(IT.test(dept)) return 'IT데이터';
+      if(/행정|법학|정치|사회복지|공공/.test(dept)) return '공공행정'; if(/경영|경제|회계|무역|광고|홍보|미디어|금융/.test(dept)) return '경영사무';
+      return '';
+    }
+    if(fid === 'medical') return /행정|원무|사무|전산/.test(job) ? '' : '보건의료';
+    if(qb.job === '개발' || qb.job === '데이터' || /개발자|데이터 ?분석|소프트웨어/.test(job)) return 'IT데이터';
+    if(HEALTH.test(job)) return '보건의료';
+    if(fid === 'gov' || fid === 'pubcorp') return '공공행정';
+    if(fid === 'corp' || fid === 'startup') return '경영사무';
+    return '';
+  },
+  _key(){ return 'zp_aiq_recent_' + ((state.currentUser && state.currentUser.id) || ''); },
+  recent(){ try{ const a = JSON.parse(localStorage.getItem(this._key()) || '[]'); return Array.isArray(a) ? a : []; }catch(_){ return []; } },
+  remember(ids){ try{ localStorage.setItem(this._key(), JSON.stringify(this.recent().concat(ids).slice(-14))); }catch(_){} },
+  /** n개 고르기: 한 면접 안에서는 서로 다른 유형, 최근에 낸 질문은 피함 */
+  pickN(n){
+    const g = this.group(), noJob = !!(state.flowCtx && state.flowCtx.purpose === 'major');   // 전공·경험 면접은 지원한 곳이 없으므로 '지원하신 직무·곳'을 묻는 질문은 뺌
+    const all = (this.list || []).filter(x=>x && x.question && (x.grp === '공통' || x.grp === g) && !(noJob && /지원하신/.test(x.question))), seen = this.recent(), out = [], kinds = new Set();
+    for(let i = 0; i < n; i++){
+      let cand = all.filter(x=>!out.includes(x) && !kinds.has(x.kind)); if(!cand.length) cand = all.filter(x=>!out.includes(x));
+      const pri = cand.filter(x=>x.grp === g && g), com = cand.filter(x=>x.grp === '공통');
+      let pool = (pri.length && (!com.length || Math.random() < 0.6)) ? pri : com; if(!pool.length) pool = pri.length ? pri : com; if(!pool.length) break;
+      const fresh = pool.filter(x=>!seen.includes(x.id)), from = fresh.length ? fresh : pool, p = from[Math.floor(Math.random() * from.length)];
+      out.push(p); kinds.add(p.kind);
+    }
+    return out;
+  },
+  item(p){ return { q: p.question, spoken: p.question, ref: '', diff: '중', qtype: p.qtype || null, lang: 'ko', aiq: { id: p.id, kind: p.kind, grp: p.grp }, qb: { qid: p.id, tier: 0, pick: null, company: '', grp: '' } }; },
+  mix(questions, opt){
+    opt = opt || {};
+    if(!this.on() || !this.list || !this.list.length || !Array.isArray(questions)) return questions;
+    if(opt.resume || opt.realSet || opt.fieldId === 'review' || questions.some(x=>x && x.aiq)) return questions;
+    const n = questions.length >= 9 ? 2 : questions.length >= 3 ? 1 : 0; if(!n) return questions;
+    // 바꿀 수 있는 칸: 첫 질문·마지막 질문이 아니고, 서류·인바디 리포트·기출·기업 맞춤·영어·자기소개·지원동기·마무리 질문이 아닌 일반 질문
+    const FIX = ['자기소개', '지원동기', '마무리', '영어', '입사후포부'];
+    const free = questions.map((x, i)=>(i >= 1 && i <= questions.length - 2 && x && !x.ib && !x.custom && !x.past && !x.co && !x.role && !x.slot && x.lang !== 'en' && !FIX.includes(x.qtype || '')) ? i : -1).filter(i=>i >= 0);
+    if(!free.length) return questions;
+    const picks = this.pickN(Math.min(n, free.length)); if(!picks.length) return questions;
+    const out = questions.slice(), left = free.slice();
+    picks.forEach((p, k)=>{
+      // 같은 유형 칸이 있으면 그 칸(뒤쪽 것)과 바꾸고, 없으면 가운데보다 조금 뒤 칸. 2개면 앞쪽·뒤쪽으로 나눔
+      const same = left.filter(i=>out[i].qtype && out[i].qtype === p.qtype);
+      let at = same.length ? same[same.length - 1] : (picks.length === 2 ? (k === 0 ? left[Math.floor(left.length / 3)] : left[left.length - 1]) : left[Math.min(left.length - 1, Math.ceil(left.length / 2))]);
+      if(at == null) at = left[left.length - 1];
+      out[at] = this.item(p); left.splice(left.indexOf(at), 1);
+    });
+    this.remember(picks.map(p=>p.id));
+    return out;
+  },
+};
 /* ---------------- 2026-11-05 면접 DB 3단계: 기업·직무 맞춤 면접 8문항 (질문은행) ----------------
    대기업·중견기업 / 공공기관·공기업 분야의 기업·직무 맞춤 면접은 서버 함수 pick-questions가 질문은행에서 8문항을 뽑고
    AI가 다듬은 문장만 받아 옴 (원문은 화면에 오지 않음). 면접 준비 창을 마칠 때 미리 뽑아 두고, 면접 시작 때 씀
@@ -30988,6 +31068,7 @@ async function aiFillUI(){
   await AiSwitch.load();
   const f = document.getElementById('ai-followup-toggle'), g = document.getElementById('ai-grading-toggle');
   if(f) f.checked = !!AiSwitch.settings.ai_followup; if(g) g.checked = !!AiSwitch.settings.ai_grading;
+  { const tp = document.getElementById('ai-topic-toggle'); if(tp) tp.checked = AiSwitch.settings.ai_topic !== false; }
   const st = document.getElementById('ai-status');
   if(st){
     const on = AiSwitch.settings.ai_followup || AiSwitch.settings.ai_grading;
@@ -31045,7 +31126,7 @@ function pipeRenderStatus(){
   }
 }
 async function aiToggle(feature, el){
-  try{ await AiSwitch.set(feature, el.checked); showToast((feature==='ai_followup'?'AI 즉석 꼬리질문':'AI 채점')+(el.checked?'을 켰어요':'을 껐어요')); }
+  try{ await AiSwitch.set(feature, el.checked); showToast(feature === 'ai_topic' ? ('AI 관련 면접 질문 넣기를 ' + (el.checked ? '켰어요' : '껐어요')) : ((feature==='ai_followup'?'AI 즉석 꼬리질문':'AI 채점')+(el.checked?'을 켰어요':'을 껐어요'))); }
   catch(e){ el.checked = !el.checked; showToast('저장 실패: '+e.message); }
   aiFillUI();
 }
@@ -32697,6 +32778,7 @@ const IMV_PHOTOS = {
 const IMV_PANEL3 = IMV_PHOTOS['3'].src;
 function imvPreload(){   // 2026-11-18d 고른 면접관 구성의 사진·영상만 미리 받음 (영상을 풀HD로 올리면서 다섯 구성을 다 받으면 약 30MB라 느린 인터넷에서 부담)
   let lay = ''; try{ let ppl = IvPanel.people(); if(!ppl.length) ppl = [{ id: 'hr' }, { id: 'lead' }]; lay = Imv.layoutFor(ppl.slice(0, 3).map(x=>Imv.P(x.id))).layout; }catch(_){}
+  try{ AiTopic.load(); }catch(_){}   // 2026-11-18e AI 관련 질문 목록 미리 읽기
   imvPreload.seen = imvPreload.seen || {}; if(imvPreload.seen[lay || '*']) return; imvPreload.seen[lay || '*'] = true;
   (lay && IMV_PHOTOS[lay] ? [IMV_PHOTOS[lay]] : Object.values(IMV_PHOTOS)).forEach(L=>{ try{ const i = new Image(); i.src = L.src; }catch(_){} }); try{ ImvLoop.warm(lay); }catch(_){} }   // 준비 창에서 미리 받아 둠 (입장 때 회색 화면 방지)   // 'bright' = 밝은 실제 면접실 (기본) · 'dark' = 어두운 몰입형
 
