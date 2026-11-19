@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-18g';
+var APP_VERSION = '2026-11-19a';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -24609,6 +24609,7 @@ const ResultView = {
     state.answerFeedback = ans.map(parse); state.answerDelivery = ans.map(delv);
     const nv = rec.nonverbal && Array.isArray(rec.nonverbal.items) ? rec.nonverbal.items : [];
     state.answerFace = ans.map((a, i)=>{ const it = nv.find(x=>x.i === (a.question_index != null ? a.question_index : i)); return it && (it.facePct || 0) >= 20 ? Object.assign({ frames: 9 }, it) : null; });   // 얼굴이 거의 안 잡힌 답변은 '측정 안 됨'
+    { const o = rec.nonverbal; state.nonverbal = o && o.frames && ((o.frontPct || 0) + (o.downPct || 0) + (o.awayPct || 0)) > 0 ? o : null; }   // 2026-11-19 얼굴이 안 잡힌 기록은 '측정 안 됨'. '전달 방식'의 표정·시선 줄이 마지막으로 본 면접 값이 아니라 이 기록 값을 쓰게
     state.currentQ = ans.length; state.questionCount = ans.length; state.startTime = new Date(rec.created_at).getTime(); state.flowCtx = null;
     state.lastAverageScore = rec.score || 0; state.savedRecordId = rec.id; state.saveDone = true; state.savePayload = null; state.pendingGrades = [];
     const d = new Date(rec.created_at), title = rec.company_name ? `${rec.company_name} 맞춤 면접 결과` : rec.purpose === 'major' || rec.purpose === 'review' ? `${recKindName(rec)} 면접 결과` : `${rec.field_name || '모의면접'} 결과`;
