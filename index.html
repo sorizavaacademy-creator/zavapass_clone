@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-19a';
+var APP_VERSION = '2026-11-19b';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -13583,6 +13583,8 @@ function axesFromFeedback(fb){
 }
 function nvScore(o){
   if(!o || !o.frames) return null;
+  // 2026-11-19b 얼굴이 거의 잡히지 않았으면(정면·아래·옆이 모두 0이거나 얼굴 보임 20% 미만) '측정 안 됨' → 종합 점수는 답변 점수 평균 그대로 (예전엔 0%로 계산돼 40점이 들어갔음)
+  if(!((o.frontPct || 0) + (o.downPct || 0) + (o.awayPct || 0)) || (o.facePct != null && o.facePct < 20)) return null;
   let v = 0.6*(o.frontPct||0) + 0.25*(100-(o.downPct||0)) + 0.15*(100-(o.awayPct||0));
   // 2026-10-23j 행동 감점 (예전 기록에는 값이 없어 그대로)
   if(o.handPct != null) v -= Math.min(15, o.handPct * 0.3);
@@ -24338,7 +24340,7 @@ function renderResultDelivery(){
   const cls = t => /적당|좋음|없음/.test(t) ? 'ok' : /많이|큼|많음|김|^짧음/.test(t) ? 'warn' : '';
   const tile = (l,v,u,nn)=>`<div class="r4-tile ${cls(nn)}"><div class="l">${l}</div><div class="v"><b>${v==null?'–':v}</b><span>${u}</span></div><div class="n">${nn}</div></div>`;
   const o = state.nonverbal; const nvs = nvScore(o);
-  const nvLine = o ? `카메라를 보는 시간 ${o.frontPct}% · 시선이 아래로 ${o.downPct}% · 옆·위로 ${o.awayPct}%${SelfCam.any() ? ' · <a onclick="resultOpenSelfCam()">내 모습 다시 보기 ▶</a>' : ''}` : (SelfCam.any() ? '분석은 안 됐지만 <a onclick="resultOpenSelfCam()">내 모습 다시 보기 ▶</a>는 가능해요' : '카메라를 켜고 답하면 표정·시선도 함께 봐 드려요.');
+  const nvLine = (o && nvs != null) ? `카메라를 보는 시간 ${o.frontPct}% · 시선이 아래로 ${o.downPct}% · 옆·위로 ${o.awayPct}%${SelfCam.any() ? ' · <a onclick="resultOpenSelfCam()">내 모습 다시 보기 ▶</a>' : ''}` : (SelfCam.any() ? '분석은 안 됐지만 <a onclick="resultOpenSelfCam()">내 모습 다시 보기 ▶</a>는 가능해요' : '카메라를 켜고 답하면 표정·시선도 함께 봐 드려요.');
   // 문항별 답변 시간
   const secs = dl.map(d=>(d && d.measured) ? d.durSec : 0);
   const MAXS = 150, W = 560, H = 96, bw = (W-8)/Math.max(1,secs.length)-6;
@@ -24609,7 +24611,7 @@ const ResultView = {
     state.answerFeedback = ans.map(parse); state.answerDelivery = ans.map(delv);
     const nv = rec.nonverbal && Array.isArray(rec.nonverbal.items) ? rec.nonverbal.items : [];
     state.answerFace = ans.map((a, i)=>{ const it = nv.find(x=>x.i === (a.question_index != null ? a.question_index : i)); return it && (it.facePct || 0) >= 20 ? Object.assign({ frames: 9 }, it) : null; });   // 얼굴이 거의 안 잡힌 답변은 '측정 안 됨'
-    { const o = rec.nonverbal; state.nonverbal = o && o.frames && ((o.frontPct || 0) + (o.downPct || 0) + (o.awayPct || 0)) > 0 ? o : null; }   // 2026-11-19 얼굴이 안 잡힌 기록은 '측정 안 됨'. '전달 방식'의 표정·시선 줄이 마지막으로 본 면접 값이 아니라 이 기록 값을 쓰게
+    state.nonverbal = nvScore(rec.nonverbal) != null ? rec.nonverbal : null;   // 2026-11-19 얼굴이 안 잡힌 기록은 '측정 안 됨'. '전달 방식'의 표정·시선 줄이 마지막으로 본 면접 값이 아니라 이 기록 값을 쓰게
     state.currentQ = ans.length; state.questionCount = ans.length; state.startTime = new Date(rec.created_at).getTime(); state.flowCtx = null;
     state.lastAverageScore = rec.score || 0; state.savedRecordId = rec.id; state.saveDone = true; state.savePayload = null; state.pendingGrades = [];
     const d = new Date(rec.created_at), title = rec.company_name ? `${rec.company_name} 맞춤 면접 결과` : rec.purpose === 'major' || rec.purpose === 'review' ? `${recKindName(rec)} 면접 결과` : `${rec.field_name || '모의면접'} 결과`;
@@ -24926,7 +24928,7 @@ const ResultView = {
         <div class="rv-side">
           <div class="rv-f"><label for="rv-dv-item">확인할 항목</label><select id="rv-dv-item" onchange="ResultView.dvItem = this.value; ResultView.renderDv(${i})">${L.map(x=>`<option value="${x.k}"${x.k === cur.k ? ' selected' : ''}>${escapeHtml(x.n)}${x.pre ? ' · 분석 전' : x.na ? ' · 측정 안 됨' : ''}</option>`).join('')}</select></div>
           <div class="rv-dv-box"><h3>${escapeHtml(cur.n)}</h3>${val}</div>
-          <p class="rv-dim">시선·자세·음성은 관찰 지표예요. 성격·자신감·합격 가능성을 점수로 만들지 않아요.</p>
+          <p class="rv-dim">시선·자세·음성은 관찰 지표예요. 자신감·합격 가능성 같은 판단은 참고 지표로 개발 중이며, 지금은 점수에 넣지 않아요.</p>
           <div class="rv-acts"><button type="button" class="btn btn-solid" onclick="ResultView.show('rt', ${i})">같은 질문 다시 연습</button></div>
         </div>
       </div>
