@@ -2,21 +2,21 @@
  "loops": {
   "3": {
    "idle": [
-    "z3-idle.mp4",
-    "z3-idle.webm"
+    "y3-idle.mp4",
+    "y3-idle.webm"
    ],
    "talk": {
     "0": [
-     "z3-talk0.mp4",
-     "z3-talk0.webm"
+     "y3-talk0.mp4",
+     "y3-talk0.webm"
     ],
     "1": [
-     "z3-talk1.mp4",
-     "z3-talk1.webm"
+     "y3-talk1.mp4",
+     "y3-talk1.webm"
     ],
     "2": [
-     "z3-talk2.mp4",
-     "z3-talk2.webm"
+     "y3-talk2.mp4",
+     "y3-talk2.webm"
     ]
    },
    "sync": [
@@ -48,17 +48,17 @@
   },
   "2a": {
    "idle": [
-    "z2a-idle.mp4",
-    "z2a-idle.webm"
+    "y2a-idle.mp4",
+    "y2a-idle.webm"
    ],
    "talk": {
     "0": [
-     "z2a-talk0.mp4",
-     "z2a-talk0.webm"
+     "y2a-talk0.mp4",
+     "y2a-talk0.webm"
     ],
     "1": [
-     "z2a-talk1.mp4",
-     "z2a-talk1.webm"
+     "y2a-talk1.mp4",
+     "y2a-talk1.webm"
     ]
    },
    "sync": [
@@ -89,17 +89,17 @@
   },
   "2b": {
    "idle": [
-    "z2b-idle.mp4",
-    "z2b-idle.webm"
+    "y2b-idle.mp4",
+    "y2b-idle.webm"
    ],
    "talk": {
     "1": [
-     "z2b-talk1.mp4",
-     "z2b-talk1.webm"
+     "y2b-talk1.mp4",
+     "y2b-talk1.webm"
     ],
     "2": [
-     "z2b-talk2.mp4",
-     "z2b-talk2.webm"
+     "y2b-talk2.mp4",
+     "y2b-talk2.webm"
     ]
    },
    "cut": [
@@ -108,13 +108,13 @@
   },
   "1f": {
    "idle": [
-    "z1f-idle.mp4",
-    "z1f-idle.webm"
+    "y1f-idle.mp4",
+    "y1f-idle.webm"
    ],
    "talk": {
     "0": [
-     "z1f-talk0.mp4",
-     "z1f-talk0.webm"
+     "y1f-talk0.mp4",
+     "y1f-talk0.webm"
     ]
    },
    "sync": [
@@ -142,13 +142,13 @@
   },
   "1m": {
    "idle": [
-    "z1m-idle.mp4",
-    "z1m-idle.webm"
+    "y1m-idle.mp4",
+    "y1m-idle.webm"
    ],
    "talk": {
     "1": [
-     "z1m-talk1.mp4",
-     "z1m-talk1.webm"
+     "y1m-talk1.mp4",
+     "y1m-talk1.webm"
     ]
    }
   }
