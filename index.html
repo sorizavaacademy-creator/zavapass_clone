@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-19b';
+var APP_VERSION = '2026-11-20a';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -26230,7 +26230,7 @@ const Persona = {
         { const nowq = performance.now(); if(this._qa !== el){ this._qa = el; this._heard = false; this._qSince = 0; this._q0 = nowq; }
           this._qAt = nowq;
           if(rms > 0.012){ this._heard = true; this._qSince = 0; } else if(!this._qSince) this._qSince = nowq;
-          this._setQuiet(this._heard ? !!(this._qSince && nowq - this._qSince > 170) : (nowq - this._q0 < 700)); }
+          this._setQuiet(this._heard ? !!(this._qSince && nowq - this._qSince > 400) : (nowq - this._q0 < 700)); }   // 2026-11-20a 0.17초 → 0.4초 (단어 사이 짧은 쉼마다 영상이 바뀌어 깜빡이던 것)
         // 1초 넘게 완전 무음이면(분석이 막힌 경우) 시간 기준으로 전환
         if(this._silentSince && performance.now() - this._silentSince > 1000){ open = this._timed(); }
         else open = Math.min(1, rms*7);
@@ -32935,6 +32935,14 @@ const ImvLoop = {
       .catch(e=>{ console.warn('[면접관 영상 받기 실패]', u, e && e.message); delete this._bp[u]; return ''; });
     this._bp[u] = (this._tail || Promise.resolve()).then(run); this._tail = this._bp[u].catch(()=>{});
     return this._bp[u]; },
+  /** 2026-11-20a 말하는 사람 자리만 보이게 하는 가림막 (imv-media.json 의 cut = 자리 사이 경계, 화면 너비 비율). 한 명 구성은 가림막 없음
+      말하는 영상은 이 가림막을 씌워 듣는 영상 위에 겹침 → 바꿔 끼울 때 다른 면접관은 움직이지 않고 말하는 사람 자리만 바뀜 */
+  maskFor(C, seat){ const cut = Array.isArray(C && C.cut) ? C.cut : []; const seats = Object.keys((C && C.talk) || {}); const i = seats.indexOf(String(seat)); if(!cut.length || i < 0) return '';
+    const f = 0.015, lo = i > 0 ? cut[i - 1] : null, hi = i < cut.length ? cut[i] : null, p = x=>Math.max(0, Math.min(1, x)).toFixed(4), st = [];
+    if(lo == null) st.push([0, 1]); else st.push([0, 0], [lo - f, 0], [lo + f, 1]);
+    if(hi == null) st.push([1, 1]); else st.push([hi - f, 1], [hi + f, 0], [1, 0]);
+    const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='0'>" + st.map(([o, a])=>"<stop offset='" + p(o) + "' stop-color='#fff' stop-opacity='" + a + "'/>").join('') + "</linearGradient></defs><rect width='1600' height='900' fill='url(#g)'/></svg>";
+    return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")'; },
   okNow(k){ const v = this.vids && this.vids[k]; return !!v && !v.dataset.bad && (v.dataset.ok === '1' || v.readyState >= 3); },
   /** 처음 말을 시작하기 전에 필요한 영상이 준비될 때까지 잠깐 기다림 (최대 ms). 영상을 못 쓰는 기기·실패한 영상은 기다리지 않음 */
   async waitReady(keys, ms){ const t0 = Date.now();
@@ -32952,7 +32960,8 @@ const ImvLoop = {
     const key = imv.layout + '|' + JSON.stringify(C);
     if(this.key !== key){
       this.key = key; this.cur = ''; this.box.innerHTML = ''; this.vids = {};
-      const add = (k, url, once)=>{ if(!url) return; const v = document.createElement('video');
+      const add = (k, url, once, seat)=>{ if(!url) return; const v = document.createElement('video');
+        if(seat != null){ const mk = this.maskFor(C, seat); if(mk){ v.style.webkitMaskImage = mk; v.style.maskImage = mk; v.classList.add('lv-mask'); } }   // 2026-11-20a 말하는 사람 자리만
         v.muted = true; v.defaultMuted = true; v.loop = !once; v.playsInline = true; v.preload = 'auto'; v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('disablepictureinpicture', ''); v.tabIndex = -1;
         v.addEventListener('error', ()=>{ v.dataset.bad = '1'; });
         v.addEventListener('loadeddata', ()=>{ v.dataset.ok = '1'; });   // 한 번 준비되면 계속 쓸 수 있음 (되풀이하며 처음으로 돌아가는 순간에 잠깐 '준비 안 됨'으로 보이는 것 무시)
@@ -32967,8 +32976,8 @@ const ImvLoop = {
         if(this.blob[u1]){ v.src = this.blob[u1]; go(); }
         else this.grab(u1).then(b=>{ if(!this.vids || this.vids[k] !== v) return; if(b){ v.src = b; go(); } else direct(); });
       };
-      add('idle', C.idle); Object.keys(C.talk || {}).forEach(c=>add('t' + c, C.talk[c]));
-      (Array.isArray(C.sync) ? C.sync : []).forEach((x, i)=>add('s' + i, x.video, true));   // 정해진 말(첫인사·끝인사)에 입 모양을 맞춘 영상
+      add('idle', C.idle); Object.keys(C.talk || {}).forEach(c=>add('t' + c, C.talk[c], false, c));
+      (Array.isArray(C.sync) ? C.sync : []).forEach((x, i)=>add('s' + i, x.video, true, x.seat));   // 정해진 말(첫인사·끝인사)에 입 모양을 맞춘 영상
     }
     this.box.style.setProperty('--op', host.style.backgroundPosition || '50% 42%');
     this.pick(); if(!this.timer) this.timer = setInterval(()=>this.pick(), 160);
@@ -33008,8 +33017,9 @@ const ImvLoop = {
     if(this.box) this.box.classList.toggle('quick', hush || resume); this._hush = hush; if(want && want !== 'idle') this._tk = want; else if(!hush) this._tk = '';
     if(want === this.cur){ const v = this.vids[want]; if(v && sk) this.follow(v); else if(v && v.paused){ try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } return; }
     const prev = this.cur; this.cur = want;
-    Object.keys(this.vids).forEach(k=>{ const v = this.vids[k]; v.classList.toggle('on', k === want); v.classList.toggle('was', k === prev && !!want); });
-    this.host.classList.toggle('lv-on', !!want); this.note(!!want);
+    const base = ok('idle');   // 2026-11-20a 듣는 영상은 늘 맨 아래에 깔아 둠 (말하는 영상이 나타나고 사라질 때 사진이 비치거나 화면 전체가 겹쳐 보이지 않게)
+    Object.keys(this.vids).forEach(k=>{ const v = this.vids[k]; v.classList.toggle('base', k === 'idle' && base); v.classList.toggle('on', k === want && k !== 'idle'); v.classList.toggle('was', false); });
+    this.host.classList.toggle('lv-on', !!want || base); this.note(!!want || base);
     if(want){ const v = this.vids[want]; if(sk) this.follow(v, true); else { if(want !== 'idle' && !resume){ try{ v.currentTime = 0; }catch(_){} } try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } }
     if(prev && this.vids[prev]) setTimeout(()=>{ const v = this.vids && this.vids[prev]; if(!v) return; v.classList.remove('was'); if(this.cur !== prev && prev !== 'idle'){ try{ v.pause(); }catch(_){} } }, 450);
   },
@@ -33028,7 +33038,7 @@ const ImvLoop = {
   note(on){ const n = this.imv && this.imv.el && this.imv.el.querySelector('#imv-opt-note'); if(!n) return; if(!this.note0) this.note0 = n.textContent; const t = on ? this.NOTE : this.note0; if(n.dataset.k !== (on ? '1' : '0')){ n.dataset.k = on ? '1' : '0'; n.textContent = t; } },
   off(){
     if(this.timer){ clearInterval(this.timer); this.timer = 0; }
-    if(this.vids) Object.values(this.vids).forEach(v=>{ v.classList.remove('on', 'was'); try{ v.pause(); }catch(_){} });
+    if(this.vids) Object.values(this.vids).forEach(v=>{ v.classList.remove('on', 'was', 'base'); try{ v.pause(); }catch(_){} });
     if(this.host) this.host.classList.remove('lv-on'); if(this.cur) this.note(false); this.cur = '';
   },
 };
@@ -33621,7 +33631,9 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 @media (prefers-reduced-motion:reduce){#imv .imv-say-w i{animation:none}#imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-photo-img{transform:scale(1.035)}}
 /* 2026-11-17 면접관 영상 (듣는 영상·말하는 영상): 사진과 같은 자리에 겹쳐 놓고 부드럽게 바꿈 */
 #imv .imv-lv{position:absolute;inset:0;pointer-events:none}
-#imv .imv-lv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--op,50% 42%);opacity:0;z-index:0;transition:opacity .35s ease,object-position .9s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+#imv .imv-lv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--op,50% 42%);opacity:0;z-index:1;transition:opacity .28s ease,object-position .9s cubic-bezier(.2,.7,.2,1),-webkit-mask-position .9s cubic-bezier(.2,.7,.2,1),mask-position .9s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+#imv .imv-lv video.lv-mask{-webkit-mask-size:cover;mask-size:cover;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:var(--op,50% 42%);mask-position:var(--op,50% 42%)}   /* 2026-11-20a 말하는 사람 자리만 (영상과 똑같이 맞춰 자름) */
+#imv .imv-lv video.base{opacity:1;z-index:0}   /* 듣는 영상: 늘 맨 아래 */
 #imv .imv-lv video.was{opacity:1;z-index:1;transition:object-position .9s cubic-bezier(.2,.7,.2,1)}
 #imv .imv-lv video.on{opacity:1;z-index:2}
 #imv .imv-lv.quick video{transition:opacity .16s ease,object-position .9s cubic-bezier(.2,.7,.2,1)}   /* 말소리가 쉴 때 입 다물기·다시 열기는 빠르게 */
