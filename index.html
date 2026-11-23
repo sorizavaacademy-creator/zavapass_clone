@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23c';
+var APP_VERSION = '2026-11-23d';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -22456,6 +22456,11 @@ async function runDialogInterview(){
     opt.questions = resume.questions.map(x=>Object.assign({}, x)); delete opt.extraQuestions; delete opt.docQuestion;
     opt.resume = { startIndex: doneQ, setLeftMs: resume.setLeftMs != null ? resume.setLeftMs : null };
   }
+  // 2026-11-23d 대본 시연 계정: 무엇을 골랐든 대본 2문항 + 대본 꼬리질문 1개로만 진행
+  if(!resume && ScriptDemo.on()){
+    ['extraQuestions', 'replaceN', 'fuIbOnly', 'fuShort', 'fuDynamic', 'docQuestion', 'setDurationMs'].forEach(k=>{ delete opt[k]; });
+    opt.questions = ScriptDemo.questions(); opt.count = 2; opt.realSet = false; opt.script = true; opt.pressure = 'normal'; state.qbPick = null;
+  }
   FirstQWait.start();   // 2026-10-26c 첫 질문이 나올 때까지 몇 초째인지 보여 줌
   const saveDraft = ()=>{ try{ InterviewDraft.save({ asks, questions: planned, doneQ, setLeftMs: (StenoLoop.setEndsAt != null && typeof StenoLoop.setLeftMs === 'function') ? StenoLoop.setLeftMs() : null }); }catch(_){} };
   await StenoLoop.run(opt, (type, d)=>{
@@ -25519,9 +25524,22 @@ const AiQuota = {
   },
 };
 /* 2026-11-02q 면접실: 면접 준비 창에서 고른 면접관 명단과 회사 카드. 본 질문은 진행 면접관, 꼬리질문은 다른 면접관이 차례로 이어서 함 */
+/* 2026-11-23d 대본 시연 계정(내부 시연용): 이 계정으로 면접을 보면 면접관 2명(왼쪽 여성 진행 · 오른쪽 남성)이 정해진 대본만 말함.
+   대사마다 입 모양을 맞춘 영상·소리(imv-media.json 의 loops['2s'].sync)를 그대로 틀고, AI 질문·꼬리질문·받는 말은 만들지 않음. 답변 받아쓰기·채점은 그대로 */
+const ScriptDemo = {
+  uid: '7e570000-0000-4000-8000-000000000040',   // 클론 DB 시연 계정 (학번 20269040)
+  people: ['hr', 'lead'],   // 0 왼쪽 여성(진행·시작·끝 인사) · 1 오른쪽 남성
+  open: '안녕하십니까? 면접을 시작하겠습니다.',
+  close: '이상으로 면접을 마치겠습니다. 결과는 별도로 안내드리겠습니다. 수고하셨습니다.',
+  on(){ try{ return !!(state.currentUser && state.currentUser.id === this.uid); }catch(_){ return false; } },
+  questions(){ return [
+    { q: '자기소개와 지원 동기를 말씀해 주세요.', spoken: '첫 번째 질문입니다. 자기소개와 지원 동기를 말씀해 주세요.', script: true, seatK: 0 },
+    { q: '가장 큰 성과를 낸 경험을 말씀하십시오. 팀이 아닌 본인이 한 일만.', spoken: '두 번째 질문입니다. 가장 큰 성과를 낸 경험을 말씀하십시오. 팀이 아닌 본인이 한 일만.', script: true, seatK: 1,
+      fu: '솔직히 흔한 이야기입니다. 판단이 틀려 실패한 경험과 무엇을 바꿨는지 말씀하십시오.', fuK: 1 } ]; },
+};
 const IvPanel = {
   fu:0, cur:-1, qn:0, ask:0, spoken:{}, curQ:null, _fuKey:null, _fuPick:null, defNotice:null,
-  people(){ const fc = state.flowCtx; const ids = fc && Array.isArray(fc.interviewers) ? fc.interviewers : []; return ids.map(id=>StartFlow.PEOPLE.find(x=>x.id === id)).filter(Boolean); },
+  people(){ const fc = state.flowCtx; const ids = ScriptDemo.on() ? ScriptDemo.people : fc && Array.isArray(fc.interviewers) ? fc.interviewers : []; return ids.map(id=>StartFlow.PEOPLE.find(x=>x.id === id)).filter(Boolean); },
   setup(){
     const ppl = this.people(), r = document.getElementById('iv-roster'); this.fu = 0; this.cur = -1; this.qn = 0; this.ask = 0; this.spoken = {}; this.curQ = null; this._fuKey = null; this._plan = null;
     if(r){ r.hidden = !ppl.length; r.innerHTML = ppl.map((x,i)=>`<span class="iv-rp" role="listitem" data-k="${i}"><i style="background:${x.c}"></i>${escapeHtml(x.n)}${i === 0 ? ' · 진행' : ''}<em>대기</em></span>`).join(''); }
@@ -25564,10 +25582,11 @@ const IvPanel = {
       if(sc > bs){ bs = sc; best = k; bw = fu ? (p.id === 'press' ? '파고들기' : p.id === 'logic' ? '판단 근거' : p.id === 'data' ? '성과·수치' : (f.why || '꼬리질문')) : f.why; } });
     return { k: best < 0 ? 0 : best, why: bw }; },
   askerFor(q){ const n = this.people().length; const last = q && typeof HALLYM_QA !== 'undefined' && HALLYM_QA.last && q.q === HALLYM_QA.last.q;
-    if(n < 2) return { k:0, why:'' }; if(this.qn === 0 || last) return { k:0, why: this.qn === 0 ? '진행 · 첫 질문' : '진행 · 마무리' };
+    if(n < 2) return { k:0, why:'' }; if(q && q.seatK != null && q.seatK < n) return { k:q.seatK, why:'' };   // 2026-11-23d 대본 시연: 정해진 사람
+    if(this.qn === 0 || last) return { k:0, why: this.qn === 0 ? '진행 · 첫 질문' : '진행 · 마무리' };
     return this.pick(q, -1, false); },
   /** 꼬리질문을 할 면접관: 방금 질문한 면접관이 아닌 사람 중 이 질문·꼬리질문에 어울리는 사람 (같은 차례에선 늘 같은 답) */
-  nextFu(){ const n = this.people().length; if(n < 2) return { k:0, why:'' }; const key = this.qn + ':' + this.fu;
+  nextFu(){ const n = this.people().length; if(n < 2) return { k:0, why:'' }; if(this.curQ && this.curQ.fuK != null && this.curQ.fuK < n) return { k:this.curQ.fuK, why:'꼬리질문' }; const key = this.qn + ':' + this.fu;
     if(this._fuKey !== key){ this._fuKey = key; this._fuPick = this.pick(this.curQ, this.ask, true); } return this._fuPick; },
   /** 2026-11-12z7 다음 질문을 할 면접관을 미리 정해 둠 (그 목소리로 질문을 미리 만들 수 있게). 다음 질문이 오면 이 결정을 그대로 씀 */
   planNext(q){ if(!q) return null; this._plan = Object.assign({ key: q.q }, this.askerFor(q)); return this._plan; },
@@ -27109,7 +27128,7 @@ const StenoLoop = {
       emit('listening');
       startOnce();
     });
-    const greet = VoiceBank.greeting(this.opt.fieldId);   // 녹음된 인사말이 있으면 그 문장·음성
+    const greet = this.opt.script ? { open: ScriptDemo.open, close: ScriptDemo.close } : VoiceBank.greeting(this.opt.fieldId);   // 녹음된 인사말이 있으면 그 문장·음성 (2026-11-23d 대본 시연은 대본 인사)
     try{
       emit('start', this.opt);
       let questions = null;
@@ -27134,7 +27153,7 @@ const StenoLoop = {
           for(let i = questions.length - 2; i >= 1 && k > 0; i--){ const x = questions[i]; if(!x.ib && !x.custom && !x.past && !x.co && !x.qb && !x.role){ questions.splice(i, 1); k--; } } }
       }
       // 2026-11-18e AI 관련 면접 질문: 3문항 이상이면 1개, 9문항 이상이면 2개를 가운데 일반 질문 자리에 넣음 (2문항·이어하기·복습·실전 세트 제외)
-      try{ await Promise.race([AiTopic.load(), new Promise(r=>setTimeout(r, 2500))]); questions = AiTopic.mix(questions, this.opt); }catch(e){ console.warn('[AI 관련 질문]', e); }
+      if(!this.opt.script) try{ await Promise.race([AiTopic.load(), new Promise(r=>setTimeout(r, 2500))]); questions = AiTopic.mix(questions, this.opt); }catch(e){ console.warn('[AI 관련 질문]', e); }
       emit('questions', {list:questions, source:StenoDialog.lastSource});
       // 2026-11-12z7 인사말과 첫 질문 목소리를 미리 만들기 시작 (인사말이 나오는 동안 첫 질문이 준비됨). 둘 다 진행 면접관(첫째)이 말함
       try{ const p0 = IvPanel.people()[0], pid0 = p0 ? p0.id : null; const q0 = questions[(this.opt.resume && this.opt.resume.startIndex) || 0];
@@ -27189,7 +27208,7 @@ const StenoLoop = {
         let history = [], lastAsk = q.q;
         // 영어 질문은 꼬리질문도 영어로 (꼬리질문 문장이 한국어면 한국어로). 2026-11-05e 학생이 '한국어로 답할게요'를 누르면 그 질문은 한국어로 받아 적고 꼬리질문도 한국어로
         const langNow = ()=> this._langOverride || (q.lang === 'en' && !/[가-힣]/.test(lastAsk) ? 'en' : 'ko');
-        const fuCap = isClosing(qi) ? 0 : (this.opt.fuShort && !dyn) ? (qi === shortFuAt ? 1 : 0) : (this.opt.fuIbOnly && !dyn) ? ((questions[qi] && questions[qi].ib) ? 1 : 0) : dyn ? (eligible(qi) ? dyn.perQ : 0) : (fuPlan ? (fuPlan.has(qi) ? 1 : 0) : this.opt.maxFollowups);
+        const fuCap = this.opt.script ? (q.fu ? 1 : 0) : isClosing(qi) ? 0 : (this.opt.fuShort && !dyn) ? (qi === shortFuAt ? 1 : 0) : (this.opt.fuIbOnly && !dyn) ? ((questions[qi] && questions[qi].ib) ? 1 : 0) : dyn ? (eligible(qi) ? dyn.perQ : 0) : (fuPlan ? (fuPlan.has(qi) ? 1 : 0) : this.opt.maxFollowups);
         for(let f=0; f<=fuCap && !this.aborted; f++){
           this._curLimit = this.opt.realMode ? realLimitMs(f===0 ? q.q : lastAsk, f>0) : this.opt.maxAnswerMs;
           this._curLang = langNow() === 'en' ? 'en-US' : 'ko-KR';   // 2026-11-05 영어로 물으면 영어로 받아 적음
@@ -27212,7 +27231,7 @@ const StenoLoop = {
           // 2026-11-12z8 꼬리질문 미리 만들기: 학생이 말을 멈추고 0.9초 조용하면 그때까지의 답으로 AI 꼬리질문을 미리 만듦.
           //   '답변 완료' 때 답이 같으면 그대로 쓰고, 다시 말을 이어 가면 버리고 다시 멈출 때 새로 만듦. 꼬리질문이 먼저 나오고 학생이 아직 조용하면 그 목소리도 미리 만듦
           const spec = { text:null, p:null, force:false, n:0 };
-          const specTick = (fuCap > f && StenoDialog.aiOn()) ? setInterval(()=>{
+          const specTick = (fuCap > f && !this.opt.script && StenoDialog.aiOn()) ? setInterval(()=>{
             try{
               if(this.aborted || this.paused || !StenoListener.active) return;
               const L = StenoListener; if(L.interim && L.interim.trim()) return;   // 아직 받아 적는 중
@@ -27268,12 +27287,12 @@ const StenoLoop = {
           emit('thinking');
           const fuLang = langNow();
           // 2026-11-05e AI가 꼬리질문을 만드는 동안(4~5초) 면접관이 먼저 "네, 잘 들었습니다." 하고 받아 줌 — 기다리는 침묵이 줄어듦 (대화 기록에는 남기지 않음)
-          const filler = this.filler(fuLang);
+          const filler = this.opt.script ? Promise.resolve() : this.filler(fuLang);   // 2026-11-23d 대본 시연은 받는 말 없이 바로 대본 꼬리질문
           // 미리 만든 꼬리질문이 같은 답으로 만든 것이면 그대로 씀 (2026-11-12z8)
           const reuse = spec.p && spec.text === ans && spec.force === force;
           if(reuse) this.stats.fuSpecHit = (this.stats.fuSpecHit || 0) + 1;
           const fu = await Promise.race([
-            reuse ? spec.p : StenoDialog.followup(Object.assign(fuArgs(ans, force), { history:history.slice(0,-1), lang: fuLang })),
+            this.opt.script ? Promise.resolve({ followup: q.fu, source: 'script' }) : reuse ? spec.p : StenoDialog.followup(Object.assign(fuArgs(ans, force), { history:history.slice(0,-1), lang: fuLang })),
             abortPromise,   // 생성 중 "면접 종료"를 누르면 기다리지 않고 바로 빠져나감
           ]);
           if(fu && fu.source === 'llm') StenoDialog.rememberFollowup(fu.followup);
@@ -27290,7 +27309,7 @@ const StenoLoop = {
           history.push({role:'interviewer', text:fu.followup});
           lastAsk = fu.followup;
           this._fuSpeaking = true;
-          try{ await say(fu.followup, fu.source==='llm' ? 'interviewer' : 'interviewer-mock', fu.audio_url || null); }finally{ this._fuSpeaking = false; }
+          try{ await say(fu.followup, (fu.source==='llm' || fu.source==='script') ? 'interviewer' : 'interviewer-mock', fu.audio_url || null); }finally{ this._fuSpeaking = false; }
           if(fu.intent === 'next') break;                    // AI가 "다음 질문으로" 판단
         }
       }
@@ -32791,6 +32810,7 @@ const IMV_PHOTOS = {
   '3':  { src: 'imv-panel3.jpg?v=18d',  x: { 0: 18, 1: 50, 2: 83 }, sw: 24 },
   '2a': { src: 'imv-panel2a.jpg?v=18d', x: { 0: 26, 1: 74 }, sw: 32 },
   '2b': { src: 'imv-panel2b.jpg?v=18d', x: { 1: 27, 2: 75 }, sw: 32 },
+  '2s': { src: 'imv-panel2s.jpg?v=23d', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
   '1f': { src: 'imv-panel1f.jpg?v=18d', x: { 0: 44 }, sw: 0 },   // 2026-11-18 덜 가깝게 다시 자름 (얼굴이 가운데보다 조금 왼쪽)
   '1m': { src: 'imv-panel1m.jpg?v=18d', x: { 1: 50 }, sw: 0 },
 };
@@ -33229,7 +33249,7 @@ const Imv = {
     this.cur = -1; this.speaker(0);
   },
   /** 2026-11-12 사진 자리의 성별: 3명·2명(여성 포함)·1명(여성) 사진의 0번 자리만 여성 */
-  seatGender(layout, c){ return c === 0 && ['3', '2a', '1f'].includes(layout) ? 'female' : 'male'; },
+  seatGender(layout, c){ return c === 0 && ['3', '2a', '2s', '1f'].includes(layout) ? 'female' : 'male'; },
   /** 2026-11-17 목소리는 얼굴에 고정: 어떤 면접관이 앉든 그 얼굴의 목소리·높낮이로 말함 (속도와 말투는 면접관 설정) */
   seatVoices(){ const map = {};
     this.people.forEach((p, k)=>{ try{ const c = this.col[k], f = IvVoice.faceEff(c); if(!p || !f || !f.voice_id) return;
@@ -33249,10 +33269,11 @@ const Imv = {
       layout = '3'; }
     else if(n === 2){ if(fem >= 0){ col[fem] = 0; col[1 - fem] = 1; layout = '2a'; } else { const mid = top([0, 1]); col[mid] = 1; col[1 - mid] = 2; layout = '2b'; } }
     else { col[0] = fem === 0 ? 0 : 1; layout = fem === 0 ? '1f' : '1m'; }
+    if(layout === '2a' && ScriptDemo.on()) layout = '2s';   // 2026-11-23d 대본 시연 계정은 대본 영상 화면
     return { layout, col };
   },
   /** 시작·끝 멘트를 말할 사람: 3명 사진에서는 왼쪽(여성 얼굴) 자리 — 그 문장에 입 모양을 맞춘 영상이 있음. 그 밖에는 첫째(진행) 면접관 */
-  hostIdx(){ try{ if(this.active && this.mode === 'photo' && (this.layout === '3' || this.layout === '2a') && this.col){ const k = this.col.indexOf(0); if(k >= 0) return k; } }catch(_){} return 0; },
+  hostIdx(){ try{ if(this.active && this.mode === 'photo' && (this.layout === '3' || this.layout === '2a' || this.layout === '2s') && this.col){ const k = this.col.indexOf(0); if(k >= 0) return k; } }catch(_){} return 0; },
   posFor(layout, c, n){ if(n === 1) return ''; const L = IMV_PHOTOS[layout]; if(n === 2) return (L && L.x[c] < 50) ? '왼쪽' : '오른쪽'; return this.POS[c] || ''; },
   posName(k){ const c = this.col ? this.col[k] : k, n = this.people.length; if(n === 1) return '';
     if(this.mode === 'photo' && n === 2){ const L = IMV_PHOTOS[this.layout]; return (L && L.x[c] < 50) ? '왼쪽' : '오른쪽'; }
