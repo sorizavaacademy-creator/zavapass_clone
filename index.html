@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23a';
+var APP_VERSION = '2026-11-23b';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -23402,7 +23402,7 @@ async function startCamera(){
   }
   label.textContent = '카메라 연결 중…'; label.style.display=''; icon.style.display='';
   try{
-    const stream = await DevicePref.video({ width:{ideal:640}, height:{ideal:480}, facingMode:'user' });
+    const stream = await DevicePref.video({ width:{ideal:1280}, height:{ideal:720}, facingMode:'user' });
     if(!state.camOn){ stream.getTracks().forEach(t=>t.stop()); return; }   // 기다리는 사이 카메라를 껐다면 폐기
     state.cameraStream = stream;
     video.srcObject = stream;
@@ -33059,7 +33059,7 @@ const ImvRec = {
     if(!tracks.length) return false;
     const video = tracks.some(t=>t.kind === 'video'); this.kind = video ? 'video' : 'audio';
     this.mime = this.pickMime(video);
-    try{ this.mr = new MediaRecorder(new MediaStream(tracks), Object.assign({}, this.mime ? { mimeType: this.mime } : {}, video ? { videoBitsPerSecond: 1200000 } : {}, { audioBitsPerSecond: 64000 })); }
+    try{ this.mr = new MediaRecorder(new MediaStream(tracks), Object.assign({}, this.mime ? { mimeType: this.mime } : {}, video ? { videoBitsPerSecond: 2500000 } : {}, { audioBitsPerSecond: 64000 })); }
     catch(_){ try{ this.mr = new MediaRecorder(new MediaStream(tracks)); }catch(e){ this.mr = null; return false; } }
     this.mr.ondataavailable = e=>{ if(e.data && e.data.size) this.chunks.push(e.data); };
     this.t0 = Date.now(); this.mr.start(1000);
