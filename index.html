@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23g';
+var APP_VERSION = '2026-11-23h';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -25534,8 +25534,8 @@ const ScriptDemo = {
   close: '이상으로 면접을 마치겠습니다. 결과는 별도로 안내드리겠습니다. 수고하셨습니다.',
   on(){ try{ return !!(state.currentUser && state.currentUser.id === this.uid); }catch(_){ return false; } },
   questions(){ return [
-    { q: '자기소개와 지원 동기를 말씀해 주세요.', spoken: '첫 번째 질문입니다. 자기소개와 지원 동기를 말씀해 주세요.', script: true, seatK: 0 },
-    { q: '가장 큰 성과를 낸 경험을 말씀하십시오. 팀이 아닌 본인이 한 일만.', spoken: '두 번째 질문입니다. 가장 큰 성과를 낸 경험을 말씀하십시오. 팀이 아닌 본인이 한 일만.', script: true, seatK: 1,
+    { q: '자기소개와 지원 동기를 말씀해 주십시오.', spoken: '첫 번째 질문입니다. 자기소개와 지원 동기를 말씀해 주십시오.', script: true, seatK: 0 },
+    { q: '가장 큰 성과를 낸 경험을 말씀하십시오. 팀이 아닌 본인이 한 일만 이야기해 주세요.', spoken: '두 번째 질문입니다. 가장 큰 성과를 낸 경험을 말씀하십시오. 팀이 아닌 본인이 한 일만 이야기해 주세요.', script: true, seatK: 1,
       fu: '솔직히 흔한 이야기입니다. 판단이 틀려 실패한 경험과 무엇을 바꿨는지 말씀하십시오.', fuK: 1 } ]; },
 };
 const IvPanel = {
@@ -32811,7 +32811,7 @@ const IMV_PHOTOS = {
   '3':  { src: 'imv-panel3.jpg?v=18d',  x: { 0: 18, 1: 50, 2: 83 }, sw: 24 },
   '2a': { src: 'imv-panel2a.jpg?v=18d', x: { 0: 26, 1: 74 }, sw: 32 },
   '2b': { src: 'imv-panel2b.jpg?v=18d', x: { 1: 27, 2: 75 }, sw: 32 },
-  '2s': { src: 'imv-panel2s.jpg?v=23d', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
+  '2s': { src: 'imv-panel2s.jpg?v=23h', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
   '1f': { src: 'imv-panel1f.jpg?v=18d', x: { 0: 44 }, sw: 0 },   // 2026-11-18 덜 가깝게 다시 자름 (얼굴이 가운데보다 조금 왼쪽)
   '1m': { src: 'imv-panel1m.jpg?v=18d', x: { 1: 50 }, sw: 0 },
 };
@@ -32989,7 +32989,8 @@ const ImvLoop = {
     const key = imv.layout + '|' + JSON.stringify(C);
     if(this.key !== key){
       this.key = key; this.cur = ''; this.box.innerHTML = ''; this.vids = {};
-      const add = (k, url, once, seat)=>{ if(!url) return; const v = document.createElement('video');
+      const add = (k, url, once, seat, full)=>{ if(!url) return; const v = document.createElement('video');
+        if(full){ v.classList.add('lv-full'); v.style.objectPosition = '50% 40%'; }   // 2026-11-23h 말하는 사람 전체 화면 영상 (가림막 없음 · 사람이 가운데)
         if(seat != null){ const mk = this.maskFor(C, seat); if(mk){ v.style.webkitMaskImage = mk; v.style.maskImage = mk; v.classList.add('lv-mask'); } }   // 2026-11-20a 말하는 사람 자리만
         v.muted = true; v.defaultMuted = true; v.loop = !once; v.playsInline = true; v.preload = 'auto'; v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('disablepictureinpicture', ''); v.tabIndex = -1;
         v.addEventListener('error', ()=>{ v.dataset.bad = '1'; });
@@ -33006,9 +33007,9 @@ const ImvLoop = {
         else this.grab(u1).then(b=>{ if(!this.vids || this.vids[k] !== v) return; if(b){ v.src = b; go(); } else direct(); });
       };
       const sy0 = Array.isArray(C.sync) ? C.sync : [], ownFirst = sy0.some(x=>x.own);   // 2026-11-23g 대본 영상이 있으면 그것부터 받음
-      add('idle', C.idle); if(ownFirst) sy0.forEach((x, i)=>add('s' + i, x.video, true, x.seat));
+      add('idle', C.idle); if(ownFirst) sy0.forEach((x, i)=>add('s' + i, x.video, true, x.full ? null : x.seat, !!x.full));
       Object.keys(C.talk || {}).forEach(c=>add('t' + c, C.talk[c], false, c));
-      if(!ownFirst) sy0.forEach((x, i)=>add('s' + i, x.video, true, x.seat));   // 정해진 말(첫인사·끝인사)에 입 모양을 맞춘 영상
+      if(!ownFirst) sy0.forEach((x, i)=>add('s' + i, x.video, true, x.full ? null : x.seat, !!x.full));   // 정해진 말(첫인사·끝인사)에 입 모양을 맞춘 영상
     }
     this.box.style.setProperty('--op', host.style.backgroundPosition || '50% 42%');
     this.pick(); if(!this.timer) this.timer = setInterval(()=>this.pick(), 160);
@@ -33052,6 +33053,7 @@ const ImvLoop = {
     const base = ok('idle');   // 2026-11-20a 듣는 영상은 늘 맨 아래에 깔아 둠 (말하는 영상이 나타나고 사라질 때 사진이 비치거나 화면 전체가 겹쳐 보이지 않게)
     Object.keys(this.vids).forEach(k=>{ const v = this.vids[k]; v.classList.toggle('base', k === 'idle' && base); v.classList.toggle('on', k === want && k !== 'idle'); v.classList.toggle('was', false); });
     this.host.classList.toggle('lv-on', !!want || base); this.note(!!want || base);
+    try{ const ph = this.host.parentNode, fv = want && this.vids[want]; if(ph) ph.classList.toggle('fullon', !!(fv && fv.classList.contains('lv-full'))); }catch(_){}   // 2026-11-23h 말하는 사람 전체 화면일 때 이름표를 가운데로
     if(want){ const v = this.vids[want]; if(sk) this.follow(v, true); else { if(want !== 'idle' && !resume){ try{ v.currentTime = 0; }catch(_){} } try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } }
     if(prev && this.vids[prev]) setTimeout(()=>{ const v = this.vids && this.vids[prev]; if(!v) return; v.classList.remove('was'); if(this.cur !== prev && prev !== 'idle'){ try{ v.pause(); }catch(_){} } }, 450);
   },
@@ -33667,6 +33669,7 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv .imv-shade{background:radial-gradient(ellipse var(--sw,24%) 88% at var(--sx,50%) 58%,rgba(20,18,17,0) 52%,rgba(20,18,17,.5) 100%)}
 #imv .imv-say{position:absolute;left:var(--sx,50%);bottom:clamp(54px,11cqh,120px);transform:translate(-50%,10px);display:inline-flex;align-items:center;gap:10px;padding:8px 15px 8px 12px;border-radius:999px;background:rgba(18,15,13,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:clamp(13px,1vw,16px);font-weight:700;white-space:nowrap;opacity:0;pointer-events:none;transition:left .8s cubic-bezier(.2,.7,.2,1),opacity .35s,transform .35s;box-shadow:0 10px 26px rgba(0,0,0,.28)}
 #imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-say{opacity:1;transform:translate(-50%,0)}
+#imv .imv-photo.fullon .imv-say{left:50%} #imv .imv-photo.fullon .imv-spot{opacity:0}
 #imv .imv-say b{font-weight:700;letter-spacing:-.01em}
 #imv .imv-say-w{display:inline-flex;align-items:center;gap:3px;height:20px}
 #imv .imv-say-w i{width:3px;height:6px;border-radius:2px;background:#ff8a5c;transform-origin:center;animation:imvSay .9s ease-in-out infinite;animation-play-state:paused}
