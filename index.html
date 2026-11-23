@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23b';
+var APP_VERSION = '2026-11-23c';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -24934,7 +24934,14 @@ const ResultView = {
       </div>
       <h3 class="rv-sub rv-dv-allt">이 답변에서 잰 것 <small>질문 ${i + 1}</small></h3>
       <ul class="rv-dv-all">${L.map(x=>`<li><span>${escapeHtml(x.n)}</span><b class="${x.pre ? 'pre' : x.na ? 'na' : ''}">${x.pre ? '분석 전' : x.na ? '측정 안 됨' : escapeHtml(x.v)}</b></li>`).join('')}</ul>`;
-    if(md && md.whole && md.at != null){ const v = document.getElementById('rv-dv-v'); if(v){ const go = ()=>{ try{ v.currentTime = md.at; }catch(_){} }; if(v.readyState >= 1) go(); else v.addEventListener('loadedmetadata', go, { once: true }); } } },
+    if(md){ const v = document.getElementById('rv-dv-v'); if(v){ const at = (md.whole && md.at != null) ? md.at : null;
+      const go = ()=>{ if(at != null){ try{ v.currentTime = at; }catch(_){} } };
+      // 2026-11-23c 크롬 녹화 파일은 전체 길이가 비어 있어 재생 막대가 깨짐: 맨 끝으로 한 번 보내 길이를 알아낸 뒤 원래 위치로 돌아옴
+      const fix = ()=>{ if(v.duration !== Infinity) return go(); let done = false;
+        const back = ()=>{ if(done || !isFinite(v.duration)) return; done = true; v.removeEventListener('durationchange', back); try{ v.currentTime = at != null ? at : 0; }catch(_){} };
+        v.addEventListener('durationchange', back); setTimeout(()=>{ if(!done){ done = true; v.removeEventListener('durationchange', back); try{ v.currentTime = at != null ? at : 0; }catch(_){} } }, 2500);
+        try{ v.currentTime = 1e101; }catch(_){ back(); } };
+      if(v.readyState >= 1) fix(); else v.addEventListener('loadedmetadata', fix, { once: true }); } } },
   dvSeek(t){ const v = document.getElementById('rv-dv-v'); if(!v) return; try{ v.currentTime = t; v.play().catch(()=>{}); }catch(_){} },
   async toNote(i){ try{ if(!AnswerNote.data) await AnswerNote.load(); const q = (state.interviewQuestions[i] || {}).q, a = String(state.answerTexts[i] || '').trim(); const k = AnswerNote.catOf(q);
     if(!k){ showToast('마무리 말은 답변 노트에 담지 않아요.'); return; }
