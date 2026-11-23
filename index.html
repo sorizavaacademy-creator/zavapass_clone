@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23f';
+var APP_VERSION = '2026-11-23g';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -15291,7 +15291,7 @@ const StartFlow = {
   },
   render(){
     const s = this.s, body = document.getElementById('fl-body');
-    try{ if(s && s.step >= 2 && !s.hub && !s.page && Array.isArray(s.people) && s.people.length) imvPreload(s.people); }catch(_){}   // 2026-11-18f 면접관을 고른 화면부터 그 구성의 영상을 미리 받음
+    try{ if(ScriptDemo.on()) imvPreload(); else if(s && s.step >= 2 && !s.hub && !s.page && Array.isArray(s.people) && s.people.length) imvPreload(s.people); }catch(_){}   // 2026-11-23g 대본 계정은 준비 창을 열자마자 대본 영상부터   // 2026-11-18f 면접관을 고른 화면부터 그 구성의 영상을 미리 받음
     const prevStep = this._shown; this._shown = (s.hub ? 'hub' : s.page ? 'pg-' + s.page : s.step) + ':' + (s.sub || '');
     { const nv = document.querySelectorAll('#modal-flow .fl-nav a'); nv.forEach((x, i)=>{ if(i === (s.page ? 3 : 1)) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current'); }); }
     if(s.page){ if(s.page === 'mat') s.pageFrom = 'mat'; document.getElementById('fl-steps').innerHTML = ''; try{ PrepRoom.stop(); }catch(_){} this.devLeave();
@@ -32818,7 +32818,7 @@ const IMV_PHOTOS = {
 const IMV_PANEL3 = IMV_PHOTOS['3'].src;
 function imvPreload(pids){   // 2026-11-18d 고른 면접관 구성의 사진·영상만 미리 받음 (영상을 풀HD로 올리면서 다섯 구성을 다 받으면 약 30MB라 느린 인터넷에서 부담)
   // 2026-11-18f pids = 새 준비 화면에서 지금 고른 면접관 (고르자마자 받기 시작해 면접장에 들어가기 전에 다 받게)
-  let lay = ''; try{ let ids = Array.isArray(pids) && pids.length ? pids.slice() : IvPanel.people().map(x=>x.id); if(!ids.length) ids = ['hr', 'lead']; lay = Imv.layoutFor(ids.slice(0, 3).map(id=>Imv.P(id))).layout; }catch(_){}
+  let lay = ''; try{ let ids = ScriptDemo.on() ? ScriptDemo.people.slice() : Array.isArray(pids) && pids.length ? pids.slice() : IvPanel.people().map(x=>x.id); if(!ids.length) ids = ['hr', 'lead']; lay = Imv.layoutFor(ids.slice(0, 3).map(id=>Imv.P(id))).layout; }catch(_){}
   try{ AiTopic.load(); }catch(_){}   // 2026-11-18e AI 관련 질문 목록 미리 읽기
   imvPreload.seen = imvPreload.seen || {}; if(imvPreload.seen[lay || '*']) return; imvPreload.seen[lay || '*'] = true;
   (lay && IMV_PHOTOS[lay] ? [IMV_PHOTOS[lay]] : Object.values(IMV_PHOTOS)).forEach(L=>{ try{ const i = new Image(); i.src = L.src; }catch(_){} }); try{ ImvLoop.warm(lay); }catch(_){} }   // 준비 창에서 미리 받아 둠 (입장 때 회색 화면 방지)   // 'bright' = 밝은 실제 면접실 (기본) · 'dark' = 어두운 몰입형
@@ -32948,7 +32948,7 @@ const ImvLoop = {
       (key === '*' ? Object.values(L) : [L[key]]).forEach(C=>{
         // 2026-11-18f 처음 말할 때 쓰는 순서로 받음: 듣는 영상 → 시작 멘트 영상·소리 → 말하는 영상 → 끝 멘트
         const sy = Array.isArray(C.sync) ? C.sync : [];
-        [C.idle].concat(sy.slice(0, 1).map(x=>x.video), Object.values(C.talk || {}), sy.slice(1).map(x=>x.video)).filter(Boolean).forEach(u=>{ try{ this.grab(this.one(u)); }catch(_){} });
+        (sy.some(x=>x.own) ? [C.idle].concat(sy.map(x=>x.video), Object.values(C.talk || {})) : [C.idle].concat(sy.slice(0, 1).map(x=>x.video), Object.values(C.talk || {}), sy.slice(1).map(x=>x.video))).filter(Boolean).forEach(u=>{ try{ this.grab(this.one(u)); }catch(_){} });
         sy.map(x=>x.audio).filter(Boolean).forEach(u=>{ try{ fetch(u).catch(()=>{}); }catch(_){} }); }); }); }catch(_){} },   // 2026-11-18d 고른 구성만 (시작·끝 멘트 영상도 함께)
   /* 2026-11-18f 영상 파일을 통째로 받아 기기 안 주소(blob)로 재생함.
      예전에는 영상 주소를 그대로 재생해서 ① 인터넷이 느리면 인사말이 시작된 뒤에야 영상이 준비돼 말하는 도중에 화면이 바뀌고(입 모양 어긋남)
@@ -33005,8 +33005,10 @@ const ImvLoop = {
         if(this.blob[u1]){ v.src = this.blob[u1]; go(); }
         else this.grab(u1).then(b=>{ if(!this.vids || this.vids[k] !== v) return; if(b){ v.src = b; go(); } else direct(); });
       };
-      add('idle', C.idle); Object.keys(C.talk || {}).forEach(c=>add('t' + c, C.talk[c], false, c));
-      (Array.isArray(C.sync) ? C.sync : []).forEach((x, i)=>add('s' + i, x.video, true, x.seat));   // 정해진 말(첫인사·끝인사)에 입 모양을 맞춘 영상
+      const sy0 = Array.isArray(C.sync) ? C.sync : [], ownFirst = sy0.some(x=>x.own);   // 2026-11-23g 대본 영상이 있으면 그것부터 받음
+      add('idle', C.idle); if(ownFirst) sy0.forEach((x, i)=>add('s' + i, x.video, true, x.seat));
+      Object.keys(C.talk || {}).forEach(c=>add('t' + c, C.talk[c], false, c));
+      if(!ownFirst) sy0.forEach((x, i)=>add('s' + i, x.video, true, x.seat));   // 정해진 말(첫인사·끝인사)에 입 모양을 맞춘 영상
     }
     this.box.style.setProperty('--op', host.style.backgroundPosition || '50% 42%');
     this.pick(); if(!this.timer) this.timer = setInterval(()=>this.pick(), 160);
@@ -33539,7 +33541,8 @@ const Imv = {
         if(my !== Imv._sTok) return; }
       // 2026-11-17 정해진 말(첫인사·끝인사): 그 문장에 입 모양을 맞춘 영상이 있으면, 영상을 맞출 때 쓴 목소리 파일을 재생하고 영상이 그 소리를 따라감
       // 2026-11-23e 대본 영상(own): 소리와 그림이 한 파일에 들어 있는 영상을 소리까지 그대로 재생 (원본 영상처럼 입과 소리가 같은 재생기에서 맞음)
-      { const se = ImvLoop.syncFor(text), v = se && se.own && ImvLoop.okNow(se.key) && ImvLoop.vids && ImvLoop.vids[se.key];
+      { const se0 = ImvLoop.syncFor(text); if(se0 && se0.own && !ImvLoop.okNow(se0.key)){ try{ await ImvLoop.waitReady([se0.key], 15000); }catch(_){} if(my !== Imv._sTok) return; }   // 2026-11-23g 인터넷이 느려도 대본 영상이 준비될 때까지 잠깐 기다림
+        const se = ImvLoop.syncFor(text), v = se && se.own && ImvLoop.okNow(se.key) && ImvLoop.vids && ImvLoop.vids[se.key];
         if(v){ StenoVoice._seq++; try{ st.call(StenoVoice); }catch(_){} if(my !== Imv._sTok) Imv._sTok = my;
           ImvLoop._sync = se; StenoVoice.audio = v;
           try{ v.pause(); v.playbackRate = 1; v.currentTime = 0; }catch(_){} v.muted = false; v.defaultMuted = false; v.volume = 1;
