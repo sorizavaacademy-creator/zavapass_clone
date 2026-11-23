@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23e';
+var APP_VERSION = '2026-11-23f';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -22100,6 +22100,7 @@ const InterviewDraft = {
   key(){ return 'stenotalk_iv_draft_' + ((state.currentUser && state.currentUser.id) || 'anon'); },
   save(part){
     if(!state.currentUser || state.demoResult || state.interviewMode !== 'dialog') return;
+    try{ if(ScriptDemo.on()) return; }catch(_){}   // 2026-11-23f 대본 시연 계정은 이어하기를 남기지 않음 (늘 처음부터 대본대로)
     const asks = (part.asks || []).map(a=>{ const o = Object.assign({}, a); delete o.audioParts; delete o.selfcamP; return o; });
     const d = {
       v:1, uid: state.currentUser.id, savedAt: Date.now(), startTime: state.startTime,
@@ -33521,7 +33522,8 @@ const Imv = {
     // 면접관 말하기 감싸기 (영상 우선 · 질문 사이 쉼)
     const sp = StenoVoice.speak, st = StenoVoice.stop, pf = StenoVoice.prefetch;
     if(typeof pf === 'function') StenoVoice.prefetch = function(text){ try{ if(Imv.active && ImvLoop.syncFor(text, true)) return; }catch(_){} return pf.apply(this, arguments); };   // 저장해 둔 목소리 파일을 쓸 문장은 미리 만들지 않음
-    StenoVoice.stop = function(){ Imv._sTok++; try{ Imv.stopVideo(); }catch(_){} return st.apply(this, arguments); };
+    StenoVoice.stop = function(){ Imv._sTok++; try{ Imv.stopVideo(); }catch(_){} try{ const se = ImvLoop._sync, v = se && se.own && ImvLoop.vids && ImvLoop.vids[se.key]; if(v){ v.pause(); v.muted = true; } }catch(_){}   // 2026-11-23f 대본 영상 소리도 함께 멈춤 (일시정지·면접 마치기)
+      return st.apply(this, arguments); };
     StenoVoice.speak = async function(text, onDone, opts){
       if(!Imv.active) return sp.apply(this, arguments);
       const my = ++Imv._sTok;
