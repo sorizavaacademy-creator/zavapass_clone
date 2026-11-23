@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23d';
+var APP_VERSION = '2026-11-23e';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -33021,7 +33021,8 @@ const ImvLoop = {
       return Object.assign({ key: 's' + i }, x); }catch(_){ return null; } },
   /** 정해진 말 영상은 목소리 재생 위치를 따라감. 조금 벌어지면 재생 속도를 살짝 바꿔 맞추고, 많이 벌어졌을 때만 위치를 옮김
       (위치를 자주 옮기면 영상이 그때마다 멈칫해서 아예 못 움직일 수 있음 → 옮기는 중에는 기다리고, 한 번 옮기면 1.2초 동안 다시 옮기지 않음) */
-  follow(v, force){ try{ const a = ImvLip.el; if(a && isFinite(a.currentTime)){ const now = Date.now(), d = v.currentTime - a.currentTime, ad = Math.abs(d);
+  follow(v, force){ if(ImvLip.el === v){ if(v.paused && !v.ended){ try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } return; }   // 2026-11-23e 소리를 품은 대본 영상은 스스로 재생 (따라갈 대상이 자기 자신)
+    try{ const a = ImvLip.el; if(a && isFinite(a.currentTime)){ const now = Date.now(), d = v.currentTime - a.currentTime, ad = Math.abs(d);
         if(!force && !v.seeking){ const q = this.st || (this.st = { n: 0, sum: 0, max: 0, seek: 0 }); q.n++; q.sum += ad; if(ad > q.max) q.max = ad; }   // 2026-11-18f 점검용: 소리와 영상이 벌어진 정도
         if(v.seeking && now - (v._sk || 0) < 1500){ /* 옮기는 중 */ }
         else if(force || (ad > 0.45 && now - (v._sk || 0) > 1200)){ v._sk = now; if(!force && this.st) this.st.seek++; v.playbackRate = 1; v.currentTime = Math.max(0, Math.min(a.currentTime + 0.08, (v.duration || 1e9) - 0.05)); }
@@ -33042,7 +33043,7 @@ const ImvLoop = {
       hush = talking && !sk && !!el && (fresh ? Persona.quiet : el.currentTime < 0.2); }catch(_){}   // 아직 못 읽었으면 첫 0.2초(소리 앞의 빈 구간)만 입을 다묾   // 말하는 중인데 말소리가 잠깐 쉼 (문장 사이·쉼표)
     const want = sk || (talking && !hush && ok('t' + c) ? 't' + c : ok('idle') ? 'idle' : '');
     const resume = !!this._hush && !hush && want === this._tk;   // 쉬었다가 같은 사람이 이어서 말함
-    if(this.box) this.box.classList.toggle('quick', hush || resume); this._hush = hush; if(want && want !== 'idle') this._tk = want; else if(!hush) this._tk = '';
+    if(this.box) this.box.classList.toggle('quick', hush || resume || !!(sk && sy.own)); this._hush = hush; if(want && want !== 'idle') this._tk = want; else if(!hush) this._tk = '';   // 2026-11-23e 대본 영상은 첫 소리부터 바로 보이게 빠르게 바꿈
     if(want === this.cur){ const v = this.vids[want]; if(v && sk) this.follow(v); else if(v && v.paused){ try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } return; }
     const prev = this.cur; this.cur = want;
     const base = ok('idle');   // 2026-11-20a 듣는 영상은 늘 맨 아래에 깔아 둠 (말하는 영상이 나타나고 사라질 때 사진이 비치거나 화면 전체가 겹쳐 보이지 않게)
@@ -33535,6 +33536,16 @@ const Imv = {
         try{ const s0 = ImvLoop.syncFor(text), c0 = Imv.col ? Imv.col[Imv.cur < 0 ? 0 : Imv.cur] : 0; await ImvLoop.waitReady(['idle', s0 ? s0.key : 't' + c0], 7000); }catch(_){}
         if(my !== Imv._sTok) return; }
       // 2026-11-17 정해진 말(첫인사·끝인사): 그 문장에 입 모양을 맞춘 영상이 있으면, 영상을 맞출 때 쓴 목소리 파일을 재생하고 영상이 그 소리를 따라감
+      // 2026-11-23e 대본 영상(own): 소리와 그림이 한 파일에 들어 있는 영상을 소리까지 그대로 재생 (원본 영상처럼 입과 소리가 같은 재생기에서 맞음)
+      { const se = ImvLoop.syncFor(text), v = se && se.own && ImvLoop.okNow(se.key) && ImvLoop.vids && ImvLoop.vids[se.key];
+        if(v){ StenoVoice._seq++; try{ st.call(StenoVoice); }catch(_){} if(my !== Imv._sTok) Imv._sTok = my;
+          ImvLoop._sync = se; StenoVoice.audio = v;
+          try{ v.pause(); v.playbackRate = 1; v.currentTime = 0; }catch(_){} v.muted = false; v.defaultMuted = false; v.volume = 1;
+          try{ ImvLip.begin(sanitizeForSpeech(text), v); }catch(_){}
+          return new Promise(res=>{ let done = false;
+            const fin = ()=>{ if(done) return; done = true; v.removeEventListener('ended', fin); v.muted = true; if(StenoVoice.audio === v) StenoVoice.audio = null; if(ImvLoop._sync === se) ImvLoop._sync = null; res(); if(onDone) onDone(); };
+            v.addEventListener('ended', fin);
+            playWithGate(v).then(()=>{ try{ ImvLoop.pick(); }catch(_){} }).catch(()=>{ v.muted = true; fin(); }); }); } }
       { const se = ImvLoop.syncFor(text); if(se){ se.novid = !ImvLoop.okNow(se.key); ImvLoop._sync = se; const fin = function(){ if(ImvLoop._sync === se) ImvLoop._sync = null; if(onDone) return onDone.apply(this, arguments); }; return sp.call(this, text, fin, Object.assign({}, opts || {}, { url: se.audio })); } }
       // 목소리가 재생되지 않으면(TTS 실패·미지원 브라우저) 질문을 못 들으니 자막을 자동으로 켬
       const t0 = Date.now(), done = function(){ if(Imv.active && text && String(text).length > 8 && Date.now() - t0 < 700) Imv.voiceFail(); if(onDone) return onDone.apply(this, arguments); };
