@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-20b';
+var APP_VERSION = '2026-11-23a';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -26230,7 +26230,8 @@ const Persona = {
         { const nowq = performance.now(); if(this._qa !== el){ this._qa = el; this._heard = false; this._qSince = 0; this._q0 = nowq; }
           this._qAt = nowq;
           if(rms > 0.012){ this._heard = true; this._qSince = 0; } else if(!this._qSince) this._qSince = nowq;
-          this._setQuiet(this._heard ? !!(this._qSince && nowq - this._qSince > 400) : (nowq - this._q0 < 700)); }   // 2026-11-20a 0.17초 → 0.4초 (단어 사이 짧은 쉼마다 영상이 바뀌어 깜빡이던 것)
+          const tail = isFinite(el.duration) && el.duration - el.currentTime < 1.0;   // 2026-11-23a 문장 끝 1초 안: 0.12초만 조용해도 말이 끝난 것으로 보고 바로 입을 닫음 (소리 끝의 빈 구간 동안 입이 계속 움직이던 것)
+          this._setQuiet(this._heard ? !!(this._qSince && nowq - this._qSince > (tail ? 120 : 700)) : (nowq - this._q0 < 700)); }   // 2026-11-23a 문장 중간 쉼 0.4초 → 0.7초 (한 질문 안에서 영상이 자주 바뀌던 것)
         // 1초 넘게 완전 무음이면(분석이 막힌 경우) 시간 기준으로 전환
         if(this._silentSince && performance.now() - this._silentSince > 1000){ open = this._timed(); }
         else open = Math.min(1, rms*7);
@@ -33007,7 +33008,7 @@ const ImvLoop = {
     let talking = false; try{ talking = ph && !state.dialogPaused && ImvLip.on && !(ImvLip.el && ImvLip.el.paused); }catch(_){}
     const c = imv.col ? imv.col[imv.cur < 0 ? 0 : imv.cur] : 0;
     if(this._c !== c){ this._c = c; this.talkAt = 0; }   // 말하는 사람이 바뀌면 앞사람의 '방금까지 말함' 여유를 넘겨받지 않음 (새 사람 입이 소리보다 먼저 움직이는 것 방지)
-    const now = Date.now(); if(talking) this.talkAt = now; else if(this.talkAt && now - this.talkAt < 350 && ph) talking = true;   // 목소리가 잠깐 끊겨도(0.35초 안) 말하는 영상 유지
+    const now = Date.now(); if(talking) this.talkAt = now; else if(this.talkAt && now - this.talkAt < 350 && ph && ImvLip.el && !ImvLip.el.ended) talking = true;   // 목소리가 잠깐 끊겨도(0.35초 안) 말하는 영상 유지 — 2026-11-23a 말이 완전히 끝났으면(소리 끝남·없음) 여유 없이 바로 입을 닫음
     const ok = k=>{ const v = this.vids[k]; return !!v && !v.dataset.bad && (v.dataset.ok === '1' || v.readyState >= 2); };
     const sy = this._sync, sk = talking && sy && !sy.novid && ok(sy.key) ? sy.key : '';   // 2026-11-18f novid = 이 말을 시작할 때 맞춤 영상이 준비되지 않았음 → 도중에 바꾸지 않고 끝까지 일반 말하는 영상
     let hush = false; try{ const el = ImvLip.el, fresh = !!el && Persona._qa === el && performance.now() - (Persona._qAt || 0) < 300;   // 지금 나오는 소리를 방금(0.3초 안) 읽었을 때만 믿음
