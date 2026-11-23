@@ -154,17 +154,17 @@
   },
   "2s": {
    "idle": [
-    "y2t-idle.mp4",
-    "y2t-idle.webm"
+    "y2u-idle.mp4",
+    "y2u-idle.webm"
    ],
    "talk": {
     "0": [
-     "y2t-talk0.mp4",
-     "y2t-talk0.webm"
+     "y2u-talk0.mp4",
+     "y2u-talk0.webm"
     ],
     "1": [
-     "y2t-talk1.mp4",
-     "y2t-talk1.webm"
+     "y2u-talk1.mp4",
+     "y2u-talk1.webm"
     ]
    },
    "sync": [
@@ -172,10 +172,10 @@
      "text": "안녕하십니까? 면접을 시작하겠습니다.",
      "seat": 0,
      "video": [
-      "x2t-1a.mp4",
-      "x2t-1a.webm"
+      "x2u-1a.mp4",
+      "x2u-1a.webm"
      ],
-     "audio": "x2t-1a.mp3",
+     "audio": "x2u-1a.mp3",
      "own": true,
      "full": true
     },
@@ -183,10 +183,10 @@
      "text": "첫 번째 질문입니다. 자기소개와 지원 동기를 말씀해 주십시오.",
      "seat": 0,
      "video": [
-      "x2t-1b.mp4",
-      "x2t-1b.webm"
+      "x2u-1b.mp4",
+      "x2u-1b.webm"
      ],
-     "audio": "x2t-1b.mp3",
+     "audio": "x2u-1b.mp3",
      "own": true,
      "full": true
     },
@@ -194,10 +194,10 @@
      "text": "두 번째 질문입니다. 가장 큰 성과를 낸 경험을 말씀하십시오. 팀이 아닌 본인이 한 일만 이야기해 주세요.",
      "seat": 1,
      "video": [
-      "x2t-2.mp4",
-      "x2t-2.webm"
+      "x2u-2.mp4",
+      "x2u-2.webm"
      ],
-     "audio": "x2t-2.mp3",
+     "audio": "x2u-2.mp3",
      "own": true,
      "full": true
     },
@@ -205,10 +205,10 @@
      "text": "솔직히 흔한 이야기입니다. 판단이 틀려 실패한 경험과 무엇을 바꿨는지 말씀하십시오.",
      "seat": 1,
      "video": [
-      "x2t-3.mp4",
-      "x2t-3.webm"
+      "x2u-3.mp4",
+      "x2u-3.webm"
      ],
-     "audio": "x2t-3.mp3",
+     "audio": "x2u-3.mp3",
      "own": true,
      "full": true
     },
@@ -216,10 +216,10 @@
      "text": "이상으로 면접을 마치겠습니다. 결과는 별도로 안내드리겠습니다. 수고하셨습니다.",
      "seat": 0,
      "video": [
-      "x2t-4.mp4",
-      "x2t-4.webm"
+      "x2u-4.mp4",
+      "x2u-4.webm"
      ],
-     "audio": "x2t-4.mp3",
+     "audio": "x2u-4.mp3",
      "own": true,
      "full": true
     }

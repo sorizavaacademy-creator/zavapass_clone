@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23h';
+var APP_VERSION = '2026-11-23i';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -27314,7 +27314,7 @@ const StenoLoop = {
           if(fu.intent === 'next') break;                    // AI가 "다음 질문으로" 판단
         }
       }
-      if(!this.aborted){ try{ if(IvPanel.people().length > 1) IvPanel.speak(Imv.hostIdx(), '마무리 인사'); }catch(_){}   // 2026-11-17 끝 멘트는 시작 멘트와 같은 면접관이 말함
+      if(!this.aborted){ emit('closing'); try{ if(IvPanel.people().length > 1) IvPanel.speak(Imv.hostIdx(), '마무리 인사'); }catch(_){}   // 2026-11-23i 마무리 인사 알림   // 2026-11-17 끝 멘트는 시작 멘트와 같은 면접관이 말함
         await say(greet.close, 'interviewer', greet.closeUrl); }
     }catch(e){ console.error('[StenoLoop]', e); emit('error',{message:e.message||String(e)}); }
     this.running = false; this.stats.endedAt = Date.now();
@@ -32811,7 +32811,7 @@ const IMV_PHOTOS = {
   '3':  { src: 'imv-panel3.jpg?v=18d',  x: { 0: 18, 1: 50, 2: 83 }, sw: 24 },
   '2a': { src: 'imv-panel2a.jpg?v=18d', x: { 0: 26, 1: 74 }, sw: 32 },
   '2b': { src: 'imv-panel2b.jpg?v=18d', x: { 1: 27, 2: 75 }, sw: 32 },
-  '2s': { src: 'imv-panel2s.jpg?v=23h', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
+  '2s': { src: 'imv-panel2s.jpg?v=23i', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
   '1f': { src: 'imv-panel1f.jpg?v=18d', x: { 0: 44 }, sw: 0 },   // 2026-11-18 덜 가깝게 다시 자름 (얼굴이 가운데보다 조금 왼쪽)
   '1m': { src: 'imv-panel1m.jpg?v=18d', x: { 1: 50 }, sw: 0 },
 };
@@ -33241,7 +33241,7 @@ const Imv = {
       try{ this.seatVoices(); }catch(e){ console.warn('[자리 목소리]', e); }
       const L = IMV_PHOTOS[this.layout], ph = el.querySelector('#imv-photo');
       el.querySelector('#imv-photo-img').style.backgroundImage = `url("${L.src}")`;
-      ph.dataset.n = n; ph.style.setProperty('--sw', L.sw + '%');
+      ph.dataset.n = n; ph.dataset.lay = this.layout; ph.style.setProperty('--sw', L.sw + '%');
     } else {
       const s = el.querySelector('#imv-seats'), pl = el.querySelector('#imv-plates');
       s.dataset.n = this.people.length;
@@ -33301,7 +33301,7 @@ const Imv = {
     try{ ImvLoop.st = null; StenoVoice.cuts = 0; StenoVoice.lastCut = null; }catch(_){}
     const el = this.build(); this.seats();
     const pr = this.isPractice = this.practice();
-    this.capOn = false; this.mineOn = false; this.mineText = ''; this.isFu = false; this.fuPrep = false; this.noteUntil = 0;   // 2026-11-12 시안 규칙: 자막·내 답변·내 화면은 기본으로 숨기고 화면 옵션에서 켬 (연습형도 같음) this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';
+    this.capOn = false; this.mineOn = false; this.mineText = ''; this.isFu = false; this.fuPrep = false; this.noteUntil = 0; this.closing = false; this.idx = 0;   // 2026-11-12 시안 규칙: 자막·내 답변·내 화면은 기본으로 숨기고 화면 옵션에서 켬 (연습형도 같음) this.capForced = false; this.pipOn = false; this.qText = ''; this.qid = ''; this.idx = 0; this.total = 0; this.rec = null; this.lastAnswerAt = 0; this.phaseCls = '';
     ['imv-tg-cap', 'imv-tg-pip', 'imv-tg-mine'].forEach(id=>el.querySelector('#' + id).setAttribute('aria-pressed', 'false'));
     if(state.imvPrefs && state.imvPrefs.cap){ this.capOn = true; el.querySelector('#imv-tg-cap').setAttribute('aria-pressed', 'true'); }   // 2026-11-12 준비 화면 2단계에서 '자막'을 켠 경우
     ['#imv-cap', '#imv-mine', '#imv-pip', '#imv-typed', '#imv-ac', '#imv-lang', '#imv-opt-menu'].forEach(s=>{ el.querySelector(s).hidden = true; });
@@ -33334,6 +33334,7 @@ const Imv = {
     if(type === 'questions'){ this.total = d.list.length; this.prog(); }
     else if(type === 'await-start'){ this.fuPrep = false; this.phase('ready'); }
     else if(type === 'thinking'){ this.fuPrep = true; this.status(); }
+    else if(type === 'closing'){ this.isFu = false; this.fuPrep = false; this.closing = true; this.status(); }   // 2026-11-23i
     else if(type === 'interim'){ setTimeout(()=>this.mine((document.getElementById('steno-input') || {}).value || (d && d.text) || ''), 0); }
     else if(type === 'question'){ this.idx = d.index; this.total = d.total; this.prog(); this.mine(''); if(this.fuPrep) this.noteUntil = Date.now() + 1800; this.isFu = false; this.fuPrep = false;
       this.qText = d.q.q; this.qid = String((d.q.qb && d.q.qb.qid) || d.q.id || d.q.dbId || ''); ImvRec.mark(d.q.q, 'question');
@@ -33377,7 +33378,7 @@ const Imv = {
     st.dataset.p = cls || 'idle';
     if(state.dialogPaused){ t.textContent = '일시정지 중이에요'; return; }
     if(this.noteUntil > Date.now()){ t.textContent = '꼬리질문 없이 다음 질문으로 넘어가요'; clearTimeout(this._noteT); this._noteT = setTimeout(()=>this.status(), this.noteUntil - Date.now() + 30); return; }
-    t.textContent = cls === 'speaking' ? (this.isFu ? `꼬리질문 · ${who}이 묻고 있어요` : `${who}이 질문하고 있어요`)
+    t.textContent = cls === 'speaking' ? (this.closing ? `${who}이 마무리 인사를 하고 있어요` : this.isFu ? `꼬리질문 · ${who}이 묻고 있어요` : !this.idx ? `${who}이 인사하고 있어요` : `${who}이 질문하고 있어요`)
       : cls === 'ready' ? (StenoLoop.typedWait ? '답변을 글로 입력해 주세요' : "준비되면 '답변 시작하기'를 눌러 주세요")
       : cls === 'listening' ? (StenoLoop.typedWait ? '답변을 글로 입력해 주세요' : '답변을 듣고 있어요')
       : cls === 'thinking' ? (this.fuPrep ? '꼬리질문을 준비하고 있어요' : '잠시만 기다려 주세요')
@@ -33669,7 +33670,7 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 #imv .imv-shade{background:radial-gradient(ellipse var(--sw,24%) 88% at var(--sx,50%) 58%,rgba(20,18,17,0) 52%,rgba(20,18,17,.5) 100%)}
 #imv .imv-say{position:absolute;left:var(--sx,50%);bottom:clamp(54px,11cqh,120px);transform:translate(-50%,10px);display:inline-flex;align-items:center;gap:10px;padding:8px 15px 8px 12px;border-radius:999px;background:rgba(18,15,13,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:clamp(13px,1vw,16px);font-weight:700;white-space:nowrap;opacity:0;pointer-events:none;transition:left .8s cubic-bezier(.2,.7,.2,1),opacity .35s,transform .35s;box-shadow:0 10px 26px rgba(0,0,0,.28)}
 #imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-say{opacity:1;transform:translate(-50%,0)}
-#imv .imv-photo.fullon .imv-say{left:50%} #imv .imv-photo.fullon .imv-spot{opacity:0}
+#imv .imv-photo.fullon .imv-say{left:50%} #imv .imv-photo.fullon .imv-spot{opacity:0} #imv .imv-photo[data-lay="2s"] .imv-shade{display:none}
 #imv .imv-say b{font-weight:700;letter-spacing:-.01em}
 #imv .imv-say-w{display:inline-flex;align-items:center;gap:3px;height:20px}
 #imv .imv-say-w i{width:3px;height:6px;border-radius:2px;background:#ff8a5c;transform-origin:center;animation:imvSay .9s ease-in-out infinite;animation-play-state:paused}
