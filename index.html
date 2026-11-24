@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-24k';
+var APP_VERSION = '2026-11-24l';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -33105,7 +33105,7 @@ const ImvLoop = {
     let talking = false; try{ talking = ph && !state.dialogPaused && ImvLip.on && !(ImvLip.el && ImvLip.el.paused); }catch(_){}
     const c = imv.col ? imv.col[imv.cur < 0 ? 0 : imv.cur] : 0;
     if(this._c !== c){ this._c = c; this.talkAt = 0; }   // 말하는 사람이 바뀌면 앞사람의 '방금까지 말함' 여유를 넘겨받지 않음 (새 사람 입이 소리보다 먼저 움직이는 것 방지)
-    const now = Date.now(); if(talking) this.talkAt = now; else if(this.talkAt && now - this.talkAt < 900 && ph) talking = true;   // 2026-11-24k 문장 사이 짧은 틈(0.9초 안)은 말하는 영상 그대로 (입이 툭툭 튀지 않게)
+    const now = Date.now(); if(talking) this.talkAt = now; else if(this.talkAt && now - this.talkAt < 900 && imv.phaseCls === 'speaking') talking = true;   // 2026-11-24k 문장 사이 짧은 틈(0.9초 안)은 말하는 영상 그대로 (입이 툭툭 튀지 않게)
       // 목소리가 잠깐 끊겨도(0.35초 안) 말하는 영상 유지 — 2026-11-23a 말이 완전히 끝났으면(소리 끝남·없음) 여유 없이 바로 입을 닫음
     const ok = k=>{ const v = this.vids[k]; return !!v && !v.dataset.bad && (v.dataset.ok === '1' || v.readyState >= 2); };
     const sy = this._sync, sk = talking && sy && !sy.novid && ok(sy.key) ? sy.key : '';   // 2026-11-18f novid = 이 말을 시작할 때 맞춤 영상이 준비되지 않았음 → 도중에 바꾸지 않고 끝까지 일반 말하는 영상
@@ -33469,9 +33469,10 @@ const Imv = {
   countdown(){
     const el = this.el, n = el.querySelector('#imv-cd-n'), wait = ms=>new Promise(r=>setTimeout(r, ms));
     return (async ()=>{
-      await wait(700); el.classList.remove('enter'); el.classList.add('count');
+      n.textContent = ''; n.classList.remove('pop');   // 2026-11-24l 지난 면접의 '1'이 남아 먼저 보이던 것
+      await wait(700); n.textContent = '3'; el.classList.remove('enter'); el.classList.add('count');
       for(let k = 3; k >= 1; k--){ if(!this.active) return; n.textContent = k; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop'); await wait(1000); }
-      el.classList.remove('count'); el.classList.add('live'); try{ this.fitPhoto(); }catch(_){}
+      el.classList.remove('count'); el.classList.add('live'); n.textContent = ''; try{ this.fitPhoto(); }catch(_){}
       if(state.imvPrefs && state.imvPrefs.pip && !this.pipOn){ try{ this.togglePip(); }catch(_){} }   // 2026-11-12 준비 화면 2단계에서 '내 얼굴 보기'를 켠 경우
       if(state.recPref !== false) ImvRec.start().then(ok=>{ if(this.active && ok){ el.querySelector('#imv-rec').hidden = false; } });   // 3단계에서 '내 모습 녹화하기'를 끄면 녹화하지 않음
       await wait(500);
@@ -33836,12 +33837,12 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 @media (prefers-reduced-motion:reduce){#imv .imv-say-w i{animation:none}#imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-photo-img{transform:scale(1.035)}}
 /* 2026-11-17 면접관 영상 (듣는 영상·말하는 영상): 사진과 같은 자리에 겹쳐 놓고 부드럽게 바꿈 */
 #imv .imv-lv{position:absolute;inset:0;pointer-events:none}
-#imv .imv-lv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--op,50% 42%);opacity:0;z-index:1;transition:opacity .5s ease,object-position .9s cubic-bezier(.2,.7,.2,1),-webkit-mask-position .9s cubic-bezier(.2,.7,.2,1),mask-position .9s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+#imv .imv-lv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--op,50% 42%);opacity:0;z-index:1;transition:opacity .25s ease,object-position .9s cubic-bezier(.2,.7,.2,1),-webkit-mask-position .9s cubic-bezier(.2,.7,.2,1),mask-position .9s cubic-bezier(.2,.7,.2,1);pointer-events:none}
 #imv .imv-lv video.lv-mask{-webkit-mask-size:cover;mask-size:cover;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:var(--op,50% 42%);mask-position:var(--op,50% 42%)}   /* 2026-11-20a 말하는 사람 자리만 (영상과 똑같이 맞춰 자름) */
 #imv .imv-lv video.base{opacity:1;z-index:0}   /* 듣는 영상: 늘 맨 아래 */
 #imv .imv-lv video.was{opacity:1;z-index:1;transition:object-position .9s cubic-bezier(.2,.7,.2,1)}
 #imv .imv-lv video.on{opacity:1;z-index:2}
-#imv .imv-lv.quick video{transition:opacity .5s ease,object-position .9s cubic-bezier(.2,.7,.2,1)}   /* 말소리가 쉴 때 입 다물기·다시 열기는 빠르게 */
+#imv .imv-lv.quick video{transition:opacity .25s ease,object-position .9s cubic-bezier(.2,.7,.2,1)}   /* 말소리가 쉴 때 입 다물기·다시 열기는 빠르게 */
 #imv .imv-photo-img.lv-on{animation:none}
 #imv .imv-photo-img.lv-on .imv-mp{display:none}
 /* 2026-11-24i 끊김 방지: 면접 화면 안에서는 영상 위 흐림(backdrop-filter)·필터 효과를 쓰지 않음. 큰 화면(4K·175%)에서 영상 프레임마다 흐림을 다시 그려 끊김의 큰 원인이었음 (재현 시험 19% → 10%). 글씨 뒤 배경은 원래 어두운 반투명이라 그대로 읽힘 */
@@ -33853,6 +33854,8 @@ body.imv-open > :not(#imv):not(script):not(style):not(.modal-overlay):not(.toast
 #imv .imv-photo-img.lv-on > :not(.imv-lv){visibility:hidden !important}
 /* 2026-11-24j 영상을 감싼 카드의 둥근 모서리 자르기는 영상 한 장면마다 화면 전체를 한 번 더 복사해 그리게 함(큰 화면에서 끊김) → 면접 카드는 각진 모서리 */
 #imv .imv-card{border-radius:0 !important}
+/* 2026-11-24l 말하는 사람 자리만 바뀌는 영상은 아주 짧게 겹쳐 바꿈 — 길게 겹치면 입 벌린 장면과 다문 장면이 섞여 입술이 뭉개져 보임 */
+#imv .imv-lv video.lv-mask, #imv .imv-lv.quick video.lv-mask{transition-duration:.12s,.9s,.9s,.9s !important}
 /* 그림 장면 (면접관 1~2명) */
 #imv .imv-scene{position:absolute;inset:0}
 #imv .imv-scene .imv-room{position:absolute;inset:0}
