@@ -158,17 +158,17 @@
     "1": [0.7491, 0.4161, 0.23]
    },
    "idle": [
-    "y4s-idle.mp4",
-    "y4s-idle.webm"
+    "y5s-idle.mp4",
+    "y5s-idle.webm"
    ],
    "talk": {
     "0": [
-     "y4s-talk0.mp4",
-     "y4s-talk0.webm"
+     "y5s-talk0.mp4",
+     "y5s-talk0.webm"
     ],
     "1": [
-     "y4s-talk1.mp4",
-     "y4s-talk1.webm"
+     "y5s-talk1.mp4",
+     "y5s-talk1.webm"
     ]
    },
    "sync": [
@@ -178,8 +178,8 @@
      "f0": [0.5075, 0.33, 0.2356],
      "f1": [0.5056, 0.3511, 0.2444],
      "video": [
-      "x4s-1a.mp4",
-      "x4s-1a.webm"
+      "x5s-1a.mp4",
+      "x5s-1a.webm"
      ],
      "audio": "x2u-1a.mp3",
      "own": true,
@@ -191,8 +191,8 @@
      "f0": [0.5084, 0.3494, 0.2411],
      "f1": [0.4953, 0.3617, 0.2522],
      "video": [
-      "x4s-1b.mp4",
-      "x4s-1b.webm"
+      "x5s-1b.mp4",
+      "x5s-1b.webm"
      ],
      "audio": "x2u-1b.mp3",
      "own": true,
@@ -204,8 +204,8 @@
      "f0": [0.4897, 0.3517, 0.2344],
      "f1": [0.4938, 0.3667, 0.2422],
      "video": [
-      "x4s-2.mp4",
-      "x4s-2.webm"
+      "x5s-2.mp4",
+      "x5s-2.webm"
      ],
      "audio": "x2u-2.mp3",
      "own": true,
@@ -217,8 +217,8 @@
      "f0": [0.5062, 0.3678, 0.2289],
      "f1": [0.5053, 0.3539, 0.2389],
      "video": [
-      "x4s-3.mp4",
-      "x4s-3.webm"
+      "x5s-3.mp4",
+      "x5s-3.webm"
      ],
      "audio": "x2u-3.mp3",
      "own": true,
@@ -230,8 +230,8 @@
      "f0": [0.5025, 0.3522, 0.2156],
      "f1": [0.4991, 0.3594, 0.2144],
      "video": [
-      "x4s-4.mp4",
-      "x4s-4.webm"
+      "x5s-4.mp4",
+      "x5s-4.webm"
      ],
      "audio": "x2u-4.mp3",
      "own": true,
