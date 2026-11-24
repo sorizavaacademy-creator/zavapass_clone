@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-24e';
+var APP_VERSION = '2026-11-24f';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -32794,7 +32794,7 @@ const IMV_PHOTOS = {
   '3':  { src: 'imv-panel3.jpg?v=18d',  x: { 0: 18, 1: 50, 2: 83 }, sw: 24 },
   '2a': { src: 'imv-panel2a.jpg?v=18d', x: { 0: 26, 1: 74 }, sw: 32 },
   '2b': { src: 'imv-panel2b.jpg?v=18d', x: { 1: 27, 2: 75 }, sw: 32 },
-  '2s': { src: 'imv-panel2s.jpg?v=24e', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
+  '2s': { src: 'imv-panel2s.jpg?v=24f', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
   '1f': { src: 'imv-panel1f.jpg?v=18d', x: { 0: 44 }, sw: 0 },   // 2026-11-18 덜 가깝게 다시 자름 (얼굴이 가운데보다 조금 왼쪽)
   '1m': { src: 'imv-panel1m.jpg?v=18d', x: { 1: 50 }, sw: 0 },
 };
