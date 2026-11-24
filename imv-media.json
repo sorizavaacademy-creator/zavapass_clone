@@ -2,21 +2,21 @@
  "loops": {
   "3": {
    "idle": [
-    "y3-idle.mp4",
-    "y3-idle.webm"
+    "y3-idle-720.mp4",
+    "y3-idle-720.webm"
    ],
    "talk": {
     "0": [
-     "y3-talk0.mp4",
-     "y3-talk0.webm"
+     "y3-talk0-720.mp4",
+     "y3-talk0-720.webm"
     ],
     "1": [
-     "y3-talk1.mp4",
-     "y3-talk1.webm"
+     "y3-talk1-720.mp4",
+     "y3-talk1-720.webm"
     ],
     "2": [
-     "y3-talk2.mp4",
-     "y3-talk2.webm"
+     "y3-talk2-720.mp4",
+     "y3-talk2-720.webm"
     ]
    },
    "sync": [
@@ -25,8 +25,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "x3-open.mp4",
-      "x3-open.webm"
+      "x3-open-720.mp4",
+      "x3-open-720.webm"
      ],
      "audio": "v-open-hr.mp3"
     },
@@ -35,8 +35,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "x3-close.mp4",
-      "x3-close.webm"
+      "x3-close-720.mp4",
+      "x3-close-720.webm"
      ],
      "audio": "v-close-hr.mp3"
     }
@@ -48,17 +48,17 @@
   },
   "2a": {
    "idle": [
-    "y2a-idle.mp4",
-    "y2a-idle.webm"
+    "y2a-idle-720.mp4",
+    "y2a-idle-720.webm"
    ],
    "talk": {
     "0": [
-     "y2a-talk0.mp4",
-     "y2a-talk0.webm"
+     "y2a-talk0-720.mp4",
+     "y2a-talk0-720.webm"
     ],
     "1": [
-     "y2a-talk1.mp4",
-     "y2a-talk1.webm"
+     "y2a-talk1-720.mp4",
+     "y2a-talk1-720.webm"
     ]
    },
    "sync": [
@@ -67,8 +67,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "x2a-open.mp4",
-      "x2a-open.webm"
+      "x2a-open-720.mp4",
+      "x2a-open-720.webm"
      ],
      "audio": "v-open-hr.mp3"
     },
@@ -77,8 +77,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "x2a-close.mp4",
-      "x2a-close.webm"
+      "x2a-close-720.mp4",
+      "x2a-close-720.webm"
      ],
      "audio": "v-close-hr.mp3"
     }
@@ -89,17 +89,17 @@
   },
   "2b": {
    "idle": [
-    "y2b-idle.mp4",
-    "y2b-idle.webm"
+    "y2b-idle-720.mp4",
+    "y2b-idle-720.webm"
    ],
    "talk": {
     "1": [
-     "y2b-talk1.mp4",
-     "y2b-talk1.webm"
+     "y2b-talk1-720.mp4",
+     "y2b-talk1-720.webm"
     ],
     "2": [
-     "y2b-talk2.mp4",
-     "y2b-talk2.webm"
+     "y2b-talk2-720.mp4",
+     "y2b-talk2-720.webm"
     ]
    },
    "cut": [
@@ -108,13 +108,13 @@
   },
   "1f": {
    "idle": [
-    "y1f-idle.mp4",
-    "y1f-idle.webm"
+    "y1f-idle-720.mp4",
+    "y1f-idle-720.webm"
    ],
    "talk": {
     "0": [
-     "y1f-talk0.mp4",
-     "y1f-talk0.webm"
+     "y1f-talk0-720.mp4",
+     "y1f-talk0-720.webm"
     ]
    },
    "sync": [
@@ -123,8 +123,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "x1f-open.mp4",
-      "x1f-open.webm"
+      "x1f-open-720.mp4",
+      "x1f-open-720.webm"
      ],
      "audio": "v-open-hr.mp3"
     },
@@ -133,8 +133,8 @@
      "seat": 0,
      "voice": "tc_673eca75a1aae856ff42b80e",
      "video": [
-      "x1f-close.mp4",
-      "x1f-close.webm"
+      "x1f-close-720.mp4",
+      "x1f-close-720.webm"
      ],
      "audio": "v-close-hr.mp3"
     }
@@ -142,105 +142,15 @@
   },
   "1m": {
    "idle": [
-    "y1m-idle.mp4",
-    "y1m-idle.webm"
+    "y1m-idle-720.mp4",
+    "y1m-idle-720.webm"
    ],
    "talk": {
     "1": [
-     "y1m-talk1.mp4",
-     "y1m-talk1.webm"
+     "y1m-talk1-720.mp4",
+     "y1m-talk1-720.webm"
     ]
    }
-  },
-  "2s": {
-   "face": {
-    "0": [0.2544, 0.4011, 0.2222],
-    "1": [0.7491, 0.4161, 0.23]
-   },
-   "idle": [
-    "y5s-idle.mp4",
-    "y5s-idle.webm"
-   ],
-   "talk": {
-    "0": [
-     "y5s-talk0.mp4",
-     "y5s-talk0.webm"
-    ],
-    "1": [
-     "y5s-talk1.mp4",
-     "y5s-talk1.webm"
-    ]
-   },
-   "sync": [
-    {
-     "text": "안녕하십니까? 면접을 시작하겠습니다.",
-     "seat": 0,
-     "f0": [0.5075, 0.33, 0.2356],
-     "f1": [0.5056, 0.3511, 0.2444],
-     "video": [
-      "x5s-1a.mp4",
-      "x5s-1a.webm"
-     ],
-     "audio": "x2u-1a.mp3",
-     "own": true,
-     "full": true
-    },
-    {
-     "text": "첫 번째 질문입니다. 자기소개와 지원 동기를 말씀해 주십시오.",
-     "seat": 0,
-     "f0": [0.5084, 0.3494, 0.2411],
-     "f1": [0.4953, 0.3617, 0.2522],
-     "video": [
-      "x5s-1b.mp4",
-      "x5s-1b.webm"
-     ],
-     "audio": "x2u-1b.mp3",
-     "own": true,
-     "full": true
-    },
-    {
-     "text": "두 번째 질문입니다. 가장 큰 성과를 낸 경험을 말씀하십시오. 팀이 아닌 본인이 한 일만 이야기해 주세요.",
-     "seat": 1,
-     "f0": [0.4897, 0.3517, 0.2344],
-     "f1": [0.4938, 0.3667, 0.2422],
-     "video": [
-      "x5s-2.mp4",
-      "x5s-2.webm"
-     ],
-     "audio": "x2u-2.mp3",
-     "own": true,
-     "full": true
-    },
-    {
-     "text": "솔직히 흔한 이야기입니다. 판단이 틀려 실패한 경험과 무엇을 바꿨는지 말씀하십시오.",
-     "seat": 1,
-     "f0": [0.5062, 0.3678, 0.2289],
-     "f1": [0.5053, 0.3539, 0.2389],
-     "video": [
-      "x5s-3.mp4",
-      "x5s-3.webm"
-     ],
-     "audio": "x2u-3.mp3",
-     "own": true,
-     "full": true
-    },
-    {
-     "text": "이상으로 면접을 마치겠습니다. 결과는 별도로 안내드리겠습니다. 수고하셨습니다.",
-     "seat": 0,
-     "f0": [0.5025, 0.3522, 0.2156],
-     "f1": [0.4991, 0.3594, 0.2144],
-     "video": [
-      "x5s-4.mp4",
-      "x5s-4.webm"
-     ],
-     "audio": "x2u-4.mp3",
-     "own": true,
-     "full": true
-    }
-   ],
-   "cut": [
-    0.5
-   ]
   }
  }
 }
