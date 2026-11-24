@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-24a';
+var APP_VERSION = '2026-11-24b';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -6380,7 +6380,7 @@ html.ivv-dr-open{overflow:hidden;}
 .ci-bar.lo .me{background:#c4471f}.ci-bar.lo em{color:#a12e28}.ci-bar.mid .me{background:#d98b4a}.ci-bar.mid em{color:#b26a00}.ci-bar.ok em{color:#2E7D57}
 .ci-tip{margin:10px 0 0;background:#fbf3ec;border-radius:10px;padding:9px 12px;color:#5a4d44;font-size:12.5px}
 .ci-skills{display:flex;flex-wrap:wrap;gap:7px}.ci-skills i{font-style:normal;background:#f6f1ec;border:1px solid #eee3da;border-radius:8px;padding:5px 10px 5px 6px;font-size:12.5px}.ci-skills i b{display:inline-block;min-width:18px;height:18px;line-height:18px;text-align:center;border-radius:5px;background:#fff;color:#bd411b;font-size:10.5px;margin-right:6px}
-.ci-crs{display:flex;gap:16px;align-items:flex-start}.ci-ring{width:112px;flex:none}.ci-cl{flex:1;min-width:0}.ci-cr{display:grid;grid-template-columns:1fr 110px 56px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #f5efe9}
+.ci-crs{display:flex;gap:16px;align-items:flex-start}.ci-ring{width:112px;flex:none}.ci-cl{flex:1;min-width:0}.ci-cl.nh{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px}.ci-cl.nh .ci-cr{grid-template-columns:1fr}.ci-cr{display:grid;grid-template-columns:1fr 110px 56px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #f5efe9}
 .ci-hml{display:flex;height:8px;border-radius:4px;overflow:hidden;background:#f1ebe5}.ci-hml i{display:block}.ci-hml .h,.ci-lgd .h{background:#3f6fb5}.ci-hml .m,.ci-lgd .m{background:#9db5dd}.ci-hml .l,.ci-lgd .l{background:#e4ddd6}.ci-hn{color:#8a7d73;font-size:11.5px;text-align:right}
 .ci-lgd{margin:8px 0 0;color:#8a7d73;font-size:11.5px}.ci-lgd i{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 3px 0 8px;vertical-align:-1px}
 .ci-st{margin:6px 0;font-weight:700;color:#5a4d44}.ci-tl{list-style:none;margin:0 0 6px;padding:0 0 0 4px}.ci-tl li{position:relative;padding:0 0 10px 18px;border-left:2px solid #f1ebe5;margin-left:4px}.ci-tl li i{position:absolute;left:-6px;top:3px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #c4471f}.ci-tl b{display:block;font-weight:600}.ci-tl small{color:#8a7d73}
@@ -6390,7 +6390,6 @@ html.ivv-dr-open{overflow:hidden;}
 .ci-certs{display:flex;gap:8px;flex-wrap:wrap}.ci-certs i{font-style:normal;border:1px dashed #d8c9bd;border-radius:8px;padding:6px 12px;font-weight:600}.ci-jb{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid #f5efe9}.ci-jb small{color:#8a7d73}
 .ci-qs{background:#fbf3ec;border-radius:14px;padding:16px 22px;border:1px solid #f1dfd2}.ci-qh{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.ci-qh h3{margin:0}.ci-qh small{color:#6a5b51}.ci-qh .ib-rp-lk{margin-left:auto}
 .ci-qs ol{margin:8px 0 0;padding-left:20px}.ci-qs li{margin:10px 0}.ci-qs li div{margin-top:4px}.ci-bs{background:#fbe4e1;color:#a63a17;border-radius:5px;padding:1px 8px;font-size:12px;font-weight:700;margin-right:8px}.ci-qs li small{color:#8a7d73}
-.ci-old{background:#fffaf3;border:1px solid #f0dcc2;border-radius:12px;padding:12px 16px}.ci-old p{margin:4px 0 0;color:#6a5b51}
 .ci-foot{color:#6a5b51;margin:0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.ci-foot small{color:#8a7d73}
 .ci-ghost{display:grid;grid-template-columns:1fr 1fr;gap:14px;opacity:.55}.ci-gc{background:#fff;border:1px dashed #ddd0c4;border-radius:14px;padding:16px 20px}.ci-gc.wide{grid-column:1/3}.ci-gc p{margin:0;color:#6a5b51}
 .ci-sk1{width:200px;height:200px;margin:6px auto;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%);background:#f1ebe5}.ci-sk2{height:10px;border-radius:6px;background:#f1ebe5;margin:18px 0}
@@ -14324,11 +14323,10 @@ const Inbody = {
       try{ Activity.log('inbody_report', { fields: n, items: row.report.items.length, questions: row.report.questions.length, masked: row.report.masked, ms: Date.now() - t0 }); }catch(_){}
       this._rpBusy = false;
       await this.renderMy();
-      const H = row.report.hallym, noComp = !(H && (H.comp || []).length);   // 2026-11-24 한림대 커리어 인바디 칸으로 읽음
-      say((H ? `커리어 인바디를 반영했어요. 역량 ${(H.comp || []).length}개 · 스킬 ${(H.skills || []).length}개 · 과목 ${(H.courses || []).length}개 · 활동 ${(H.extra || []).length + (H.selfd || []).length}개를 읽고 면접 질문 ${row.report.questions.length}개를 만들었어요.`
-          : `리포트를 반영했어요. 면접 질문 ${row.report.questions.length}개를 만들었어요.`)
-        + (ocr ? ' 스캔본이라 숫자를 틀리게 읽었을 수 있어요. 아래 \'읽은 값 고치기\'로 꼭 확인해 주세요.' : '')
-        + (noComp ? ' 역량 점수는 찾지 못했어요. 그래프 그림 안에만 있다면 \'읽은 값 고치기\'에서 항목을 추가해 주세요.' : ''), 'ok');
+      const H = row.report.hallym;   // 2026-11-24 한림대 커리어 인바디 칸으로 읽음
+      const got = H ? [['역량', (H.comp || []).length], ['스킬', (H.skills || []).length], ['과목', (H.courses || []).length], ['활동', (H.extra || []).length + (H.selfd || []).length]].filter(x=>x[1]).map(x=>x[0] + ' ' + x[1] + '개').join(' · ') : '';
+      say(`커리어 인바디를 반영했어요. ${got ? got + '를 읽고 ' : ''}면접 질문 ${row.report.questions.length}개를 만들었어요.`
+        + (ocr ? ' 스캔본이라 숫자를 틀리게 읽었을 수 있어요. 아래 \'읽은 값 고치기\'로 꼭 확인해 주세요.' : ''), 'ok');
       try{ if(typeof StartFlow !== 'undefined' && StartFlow.s && !StartFlow.s.page) StartFlow.render(); }catch(_){}
     }catch(e){ console.warn('[인바디 리포트]', e); say((e && e.message) || '리포트를 읽지 못했어요.', 'warn'); }
     finally{ this._rpBusy = false; const l2 = document.getElementById('ib-rp-lb'); if(l2) l2.classList.remove('busy'); }
@@ -14365,24 +14363,24 @@ const Inbody = {
     return `<div class="ci-qs"><div class="ci-qh"><h3>이 리포트에서 나오는 면접 질문</h3><small>${how || '면접을 시작하면 이 가운데 2개가 근거와 함께 나오고, 꼬리질문도 이 질문에 붙어요.'}</small><button type="button" class="ib-rp-lk" id="ib-rp-requ">질문 다시 만들기</button></div>
       <ol>${r.questions.map(x=>`<li><b>${E(x.q)}</b><div><span class="ci-bs">근거 · ${E(x.basis)}</span>${x.why ? `<small>${E(x.why)}</small>` : ''}</div></li>`).join('')}</ol></div>`; },
   ciHtml(){
-    const E = escapeHtml, r = this.report(), h = this.hal(), me = state.currentUser || {};
+    const E = escapeHtml, r = this.report(), me = state.currentUser || {};
     const st = '<p class="ib-rp-st" id="ib-rp-st" role="status"></p>';
+    let h = this.hal();
     if(!r) return `<div class="ci" id="ci-root"><div class="ci-hero empty"><div><p class="ci-k">커리어 인바디</p><h2>학교 커리어 인바디를 올려 주세요</h2><p>취업진로지원센터에서 받은 커리어 인바디(포트폴리오) PDF를 올리면 역량·스킬·이수 과목·활동을 아래처럼 정리하고, 그 내용으로 면접 질문을 만들어요. 학번·이름은 가리고 읽어요.</p></div>${this.ciUp('PDF 올리기')}</div>${st}
       <div class="ci-ghost"><div class="ci-gc"><h3>역량 프로필</h3><div class="ci-sk1"></div></div><div class="ci-gc"><h3>역량 수치 <small>내 점수 vs 직무 요구</small></h3><div class="ci-sk2"></div><div class="ci-sk2"></div><div class="ci-sk2"></div><div class="ci-sk2"></div></div>
       <div class="ci-gc wide"><h3>보유 스킬 · 이수 과목 · 경험 &amp; 활동 · AI 추천 자기소개서 · 강점 / 약점 / 개선 방향</h3><p>리포트를 올리면 이 자리에 채워져요.</p></div></div></div>`;
     const when = r.at ? formatDateFull(r.at) : '';
     const fileLine = `<span>리포트 반영됨${when ? ' · ' + E(when) : ''}</span>${r.masked ? `<span>개인정보 ${r.masked}곳 가림</span>` : ''}`;
     const foot = `<p class="ci-foot">${(r.items || []).length ? '읽은 값이 틀렸다면 <button type="button" class="ib-rp-lk" id="ib-rp-edit">읽은 값 고치기</button> · ' : ''}<button type="button" class="ib-rp-lk" id="ib-rp-del">리포트 지우기</button>${r.edited_at ? ' <small>직접 고친 값이 있어요</small>' : ''}</p><div id="ib-rp-view"></div>`;
-    if(!h) return `<div class="ci" id="ci-root"><div class="ci-hero"><div><p class="ci-k">커리어 인바디</p><h2>${E(me.name || '')}</h2><div class="ci-hb">${fileLine}</div></div><div class="ci-hs">${this.ciUp('한림대 양식 PDF 올리기')}</div></div>${st}
-      <div class="ci-old"><b>예전 형식으로 읽은 리포트예요</b><p>학교 커리어 인바디(포트폴리오) PDF를 다시 올리면 역량 그래프·스킬·이수 과목·활동이 정리된 새 화면으로 보여요. 아래 질문은 지금도 면접에 쓰여요.</p></div>
-      ${this.ciQs(r)}${foot}</div>`;
+    // 2026-11-24 어떤 리포트든 한림대 화면 하나로 보여 줌 (예전 형식 안내·'한림대 양식 PDF 올리기' 버튼 없앰). 읽지 못한 칸은 숨김
+    if(!h) h = { profile: { grade: (this.d && this.d.grade) || '', target_job: (this.d && this.d.target_role) || '' } };
     const pf = h.profile || {}, comp = (h.comp || []).map(c=>Object.assign({}, c, { req: Math.max(0, Math.min(100, c.gap != null ? c.score - c.gap : c.score)) }));
     const byGap = comp.slice().sort((a, b)=>(a.gap == null ? 0 : a.gap) - (b.gap == null ? 0 : b.gap)), worst = byGap.find(c=>c.gap != null && c.gap < -5);
     const avg = comp.length ? Math.round(comp.reduce((s, c)=>s + c.score, 0) / comp.length) : null, met = comp.filter(c=>c.gap != null && c.gap >= 0).length;
     const sub = [pf.major, pf.grade ? (pf.grade === '졸업' ? '졸업(예정)' : pf.grade + '학년') : ''].filter(Boolean).join(' · ');
     const bars = byGap.map(c=>{ const cls = c.gap == null ? 'ok' : c.gap < -5 ? 'lo' : c.gap < 0 ? 'mid' : 'ok';
       return `<div class="ci-bar ${cls}"><div class="ci-bh"><span>${E(c.name)}</span><b>${c.score}</b>${c.gap != null ? `<em>${c.gap > 0 ? '+' : ''}${c.gap}</em>` : ''}</div><div class="ci-bt"><i class="me" style="width:${Math.max(0, Math.min(100, c.score))}%"></i>${c.gap != null ? `<i class="rq" style="left:${c.req}%"></i>` : ''}</div></div>`; }).join('');
-    const rate = /^(\d+)\/(\d+)$/.exec(h.course_rate || ''), courses = h.courses || [];
+    const rate = /^(\d+)\/(\d+)$/.exec(h.course_rate || ''), courses = h.courses || []; const hasHml = courses.some(c=>(c.h + c.m + c.l) > 0);
     const hml = c=>{ const t = (c.h + c.m + c.l) || 1; return `<div class="ci-hml" title="H ${c.h} · M ${c.m} · L ${c.l}"><i class="h" style="width:${c.h / t * 100}%"></i><i class="m" style="width:${c.m / t * 100}%"></i><i class="l" style="width:${c.l / t * 100}%"></i></div><span class="ci-hn">${c.h}·${c.m}·${c.l}</span>`; };
     const tl = L=>L.map(x=>`<li><i></i><b>${E(x.name)}</b>${x.period ? `<small>${E(x.period)}</small>` : ''}</li>`).join('');
     const intro = h.intro || {}, paras = String(intro.text || '').split(/\n+/).filter(Boolean);
@@ -14395,7 +14393,7 @@ const Inbody = {
     if(comp.length) sec.push(`<div class="ci-g2">${comp.length >= 3 ? card('', '<h3>역량 프로필<small><i class="ci-lg"></i>내 역량 <i class="ci-lg rq"></i>직무 요구</small></h3>', this.ciRadar(comp)) : ''}
       ${card('', '<h3>역량 수치<small>모자란 순서 · 세로선 = 직무 요구</small></h3>', bars + (worst ? `<p class="ci-tip">가장 큰 차이 · <b>${E(worst.name)}</b> (${worst.gap}) — 면접에서 이 부분을 어떻게 보완하는지 물을 수 있어요.</p>` : ''))}</div>`);
     if((h.skills || []).length) sec.push(card('', `<h3>보유 스킬 Top ${h.skills.length}</h3>`, `<div class="ci-skills">${h.skills.map((x, i)=>`<i><b>${i + 1}</b>${E(x)}</i>`).join('')}</div>`));
-    const cHtml = (rate || courses.length) ? card('', `<h3>이수 과목${courses.length ? ` <small>${courses.length}과목 · 과목별 역량 연관 H·M·L</small>` : ''}</h3>`, `<div class="ci-crs">${rate ? this.ciRing(+rate[1], +rate[2]) : ''}<div class="ci-cl">${courses.map(c=>`<div class="ci-cr"><span>${E(c.name)}</span>${hml(c)}</div>`).join('')}${courses.length ? '<p class="ci-lgd"><i class="h"></i>높음 <i class="m"></i>보통 <i class="l"></i>낮음</p>' : ''}</div></div>`) : '';
+    const cHtml = (rate || courses.length) ? card('', `<h3>이수 과목${courses.length ? ` <small>${courses.length}과목${hasHml ? ' · 과목별 역량 연관 H·M·L' : ''}</small>` : ''}</h3>`, `<div class="ci-crs">${rate ? this.ciRing(+rate[1], +rate[2]) : ''}<div class="ci-cl${hasHml ? '' : ' nh'}">${courses.map(c=>`<div class="ci-cr"><span>${E(c.name)}</span>${hasHml ? hml(c) : ''}</div>`).join('')}${courses.length && hasHml ? '<p class="ci-lgd"><i class="h"></i>높음 <i class="m"></i>보통 <i class="l"></i>낮음</p>' : ''}</div></div>`) : '';
     const aHtml = ((h.extra || []).length || (h.selfd || []).length) ? card('', '<h3>경험 &amp; 활동</h3>', `${(h.extra || []).length ? `<p class="ci-st">비교과 프로그램</p><ul class="ci-tl">${tl(h.extra)}</ul>` : ''}${(h.selfd || []).length ? `<p class="ci-st">자기주도 활동</p><ul class="ci-tl">${tl(h.selfd)}</ul>` : ''}`) : '';
     if(cHtml || aHtml) sec.push(cHtml && aHtml ? `<div class="ci-g2">${cHtml}${aHtml}</div>` : cHtml + aHtml);
     if(paras.length) sec.push(card('ai', '<h3>AI 추천 자기소개서<small>학교 리포트에 들어 있는 글 · 면접 질문 근거로도 써요</small></h3>', `${(intro.keywords || []).length ? `<div class="ci-kw">${intro.keywords.map(x=>`<i>${E(x)}</i>`).join('')}</div>` : ''}${intro.title ? `<h4>${E(intro.title)}</h4>` : ''}<div class="ci-intro" id="ci-intro">${paras.map((p, i)=>`<p${i ? ' class="more"' : ''}>${E(p)}</p>`).join('')}</div>${paras.length > 1 ? '<button type="button" class="ib-rp-lk" id="ci-intro-tg">전체 보기</button>' : ''}`));
