@@ -1,4 +1,4 @@
-// 2026-11-17 클론(ZAVAPASS-clone) 전용: 인바디(역량 진단) 리포트 읽기
+// 2026-11-17 클론(ZAVAPASS-clone) 전용: 인바디(역량 진단) 리포트 읽기 · 2026-11-24 한림대 커리어 인바디(포트폴리오) 양식 칸으로 읽음
 //  학생이 올린 리포트 PDF에서 화면이 뽑은 글자(학번·이름은 화면에서 먼저 가림)를 받아
 //  ① 인바디 칸에 넣을 값(fields) ② 리포트에 적힌 그 밖의 항목(items) ③ 그 항목을 근거로 한 면접 질문(questions)을 돌려줌
 //  양식이 정해져 있지 않아도 읽도록 AI가 항목을 찾음. 적혀 있지 않은 값은 비워 둠(지어내지 않음).
@@ -37,52 +37,43 @@ export function maskIds(text: string): { text: string; n: number } {
   return { text: t, n };
 }
 
-const SYSTEM = `너는 대학 취업지원센터의 면접 준비 도우미다. 학생이 받은 [리포트](커리어 인바디·역량 진단·학업 이력 요약 같은 문서에서 뽑은 글)를 읽고 세 가지를 만든다.
-리포트 양식은 학교마다 다르다. 표가 글자로 풀려 줄이 섞여 있을 수 있으니 항목 이름과 값을 짝지어 읽는다.
-리포트에는 보통 여섯 가지가 들어 있다: ①수강 과목·성적·전공 이수 흐름 ②프로젝트·비교과 활동·포트폴리오 ③상담 이력 ④성향 검사 결과(STRONG 등) ⑤자격·수상·어학 ⑥역량 데이터(학교 역량 체계, 예: 한림대 하이파이브). 있는 것은 빠짐없이 읽는다.
-
-1) fields: 아래 칸에 해당하는 값이 리포트에 분명히 적혀 있을 때만 채운다. 없으면 null (지어내지 않는다).
-   grade: "1"|"2"|"3"|"4"|"졸업" / gpa: 전체 평점(숫자) / gpa_max: 4.5|4.3|4.0 (만점, 안 적혀 있으면 4.5) / major_gpa: 전공 평점
-   toeic: 10~990 정수 / toeic_speaking: "Lv1"~"Lv8" (Lv 표기일 때만) / opic: NL|NM|NH|IL|IM1|IM2|IM3|IH|AL
-   other_lang: 그 밖의 어학(예: "JLPT N2", "토익스피킹 IH"), 60자 이내 / certs: 자격증 이름 배열(최대 15)
-   intern_months: 인턴·현장실습 개월 수 합 / projects: 프로젝트 수 / activities: 대외활동·동아리·비교과 프로그램 수 / awards: 수상 횟수 / volunteer_hours: 봉사 시간
-   target_role: 희망 직무(40자 이내)
-2) items: 리포트에 적힌 항목을 "분류(group) · 항목 이름(label) · 값(value)"으로 옮긴다. 최대 30개.
-   group은 이 가운데 하나: "수강·성적", "프로젝트·비교과·포트폴리오", "상담 이력", "성향 검사", "자격·수상·어학", "역량", "진로·기타".
-   - 수강·성적: 과목을 전부 옮기지 않는다. 이수 학점·전공 이수 현황, 학기별 평점 흐름, 성적이 높은 과목 2~3개, 낮은 과목 1~2개를 과목 이름과 성적 그대로 넣는다.
-   - 역량: 역량 이름과 점수를 리포트에 적힌 그대로(이름을 바꾸거나 합치지 않는다). 평균·수준이 함께 적혀 있으면 같이 넣는다.
-   - 성향 검사: 검사 이름과 결과 유형·코드, 높게 나온 영역을 넣는다.
-   - 상담 이력: 횟수와 주제(진로·취업·학업)만 넣는다. 심리·가정·건강·경제 사정 같은 개인 사정 상담 내용은 넣지 않는다.
-   값은 리포트에 적힌 그대로(단위·평균 포함) 50자 이내.
-3) questions: 면접관이 이 리포트를 보고 물을 만한 질문 6개. 각 질문은 리포트의 특정 항목 하나를 근거로 한다.
-   분류가 겹치지 않게 고른다(수강·성적, 프로젝트·포트폴리오, 역량, 성향 검사, 자격·어학, 상담·진로 가운데 리포트에 있는 것).
-   q: 존댓말 한 문장(80자 이내, 물음표로 끝). 항목 값을 문장에 자연스럽게 넣는다. 강점 항목 4개, 낮거나 비어 있는 항목 2개 정도로 섞는다.
-      성향 검사는 사람을 유형으로 단정하지 않고 "검사에서 ○○ 유형이 높게 나왔는데, 실제 경험에서 그 모습이 드러난 사례"처럼 묻는다.
-   basis: 근거가 된 항목과 값(예: "의사소통 역량 58점 · 학과 평균 71점"), 40자 이내. items나 fields에 있는 것만. 분류 이름은 붙이지 않는다.
+// 2026-11-24 한림대 커리어 인바디(포트폴리오) 양식으로 바꿈: 머리(전공·학년·희망 직무) · 강점/보완 · 역량 VS 직무 요구 · 보유 스킬 Top 15 · 이수 과목(직무과목 이수율, H/M/L)
+//   · 경험 & 활동(비교과 프로그램 / 자기주도 활동) · AI 추천 자기소개서 · 강점/약점/개선 방향 · 추천 자격증 · 관련 채용공고
+const QRULE = `   q: 면접관이 실제로 묻는 말투의 존댓말 한 문장(80자 이내, 물음표로 끝).
+      · 리포트의 점수·차이(예: 75점, -10, 2/20)와 "리포트에서", "포트폴리오에 따르면" 같은 말은 질문 문장에 넣지 않는다. 숫자는 basis에만 쓴다.
+      · 활동·과목·자격 이름처럼 구체적인 이름은 질문에 그대로 써도 된다.
+      · 학교가 만든 AI 추천 자기소개서는 학생이 직접 쓴 글이 아닐 수 있으니 "자기소개서에 쓰신"이라고 하지 않고, 그 글에 나온 역량·경험을 실제로 해 봤는지 묻는다.
+      · 학생을 깎아내리지 않는다. 낮은 역량은 "어떻게 보완하고 있는지", "비슷한 상황이면 어떻게 하겠는지"를 묻는다.
+   basis: 근거가 된 항목과 값, 40자 이내(예: "협업 능력 0 · 직무 요구보다 70 낮음", "직무과목 이수율 2/20", "비교과 · 빅데이터 경진대회"). 분류 이름은 붙이지 않는다.
    why: 이 질문으로 무엇을 확인하려는지 한 문장(60자 이내).
-4) summary: 리포트에서 눈에 띄는 점 한 문장(강점 하나와 보완점 하나).
-5) is_report: 글이 이런 리포트로 보이면 true, 전혀 다른 문서(자기소개서·영수증 등)면 false.
-
-지킬 것:
-- [학번], [이름], [번호] 같은 가린 표시는 그대로 두고 값으로 쓰지 않는다. 이름·학번·주소·연락처·주민번호·가족·건강·종교·출신지역·병역·성별·나이는 items와 questions 어디에도 넣지 않는다.
-- 리포트에 없는 사실을 지어내지 않는다. 숫자는 적힌 그대로 쓴다.
-- 질문은 학생을 깎아내리지 않는다. 낮은 항목은 "어떻게 보완하고 있는지"를 묻는다.
+   6개를 서로 다른 근거로 고른다: 직무 요구보다 가장 많이 모자란 역량 1~2개, 강점 역량이나 보유 스킬 1개, 경험 & 활동 1개, 이수 과목 1개, AI 추천 자기소개서나 개선 방향 1개. 리포트에 없는 칸은 다른 칸으로 채운다.`;
+const SYSTEM = `너는 대학 취업지원센터의 면접 준비 도우미다. 학생이 받은 [리포트](한림대학교 커리어 인바디 · 포트폴리오 PDF에서 뽑은 글)를 읽고 칸별로 옮긴 뒤 면접 질문을 만든다.
+표·그래프가 글자로 풀려 줄 순서가 섞여 있을 수 있으니 이름과 값을 짝지어 읽는다. 적혀 있지 않은 칸은 비워 둔다(지어내지 않는다). 숫자·이름은 적힌 그대로 쓴다.
+칸:
+- profile: major(전공 · 맨 마지막 단계, 예: "데이터테크"), college_path(예: "정보과학대학 > 데이터사이언스학부 > 데이터테크"), grade(학년 숫자 "1"~"4" 또는 "졸업"), target_job(오른쪽 위 희망 직무)
+- strong: '강점' 태그들 / weak: '보완' 태그들 (적힌 그대로)
+- comp: '역량 수치 · 역량 VS 직무 요구'의 줄마다 {name, score(내 점수, 정수), gap(직무 요구 대비 차이, +/- 정수)}. 최대 8개. 같은 역량을 두 번 넣지 않는다(아래 강점 글의 소수점 점수는 쓰지 않는다).
+- skills: '보유 스킬 Top 15'의 스킬 이름들(최대 15, 적힌 순서)
+- course_rate: '직무과목 이수율' 값(예: "2/20") / courses: 이수 과목마다 {name, h, m, l}(H·M·L 숫자). 최대 20개
+- extra: '비교과 프로그램' 줄마다 {name, period} / selfd: '자기주도 활동' 줄마다 {name, period}. period는 날짜·학기 그대로
+- intro: 'AI 추천 자기소개서'의 {keywords(태그들), title(제목 한 줄), text(본문, 문단 사이는 \\n, 1200자 이내)}
+- good / bad / fix: 아래쪽 '강점' · '약점' · '개선 방향' 칸의 문장들(각 최대 6개, 한 문장 200자 이내, 적힌 그대로)
+- certs_reco: '추천 자격증'(없으면 빈 배열. "자격증 데이터 없음"은 넣지 않는다)
+- jobs: '관련 채용공고' 줄마다 {company, title, date}
+- questions: 면접관이 이 리포트를 보고 물을 만한 질문 6개.
+${QRULE}
+- summary: 강점 하나와 보완점 하나를 담은 한 문장.
+- is_report: 이런 커리어 인바디·역량 리포트로 보이면 true, 전혀 다른 문서(자기소개서·영수증 등)면 false.
+지킬 것: [학번], [이름], [번호] 같은 가린 표시는 값으로 쓰지 않는다. 이름·학번·주소·연락처·가족·건강·종교·출신지역·병역·성별·나이는 어디에도 넣지 않는다.
 JSON으로만 답한다:
-{"is_report":true,"fields":{"grade":null,"gpa":null,"gpa_max":null,"major_gpa":null,"toeic":null,"toeic_speaking":null,"opic":null,"other_lang":null,"certs":[],"intern_months":null,"projects":null,"activities":null,"awards":null,"volunteer_hours":null,"target_role":null},"items":[{"group":"","label":"","value":""}],"questions":[{"q":"","basis":"","why":""}],"summary":""}`;
+{"is_report":true,"profile":{"major":"","college_path":"","grade":"","target_job":""},"strong":[],"weak":[],"comp":[{"name":"","score":0,"gap":0}],"skills":[],"course_rate":"","courses":[{"name":"","h":0,"m":0,"l":0}],"extra":[{"name":"","period":""}],"selfd":[{"name":"","period":""}],"intro":{"keywords":[],"title":"","text":""},"good":[],"bad":[],"fix":[],"certs_reco":[],"jobs":[{"company":"","title":"","date":""}],"questions":[{"q":"","basis":"","why":""}],"summary":""}`;
 
-/** 고친 항목으로 질문만 다시 만들 때 쓰는 지시문 (위 SYSTEM의 3)·4)·지킬 것과 같은 기준) */
-const SYSTEM_Q = `너는 대학 취업지원센터의 면접 준비 도우미다. 학생의 역량 진단 리포트에서 읽은 [리포트 항목](분류 · 항목 이름: 값)을 보고 면접 질문을 만든다. 값은 학생이 직접 확인해 고친 것이므로 적힌 그대로 믿는다.
-1) questions: 면접관이 이 항목을 보고 물을 만한 질문 6개. 각 질문은 항목 하나를 근거로 한다.
-   분류가 겹치지 않게 고른다(수강·성적, 프로젝트·포트폴리오, 역량, 성향 검사, 자격·어학, 상담·진로 가운데 있는 것).
-   q: 존댓말 한 문장(80자 이내, 물음표로 끝). 항목 값을 문장에 자연스럽게 넣는다. 강점 항목 4개, 낮거나 비어 있는 항목 2개 정도로 섞는다.
-      성향 검사는 사람을 유형으로 단정하지 않고 "검사에서 ○○ 유형이 높게 나왔는데, 실제 경험에서 그 모습이 드러난 사례"처럼 묻는다.
-   basis: 근거가 된 항목과 값(예: "의사소통 역량 58점 · 학과 평균 71점"), 40자 이내. 주어진 항목에 있는 것만. 분류 이름은 붙이지 않는다.
-   why: 이 질문으로 무엇을 확인하려는지 한 문장(60자 이내).
-2) summary: 항목에서 눈에 띄는 점 한 문장(강점 하나와 보완점 하나).
-지킬 것:
-- [학번], [이름], [번호] 같은 가린 표시는 값으로 쓰지 않는다. 이름·학번·주소·연락처·가족·건강·종교·출신지역·병역·성별·나이는 묻지 않는다.
-- 항목에 없는 사실을 지어내지 않는다. 숫자는 적힌 그대로 쓴다.
-- 질문은 학생을 깎아내리지 않는다. 낮은 항목은 "어떻게 보완하고 있는지"를 묻는다.
+/** 고친 항목으로 질문만 다시 만들 때 쓰는 지시문 (위와 같은 질문 기준) */
+const SYSTEM_Q = `너는 대학 취업지원센터의 면접 준비 도우미다. 학생의 커리어 인바디(포트폴리오)에서 읽은 [리포트 항목](분류 · 항목 이름: 값)을 보고 면접 질문을 만든다. 값은 학생이 직접 확인해 고친 것이므로 적힌 그대로 믿는다.
+- questions: 면접관이 이 항목을 보고 물을 만한 질문 6개.
+${QRULE}
+- summary: 강점 하나와 보완점 하나를 담은 한 문장.
+지킬 것: 가린 표시는 값으로 쓰지 않는다. 이름·학번·주소·연락처·가족·건강·종교·출신지역·병역·성별·나이는 묻지 않는다. 항목에 없는 사실을 지어내지 않는다.
 JSON으로만 답한다: {"questions":[{"q":"","basis":"","why":""}],"summary":""}`;
 
 const OPIC = ["NL", "NM", "NH", "IL", "IM1", "IM2", "IM3", "IH", "AL"];
@@ -131,23 +122,45 @@ Deno.serve(async (req: Request) => {
   const hint = [cleanText(p.dept, 40) ? `학과: ${cleanText(p.dept, 40)}` : "", cleanText(p.target, 60) ? `준비하는 분야·직무: ${cleanText(p.target, 60)}` : ""].filter(Boolean).join(" / ");
   const t0 = Date.now();
   try {
-    const { data, model } = await askJson(SYSTEM, `${hint ? `[학생이 고른 정보] ${hint}\n\n` : ""}[리포트]\n${masked.text}`, { maxTokens: 4000, timeoutMs: 55000, temperature: 0.2, reasoning: Deno.env.get("INBODY_REASONING") || "low", log: { fn: "inbody-read", step: "리포트 읽기", userId: user.id }, guard: true });
-    const f = (data.fields ?? {}) as Record<string, unknown>;
-    const gmaxRaw = num(f.gpa_max, 4, 4.5); const gpa_max = gmaxRaw === 4 || gmaxRaw === 4.3 || gmaxRaw === 4.5 ? gmaxRaw : 4.5;
-    const ts = /^Lv[1-8]$/.test(String(f.toeic_speaking ?? "")) ? String(f.toeic_speaking) : null;
-    const opic = OPIC.includes(String(f.opic ?? "").toUpperCase()) ? String(f.opic).toUpperCase() : null;
-    const grade = ["1", "2", "3", "4", "졸업"].includes(String(f.grade ?? "")) ? String(f.grade) : null;
-    const fields = {
-      grade, gpa: num(f.gpa, 0, gpa_max), gpa_max, major_gpa: num(f.major_gpa, 0, gpa_max), toeic: num(f.toeic, 10, 990, true), toeic_speaking: ts, opic,
-      other_lang: cleanText(f.other_lang, 60) || null,
-      certs: (Array.isArray(f.certs) ? f.certs : []).map((c) => cleanText(typeof c === "string" ? c : (c as any)?.name, 40)).filter((c) => c && !PII.test(c)).slice(0, 15),
-      intern_months: num(f.intern_months, 0, 60, true), projects: num(f.projects, 0, 50, true), activities: num(f.activities, 0, 50, true), awards: num(f.awards, 0, 50, true), volunteer_hours: num(f.volunteer_hours, 0, 5000, true),
-      target_role: cleanText(f.target_role, 40) || null,
+    const { data, model } = await askJson(SYSTEM, `${hint ? `[학생이 고른 정보] ${hint}\n\n` : ""}[리포트]\n${masked.text}`, { maxTokens: 6500, timeoutMs: 80000, temperature: 0.2, reasoning: Deno.env.get("INBODY_REASONING") || "low", log: { fn: "inbody-read", step: "리포트 읽기", userId: user.id }, guard: true });
+    const T = (v: unknown, n: number) => { const t = cleanText(v, n); return t && !PII.test(t) && !blockReason(t) ? t : ""; };
+    const L = (v: unknown, max: number, n: number) => (Array.isArray(v) ? v : []).map((x) => T(x, n)).filter(Boolean).slice(0, max);
+    const pf = (data.profile ?? {}) as Record<string, unknown>;
+    const gradeRaw = String(pf.grade ?? "").replace(/[^\d졸업]/g, "");
+    const grade = ["1", "2", "3", "4", "졸업"].includes(gradeRaw) ? gradeRaw : null;
+    const comp = (Array.isArray(data.comp) ? data.comp : []).map((x: any) => { const sc = num(x?.score, 0, 100, true); const g = typeof x?.gap === "number" ? Math.round(x.gap) : parseInt(String(x?.gap ?? "").replace(/[^\d+-]/g, ""), 10); return { name: T(x?.name, 30), score: sc, gap: isFinite(g) && Math.abs(g) <= 100 ? g : null }; })
+      .filter((x: any) => x.name && x.score != null).filter((x: any, i: number, a: any[]) => a.findIndex((y) => y.name === x.name) === i).slice(0, 8);
+    const pairs = (v: unknown, max: number) => (Array.isArray(v) ? v : []).map((x: any) => ({ name: T(x?.name, 80), period: T(x?.period, 40) })).filter((x) => x.name).slice(0, max);
+    const courses = (Array.isArray(data.courses) ? data.courses : []).map((x: any) => ({ name: T(x?.name, 40), h: num(x?.h, 0, 99, true) ?? 0, m: num(x?.m, 0, 99, true) ?? 0, l: num(x?.l, 0, 99, true) ?? 0 })).filter((x) => x.name).slice(0, 20);
+    const intro = (data.intro ?? {}) as Record<string, unknown>;
+    const hallym = {
+      profile: { major: T(pf.major, 40), college_path: T(pf.college_path, 80), grade, target_job: T(pf.target_job, 40) },
+      strong: L(data.strong, 8, 30), weak: L(data.weak, 8, 30), comp, skills: L(data.skills, 15, 30),
+      course_rate: /^\s*\d{1,3}\s*\/\s*\d{1,3}\s*$/.test(String(data.course_rate ?? "")) ? String(data.course_rate).replace(/\s/g, "") : "",
+      courses, extra: pairs(data.extra, 10), selfd: pairs(data.selfd, 10),
+      intro: { keywords: L(intro.keywords, 12, 24), title: T(intro.title, 60), text: blockReason(String(intro.text ?? "")) ? "" : String(intro.text ?? "").replace(/\\n/g, "\n").split(/\n+/).map((x) => cleanText(x, 700)).filter(Boolean).join("\n").slice(0, 1400) },   // 문단은 줄바꿈으로 남김
+      good: L(data.good, 6, 220), bad: L(data.bad, 6, 220), fix: L(data.fix, 6, 220),
+      certs_reco: L(data.certs_reco, 8, 40).filter((c) => !/데이터\s*없음/.test(c)),
+      jobs: (Array.isArray(data.jobs) ? data.jobs : []).map((x: any) => ({ company: T(x?.company, 40), title: T(x?.title, 80), date: T(x?.date, 20) })).filter((x) => x.company || x.title).slice(0, 6),
     };
-    const items = (Array.isArray(data.items) ? data.items : []).map((x: any) => ({ group: cleanText(x?.group, 20), label: cleanText(x?.label, 40), value: cleanText(x?.value, 60) }))
-      .filter((x) => x.label && x.value && !PII.test(x.label) && !PII.test(x.value) && !blockReason(x.label + " " + x.value)).slice(0, 30);
+    // 읽은 값 고치기·질문 다시 만들기에 쓰는 항목 (위 칸에서 만듦)
+    const items: { group: string; label: string; value: string }[] = [];
+    const add = (group: string, label: string, value: string) => { if (label && value && items.length < 30) items.push({ group, label: label.slice(0, 40), value: value.slice(0, 60) }); };
+    if (hallym.profile.target_job) add("진로", "희망 직무", hallym.profile.target_job);
+    comp.forEach((c: any) => add("역량", c.name, `${c.score}${c.gap != null ? ` · 직무 요구 대비 ${c.gap > 0 ? "+" : ""}${c.gap}` : ""}`));
+    if (hallym.strong.length) add("진로", "강점", hallym.strong.join(", "));
+    if (hallym.weak.length) add("진로", "보완", hallym.weak.join(", "));
+    if (hallym.skills.length) add("스킬", "보유 스킬", hallym.skills.slice(0, 8).join(", "));
+    if (hallym.course_rate) add("이수 과목", "직무과목 이수율", hallym.course_rate);
+    courses.slice(0, 4).forEach((c) => add("이수 과목", c.name, `H${c.h} · M${c.m} · L${c.l}`));
+    hallym.extra.forEach((x) => add("경험·활동", "비교과 · " + x.name, x.period || "참여"));
+    hallym.selfd.forEach((x) => add("경험·활동", "자기주도 · " + x.name, x.period || "완료"));
+    const certs = hallym.selfd.map((x) => x.name).filter((n) => /(취득|합격)/.test(n)).map((n) => n.replace(/\s*(취득|합격).*$/, "").trim()).filter(Boolean).slice(0, 15);
+    const fields = { grade, gpa: null, gpa_max: 4.5, major_gpa: null, toeic: null, toeic_speaking: null, opic: null, other_lang: null, certs, intern_months: null, projects: null,
+      activities: (hallym.extra.length + hallym.selfd.length) || null, awards: null, volunteer_hours: null, target_role: hallym.profile.target_job || null };
     const questions = (Array.isArray(data.questions) ? data.questions : []).map((x: any) => ({ q: cleanText(x?.q, 140), basis: cleanText(x?.basis, 60), why: cleanText(x?.why, 100) }))
       .filter((x) => x.q.length >= 12 && x.basis && !blockReason(x.q) && !PII.test(x.q) && !PII.test(x.basis)).slice(0, 6);
-    return json({ is_report: data.is_report !== false, fields, items, questions, summary: blockReason(String(data.summary ?? "")) ? "" : cleanText(data.summary, 160), masked: masked.n, model, ms: Date.now() - t0 });
+    const has = comp.length + hallym.skills.length + courses.length + hallym.extra.length + hallym.selfd.length + hallym.good.length;
+    return json({ is_report: data.is_report !== false, format: "hallym", hallym: has ? hallym : null, fields, items, questions, summary: blockReason(String(data.summary ?? "")) ? "" : cleanText(data.summary, 160), masked: masked.n, model, ms: Date.now() - t0 });
   } catch (e) { return json({ error: "ai_failed", message: (e as Error).message.slice(0, 200) }, 502); }
 });

@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-23i';
+var APP_VERSION = '2026-11-24a';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -6360,6 +6360,41 @@ html.ivv-dr-open{overflow:hidden;}
 @media (min-width:641px) and (max-width:820px){ #d3-debate.dbm .dbm-head{flex-direction:row;gap:16px} #d3-debate.dbm .dbm-prev{align-self:flex-start;padding:10px 16px} #d3-debate.dbm .dbm-head h2{font-size:26px} }   /* 34~36 토론 태블릿: 제목 옆에 [이전으로] */
 @media (max-width:1100px){ #modal-flow .fl-2col .ib-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }   /* 64 인바디 태블릿: 칸이 좁아 값이 잘리던 것 */
 /* 2026-11-17 인바디 리포트 올리기 */
+/* 2026-11-24 커리어 인바디 (한림대 커리어 인바디 · 포트폴리오 구성) */
+.ci{display:flex;flex-direction:column;gap:14px;color:#2b2521;font-size:13.5px}
+.ci h3{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.ci h3 small{font-weight:400;color:#8a7d73;font-size:12px}
+.ci-hero{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(120deg,#2b2320 0%,#4a2b20 55%,#8c3519 100%);color:#fff;border-radius:16px;padding:22px 26px}
+.ci-hero .ci-k{margin:0 0 6px;font-size:12px;opacity:.78}.ci-hero h2{margin:0;font-size:24px;color:#fff}.ci-hero h2 small{font-size:14px;font-weight:400;opacity:.82;margin-left:8px}
+.ci-hero.empty h2{font-size:21px;margin-bottom:6px}.ci-hero.empty p{margin:0;opacity:.88;max-width:720px;line-height:1.6}
+.ci-hb{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.ci-hb span{background:rgba(255,255,255,.13);border-radius:999px;padding:4px 12px;font-size:12px}.ci-hb .job{background:#fff;color:#a63a17;font-weight:700}
+.ci-hs{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}.ci-sc{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;text-align:center;min-width:92px}.ci-sc b{display:block;font-size:22px}.ci-sc small{opacity:.82;font-size:11px}
+.ci-btn{display:inline-flex;align-items:center;background:#e8532a;color:#fff;border-radius:10px;padding:11px 16px;font-weight:700;white-space:nowrap;cursor:pointer}.ci-btn:hover{background:#d64a22}.ci-btn.busy{opacity:.6;pointer-events:none}
+.ci .ib-rp-st{margin:-4px 2px 0}.ci .ib-rp-st:empty{display:none}
+.ci-tags{display:flex;gap:26px;flex-wrap:wrap;background:#fff;border:1px solid #ece4dd;border-radius:12px;padding:12px 18px}.ci-tags div{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.ci-tags small{font-weight:700;margin-right:4px;font-size:13px}
+.ci-tags i{font-style:normal;border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:600}.ci-tags .g{background:#e6f4ec;color:#2E7D57}.ci-tags .r{background:#fbe4e1;color:#a12e28}
+.ci-card{background:#fff;border:1px solid #ece4dd;border-radius:14px;padding:16px 20px;min-width:0}
+.ci-g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.ci-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ci-rd{width:100%;max-height:330px;display:block}.ci-lg{display:inline-block;width:18px;height:0;border-top:2.5px solid #c4471f;vertical-align:middle;margin:0 4px 0 8px}.ci-lg.rq{border-top:2px dashed #9c9088}
+.ci-bar{margin:12px 0 14px}.ci-bh{display:flex;align-items:baseline;gap:8px}.ci-bh span{flex:1;font-weight:600}.ci-bh b{font-size:15px}.ci-bh em{font-style:normal;font-weight:700;min-width:34px;text-align:right}
+.ci-bt{position:relative;height:10px;background:#f1ebe5;border-radius:6px;margin-top:6px}.ci-bt .me{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:#3f6fb5}.ci-bt .rq{position:absolute;top:-4px;bottom:-4px;width:2px;background:#2b2521;border-radius:1px}
+.ci-bar.lo .me{background:#c4471f}.ci-bar.lo em{color:#a12e28}.ci-bar.mid .me{background:#d98b4a}.ci-bar.mid em{color:#b26a00}.ci-bar.ok em{color:#2E7D57}
+.ci-tip{margin:10px 0 0;background:#fbf3ec;border-radius:10px;padding:9px 12px;color:#5a4d44;font-size:12.5px}
+.ci-skills{display:flex;flex-wrap:wrap;gap:7px}.ci-skills i{font-style:normal;background:#f6f1ec;border:1px solid #eee3da;border-radius:8px;padding:5px 10px 5px 6px;font-size:12.5px}.ci-skills i b{display:inline-block;min-width:18px;height:18px;line-height:18px;text-align:center;border-radius:5px;background:#fff;color:#bd411b;font-size:10.5px;margin-right:6px}
+.ci-crs{display:flex;gap:16px;align-items:flex-start}.ci-ring{width:112px;flex:none}.ci-cl{flex:1;min-width:0}.ci-cr{display:grid;grid-template-columns:1fr 110px 56px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #f5efe9}
+.ci-hml{display:flex;height:8px;border-radius:4px;overflow:hidden;background:#f1ebe5}.ci-hml i{display:block}.ci-hml .h,.ci-lgd .h{background:#3f6fb5}.ci-hml .m,.ci-lgd .m{background:#9db5dd}.ci-hml .l,.ci-lgd .l{background:#e4ddd6}.ci-hn{color:#8a7d73;font-size:11.5px;text-align:right}
+.ci-lgd{margin:8px 0 0;color:#8a7d73;font-size:11.5px}.ci-lgd i{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 3px 0 8px;vertical-align:-1px}
+.ci-st{margin:6px 0;font-weight:700;color:#5a4d44}.ci-tl{list-style:none;margin:0 0 6px;padding:0 0 0 4px}.ci-tl li{position:relative;padding:0 0 10px 18px;border-left:2px solid #f1ebe5;margin-left:4px}.ci-tl li i{position:absolute;left:-6px;top:3px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #c4471f}.ci-tl b{display:block;font-weight:600}.ci-tl small{color:#8a7d73}
+.ci-card.ai{background:linear-gradient(180deg,#fff,#fbf8f5)}.ci-kw{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.ci-kw i{font-style:normal;background:#eef3fb;color:#3f6fb5;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+.ci-card.ai h4{margin:4px 0 6px}.ci-intro p{margin:0 0 6px;line-height:1.7;color:#3a322d}.ci-intro p.more{display:none}.ci-intro.open p.more{display:block}
+.ci-card.ci-sw ul{margin:0;padding-left:17px}.ci-card.ci-sw li{margin:5px 0;line-height:1.6}.ci-card.ci-sw{border-top-width:4px}.ci-card.ci-sw.g{border-top-color:#2E7D57}.ci-card.ci-sw.g h3{color:#2E7D57}.ci-card.ci-sw.w{border-top-color:#d98b4a}.ci-card.ci-sw.w h3{color:#b26a00}.ci-card.ci-sw.f{border-top-color:#3f6fb5}.ci-card.ci-sw.f h3{color:#3f6fb5}
+.ci-certs{display:flex;gap:8px;flex-wrap:wrap}.ci-certs i{font-style:normal;border:1px dashed #d8c9bd;border-radius:8px;padding:6px 12px;font-weight:600}.ci-jb{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid #f5efe9}.ci-jb small{color:#8a7d73}
+.ci-qs{background:#fbf3ec;border-radius:14px;padding:16px 22px;border:1px solid #f1dfd2}.ci-qh{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.ci-qh h3{margin:0}.ci-qh small{color:#6a5b51}.ci-qh .ib-rp-lk{margin-left:auto}
+.ci-qs ol{margin:8px 0 0;padding-left:20px}.ci-qs li{margin:10px 0}.ci-qs li div{margin-top:4px}.ci-bs{background:#fbe4e1;color:#a63a17;border-radius:5px;padding:1px 8px;font-size:12px;font-weight:700;margin-right:8px}.ci-qs li small{color:#8a7d73}
+.ci-old{background:#fffaf3;border:1px solid #f0dcc2;border-radius:12px;padding:12px 16px}.ci-old p{margin:4px 0 0;color:#6a5b51}
+.ci-foot{color:#6a5b51;margin:0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.ci-foot small{color:#8a7d73}
+.ci-ghost{display:grid;grid-template-columns:1fr 1fr;gap:14px;opacity:.55}.ci-gc{background:#fff;border:1px dashed #ddd0c4;border-radius:14px;padding:16px 20px}.ci-gc.wide{grid-column:1/3}.ci-gc p{margin:0;color:#6a5b51}
+.ci-sk1{width:200px;height:200px;margin:6px auto;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%);background:#f1ebe5}.ci-sk2{height:10px;border-radius:6px;background:#f1ebe5;margin:18px 0}
+@media (max-width:760px){.ci-hero{flex-direction:column;align-items:flex-start;padding:18px}.ci-hs{width:100%;justify-content:flex-start}.ci-g2,.ci-g3,.ci-ghost{grid-template-columns:1fr}.ci-gc.wide{grid-column:auto}.ci-crs{flex-direction:column;align-items:center}.ci-cl{width:100%}.ci-cr{grid-template-columns:1fr 90px 48px}.ci-card{padding:14px 16px}.ci-hero h2{font-size:21px}}
 .ib-rp{border:1px solid #e3d9cf;border-radius:14px;background:#fff;padding:16px 18px;margin:0 0 16px}
 .ib-rp-h{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
 .ib-rp-h b{font-size:15.5px} .ib-rp-h p{margin:4px 0 0;font-size:13px;line-height:1.55;color:#6a5b51}
@@ -9931,7 +9966,7 @@ html.sv-open{overflow:hidden;}
       </section>
       </details>
       <section class="mp-inbody" aria-labelledby="mp-ib-t" hidden>
-        <h3 class="mp-sec-t" id="mp-ib-t">커리어 인바디 <small>학점·어학·자격·경험을 적어 두면 면접 예상 질문과 결과 조언에 써요. 학교 커리어 인바디와 연동되면 자동으로 채워져요</small></h3>
+        <h3 class="mp-sec-t" id="mp-ib-t">커리어 인바디 <small>학교 커리어 인바디(포트폴리오) PDF를 올리면 역량·스킬·활동을 정리하고 면접 질문을 만들어요</small></h3>
         <button type="button" class="btn btn-outline" onclick="closeMyPage(); StartFlow.page('ib'); BackTo.set('flow')">커리어 인바디 열기</button>
       </section>
       <details class="mp-fold" id="mp-ui-fold"><summary>화면 설정</summary>
@@ -14194,25 +14229,6 @@ const Inbody = {
     let off = 0; try{ off = (+localStorage.getItem('zp_ibq_off') || 0) % L.length; localStorage.setItem('zp_ibq_off', String(off + n)); }catch(_){}
     const out = []; for(let i = 0; i < Math.min(n, L.length); i++){ const x = L[(off + i) % L.length]; out.push({ q: x.q, spoken: x.q, ref: null, hint: x.why || '', ib: { basis: x.basis, why: x.why || '' } }); }
     return out; },
-  reportCard(){ const r = this.report();
-    return `<div class="ib-rp" id="ib-rp">
-      <div class="ib-rp-h"><div><b>인바디 리포트 올리기</b><p>학교에서 받은 리포트(PDF)를 올리면 항목을 읽어 아래 칸을 채우고, 그 항목에서 면접 질문을 만들어요. 학번·이름·연락처는 가리고 읽어요.</p></div>
-        <label class="btn btn-solid btn-sm ib-rp-btn" id="ib-rp-lb"><input type="file" id="ib-rp-file" accept="${DocText.ACCEPT}" hidden><span id="ib-rp-lbt">${r ? '다른 리포트 올리기' : '리포트 올리기'}</span></label></div>
-      <p class="ib-rp-st" id="ib-rp-st" role="status"></p>
-      <div id="ib-rp-view">${this.reportView()}</div></div>`; },
-  reportView(){ const r = this.report(); if(!r) return '';
-    const ed = !!this._rpEdit;   // 2026-11-17 읽은 값 고치기 (스캔본처럼 숫자를 틀리게 읽은 경우)
-    const groups = []; (r.items || []).forEach(x=>{ const g = x.group || '그 밖의 항목'; let o = groups.find(y=>y.g === g); if(!o) groups.push(o = { g, L: [] }); o.L.push(x); });
-    const when = r.at ? formatDateFull(r.at) : '';
-    return `<div class="ib-rp-done">
-      <p class="ib-rp-file"><span class="fl-badge ib-rp-ok">리포트 반영됨</span><b>${escapeHtml(r.file || '리포트')}</b><small>${escapeHtml(when)}${(r.items || []).length ? ` · 항목 ${(r.items || []).length}개` : ''}${r.masked ? ` · 개인정보 ${r.masked}곳 가림` : ''}</small><button type="button" class="ib-rp-del" id="ib-rp-del">리포트 지우기</button></p>
-      ${r.summary ? `<p class="ib-rp-sum">${escapeHtml(r.summary)}</p>` : ''}
-      ${groups.length ? `<p class="ib-rp-eh"><b>리포트에서 읽은 항목</b>${ed ? '<small>틀리게 읽은 값을 고쳐 주세요. 값을 비우면 그 항목은 빠져요.</small>' : `<button type="button" class="ib-rp-lk" id="ib-rp-edit">읽은 값 고치기</button>${r.edited_at ? '<small>직접 고친 값이 있어요</small>' : ''}`}</p>
-      <div class="ib-rp-items${ed ? ' ed' : ''}">${groups.map(o=>`<div class="ib-rp-g"><small>${escapeHtml(o.g)}</small><ul>${o.L.map(x=>`<li><span>${escapeHtml(x.label)}</span>${ed ? `<textarea class="ib-rp-in" rows="1" data-i="${(r.items || []).indexOf(x)}" maxlength="60" aria-label="${escapeHtml(x.label)} 값">${escapeHtml(x.value)}</textarea>` : `<b>${escapeHtml(x.value)}</b>`}</li>`).join('')}</ul></div>`).join('')}</div>
-      ${ed ? `<div class="ib-rp-add" id="ib-rp-add"><small>빠진 항목 추가 (그래프 안의 점수처럼 읽지 못한 값)</small>${[0,1,2].map(()=>this.addRowHtml()).join('')}<button type="button" class="ib-rp-lk" id="ib-rp-more">+ 한 줄 더</button></div>
-      <div class="ib-rp-eb"><button type="button" class="btn btn-solid btn-sm" id="ib-rp-save">저장하고 질문 다시 만들기</button><button type="button" class="btn btn-outline btn-sm" id="ib-rp-cancel">취소</button></div>` : ''}` : ''}
-      ${r.questions.length ? `<div class="ib-rp-qs"><p class="ib-rp-qh"><b>이 리포트에서 나오는 면접 질문</b><small>면접을 시작하면 이 가운데 2개가 근거 항목과 함께 나오고, 꼬리질문도 이 질문에 붙어요.</small>${ed ? '' : '<button type="button" class="ib-rp-lk" id="ib-rp-requ">질문 다시 만들기</button>'}</p><ol>${r.questions.map(x=>`<li><p>${escapeHtml(x.q)}</p><span class="ib-rp-basis">근거 · ${escapeHtml(x.basis)}</span>${x.why ? `<small>${escapeHtml(x.why)}</small>` : ''}</li>`).join('')}</ol></div>` : ''}
-    </div>`; },
   bindReport(){
     const f = document.getElementById('ib-rp-file'); if(f) f.onchange = ()=>{ const file = f.files && f.files[0]; f.value = ''; if(file) this.readReport(file); };
     const del = document.getElementById('ib-rp-del'); if(del) del.onclick = ()=>this.removeReport();
@@ -14224,8 +14240,8 @@ const Inbody = {
     on('ib-rp-more', ()=>{ const m = document.getElementById('ib-rp-more'); if(m && document.querySelectorAll('#ib-rp-add .ib-rp-ar').length < 10) m.insertAdjacentHTML('beforebegin', this.addRowHtml()); });
     on('ib-rp-requ', ()=>this.saveReportEdit(true));
   },
-  redrawReport(){ const v = document.getElementById('ib-rp-view'); if(v){ v.innerHTML = this.reportView(); this.bindReport(); } },
-  RP_GROUPS: ['역량','수강·성적','프로젝트·비교과·포트폴리오','성향 검사','자격·수상·어학','상담 이력','진로·기타'],
+  redrawReport(){ const v = document.getElementById('ib-rp-view'); if(v){ v.innerHTML = this._rpEdit ? this.editView() : ''; this.bindReport(); if(this._rpEdit) v.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } },
+  RP_GROUPS: ['역량','스킬','이수 과목','경험·활동','진로','그 밖의 항목'],   // 2026-11-24 한림대 커리어 인바디 칸
   addRowHtml(){ return `<div class="ib-rp-ar"><select class="ib-rp-ag" aria-label="분류">${this.RP_GROUPS.map(g=>`<option>${g}</option>`).join('')}</select><input type="text" class="ib-rp-al" maxlength="40" placeholder="항목 이름 (예: 소통협력 역량)" aria-label="항목 이름"><input type="text" class="ib-rp-av" maxlength="60" placeholder="값 (예: 86.6점 · 학과 평균 72.4)" aria-label="값"></div>`; },
   /** 2026-11-17 읽은 값을 고친 뒤(또는 그대로) 그 항목으로 면접 질문을 다시 만듦. AI가 실패해도 고친 값은 저장 */
   async saveReportEdit(regenOnly){
@@ -14246,7 +14262,7 @@ const Inbody = {
       let data = null, fail = '';
       try{
         const { data: d, error } = await Promise.race([sb.functions.invoke('inbody-read', { body: { items, dept: (fs.major && fs.major.dept) || '', target: (this.d && this.d.target_role) || '' } }), new Promise((_, rej)=>setTimeout(()=>rej(new Error('시간이 오래 걸려요')), 50000))]);
-        if(error){ let msg = error.message || ''; try{ const j = await error.context.json(); if(j && j.error === 'limit') msg = '오늘 쓸 수 있는 AI 횟수를 다 썼어요'; else if(j && j.message) msg = j.message; }catch(_){} throw new Error(msg || '질문을 만들지 못했어요'); }
+        if(error) throw new Error(await this.fnErr(error, '질문을 만들지 못했어요'));
         if(!d || d.error) throw new Error((d && (d.message || d.error)) || '질문을 만들지 못했어요');
         data = d;
       }catch(e){ fail = (e && e.message) || '질문을 만들지 못했어요'; console.warn('[리포트 질문 다시 만들기]', e); }
@@ -14257,13 +14273,22 @@ const Inbody = {
       if(newQ){ rep2.questions = data.questions.slice(0, 6); if(data.summary) rep2.summary = data.summary; }
       const { error: se } = await sb.from('career_inbody').update({ report: rep2, updated_at: new Date().toISOString() }).eq('user_id', state.currentUser.id);
       if(se){ say('저장하지 못했어요. ' + friendlyErr(se), 'warn'); return; }
-      this.d = Object.assign({}, this.d || {}, { report: rep2 }); this._rpEdit = false; this.redrawReport();
+      this.d = Object.assign({}, this.d || {}, { report: rep2 }); this._rpEdit = false; await this.renderMy();
       try{ localStorage.removeItem('zp_ibq_off'); }catch(_){}
       try{ Activity.log('inbody_report_edit', { changed, regen: newQ, ms: Date.now() - t0 }); }catch(_){}
       say(newQ ? (changed ? `값 ${changed}개를 고치고 질문 ${rep2.questions.length}개를 다시 만들었어요.` : `질문 ${rep2.questions.length}개를 다시 만들었어요.`) : `값 ${changed}개는 고쳤지만 질문은 다시 만들지 못했어요(${fail}). '질문 다시 만들기'를 눌러 주세요.`, newQ ? 'ok' : 'warn');
       try{ if(typeof StartFlow !== 'undefined' && StartFlow.s && !StartFlow.s.page) StartFlow.render(); }catch(_){}
     }catch(e){ console.warn('[리포트 값 고치기]', e); say('고치지 못했어요. 잠시 뒤 다시 해 주세요.', 'warn'); }
     finally{ this._rpBusy = false; document.querySelectorAll('#ib-rp-save, #ib-rp-cancel, #ib-rp-requ, #ib-rp-edit').forEach(b=>{ b.disabled = false; }); }
+  },
+  // 2026-11-24 서버 오류를 학생이 읽을 수 있는 말로 (영어 오류 문구가 그대로 보이던 것)
+  async fnErr(error, fallback){
+    let j = null; try{ if(error && error.context && typeof error.context.json === 'function') j = await error.context.json(); }catch(_){}
+    if(j && j.error === 'limit') return '오늘 쓸 수 있는 AI 횟수를 다 썼어요. 내일 다시 해 주세요.';
+    const st = error && error.context && error.context.status;
+    if(st === 401 || st === 403) return '로그인이 끝났어요. 다시 로그인한 뒤 해 주세요.';
+    if(j && j.message && /[가-힣]/.test(j.message)) return j.message;
+    return fallback;
   },
   async readReport(file){
     if(this._rpBusy) return; this._rpBusy = true;
@@ -14281,7 +14306,7 @@ const Inbody = {
       const OCR_NOTE = '[읽는 방법 주의] 아래 글은 스캔한 그림에서 글자를 읽은 것이라 줄 순서가 섞여 있고 오타가 있을 수 있다. 그래프에서 나온 숫자는 어느 항목의 값인지 분명할 때만 쓴다. 숫자와 항목 이름의 짝이 분명하지 않으면 그 숫자는 items와 questions에 넣지 않는다(틀린 짝을 만드는 것보다 빼는 것이 낫다).\n\n';
       const body = { text: (ocr ? OCR_NOTE : '') + mk.text.slice(0, 24000 - (ocr ? OCR_NOTE.length : 0)), dept: (fs.major && fs.major.dept) || '', target: (this.d && !this.d.report && this.d.target_role) || '' };   // 앞서 올린 리포트에서 온 희망 직무는 보내지 않음 (다른 학생 리포트에 섞이지 않게)
       const { data, error } = await Promise.race([sb.functions.invoke('inbody-read', { body }), new Promise((_, rej)=>setTimeout(()=>rej(new Error('리포트를 읽는 데 시간이 오래 걸려요. 잠시 뒤 다시 올려 주세요.')), 75000))]);
-      if(error){ let msg = error.message || ''; try{ const j = await error.context.json(); if(j && j.error === 'limit') msg = '오늘 쓸 수 있는 AI 횟수를 다 썼어요. 내일 다시 해 주세요.'; else if(j && j.message) msg = j.message; }catch(_){} throw new Error(msg || '리포트를 읽지 못했어요'); }
+      if(error) throw new Error(await this.fnErr(error, '리포트를 읽지 못했어요. 잠시 뒤 다시 올려 주세요.'));
       if(!data || data.error) throw new Error((data && (data.message || data.error)) || '리포트를 읽지 못했어요');
       const F = data.fields || {}, n = Object.keys(F).filter(k=>F[k] != null && F[k] !== '' && !(Array.isArray(F[k]) && !F[k].length) && k !== 'gpa_max').length;
       if(data.is_report === false && !n && !(data.items || []).length) throw new Error('인바디 리포트로 보이지 않아요. 학교에서 받은 리포트 파일인지 확인해 주세요.');
@@ -14292,15 +14317,16 @@ const Inbody = {
       row.gpa_max = F.gpa != null ? (F.gpa_max || 4.5) : 4.5;
       if(F.target_role) row.target_role = F.target_role; else if(this.d && this.d.report) row.target_role = null;   // 앞서 올린 리포트의 희망 직무가 남지 않게
       row.certs = (Array.isArray(F.certs) ? F.certs : []).map(c=>({ name: String(c).slice(0, 40) })).slice(0, 15);
-      row.report = { file: String(file.name || '리포트').slice(0, 80), at: new Date().toISOString(), items: (data.items || []).slice(0, 30), questions: (data.questions || []).slice(0, 6), summary: data.summary || '', masked: (mk.n || 0) + (data.masked || 0), filled: n, ocr };
+      row.report = { file: String(file.name || '리포트').slice(0, 80), at: new Date().toISOString(), hallym: data.hallym || null, items: (data.items || []).slice(0, 30), questions: (data.questions || []).slice(0, 6), summary: data.summary || '', masked: (mk.n || 0) + (data.masked || 0), filled: n, ocr };
       const { error: se } = await sb.from('career_inbody').upsert(row, { onConflict:'user_id' });
       if(se) throw new Error('읽은 내용을 저장하지 못했어요. ' + friendlyErr(se));
       this.d = Object.assign({}, this.d || {}, row); this.loaded = true; this.peers = null;
       try{ Activity.log('inbody_report', { fields: n, items: row.report.items.length, questions: row.report.questions.length, masked: row.report.masked, ms: Date.now() - t0 }); }catch(_){}
       this._rpBusy = false;
       await this.renderMy();
-      const noComp = !row.report.items.some(x=>x.group === '역량');
-      say(`리포트를 반영했어요. 칸 ${n}개를 채웠고 질문 ${row.report.questions.length}개를 만들었어요. 리포트에 없는 칸은 비워 두었어요. 틀린 칸은 고친 뒤 '인바디 저장'을 눌러 주세요.`
+      const H = row.report.hallym, noComp = !(H && (H.comp || []).length);   // 2026-11-24 한림대 커리어 인바디 칸으로 읽음
+      say((H ? `커리어 인바디를 반영했어요. 역량 ${(H.comp || []).length}개 · 스킬 ${(H.skills || []).length}개 · 과목 ${(H.courses || []).length}개 · 활동 ${(H.extra || []).length + (H.selfd || []).length}개를 읽고 면접 질문 ${row.report.questions.length}개를 만들었어요.`
+          : `리포트를 반영했어요. 면접 질문 ${row.report.questions.length}개를 만들었어요.`)
         + (ocr ? ' 스캔본이라 숫자를 틀리게 읽었을 수 있어요. 아래 \'읽은 값 고치기\'로 꼭 확인해 주세요.' : '')
         + (noComp ? ' 역량 점수는 찾지 못했어요. 그래프 그림 안에만 있다면 \'읽은 값 고치기\'에서 항목을 추가해 주세요.' : ''), 'ok');
       try{ if(typeof StartFlow !== 'undefined' && StartFlow.s && !StartFlow.s.page) StartFlow.render(); }catch(_){}
@@ -14308,135 +14334,95 @@ const Inbody = {
     finally{ this._rpBusy = false; const l2 = document.getElementById('ib-rp-lb'); if(l2) l2.classList.remove('busy'); }
   },
   async removeReport(){
-    if(!confirm('올린 리포트 내용과 리포트에서 만든 질문을 지울까요? 아래 칸에 채워진 값은 그대로 남아요.')) return;
+    if(!confirm('올린 커리어 인바디 내용과 거기서 만든 면접 질문을 지울까요?')) return;
     const { error } = await sb.from('career_inbody').update({ report: null, updated_at: new Date().toISOString() }).eq('user_id', state.currentUser.id);
     if(error) return showToast('지우지 못했어요. ' + friendlyErr(error), 'warn');
     if(this.d) this.d.report = null; await this.renderMy(); showToast('리포트를 지웠어요.', 'ok');
   },
-  /* ── 마이페이지 ── */
+  /* ── 2026-11-24 커리어 인바디 화면 (모든 학생 공통) ──
+     한림대 커리어 인바디(포트폴리오) 구성 그대로: 머리(전공·학년·희망 직무) · 강점/보완 · 역량 프로필(그래프) · 역량 수치(직무 요구 대비) · 보유 스킬 Top 15
+     · 이수 과목(직무과목 이수율, H/M/L) · 경험 & 활동 · AI 추천 자기소개서 · 강점/약점/개선 방향 · 추천 자격증 · 관련 채용공고 + 리포트에서 만든 면접 질문.
+     예전에 쓰던 직접 입력 칸(학점·어학·자격 수치)·비슷한 학생 비교는 없앰 */
+  hal(){ const r = this.report(); return r && r.hallym && typeof r.hallym === 'object' ? r.hallym : null; },
+  ciUp(label){ return `<label class="ci-btn" id="ib-rp-lb"><input type="file" id="ib-rp-file" accept="${DocText.ACCEPT}" hidden><span id="ib-rp-lbt">${escapeHtml(label)}</span></label>`; },
+  ciRadar(comp){
+    const n = comp.length, S = 300, cx = S / 2, cy = S / 2, R = S * 0.34, E = escapeHtml;
+    const pt = (i, v)=>[cx + R * v / 100 * Math.sin(2 * Math.PI * i / n), cy - R * v / 100 * Math.cos(2 * Math.PI * i / n)];
+    const poly = vals=>vals.map((v, i)=>pt(i, v).map(x=>x.toFixed(1)).join(',')).join(' ');
+    let g = [100, 80, 60, 40, 20].map(lv=>`<polygon points="${poly(comp.map(()=>lv))}" fill="${lv === 100 ? '#fbf7f3' : 'none'}" stroke="#eadfd6"/>`).join('');
+    g += comp.map((_, i)=>{ const p = pt(i, 100); return `<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="#eadfd6"/>`; }).join('');
+    g += [40, 80].map(lv=>`<text x="${cx + 3}" y="${(cy - R * lv / 100 + 3).toFixed(1)}" font-size="9" fill="#b3a79d">${lv}</text>`).join('');
+    g += `<polygon points="${poly(comp.map(c=>c.req))}" fill="none" stroke="#9c9088" stroke-width="1.6" stroke-dasharray="5 4"/>`;
+    g += `<polygon points="${poly(comp.map(c=>c.score))}" fill="rgba(196,71,31,.16)" stroke="#c4471f" stroke-width="2.2" stroke-linejoin="round"/>`;
+    comp.forEach((c, i)=>{ const p = pt(i, c.score), l = pt(i, 128), anc = Math.abs(l[0] - cx) < 8 ? 'middle' : (l[0] > cx ? 'start' : 'end'), low = c.gap != null && c.gap < -5;
+      g += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.6" fill="#fff" stroke="#c4471f" stroke-width="2"/>`;
+      g += `<text x="${l[0].toFixed(1)}" y="${l[1].toFixed(1)}" font-size="12" fill="${low ? '#a12e28' : '#2b2521'}" text-anchor="${anc}" font-weight="700">${E(c.name)}</text>`;
+      g += `<text x="${l[0].toFixed(1)}" y="${(l[1] + 15).toFixed(1)}" font-size="11" fill="#8a7d73" text-anchor="${anc}">${c.score}${c.gap != null ? ` / 요구 ${c.req}` : ''}</text>`; });
+    return `<svg viewBox="-80 -14 ${S + 160} ${S + 40}" class="ci-rd" role="img" aria-label="역량 프로필 그래프">${g}</svg>`; },
+  ciRing(a, b){ const r = 34, c = 2 * Math.PI * r, p = b ? Math.min(1, a / b) : 0;
+    return `<svg viewBox="0 0 84 84" class="ci-ring" role="img" aria-label="직무과목 이수율 ${a}/${b}"><circle cx="42" cy="42" r="${r}" fill="none" stroke="#f1ebe5" stroke-width="9"/><circle cx="42" cy="42" r="${r}" fill="none" stroke="#3f6fb5" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(c * p).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 42 42)"/><text x="42" y="40" text-anchor="middle" font-size="17" font-weight="700" fill="#2b2521">${a}/${b}</text><text x="42" y="56" text-anchor="middle" font-size="9.5" fill="#8a7d73">직무과목</text></svg>`; },
+  ciQs(r, how){ const E = escapeHtml; if(!r || !(r.questions || []).length) return '';
+    return `<div class="ci-qs"><div class="ci-qh"><h3>이 리포트에서 나오는 면접 질문</h3><small>${how || '면접을 시작하면 이 가운데 2개가 근거와 함께 나오고, 꼬리질문도 이 질문에 붙어요.'}</small><button type="button" class="ib-rp-lk" id="ib-rp-requ">질문 다시 만들기</button></div>
+      <ol>${r.questions.map(x=>`<li><b>${E(x.q)}</b><div><span class="ci-bs">근거 · ${E(x.basis)}</span>${x.why ? `<small>${E(x.why)}</small>` : ''}</div></li>`).join('')}</ol></div>`; },
+  ciHtml(){
+    const E = escapeHtml, r = this.report(), h = this.hal(), me = state.currentUser || {};
+    const st = '<p class="ib-rp-st" id="ib-rp-st" role="status"></p>';
+    if(!r) return `<div class="ci" id="ci-root"><div class="ci-hero empty"><div><p class="ci-k">커리어 인바디</p><h2>학교 커리어 인바디를 올려 주세요</h2><p>취업진로지원센터에서 받은 커리어 인바디(포트폴리오) PDF를 올리면 역량·스킬·이수 과목·활동을 아래처럼 정리하고, 그 내용으로 면접 질문을 만들어요. 학번·이름은 가리고 읽어요.</p></div>${this.ciUp('PDF 올리기')}</div>${st}
+      <div class="ci-ghost"><div class="ci-gc"><h3>역량 프로필</h3><div class="ci-sk1"></div></div><div class="ci-gc"><h3>역량 수치 <small>내 점수 vs 직무 요구</small></h3><div class="ci-sk2"></div><div class="ci-sk2"></div><div class="ci-sk2"></div><div class="ci-sk2"></div></div>
+      <div class="ci-gc wide"><h3>보유 스킬 · 이수 과목 · 경험 &amp; 활동 · AI 추천 자기소개서 · 강점 / 약점 / 개선 방향</h3><p>리포트를 올리면 이 자리에 채워져요.</p></div></div></div>`;
+    const when = r.at ? formatDateFull(r.at) : '';
+    const fileLine = `<span>리포트 반영됨${when ? ' · ' + E(when) : ''}</span>${r.masked ? `<span>개인정보 ${r.masked}곳 가림</span>` : ''}`;
+    const foot = `<p class="ci-foot">${(r.items || []).length ? '읽은 값이 틀렸다면 <button type="button" class="ib-rp-lk" id="ib-rp-edit">읽은 값 고치기</button> · ' : ''}<button type="button" class="ib-rp-lk" id="ib-rp-del">리포트 지우기</button>${r.edited_at ? ' <small>직접 고친 값이 있어요</small>' : ''}</p><div id="ib-rp-view"></div>`;
+    if(!h) return `<div class="ci" id="ci-root"><div class="ci-hero"><div><p class="ci-k">커리어 인바디</p><h2>${E(me.name || '')}</h2><div class="ci-hb">${fileLine}</div></div><div class="ci-hs">${this.ciUp('한림대 양식 PDF 올리기')}</div></div>${st}
+      <div class="ci-old"><b>예전 형식으로 읽은 리포트예요</b><p>학교 커리어 인바디(포트폴리오) PDF를 다시 올리면 역량 그래프·스킬·이수 과목·활동이 정리된 새 화면으로 보여요. 아래 질문은 지금도 면접에 쓰여요.</p></div>
+      ${this.ciQs(r)}${foot}</div>`;
+    const pf = h.profile || {}, comp = (h.comp || []).map(c=>Object.assign({}, c, { req: Math.max(0, Math.min(100, c.gap != null ? c.score - c.gap : c.score)) }));
+    const byGap = comp.slice().sort((a, b)=>(a.gap == null ? 0 : a.gap) - (b.gap == null ? 0 : b.gap)), worst = byGap.find(c=>c.gap != null && c.gap < -5);
+    const avg = comp.length ? Math.round(comp.reduce((s, c)=>s + c.score, 0) / comp.length) : null, met = comp.filter(c=>c.gap != null && c.gap >= 0).length;
+    const sub = [pf.major, pf.grade ? (pf.grade === '졸업' ? '졸업(예정)' : pf.grade + '학년') : ''].filter(Boolean).join(' · ');
+    const bars = byGap.map(c=>{ const cls = c.gap == null ? 'ok' : c.gap < -5 ? 'lo' : c.gap < 0 ? 'mid' : 'ok';
+      return `<div class="ci-bar ${cls}"><div class="ci-bh"><span>${E(c.name)}</span><b>${c.score}</b>${c.gap != null ? `<em>${c.gap > 0 ? '+' : ''}${c.gap}</em>` : ''}</div><div class="ci-bt"><i class="me" style="width:${Math.max(0, Math.min(100, c.score))}%"></i>${c.gap != null ? `<i class="rq" style="left:${c.req}%"></i>` : ''}</div></div>`; }).join('');
+    const rate = /^(\d+)\/(\d+)$/.exec(h.course_rate || ''), courses = h.courses || [];
+    const hml = c=>{ const t = (c.h + c.m + c.l) || 1; return `<div class="ci-hml" title="H ${c.h} · M ${c.m} · L ${c.l}"><i class="h" style="width:${c.h / t * 100}%"></i><i class="m" style="width:${c.m / t * 100}%"></i><i class="l" style="width:${c.l / t * 100}%"></i></div><span class="ci-hn">${c.h}·${c.m}·${c.l}</span>`; };
+    const tl = L=>L.map(x=>`<li><i></i><b>${E(x.name)}</b>${x.period ? `<small>${E(x.period)}</small>` : ''}</li>`).join('');
+    const intro = h.intro || {}, paras = String(intro.text || '').split(/\n+/).filter(Boolean);
+    const card = (cls, title, body)=>`<div class="ci-card ${cls || ''}">${title}${body}</div>`;
+    const sec = [];
+    sec.push(`<div class="ci-hero"><div><p class="ci-k">커리어 인바디 · 한림대학교 취업진로지원센터</p><h2>${E(me.name || '')}${sub ? ` <small>${E(sub)}</small>` : ''}</h2>
+      <div class="ci-hb">${pf.target_job ? `<span class="job">희망 직무 · ${E(pf.target_job)}</span>` : ''}${fileLine}</div></div>
+      <div class="ci-hs">${avg != null ? `<div class="ci-sc"><b>${avg}</b><small>역량 평균</small></div>` : ''}${comp.some(c=>c.gap != null) ? `<div class="ci-sc"><b>${met}/${comp.length}</b><small>직무 요구 충족</small></div>` : ''}${this.ciUp('다른 리포트 올리기')}</div></div>${st}`);
+    if((h.strong || []).length || (h.weak || []).length) sec.push(`<div class="ci-tags">${(h.strong || []).length ? `<div><small>강점</small>${h.strong.map(x=>`<i class="g">${E(x)}</i>`).join('')}</div>` : ''}${(h.weak || []).length ? `<div><small>보완</small>${h.weak.map(x=>`<i class="r">${E(x)}</i>`).join('')}</div>` : ''}</div>`);
+    if(comp.length) sec.push(`<div class="ci-g2">${comp.length >= 3 ? card('', '<h3>역량 프로필<small><i class="ci-lg"></i>내 역량 <i class="ci-lg rq"></i>직무 요구</small></h3>', this.ciRadar(comp)) : ''}
+      ${card('', '<h3>역량 수치<small>모자란 순서 · 세로선 = 직무 요구</small></h3>', bars + (worst ? `<p class="ci-tip">가장 큰 차이 · <b>${E(worst.name)}</b> (${worst.gap}) — 면접에서 이 부분을 어떻게 보완하는지 물을 수 있어요.</p>` : ''))}</div>`);
+    if((h.skills || []).length) sec.push(card('', `<h3>보유 스킬 Top ${h.skills.length}</h3>`, `<div class="ci-skills">${h.skills.map((x, i)=>`<i><b>${i + 1}</b>${E(x)}</i>`).join('')}</div>`));
+    const cHtml = (rate || courses.length) ? card('', `<h3>이수 과목${courses.length ? ` <small>${courses.length}과목 · 과목별 역량 연관 H·M·L</small>` : ''}</h3>`, `<div class="ci-crs">${rate ? this.ciRing(+rate[1], +rate[2]) : ''}<div class="ci-cl">${courses.map(c=>`<div class="ci-cr"><span>${E(c.name)}</span>${hml(c)}</div>`).join('')}${courses.length ? '<p class="ci-lgd"><i class="h"></i>높음 <i class="m"></i>보통 <i class="l"></i>낮음</p>' : ''}</div></div>`) : '';
+    const aHtml = ((h.extra || []).length || (h.selfd || []).length) ? card('', '<h3>경험 &amp; 활동</h3>', `${(h.extra || []).length ? `<p class="ci-st">비교과 프로그램</p><ul class="ci-tl">${tl(h.extra)}</ul>` : ''}${(h.selfd || []).length ? `<p class="ci-st">자기주도 활동</p><ul class="ci-tl">${tl(h.selfd)}</ul>` : ''}`) : '';
+    if(cHtml || aHtml) sec.push(cHtml && aHtml ? `<div class="ci-g2">${cHtml}${aHtml}</div>` : cHtml + aHtml);
+    if(paras.length) sec.push(card('ai', '<h3>AI 추천 자기소개서<small>학교 리포트에 들어 있는 글 · 면접 질문 근거로도 써요</small></h3>', `${(intro.keywords || []).length ? `<div class="ci-kw">${intro.keywords.map(x=>`<i>${E(x)}</i>`).join('')}</div>` : ''}${intro.title ? `<h4>${E(intro.title)}</h4>` : ''}<div class="ci-intro" id="ci-intro">${paras.map((p, i)=>`<p${i ? ' class="more"' : ''}>${E(p)}</p>`).join('')}</div>${paras.length > 1 ? '<button type="button" class="ib-rp-lk" id="ci-intro-tg">전체 보기</button>' : ''}`));
+    const sw = [['g', '강점', h.good], ['w', '약점', h.bad], ['f', '개선 방향', h.fix]].filter(x=>(x[2] || []).length);
+    if(sw.length) sec.push(`<div class="ci-g3">${sw.map(([c, t, L])=>card('ci-sw ' + c, `<h3>${t}</h3>`, `<ul>${L.map(x=>`<li>${E(x)}</li>`).join('')}</ul>`)).join('')}</div>`);
+    const ce = (h.certs_reco || []).length ? card('', '<h3>추천 자격증</h3>', `<div class="ci-certs">${h.certs_reco.map(x=>`<i>${E(x)}</i>`).join('')}</div>`) : '';
+    const jb = (h.jobs || []).length ? card('', '<h3>관련 채용공고</h3>', h.jobs.map(x=>`<div class="ci-jb"><b>${E(x.company)}</b><span>${E(x.title)}</span><small>${x.date ? '~' + E(x.date) : ''}</small></div>`).join('')) : '';
+    if(ce || jb) sec.push(ce && jb ? `<div class="ci-g2">${ce}${jb}</div>` : ce + jb);
+    sec.push(this.ciQs(r)); sec.push(foot);
+    return `<div class="ci" id="ci-root">${sec.join('')}</div>`; },
+  /** 읽은 값 고치기 칸 (리포트에서 만든 항목을 고쳐 질문을 다시 만듦) */
+  editView(){ const r = this.report(); if(!r) return ''; const E = escapeHtml;
+    const groups = []; (r.items || []).forEach(x=>{ const g = x.group || '그 밖의 항목'; let o = groups.find(y=>y.g === g); if(!o) groups.push(o = { g, L: [] }); o.L.push(x); });
+    return `<div class="ci-card ci-edit"><h3>읽은 값 고치기<small>틀리게 읽은 값을 고쳐 주세요. 값을 비우면 그 항목은 빠져요. 고친 값으로 면접 질문을 다시 만들어요.</small></h3>
+      <div class="ib-rp-items ed">${groups.map(o=>`<div class="ib-rp-g"><small>${E(o.g)}</small><ul>${o.L.map(x=>`<li><span>${E(x.label)}</span><textarea class="ib-rp-in" rows="1" data-i="${(r.items || []).indexOf(x)}" maxlength="60" aria-label="${E(x.label)} 값">${E(x.value)}</textarea></li>`).join('')}</ul></div>`).join('')}</div>
+      <div class="ib-rp-add" id="ib-rp-add"><small>빠진 항목 추가</small>${[0, 1].map(()=>this.addRowHtml()).join('')}<button type="button" class="ib-rp-lk" id="ib-rp-more">+ 한 줄 더</button></div>
+      <div class="ib-rp-eb"><button type="button" class="btn btn-solid btn-sm" id="ib-rp-save">저장하고 질문 다시 만들기</button><button type="button" class="btn btn-outline btn-sm" id="ib-rp-cancel">취소</button></div></div>`; },
   async renderMy(){
     const box = document.getElementById('mp-ib'); if(!box) return;
-    box.innerHTML = '<p class="ib-load">불러오는 중…</p>';
+    if(!box.querySelector('#ci-root')) box.innerHTML = '<p class="ib-load">불러오는 중…</p>';
     this.loaded = false; await this.ensure();
-    const d = Object.assign(this.empty(), this.d || {});
-    const num = (id, v, ph, step, min, max)=>`<input id="${id}" type="number" inputmode="decimal" ${step ? `step="${step}"` : ''} ${min != null ? `min="${min}"` : ''} ${max != null ? `max="${max}"` : ''} value="${v == null ? '' : v}" placeholder="${ph}">`;
-    box.innerHTML = `${this.reportCard()}
-      <div class="ib-grid">
-        <label class="ib-f"><span>목표 분야</span><select id="ib-field"><option value="">고르기</option>${FIELDS.map(f=>`<option value="${f.id}"${d.target_field === f.id ? ' selected' : ''}>${escapeHtml(f.name)}</option>`).join('')}</select></label>
-        <label class="ib-f"><span>목표 직무</span><input id="ib-role" maxlength="40" value="${escapeHtml(d.target_role || '')}" placeholder="예: 마케팅"></label>
-        <label class="ib-f"><span>학년</span><select id="ib-grade"><option value="">고르기</option>${['1','2','3','4','졸업'].map(g=>`<option value="${g}"${d.grade === g ? ' selected' : ''}>${g === '졸업' ? '졸업(예정)' : g + '학년'}</option>`).join('')}</select></label>
-        <label class="ib-f"><span>전체 학점</span><div class="ib-gpa">${num('ib-gpa', d.gpa, '3.75', '0.01', 0, 4.5)}<select id="ib-gmax" aria-label="만점">${[4.5, 4.3, 4.0].map(x=>`<option value="${x}"${+d.gpa_max === x ? ' selected' : ''}>/ ${x}</option>`).join('')}</select></div></label>
-        <label class="ib-f"><span>전공 학점 <small>(선택)</small></span>${num('ib-mgpa', d.major_gpa, '3.90', '0.01', 0, 4.5)}</label>
-        <label class="ib-f"><span>TOEIC</span>${num('ib-toeic', d.toeic, '850', '5', 10, 990)}</label>
-        <label class="ib-f"><span>토익스피킹</span><select id="ib-ts"><option value="">없음</option>${['Lv1','Lv2','Lv3','Lv4','Lv5','Lv6','Lv7','Lv8'].map(x=>`<option${d.toeic_speaking === x ? ' selected' : ''}>${x}</option>`).join('')}</select></label>
-        <label class="ib-f"><span>OPIc</span><select id="ib-opic"><option value="">없음</option>${OPIC_RANK.map(x=>`<option${d.opic === x ? ' selected' : ''}>${x}</option>`).join('')}</select></label>
-        <label class="ib-f"><span>그 밖의 어학 <small>(선택)</small></span><input id="ib-olang" maxlength="60" value="${escapeHtml(d.other_lang || '')}" placeholder="예: JLPT N2"></label>
-        <label class="ib-f"><span>인턴·현장실습</span><div class="ib-u">${num('ib-intern', d.intern_months, '0', '1', 0, 60)}<i>개월</i></div></label>
-        <label class="ib-f"><span>프로젝트</span><div class="ib-u">${num('ib-proj', d.projects, '0', '1', 0, 50)}<i>개</i></div></label>
-        <label class="ib-f"><span>대외활동·동아리</span><div class="ib-u">${num('ib-act', d.activities, '0', '1', 0, 50)}<i>개</i></div></label>
-        <label class="ib-f"><span>수상</span><div class="ib-u">${num('ib-award', d.awards, '0', '1', 0, 50)}<i>번</i></div></label>
-        <label class="ib-f"><span>봉사</span><div class="ib-u">${num('ib-vol', d.volunteer_hours, '0', '1', 0, 5000)}<i>시간</i></div></label>
-      </div>
-      <div class="ib-certs"><span class="ib-lbl">자격증</span><div class="ib-chips" id="ib-chips">${(d.certs || []).map((c, i)=>`<span class="ib-chip">${escapeHtml(c.name)}<button type="button" data-cdel="${i}" aria-label="${escapeHtml(c.name)} 지우기">×</button></span>`).join('')}</div>
-        <div class="ib-cadd"><input id="ib-cert" maxlength="40" placeholder="예: 컴퓨터활용능력 1급" list="ib-cert-list"><datalist id="ib-cert-list">${['컴퓨터활용능력 1급','컴퓨터활용능력 2급','한국사능력검정 1급','한국사능력검정 2급','워드프로세서','사회조사분석사 2급','ADsP','SQLD','정보처리기사','유통관리사 2급','전산회계 1급','재경관리사','사회복지사 2급','GTQ 1급'].map(x=>`<option value="${x}">`).join('')}</datalist><button type="button" class="btn btn-outline btn-sm" id="ib-cadd">추가</button></div></div>
-      <label class="doc-share"><input type="checkbox" id="ib-share"${d.share_stats ? ' checked' : ''}><span><b>비슷한 학생 비교에 내 수치 보태기</b><small>이름 없이 수치만 합쳐서 같은 분야 학생들의 분포를 만들어요. 보탠 학생만 비교 결과를 볼 수 있고, 같은 분야 학생이 5명 이상일 때만 보여요.</small></span></label>
-      <div class="ib-acts"><span class="ib-st" id="ib-st" role="status"></span><button type="button" class="btn btn-solid btn-sm" id="ib-save">인바디 저장</button></div>
-      <div class="ib-out" id="ib-out"></div>`;
-    this._certs = (d.certs || []).slice();
-    const paintChips = ()=>{ const c = document.getElementById('ib-chips'); c.innerHTML = this._certs.map((x, i)=>`<span class="ib-chip">${escapeHtml(x.name)}<button type="button" data-cdel="${i}" aria-label="${escapeHtml(x.name)} 지우기">×</button></span>`).join(''); c.querySelectorAll('[data-cdel]').forEach(b=>b.onclick = ()=>{ this._certs.splice(+b.dataset.cdel, 1); paintChips(); }); };
-    paintChips();
-    const addC = ()=>{ const i = document.getElementById('ib-cert'), v = i.value.trim(); if(!v){ showToast('자격증 이름을 적거나 목록에서 골라 주세요'); try{ i.focus(); }catch(_){} return; } if(this._certs.length >= 15) return showToast('자격증은 15개까지 적을 수 있어요'); if(!this._certs.some(x=>x.name === v)) this._certs.push({ name: v }); i.value = ''; paintChips(); i.focus(); };
-    document.getElementById('ib-cadd').onclick = addC;
-    document.getElementById('ib-cert').onkeydown = e=>{ if(e.key === 'Enter'){ e.preventDefault(); addC(); } };
-    document.getElementById('ib-save').onclick = ()=>this.save();
+    box.innerHTML = this.ciHtml();
     this.bindReport();
-    this.renderOut();
+    const tg = document.getElementById('ci-intro-tg'); if(tg) tg.onclick = ()=>{ const it = document.getElementById('ci-intro'); const open = it.classList.toggle('open'); tg.textContent = open ? '접기' : '전체 보기'; };
   },
-  read(){
-    const v = id=>document.getElementById(id).value.trim(), n = id=>{ const x = v(id); return x === '' ? null : +x; };
-    return { grade: v('ib-grade') || null, gpa: n('ib-gpa'), gpa_max: +v('ib-gmax') || 4.5, major_gpa: n('ib-mgpa'), toeic: n('ib-toeic'), toeic_speaking: v('ib-ts') || null, opic: v('ib-opic') || null, other_lang: v('ib-olang') || null,
-      certs: this._certs.slice(), intern_months: n('ib-intern'), projects: n('ib-proj'), activities: n('ib-act'), awards: n('ib-award'), volunteer_hours: n('ib-vol'),
-      target_field: v('ib-field') || null, target_role: v('ib-role') || null, share_stats: document.getElementById('ib-share').checked };
-  },
-  check(r){
-    if(r.gpa != null && (r.gpa < 0 || r.gpa > r.gpa_max)) return `학점은 0~${r.gpa_max} 사이로 적어 주세요`;
-    if(r.major_gpa != null && (r.major_gpa < 0 || r.major_gpa > r.gpa_max)) return `전공 학점은 0~${r.gpa_max} 사이로 적어 주세요`;
-    if(r.toeic != null && (r.toeic < 10 || r.toeic > 990)) return 'TOEIC은 10~990 사이로 적어 주세요';
-    for(const [k, max, l] of [['intern_months', 60, '인턴 개월'], ['projects', 50, '프로젝트'], ['activities', 50, '대외활동'], ['awards', 50, '수상'], ['volunteer_hours', 5000, '봉사 시간']]) if(r[k] != null && (r[k] < 0 || r[k] > max || !Number.isInteger(r[k]))) return `${l}은(는) 0~${max} 사이 정수로 적어 주세요`;
-    return '';
-  },
-  async save(){
-    const st = document.getElementById('ib-st'), r = this.read(), why = this.check(r);
-    if(why){ st.className = 'ib-st warn'; st.textContent = why; return; }
-    st.className = 'ib-st'; st.textContent = '저장 중…';
-    const row = Object.assign({ user_id: state.currentUser.id, updated_at: new Date().toISOString() }, r);
-    const { error } = await sb.from('career_inbody').upsert(row, { onConflict:'user_id' });
-    if(error){ st.className = 'ib-st warn'; st.textContent = '저장하지 못했어요. ' + friendlyErr(error); return; }
-    this.d = Object.assign({}, this.d || {}, r); this.loaded = true; this.peers = null;
-    st.className = 'ib-st ok'; st.textContent = '저장했어요. 아래 비교와 예상 질문이 바뀌었어요.';
-    try{ Activity.log('inbody_save', { fields: Object.keys(r).filter(k=>r[k] != null && r[k] !== '' && !(Array.isArray(r[k]) && !r[k].length)).length, share: r.share_stats }); }catch(_){}
-    this.renderOut();
-  },
-  async loadPeers(){ try{ const { data, error } = await sb.rpc('inbody_peers', { p_field: null }); if(!error) this.peers = data; else this.peers = { status:'error', msg: error.message }; }catch(e){ this.peers = { status:'error', msg: e.message }; } return this.peers; },
-  band(label, my, p, fmt, unit){   // 2026-11-13k 중간보다 낮으면 '상위 100%' 대신 '중간보다 낮은 편'
-    if(!p || p.p25 == null || !p.k) return '';
-    const lo = Math.min(p.p25, my == null ? p.p25 : my), hi = Math.max(p.p75, my == null ? p.p75 : my), pad = (hi - lo) * 0.25 || 1, a = lo - pad, b = hi + pad, x = v=>Math.max(0, Math.min(100, (v - a) / (b - a) * 100));
-    return `<div class="ib-band"><div class="ib-band-h"><b>${label}</b><span>${my != null ? `나 <strong>${fmt(my)}</strong>${p.me_pct != null ? ` · 같은 분야에서 <strong>${p.me_pct >= 50 ? `상위 ${Math.max(1, 100 - p.me_pct)}%` : '중간보다 낮은 편'}</strong>` : ''}` : '<em>내 기록 없음</em>'}</span></div>
-      <div class="ib-track" aria-hidden="true"><i class="mid" style="left:${x(p.p25)}%;width:${Math.max(1, x(p.p75) - x(p.p25))}%"></i><i class="med" style="left:${x(p.p50)}%"></i>${my != null ? `<i class="me" style="left:${x(my)}%"></i>` : ''}</div>
-      <div class="ib-band-f"><span>가운데 50%: ${fmt(p.p25)}~${fmt(p.p75)}${unit || ''}</span><span>중간값 ${fmt(p.p50)}${unit || ''}</span></div></div>`;
-  },
-  advice(d, p){
-    const out = [], g = this.gpa45(d), certs = (d.certs || []).map(c=>c.name);
-    if(p && p.status === 'ok'){
-      if(p.gpa && g != null && p.gpa.p25 != null && g < p.gpa.p25) out.push(['학점', '같은 분야 학생들보다 학점이 낮은 편이에요. 면접에서 학점을 물으면 "그 시간에 대신 한 일"과 최근 학기 변화로 답할 준비를 해 두세요.']);
-      if(p.gpa && g != null && p.gpa.p75 != null && g >= p.gpa.p75) out.push(['학점', '학점은 상위권이에요. 성실함은 이미 보이니, 면접에서는 협업·실행 경험을 더 보여 주는 게 좋아요.']);
-      if(p.toeic && d.toeic != null && p.toeic.p75 != null && d.toeic >= p.toeic.p75) out.push(['어학', '어학은 강점이에요. 영어를 실제로 써 본 장면 하나를 답변에 넣으면 점수가 경험으로 바뀌어요.']);
-      if(p.toeic && d.toeic == null && p.toeic.k >= Math.ceil(p.n / 2)) out.push(['어학', `같은 분야 학생 ${Math.round(p.toeic.k / p.n * 100)}%가 TOEIC 점수를 적었어요. 어학을 묻는 질문에 준비 계획으로 답할 수 있게 해 두세요.`]);
-      if(!(d.intern_months > 0) && p.intern_rate >= 40) out.push(['경험', `같은 분야 학생 ${p.intern_rate}%가 인턴·현장실습 경험이 있어요. 프로젝트·아르바이트에서 직무와 닮은 경험을 골라 "이 직무의 ○○과 같다"고 연결해 보세요.`]);
-      (p.certs || []).filter(c=>!certs.includes(c.name)).slice(0, 2).forEach(c=>out.push(['자격', `같은 분야 학생 ${c.pct}%가 '${c.name}'을 가지고 있어요. 꼭 필요한 건 아니지만, 직무에 쓰이는 자격인지 확인해 보세요.`]));
-      if(p.score && p.score.avg != null && p.my_score != null) out.push(['면접 연습', `같은 분야 학생들의 최근 면접 연습 평균은 ${p.score.avg}점, 내 최근 평균은 ${p.my_score}점이에요.`]);
-    }
-    if(!out.length && this.has()) out.push(['준비', '적은 수치로 아래 예상 질문을 만들었어요. 질문 미리 연습의 \'내 서류·이력\' 칸에서 연습할 수 있어요.']);
-    return out;
-  },
-  async renderOut(){
-    const box = document.getElementById('ib-out'); if(!box) return;
-    const d = this.d; if(!d || !this.has()){ box.innerHTML = '<p class="ib-empty">수치를 적고 저장하면 비슷한 학생과의 비교와 내 이력에서 나올 면접 질문이 여기에 보여요.</p>'; return; }
-    box.innerHTML = '<p class="ib-load">비교하는 중…</p>';
-    const p = await this.loadPeers(), g = this.gpa45(d), qs = this.questions(d), adv = this.advice(d, p);
-    let cmp = '';
-    if(!p || p.status === 'error') cmp = `<p class="ib-empty">비교를 불러오지 못했어요${p && p.msg ? ': ' + escapeHtml(p.msg) : ''}.</p>`;
-    else if(p.status === 'locked') cmp = '<p class="ib-empty">\'비슷한 학생 비교에 내 수치 보태기\'를 켜고 저장하면 같은 분야 학생들과 비교해 볼 수 있어요.</p>';
-    else if(p.status === 'no_field') cmp = '<p class="ib-empty">목표 분야를 고르고 저장하면 같은 분야 학생들과 비교해요.</p>';
-    else if(p.status === 'few') cmp = `<p class="ib-empty">${escapeHtml(this.fieldName(p.field))} 분야에서 수치를 보탠 학생이 아직 ${p.n}명이에요. 5명이 되면 비교가 열려요. (누군지 알 수 없게 하려고 5명부터 보여 줘요)</p>`;
-    else if(p.status === 'ok') cmp = `<div class="ib-cmp"><p class="ib-cmp-h"><b>${escapeHtml(this.fieldName(p.field))}</b> 분야${p.same_grade && p.grade ? ` · ${p.grade === '졸업' ? '졸업(예정)' : p.grade + '학년'}` : ''} 학생 <b>${p.n}명</b>과 비교 <small>이름 없이 합친 분포예요</small></p>
-        ${this.band('학점 (4.5 만점으로 환산)', g, p.gpa, v=>(+v).toFixed(2))}${this.band('TOEIC', d.toeic, p.toeic, v=>Math.round(v), '점')}
-        <div class="ib-stats"><span>인턴·현장실습 있는 학생 <b>${p.intern_rate}%</b><small>나: ${d.intern_months > 0 ? d.intern_months + '개월' : '없음'}</small></span><span>대외활동 평균 <b>${p.activities_avg}개</b><small>나: ${d.activities != null ? d.activities + '개' : '-'}</small></span><span>프로젝트 평균 <b>${p.projects_avg}개</b><small>나: ${d.projects != null ? d.projects + '개' : '-'}</small></span>${p.score && p.score.avg != null ? `<span>면접 연습 평균 <b>${p.score.avg}점</b><small>나: ${p.my_score != null ? p.my_score + '점' : '-'}</small></span>` : ''}</div>
-        ${(p.certs || []).length ? `<p class="ib-certs-top">많이 가진 자격증: ${p.certs.map(c=>`<span class="${(d.certs || []).some(x=>x.name === c.name) ? 'has' : ''}">${escapeHtml(c.name)} ${c.pct}%</span>`).join('')}</p>` : ''}</div>`;
-    box.innerHTML = `${cmp}
-      ${adv.length ? `<div class="ib-adv"><b>내 인바디로 본 면접 포인트</b><ul>${adv.map(([k, t])=>`<li><span>${escapeHtml(k)}</span>${escapeHtml(t)}</li>`).join('')}</ul></div>` : ''}
-      ${qs.length ? `<div class="ib-qs"><b>내 이력에서 나올 수 있는 질문 ${qs.length}개</b><ol>${qs.map(q=>`<li>${escapeHtml(q.q)}<small>${escapeHtml(q.why)}</small></li>`).join('')}</ol><p>면접 준비의 '질문 미리 연습' → '내 서류·이력' 칸에서 답변 틀과 함께 연습할 수 있어요.</p></div>` : ''}`;
-  },
-  /* ── 결과 화면 ── */
-  async renderResult(){
-    const box = document.getElementById('ib-result'); if(!box) return;
-    box.hidden = true; box.innerHTML = '';
-    if(!state.currentUser || state.currentUser.isAdmin) return;
-    await this.ensure(); const d = this.d; if(!d || !this.has()) return;
-    const texts = (state.answerTexts || []).join(' '), certs = (d.certs || []).map(c=>c.name), tips = [];
-    const said = w=>texts.includes(w);
-    const c1 = certs.find(c=>said(c.replace(/\s*\d급$/, '').slice(0, 4)));
-    if(certs.length && !c1) tips.push(`자격증(${certs.slice(0, 2).join(', ')})을 답변에서 한 번도 말하지 않았어요. 직무 질문에서 "이 지식을 이렇게 쓰겠다"는 근거로 써 보세요.`);
-    if(d.intern_months > 0 && !/(인턴|실습|현장)/.test(texts)) tips.push(`인턴·현장실습 ${d.intern_months}개월 경험이 답변에 나오지 않았어요. 경험 질문에서 가장 먼저 꺼낼 만한 재료예요.`);
-    const lang = d.toeic >= 850 || OPIC_RANK.indexOf(d.opic) >= OPIC_RANK.indexOf('IH');
-    if(lang && !/(영어|외국어|해외|글로벌|외국인)/.test(texts) && ['corp','pubcorp'].includes(d.target_field)) tips.push('어학이 강점인데 답변에서 드러나지 않았어요. 지원 동기나 강점 질문에 외국어를 쓴 장면을 한 줄 넣어 보세요.');
-    if(d.projects > 0 && !/(프로젝트|과제|팀)/.test(texts)) tips.push('프로젝트 경험을 적어 두셨는데 답변에는 나오지 않았어요.');
-    let peer = '';
-    try{ const p = this.peers || await this.loadPeers(); if(p && p.status === 'ok' && p.score && p.score.avg != null && state.lastAverageScore != null) peer = `같은 분야(${escapeHtml(this.fieldName(p.field))}) 학생들의 최근 연습 평균은 ${p.score.avg}점이에요. 이번 ${state.lastAverageScore}점은 평균보다 ${Math.abs(state.lastAverageScore - p.score.avg)}점 ${state.lastAverageScore >= p.score.avg ? '높아요' : '낮아요'}.`; }catch(_){}
-    if(!tips.length && !peer) return;
-    box.innerHTML = `<h3 class="ib-r-h">내 인바디와 연결한 조언 <small>마이페이지에 적은 수치 기준</small></h3>${peer ? `<p class="ib-r-peer">${peer}</p>` : ''}${tips.length ? `<ul class="ib-r-list">${tips.map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul>` : ''}`;
-    box.hidden = false;
-  },
+  /* ── 결과 화면: 예전 직접 입력 수치로 만들던 조언은 없앰 (2026-11-24 한림대 양식으로 바꾸며) ── */
+  async renderResult(){ const box = document.getElementById('ib-result'); if(box){ box.hidden = true; box.innerHTML = ''; } },
 };
 
 /* ---------------- 2026-11-03d 학교 관리 화면 (School) ----------------
@@ -15142,9 +15128,8 @@ const StartFlow = {
       ${L.length ? `<div class="fl-dq">${L.map((x, i)=>`<div class="fl-dq-row"><div class="fl-dq-src"><small>${x.doc === 'cv' ? '이력서' : '자기소개서'}${x.section ? ' · ' + escapeHtml(x.section) : ''}</small><p>${escapeHtml(String(x.src || x.quoteCore || '').slice(0, 220))}</p></div><div class="fl-dq-q"><small>맞춤 질문</small><p>${escapeHtml(x.q)}</p><button type="button" class="btn btn-solid" data-pga="dq:${i}">이 질문 연습</button></div></div>`).join('')}</div>`
         : `<div class="fl-empty"><b>아직 질문을 만들 서류가 없어요</b><p>자기소개서나 이력서를 올리면 문장·경력에서 맞춤 질문을 찾아요.</p><button type="button" class="btn btn-outline" data-pga="docs">서류 올리기</button></div>`}
       <div class="fl-cta fl-cta-line"><button type="button" class="btn btn-outline" data-pga="docs">자료 바꾸기</button></div>`; }
-    if(pg === 'ib') return `${this.vHead('커리어 인바디·학교 자료', '리포트를 올리면 자동으로 채워져요. 직접 입력해도 돼요.')}<p><span class="fl-badge">리포트 올리기 · 직접 입력</span></p>
-      <div class="fl-ib1"><aside class="fl-panel fl-panel-bar"><div><b class="fl-panel-t">질문에 사용될 정보 확인</b><p>리포트에서 읽은 항목과 직접 입력한 항목만 면접 질문과 결과 조언에 써요. 리포트의 학번·이름은 가리고 읽고, 저장하지 않아요.</p></div><div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="start">면접 준비로</button></div></aside>
-        <div class="fl-col"><div id="mp-ib"></div></div></div>`;   /* 2026-11-17 리포트 항목이 길어 오른쪽이 비던 것 → 한 단으로 넓게, 안내는 위쪽 가로 띠로 */
+    if(pg === 'ib') return `${this.vHead('커리어 인바디', '학교 커리어 인바디(포트폴리오) PDF를 올리면 역량·스킬·활동을 정리하고, 그 내용으로 면접 질문을 만들어요.')}
+      <div id="mp-ib"></div><div class="fl-cta"><button type="button" class="btn btn-outline" data-pga="start">면접 준비로</button></div>`;   /* 2026-11-17 리포트 항목이 길어 오른쪽이 비던 것 → 한 단으로 넓게, 안내는 위쪽 가로 띠로 */
     return ''; },
   async pageAct(a){ const s = this.s;
     if(a === 'start'){ if(s.pageFrom === 'step'){ s.page = ''; s.pageFrom = ''; this.render(); return; } s.page = ''; s.hub = false; s.step = 0; this.render(); return; }
@@ -15476,13 +15461,13 @@ const StartFlow = {
       <aside class="fl-panel"><b class="fl-panel-t">경험이 잘 떠오르지 않나요?</b><p>무슨 일이 있었는지, 내가 한 일은 무엇인지부터 정리해요.</p>
         <button type="button" class="btn btn-outline" onclick="StartFlow.saveNow(); ExpCoach.open({ from:'flow' })">경험 정리 도움받기</button>
         ${(()=>{ const rq = Inbody.reportQs(), r = Inbody.report();   /* 2026-11-17 인바디 리포트 */
-          return r ? `<div class="fl-ibr"><b><span class="fl-badge ib-rp-ok">리포트 반영됨</span> ${escapeHtml(String(r.file || '인바디 리포트').slice(0, 40))}</b><p>리포트 항목에서 만든 질문 ${rq.length}개 가운데 ${Math.min(2, rq.length)}개가 이번 면접에 근거 항목과 함께 나와요.</p><button type="button" class="btn btn-outline" data-ibgo>리포트 항목·질문 보기</button></div>`
-            : `<div class="fl-ibr"><b>학교 인바디 리포트가 있나요?</b><p>리포트 PDF를 올리면 항목을 읽어 그 항목에서 면접 질문을 만들어요. 학번·이름은 가리고 읽어요.</p><button type="button" class="btn btn-outline" data-ibgo>인바디 리포트 올리기</button></div>`; })()}</aside>
+          return r ? `<div class="fl-ibr"><b><span class="fl-badge ib-rp-ok">리포트 반영됨</span> ${escapeHtml(String(r.file || '인바디 리포트').slice(0, 40))}</b><p>리포트 항목에서 만든 질문 ${rq.length}개 가운데 ${Math.min(2, rq.length)}개가 이번 면접에 근거 항목과 함께 나와요.</p><button type="button" class="btn btn-outline" data-ibgo>커리어 인바디·질문 보기</button></div>`
+            : `<div class="fl-ibr"><b>학교 커리어 인바디가 있나요?</b><p>커리어 인바디(포트폴리오) PDF를 올리면 역량·스킬·활동을 읽어 면접 질문을 만들어요. 학번·이름은 가리고 읽어요.</p><button type="button" class="btn btn-outline" data-ibgo>커리어 인바디 올리기</button></div>`; })()}</aside>
     </div>
     <details class="fl-fold" id="fl-my"${s.openMy ? ' open' : ''}><summary>내 자료에서 가져오기 <em>${nSaved ? `저장한 경험 ${nSaved}개 · 이번에 ${nUse}개 사용` : '저장한 경험 없음'}</em></summary>
       <div class="fl-fold-in">${this.vExps('저장한 경험', true)}${this.vDocs()}</div></details>
     <div class="fl-cta"><button type="button" class="btn btn-solid" data-next>진행 방식 고르기</button><button type="button" class="btn btn-outline" data-sub="prepq">질문 먼저 살펴보기</button></div>
-    <div class="fl-cta"><button type="button" class="btn btn-outline" id="fl-inbody">인바디·학교 자료 확인</button><button type="button" class="btn btn-outline" id="fl-docq">서류에서 질문 찾기</button></div>`; },
+    <div class="fl-cta"><button type="button" class="btn btn-outline" id="fl-inbody">커리어 인바디 확인</button><button type="button" class="btn btn-outline" id="fl-docq">서류에서 질문 찾기</button></div>`; },
   /** 1단계 안의 '질문 먼저 살펴보기' (예전 '질문 연습' 단계) */
   vPrepQPage(){ return `<div class="fl-head"><div><h2 class="fl-h">질문 먼저 살펴보기</h2><p class="fl-lead">나올 만한 질문을 미리 보고 말할 거리를 적어 둘 수 있어요. 건너뛰어도 돼요.</p></div><button type="button" class="btn btn-outline fl-prev" data-prev>내 경험으로</button></div>
     ${this.vPrepQ()}<div class="fl-cta"><button type="button" class="btn btn-solid" data-next>진행 방식 고르기</button></div>`; },
