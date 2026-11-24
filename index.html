@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-24d';
+var APP_VERSION = '2026-11-24e';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -32794,7 +32794,7 @@ const IMV_PHOTOS = {
   '3':  { src: 'imv-panel3.jpg?v=18d',  x: { 0: 18, 1: 50, 2: 83 }, sw: 24 },
   '2a': { src: 'imv-panel2a.jpg?v=18d', x: { 0: 26, 1: 74 }, sw: 32 },
   '2b': { src: 'imv-panel2b.jpg?v=18d', x: { 1: 27, 2: 75 }, sw: 32 },
-  '2s': { src: 'imv-panel2s.jpg?v=23i', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
+  '2s': { src: 'imv-panel2s.jpg?v=24e', x: { 0: 25, 1: 75 }, sw: 36 },   // 2026-11-23d 대본 시연 계정 전용 (대본 영상 두 개를 나란히)
   '1f': { src: 'imv-panel1f.jpg?v=18d', x: { 0: 44 }, sw: 0 },   // 2026-11-18 덜 가깝게 다시 자름 (얼굴이 가운데보다 조금 왼쪽)
   '1m': { src: 'imv-panel1m.jpg?v=18d', x: { 1: 50 }, sw: 0 },
 };
@@ -33058,20 +33058,30 @@ const ImvLoop = {
   fxStop(v, keepOpacity){ if(!v) return; if(v._raf){ cancelAnimationFrame(v._raf); v._raf = 0; } if(v._fxT){ clearTimeout(v._fxT); v._fxT = 0; }
     v._T = null; v._nat = null; v._fx = '';
     ['transform', 'transformOrigin', 'transition', 'willChange', 'webkitMaskImage', 'maskImage', 'webkitMaskComposite', 'maskComposite'].forEach(p=>{ v.style[p] = ''; });
-    if(!keepOpacity) v.style.opacity = ''; },
-  /** 얼굴이 from → to 로 옮겨 가게 (nat = 이 영상을 그대로 보일 때의 얼굴 위치). mode: in = 나타나며 제자리로, out = 자리로 돌아가며 사라짐 */
-  fxRun(v, from, to, nat, ms, mode){
+    if(!keepOpacity) v.style.opacity = '';
+    if(this._ivOwner === v) this.idleReset(); },
+  /** 듣는 영상(두 사람 화면)을 원래 자리로 */
+  idleReset(){ const iv = this.vids && this.vids.idle; this._ivOwner = null; if(!iv) return; ['transform', 'transformOrigin', 'transition', 'willChange'].forEach(p=>{ iv.style[p] = ''; }); },
+  /** 얼굴이 from → to 로 옮겨 가게 (nat = 이 영상을 그대로 보일 때의 얼굴 위치). mode: in = 나타나며 제자리로, out = 자리로 돌아가며 사라짐
+      2026-11-24e iv·inat 가 있으면 두 사람 화면도 같은 얼굴 자리를 따라 함께 움직임 → 카메라가 돌아가듯 다른 면접관이 옆에서 자연스럽게 들어오고 나감 */
+  fxRun(v, from, to, nat, ms, mode, iv, inat){
     this.fxStop(v, true); v._fx = mode; v._nat = nat;
     v.style.transition = 'none'; v.style.transformOrigin = '0 0'; v.style.willChange = 'transform, opacity';
-    const t0 = performance.now(), ease = u=>u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
-    const draw = u=>{ const e = ease(u), h = from.h * Math.pow(to.h / from.h, e), x = from.x + (to.x - from.x) * e, y = from.y + (to.y - from.y) * e, sc = h / nat.h;
-      v._T = { x, y, h }; v.style.transform = 'translate(' + (x - sc * nat.x).toFixed(1) + 'px,' + (y - sc * nat.y).toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
-      v.style.opacity = String(mode === 'in' ? Math.min(1, u / 0.16) : (u < 0.8 ? 1 : Math.max(0, 1 - (u - 0.8) / 0.2)));   // 얼굴 자리가 맞을 때만 겹쳐 바꿈 (나타날 때는 처음 0.1초, 사라질 때는 자리에 거의 다 와서)
-      const F = (mode === 'in' ? 1 - e : e) * 16;   // 가장자리를 부드럽게 (화면 가득일 때는 0)
+    const lock = !!(iv && inat && inat.h > 0);
+    if(lock){ this._ivOwner = v; iv.style.transition = 'none'; iv.style.transformOrigin = '0 0'; iv.style.willChange = 'transform'; }
+    const t0 = performance.now(), ease = u=>0.5 - 0.5 * Math.cos(Math.PI * u);   // 천천히 시작해 천천히 멈춤
+    const tf = (n, x, y, sc)=>'translate(' + (x - sc * n.x).toFixed(1) + 'px,' + (y - sc * n.y).toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
+    const draw = u=>{ const e = ease(u), h = from.h * Math.pow(to.h / from.h, e), x = from.x + (to.x - from.x) * e, y = from.y + (to.y - from.y) * e;
+      v._T = { x, y, h }; v.style.transform = tf(nat, x, y, h / nat.h);
+      if(lock && this._ivOwner === v) iv.style.transform = tf(inat, x, y, h / inat.h);   // 두 사람 화면의 그 사람 얼굴도 같은 자리에
+      v.style.opacity = String(mode === 'in' ? Math.min(1, u / 0.14) : (u < 0.84 ? 1 : Math.max(0, 1 - (u - 0.84) / 0.16)));   // 얼굴 자리가 맞을 때만 겹쳐 바꿈
+      const F = (mode === 'in' ? 1 - e : e) * 14;   // 가장자리를 부드럽게 (화면 가득일 때는 0)
       if(F > 0.4){ const g = d=>'linear-gradient(' + d + ', transparent 0%, #000 ' + F.toFixed(1) + '%, #000 ' + (100 - F).toFixed(1) + '%, transparent 100%)';
         const mk = g('to right') + ', ' + g('to bottom'); v.style.webkitMaskImage = mk; v.style.maskImage = mk; v.style.webkitMaskComposite = 'source-in'; v.style.maskComposite = 'intersect'; }
       else { v.style.webkitMaskImage = ''; v.style.maskImage = ''; } };
-    const end = ()=>{ if(v._fx !== mode) return; this.fxStop(v, false); };
+    // 끝 상태(사라짐 0 · 자리)가 화면에 한 번 그려진 뒤에 원래대로 되돌림. 같은 순간에 되돌리면 덜 사라진 상태에서 위치만 먼저 돌아가 가운데에 흐린 얼굴이 잠깐 남음
+    const end = ()=>{ if(v._fx !== mode) return; v._fx = mode + '-end'; const fin = ()=>{ if(v._fx === mode + '-end') this.fxStop(v, false); };
+      requestAnimationFrame(()=>requestAnimationFrame(fin)); setTimeout(fin, 150); };
     const step = now=>{ const u = Math.min(1, (now - t0) / ms); draw(u); if(u < 1) v._raf = requestAnimationFrame(step); else { v._raf = 0; end(); } };
     draw(0); v._raf = requestAnimationFrame(step);
     v._fxT = setTimeout(()=>{ if(v._fx === mode){ draw(1); end(); } }, ms + 600);   // 화면이 가려져 그리기가 멈춰도 끝 상태로
@@ -33088,11 +33098,12 @@ const ImvLoop = {
         if(ov._raf){ cancelAnimationFrame(ov._raf); ov._raf = 0; } ov._fx = 'hold'; ov.style.transition = 'none'; ov.style.opacity = '1';   // 새 영상이 다 나타날 때까지 앞 영상을 그 자리에 둠 (사이로 두 사람 화면이 비치지 않게)
         if(ov._fxT) clearTimeout(ov._fxT); ov._fxT = setTimeout(()=>{ if(ov._fx === 'hold') this.fxStop(ov, false); }, 260); }
       else from = this.disp(iv, this.seatFace(want));   // 듣는 영상의 그 사람 자리에서 시작
-      if(nat && from && nat.h > 0 && from.h > 0) this.fxRun(nv, from, nat, nat, 620, 'in'); else this.fxStop(nv, false);
+      const lockI = !ov && from ? from : null;   // 두 사람 화면에서 시작할 때만 두 사람 화면도 함께 움직임
+      if(nat && from && nat.h > 0 && from.h > 0) this.fxRun(nv, from, nat, nat, 700, 'in', lockI ? iv : null, lockI); else this.fxStop(nv, false);
       return; }
     if(pv && this.faceOf(prev, 0) && (!want || want === 'idle')){   // 말하는 영상이 끝나 두 사람 화면으로
       const nat = pv._nat && pv._fx === 'in' ? pv._nat : this.disp(pv, this.faceOf(prev)), from = pv._T || nat, to = this.disp(iv, this.seatFace(prev));
-      if(nat && from && to && nat.h > 0 && to.h > 0) this.fxRun(pv, from, to, nat, 680, 'out'); else this.fxStop(pv, false); }
+      if(nat && from && to && nat.h > 0 && to.h > 0) this.fxRun(pv, from, to, nat, 850, 'out', iv, to); else this.fxStop(pv, false); }
   },
   /** 영상 재생 상태 (활동 기록에 한 번 남김 — 영상이 안 나오는 기기를 찾아 고치는 용도. 개인 정보 없음) */
   diag(){ const v = this.vids || {}, st = {}; Object.keys(v).forEach(k=>{ const e = v[k]; st[k] = [e.readyState, e.dataset.ok ? 1 : 0, e.dataset.bad ? 1 : 0, e.paused ? 1 : 0, e.error ? e.error.code : 0, (e.currentSrc || '').split('/').pop().split('?')[0]].join(','); });
