@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-24i';
+var APP_VERSION = '2026-11-24j';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -33014,9 +33014,10 @@ const ImvLoop = {
     const done = k=>{ const v = this.vids && this.vids[k]; return !v || !!v.dataset.bad || v.dataset.ok === '1' || v.readyState >= 3; };
     while(Date.now() - t0 < ms){ if(!this.vids || !Imv.active || keys.every(done)) break; await new Promise(r=>setTimeout(r, 120)); }
     this.waitedMs = Date.now() - t0; return !!this.vids && keys.every(k=>this.okNow(k)); },
-  /* 2026-11-24i 끊김 방지(방송사고 방지): 면접관 영상이 이 기기에서 프레임을 놓치기 시작하면 면접관 사진 화면(움직이지 않는 사진 + 말하는 사람 표시)으로 부드럽게 바꾸고 면접은 그대로 이어 감.
-     2초마다 재서 8% 넘게 놓친 구간이 연달아 두 번이거나 25% 넘게 한 번이면 바꿈. 한 번 바뀐 기기는 3일 동안 처음부터 사진 화면으로 시작(리허설에서 바뀌면 본 시연은 처음부터 사진).
-     주소에 ?lite=1 이면 처음부터 사진 화면, ?lite=0 이면 기억을 지우고 영상으로 */
+  /* 2026-11-24j 끊김 방지(방송사고 방지) — 면접관은 늘 움직임(사진·멈춤 화면 없음):
+     · 말하는 사람만 보이게 하던 가림막(마스크) 없이 두 사람이 다 나오는 영상을 통째로 바꿔 틀고, 바꾼 뒤에는 아래 깔린 듣는 영상을 숨기고 멈춰 화면에 영상 1개만 그림 (큰 화면 부담 절반)
+     · 그래도 이 기기에서 프레임을 놓치면(2초마다 재서 8% 넘게 두 번, 또는 25% 넘게 한 번) '가벼운 모드': 말하는 영상으로 바꾸지 않고 듣는 영상(숨쉬고 눈 깜빡임) 하나만 계속 틀어 끊김을 막음. 누가 말하는지는 이름표·자막으로 보임
+     · 한 번 가벼운 모드가 된 기기는 3일 동안 처음부터 가벼운 모드. 주소에 ?lite=1 이면 처음부터 가벼운 모드, ?lite=0 이면 기억을 지우고 보통 모드 */
   lite: false, _li: false, _gAt: 0, _gPrev: null, _gHit: [],
   liteInit(){ if(this._li) return; this._li = true;
     try{ const q = location.search || ''; if(/[?&]lite=0\b/.test(q)) localStorage.removeItem('zv_imv_lite'); const v = +(localStorage.getItem('zv_imv_lite') || 0);
@@ -33029,10 +33030,14 @@ const ImvLoop = {
     if((r > 0.25 && d >= 10) || this._gHit.reduce((a, b)=>a + b, 0) >= 2) this.degrade(r); },
   degrade(rate){ if(this.lite) return; this.lite = true; try{ localStorage.setItem('zv_imv_lite', String(Date.now())); }catch(_){}
     try{ Activity.log('imv_lite', { rate: Math.round(rate * 1000) / 10, px: [innerWidth, innerHeight, +(devicePixelRatio || 1).toFixed(2)], cpu: navigator.hardwareConcurrency || 0, layout: this.imv && this.imv.layout }); }catch(_){}
-    this.off(); },
+    try{ this.pick(); }catch(_){} },
+  /** 2026-11-24j 화면에 영상 1개만: 말하는 영상이 다 나타난 뒤 아래 듣는 영상을 숨기고 멈춤. 듣는 영상으로 돌아올 때는 먼저 다시 보이고 재생 */
+  oneLayer(want){ const iv = this.vids && this.vids.idle; if(!iv) return; clearTimeout(this._olT);
+    if(want && want !== 'idle'){ const v = this.vids[want]; this._olT = setTimeout(()=>{ if(this.cur === want && v && !v.paused && v.readyState >= 2){ iv.style.visibility = 'hidden'; try{ iv.pause(); }catch(_){} } }, 380); }
+    else { if(iv.style.visibility) iv.style.visibility = ''; if(iv.paused && want === 'idle'){ try{ const p = iv.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } } },
   sync(imv){
     this.imv = imv; const host = imv.el && imv.el.querySelector('#imv-photo-img'); if(!host) return;
-    this.liteInit(); if(this.lite){ this.off(); return; }
+    this.liteInit();
     let C = null; try{ C = this.cfg(imv); }catch(_){}
     // 2026-11-17k 기기의 '애니메이션 줄이기' 설정이어도 면접관 영상은 재생함 (윈도우에서 애니메이션 효과를 끈 PC·원격 접속 PC에서 영상이 통째로 꺼지던 것). 면접관 영상은 장식이 아니라 면접 내용임
     if(!C){ this.off(); return; }
@@ -33044,7 +33049,8 @@ const ImvLoop = {
       this.key = key; this.cur = ''; this.box.innerHTML = ''; this.vids = {};
       const add = (k, url, once, seat, full)=>{ if(!url) return; const v = document.createElement('video');
         if(full){ v.classList.add('lv-full'); v.style.objectPosition = '50% 40%'; }   // 2026-11-23h 말하는 사람 전체 화면 영상 (가림막 없음 · 사람이 가운데)
-        if(seat != null){ const mk = this.maskFor(C, seat); if(mk){ v.style.webkitMaskImage = mk; v.style.maskImage = mk; v.classList.add('lv-mask'); } }   // 2026-11-20a 말하는 사람 자리만
+        if(seat != null && false){ const mk = this.maskFor(C, seat); if(mk){   // 2026-11-24j 가림막(마스크) 쓰지 않음 — 큰 화면에서 매 프레임 가림막을 다시 그려 끊김
+ v.style.webkitMaskImage = mk; v.style.maskImage = mk; v.classList.add('lv-mask'); } }   // 2026-11-20a 말하는 사람 자리만
         v.muted = true; v.defaultMuted = true; v.loop = !once; v.playsInline = true; v.preload = 'auto'; v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('disablepictureinpicture', ''); v.tabIndex = -1;
         v.addEventListener('error', ()=>{ v.dataset.bad = '1'; });
         v.addEventListener('loadeddata', ()=>{ v.dataset.ok = '1'; });   // 한 번 준비되면 계속 쓸 수 있음 (되풀이하며 처음으로 돌아가는 순간에 잠깐 '준비 안 됨'으로 보이는 것 무시)
@@ -33089,7 +33095,7 @@ const ImvLoop = {
   /** 지금 보여 줄 영상 고르기: 목소리가 나오는 중이면 그 자리의 말하는 영상(정해진 말이면 그 문장에 맞춘 영상), 아니면 듣는 영상. 준비 안 된 영상은 건너뜀 */
   pick(){
     const imv = this.imv; if(!imv || !this.vids) return; if(!imv.active){ this.off(); return; }
-    if(this.lite){ this.off(); return; } this.guard(); if(this.lite) return;
+    this.guard();
     const ph = imv.phaseCls === 'speaking' || imv.phaseCls === 'thinking';   // '생각 중'에도 "네, 잘 들었습니다" 같은 짧은 말을 함
     let talking = false; try{ talking = ph && !state.dialogPaused && ImvLip.on && !(ImvLip.el && ImvLip.el.paused); }catch(_){}
     const c = imv.col ? imv.col[imv.cur < 0 ? 0 : imv.cur] : 0;
@@ -33099,7 +33105,8 @@ const ImvLoop = {
     const sy = this._sync, sk = talking && sy && !sy.novid && ok(sy.key) ? sy.key : '';   // 2026-11-18f novid = 이 말을 시작할 때 맞춤 영상이 준비되지 않았음 → 도중에 바꾸지 않고 끝까지 일반 말하는 영상
     let hush = false; try{ const el = ImvLip.el, fresh = !!el && Persona._qa === el && performance.now() - (Persona._qAt || 0) < 300;   // 지금 나오는 소리를 방금(0.3초 안) 읽었을 때만 믿음
       hush = talking && !sk && !!el && (fresh ? Persona.quiet : el.currentTime < 0.2); }catch(_){}   // 아직 못 읽었으면 첫 0.2초(소리 앞의 빈 구간)만 입을 다묾   // 말하는 중인데 말소리가 잠깐 쉼 (문장 사이·쉼표)
-    const want = sk || (talking && !hush && ok('t' + c) ? 't' + c : ok('idle') ? 'idle' : '');
+    let want = sk || (talking && !hush && ok('t' + c) ? 't' + c : ok('idle') ? 'idle' : '');
+    if(this.lite && ok('idle')) want = 'idle';   // 2026-11-24j 가벼운 모드: 듣는 영상 하나만
     const resume = !!this._hush && !hush && want === this._tk;   // 쉬었다가 같은 사람이 이어서 말함
     if(this.box) this.box.classList.toggle('quick', hush || resume || !!(sk && sy.own)); this._hush = hush; if(want && want !== 'idle') this._tk = want; else if(!hush) this._tk = '';   // 2026-11-23e 대본 영상은 첫 소리부터 바로 보이게 빠르게 바꿈
     if(want === this.cur){ const v = this.vids[want]; if(v && sk) this.follow(v); else if(v && v.paused){ try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } return; }
@@ -33109,6 +33116,7 @@ const ImvLoop = {
     this.host.classList.toggle('lv-on', !!want || base); this.note(!!want || base);
     try{ const ph = this.host.parentNode, fv = want && this.vids[want]; if(ph) ph.classList.toggle('fullon', !!(fv && fv.classList.contains('lv-full'))); }catch(_){}   // 2026-11-23h 말하는 사람 전체 화면일 때 이름표를 가운데로
     try{ this.fxSwitch(prev, want); }catch(e){ console.warn('[면접관 영상 전환]', e); }
+    try{ this.oneLayer(want); }catch(_){}
     if(want){ const v = this.vids[want]; if(sk) this.follow(v, true); else { if(want !== 'idle' && !resume){ try{ v.currentTime = 0; }catch(_){} } try{ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } }
     if(prev && this.vids[prev]) setTimeout(()=>{ const v = this.vids && this.vids[prev]; if(!v) return; v.classList.remove('was'); if(this.cur !== prev && prev !== 'idle'){ try{ v.pause(); }catch(_){} } }, 450);
   },
@@ -33431,7 +33439,7 @@ const Imv = {
   },
   begin(){
     if(!(this.armed || this.want())) return false;
-    this.armed = false; this.active = true; this.loadMedia().then(()=>{ try{ if(this.active) this.fitPhoto(); }catch(_){} });
+    this.armed = false; this.active = true; try{ document.body.classList.add('imv-open'); }catch(_){} this.loadMedia().then(()=>{ try{ if(this.active) this.fitPhoto(); }catch(_){} });
     clearTimeout(this._lvT); this._lvT = setTimeout(()=>{ try{ if(this.active) Activity.log('imv_video', ImvLoop.diag()); }catch(_){} }, 8000);   // 2026-11-17k 영상 재생 상태 한 번 기록
     clearTimeout(this._lvT2); this._lvT2 = setTimeout(()=>{ try{ if(this.active) Activity.log('imv_video', Object.assign({ at: 45 }, ImvLoop.diag())); }catch(_){} }, 45000);   // 2026-11-18f 인사말·첫 질문이 지난 뒤 한 번 더 (어긋남·끊김 값이 쌓인 뒤)
     try{ ImvLoop.st = null; StenoVoice.cuts = 0; StenoVoice.lastCut = null; }catch(_){}
@@ -33528,7 +33536,12 @@ const Imv = {
     try{ ImvLoop.pick(); }catch(_){}
     this.status(); this.syncBtn(); this.mine(this.mineText);
   },
-  level(v){ if(!this.el || !this.active) return; v = Math.max(0, Math.min(1, v || 0)).toFixed(3); this.el.style.setProperty('--lv', v); const s = this.el.querySelector(`.imv-seat[data-k="${this.cur}"]`); if(s) s.style.setProperty('--lv', v); },
+  /* 2026-11-24j 소리 크기 값(--lv)을 면접 화면 맨 위(#imv)에 쓰면 그 아래 모든 요소가 바뀐 것으로 처리돼 화면 전체를 1초에 여러 번 다시 그림(4K에서 면접관 영상 끊김의 큰 원인).
+     소리 막대·상태 점처럼 실제로 쓰는 작은 요소에만 씀. 면접관 영상이 나오는 동안에는 영상 뒤에 가려진 사진 자리(seat)는 건드리지 않음 */
+  level(v){ if(!this.el || !this.active) return; v = Math.max(0, Math.min(1, v || 0)).toFixed(3); if(this._lvV === v) return; this._lvV = v;
+    const tg = (this._lvEls && this._lvEls.every(e=>e.isConnected && this.el.contains(e))) ? this._lvEls : (this._lvEls = [this.el.querySelector('#imv-say'), this.el.querySelector('#imv-status')].filter(Boolean)); tg.forEach(e=>e.style.setProperty('--lv', v));
+    let vid = false; try{ vid = !!(ImvLoop.host && ImvLoop.host.classList.contains('lv-on')); }catch(_){}
+    if(!vid){ const s = this.el.querySelector(`.imv-seat[data-k="${this.cur}"]`); if(s) s.style.setProperty('--lv', v); } },
   caption(t){ this.capText = t || ''; const c = this.el.querySelector('#imv-cap'); c.textContent = this.capText; c.hidden = !(this.capOn && this.capText); },
   voiceFail(){ if(this.capForced) return; this.capForced = true; this.capOn = true; this.el.querySelector('#imv-tg-cap').setAttribute('aria-pressed', 'true'); this.caption(this.capText); showToast('면접관 음성을 재생할 수 없어 질문을 자막으로 보여 드려요.', 'info'); },
   mine(t){ if(!this.el) return; this.mineText = String(t || '').trim(); const b = this.el.querySelector('#imv-mine'), p = this.el.querySelector('#imv-mine-t');
@@ -33576,7 +33589,7 @@ const Imv = {
 
   /* ── 끝 ── */
   async end(){
-    if(!this.active) return; this.active = false; this.stopTimer(); this.stopVideo(); try{ ImvLoop.off(); }catch(_){}
+    if(!this.active) return; this.active = false; try{ document.body.classList.remove('imv-open'); }catch(_){} this.stopTimer(); this.stopVideo(); try{ ImvLoop.off(); }catch(_){}
     const el = this.el; el.classList.add('out');
     try{ if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{}); }catch(_){}
     const rec = await ImvRec.stop(); this.rec = rec ? Object.assign(rec, { startTime: state.startTime }) : { startTime: state.startTime, url: '', marks: ImvRec.marks.slice() };
@@ -33827,6 +33840,12 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 /* 2026-11-24i 끊김 방지: 면접 화면 안에서는 영상 위 흐림(backdrop-filter)·필터 효과를 쓰지 않음. 큰 화면(4K·175%)에서 영상 프레임마다 흐림을 다시 그려 끊김의 큰 원인이었음 (재현 시험 19% → 10%). 글씨 뒤 배경은 원래 어두운 반투명이라 그대로 읽힘 */
 #screen-interview, #screen-interview *, #imv, #imv *, .zv-rec, .zv-tag { -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
 #imv .imv-lv, #imv .imv-lv * { filter:none !important; }
+/* 2026-11-24j 영상 뒤에 가려진 것은 그리지 않음: 면접 화면이 열려 있는 동안 아래 앱 화면을 숨기고, 면접관 영상이 나오는 동안 영상 뒤 사진·자리 표시를 숨김. 영상 한 장면이 바뀔 때마다 뒤에 깔린 것까지 다시 그리던 부담을 줄임 */
+body.imv-open > :not(#imv):not(script):not(style):not(.modal-overlay):not(.toast):not(#iv-trace):not([role="dialog"]):not([role="alertdialog"]){visibility:hidden !important}
+#imv .imv-photo-img.lv-on{background-image:none !important}
+#imv .imv-photo-img.lv-on > :not(.imv-lv){visibility:hidden !important}
+/* 2026-11-24j 영상을 감싼 카드의 둥근 모서리 자르기는 영상 한 장면마다 화면 전체를 한 번 더 복사해 그리게 함(큰 화면에서 끊김) → 면접 카드는 각진 모서리 */
+#imv .imv-card{border-radius:0 !important}
 /* 그림 장면 (면접관 1~2명) */
 #imv .imv-scene{position:absolute;inset:0}
 #imv .imv-scene .imv-room{position:absolute;inset:0}
