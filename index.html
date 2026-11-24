@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-24j';
+var APP_VERSION = '2026-11-24k';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -33019,21 +33019,25 @@ const ImvLoop = {
      · 그래도 이 기기에서 프레임을 놓치면(2초마다 재서 8% 넘게 두 번, 또는 25% 넘게 한 번) '가벼운 모드': 말하는 영상으로 바꾸지 않고 듣는 영상(숨쉬고 눈 깜빡임) 하나만 계속 틀어 끊김을 막음. 누가 말하는지는 이름표·자막으로 보임
      · 한 번 가벼운 모드가 된 기기는 3일 동안 처음부터 가벼운 모드. 주소에 ?lite=1 이면 처음부터 가벼운 모드, ?lite=0 이면 기억을 지우고 보통 모드 */
   lite: false, _li: false, _gAt: 0, _gPrev: null, _gHit: [],
-  liteInit(){ if(this._li) return; this._li = true;
-    try{ const q = location.search || ''; if(/[?&]lite=0\b/.test(q)) localStorage.removeItem('zv_imv_lite'); const v = +(localStorage.getItem('zv_imv_lite') || 0);
-      this.lite = /[?&]lite=1\b/.test(q) || (!!v && Date.now() - v < 3 * 864e5); }catch(_){} },
+  liteInit(){ if(this._li) return; this._li = true;   // 2026-11-24k 기기에 '가벼운 모드' 기억을 남기지 않음(전에 남긴 기억도 지움). 주소에 ?lite=1 일 때만 처음부터 가벼운 모드
+    try{ localStorage.removeItem('zv_imv_lite'); }catch(_){}
+    try{ this.lite = /[?&]lite=1\b/.test(location.search || ''); }catch(_){ this.lite = false; } },
   frameSum(){ let d = 0, t = 0; try{ Object.values(this.vids || {}).forEach(v=>{ const q = v.getVideoPlaybackQuality && v.getVideoPlaybackQuality(); if(q){ d += q.droppedVideoFrames; t += q.totalVideoFrames; } }); }catch(_){} return [d, t]; },
   guard(){ const now = performance.now(); if(this.lite || now - this._gAt < 2000) return; this._gAt = now;
+    if(!this._gT0) this._gT0 = now; if(now - this._gT0 < 8000){ this._gPrev = this.frameSum(); return; }   // 2026-11-24k 시작 8초는 보지 않음 (영상을 처음 여는 순간의 잠깐 버벅임으로 바뀌지 않게)
     const cur = this.frameSum(), p = this._gPrev; this._gPrev = cur; if(!p || document.visibilityState !== 'visible') return;
     const d = cur[0] - p[0], t = cur[1] - p[1]; if(t < 20) return;
-    const r = d / t; this._gHit.push(r > 0.08 && d >= 4 ? 1 : 0); if(this._gHit.length > 3) this._gHit.shift();
-    if((r > 0.25 && d >= 10) || this._gHit.reduce((a, b)=>a + b, 0) >= 2) this.degrade(r); },
-  degrade(rate){ if(this.lite) return; this.lite = true; try{ localStorage.setItem('zv_imv_lite', String(Date.now())); }catch(_){}
+    const r = d / t; this._gHit.push(r > 0.12 && d >= 6 ? 1 : 0); if(this._gHit.length > 4) this._gHit.shift();
+    if((r > 0.35 && d >= 15) || this._gHit.reduce((a, b)=>a + b, 0) >= 3) this.degrade(r); },   // 2초 구간 4번 중 3번 12% 넘게 끊기거나, 한 번에 35% 넘게 끊길 때만
+  degrade(rate){ if(this.lite) return; this.lite = true;
     try{ Activity.log('imv_lite', { rate: Math.round(rate * 1000) / 10, px: [innerWidth, innerHeight, +(devicePixelRatio || 1).toFixed(2)], cpu: navigator.hardwareConcurrency || 0, layout: this.imv && this.imv.layout }); }catch(_){}
     try{ this.pick(); }catch(_){} },
   /** 2026-11-24j 화면에 영상 1개만: 말하는 영상이 다 나타난 뒤 아래 듣는 영상을 숨기고 멈춤. 듣는 영상으로 돌아올 때는 먼저 다시 보이고 재생 */
+  /** 2026-11-24k 보통 화면(실제 픽셀 300만 이하, 1920×1080·배율 125%까지)이면 true → 말하는 사람 자리만 바꾸는 가림막을 씀. 4K처럼 큰 화면은 끊김 방지를 위해 가림막 없이 */
+  smallScreen(){ try{ const d = window.devicePixelRatio || 1; return innerWidth * d * innerHeight * d <= 3.0e6; }catch(_){ return true; } },
   oneLayer(want){ const iv = this.vids && this.vids.idle; if(!iv) return; clearTimeout(this._olT);
-    if(want && want !== 'idle'){ const v = this.vids[want]; this._olT = setTimeout(()=>{ if(this.cur === want && v && !v.paused && v.readyState >= 2){ iv.style.visibility = 'hidden'; try{ iv.pause(); }catch(_){} } }, 380); }
+    if(want && want !== 'idle'){ const v = this.vids[want]; if(v && v.classList.contains('lv-mask')){ if(iv.style.visibility) iv.style.visibility = ''; if(iv.paused){ try{ const p = iv.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } return; }   // 가림막 영상은 말하는 사람 자리만 덮으므로 듣는 영상이 계속 보여야 함
+      this._olT = setTimeout(()=>{ if(this.cur === want && v && !v.paused && v.readyState >= 2){ iv.style.visibility = 'hidden'; try{ iv.pause(); }catch(_){} } }, 650); }
     else { if(iv.style.visibility) iv.style.visibility = ''; if(iv.paused && want === 'idle'){ try{ const p = iv.play(); if(p && p.catch) p.catch(()=>{}); }catch(_){} } } },
   sync(imv){
     this.imv = imv; const host = imv.el && imv.el.querySelector('#imv-photo-img'); if(!host) return;
@@ -33049,7 +33053,8 @@ const ImvLoop = {
       this.key = key; this.cur = ''; this.box.innerHTML = ''; this.vids = {};
       const add = (k, url, once, seat, full)=>{ if(!url) return; const v = document.createElement('video');
         if(full){ v.classList.add('lv-full'); v.style.objectPosition = '50% 40%'; }   // 2026-11-23h 말하는 사람 전체 화면 영상 (가림막 없음 · 사람이 가운데)
-        if(seat != null && false){ const mk = this.maskFor(C, seat); if(mk){   // 2026-11-24j 가림막(마스크) 쓰지 않음 — 큰 화면에서 매 프레임 가림막을 다시 그려 끊김
+        if(seat != null && this.smallScreen()){ const mk = this.maskFor(C, seat); if(mk){   // 2026-11-24k 보통 화면만 가림막
+   // 2026-11-24j 가림막(마스크) 쓰지 않음 — 큰 화면에서 매 프레임 가림막을 다시 그려 끊김
  v.style.webkitMaskImage = mk; v.style.maskImage = mk; v.classList.add('lv-mask'); } }   // 2026-11-20a 말하는 사람 자리만
         v.muted = true; v.defaultMuted = true; v.loop = !once; v.playsInline = true; v.preload = 'auto'; v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('disablepictureinpicture', ''); v.tabIndex = -1;
         v.addEventListener('error', ()=>{ v.dataset.bad = '1'; });
@@ -33100,11 +33105,13 @@ const ImvLoop = {
     let talking = false; try{ talking = ph && !state.dialogPaused && ImvLip.on && !(ImvLip.el && ImvLip.el.paused); }catch(_){}
     const c = imv.col ? imv.col[imv.cur < 0 ? 0 : imv.cur] : 0;
     if(this._c !== c){ this._c = c; this.talkAt = 0; }   // 말하는 사람이 바뀌면 앞사람의 '방금까지 말함' 여유를 넘겨받지 않음 (새 사람 입이 소리보다 먼저 움직이는 것 방지)
-    const now = Date.now(); if(talking) this.talkAt = now; else if(this.talkAt && now - this.talkAt < 350 && ph && ImvLip.el && !ImvLip.el.ended) talking = true;   // 목소리가 잠깐 끊겨도(0.35초 안) 말하는 영상 유지 — 2026-11-23a 말이 완전히 끝났으면(소리 끝남·없음) 여유 없이 바로 입을 닫음
+    const now = Date.now(); if(talking) this.talkAt = now; else if(this.talkAt && now - this.talkAt < 900 && ph) talking = true;   // 2026-11-24k 문장 사이 짧은 틈(0.9초 안)은 말하는 영상 그대로 (입이 툭툭 튀지 않게)
+      // 목소리가 잠깐 끊겨도(0.35초 안) 말하는 영상 유지 — 2026-11-23a 말이 완전히 끝났으면(소리 끝남·없음) 여유 없이 바로 입을 닫음
     const ok = k=>{ const v = this.vids[k]; return !!v && !v.dataset.bad && (v.dataset.ok === '1' || v.readyState >= 2); };
     const sy = this._sync, sk = talking && sy && !sy.novid && ok(sy.key) ? sy.key : '';   // 2026-11-18f novid = 이 말을 시작할 때 맞춤 영상이 준비되지 않았음 → 도중에 바꾸지 않고 끝까지 일반 말하는 영상
     let hush = false; try{ const el = ImvLip.el, fresh = !!el && Persona._qa === el && performance.now() - (Persona._qAt || 0) < 300;   // 지금 나오는 소리를 방금(0.3초 안) 읽었을 때만 믿음
-      hush = talking && !sk && !!el && (fresh ? Persona.quiet : el.currentTime < 0.2); }catch(_){}   // 아직 못 읽었으면 첫 0.2초(소리 앞의 빈 구간)만 입을 다묾   // 말하는 중인데 말소리가 잠깐 쉼 (문장 사이·쉼표)
+      hush = talking && !sk && !!el && (fresh ? Persona.quiet : el.currentTime < 0.2); }catch(_){}
+    hush = false;   // 2026-11-24k 말하는 도중 잠깐 쉬어도 듣는 영상으로 바꾸지 않음 (입 튀김·화면 울렁임 줄임)   // 아직 못 읽었으면 첫 0.2초(소리 앞의 빈 구간)만 입을 다묾   // 말하는 중인데 말소리가 잠깐 쉼 (문장 사이·쉼표)
     let want = sk || (talking && !hush && ok('t' + c) ? 't' + c : ok('idle') ? 'idle' : '');
     if(this.lite && ok('idle')) want = 'idle';   // 2026-11-24j 가벼운 모드: 듣는 영상 하나만
     const resume = !!this._hush && !hush && want === this._tk;   // 쉬었다가 같은 사람이 이어서 말함
@@ -33829,12 +33836,12 @@ body.imv-on #fb-fab, body.imv-on #help-fab, body.imv-on .help-fab, body.imv-on .
 @media (prefers-reduced-motion:reduce){#imv .imv-say-w i{animation:none}#imv[data-phase="speaking"] .imv-photo:not([data-n="1"]) .imv-photo-img{transform:scale(1.035)}}
 /* 2026-11-17 면접관 영상 (듣는 영상·말하는 영상): 사진과 같은 자리에 겹쳐 놓고 부드럽게 바꿈 */
 #imv .imv-lv{position:absolute;inset:0;pointer-events:none}
-#imv .imv-lv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--op,50% 42%);opacity:0;z-index:1;transition:opacity .28s ease,object-position .9s cubic-bezier(.2,.7,.2,1),-webkit-mask-position .9s cubic-bezier(.2,.7,.2,1),mask-position .9s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+#imv .imv-lv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--op,50% 42%);opacity:0;z-index:1;transition:opacity .5s ease,object-position .9s cubic-bezier(.2,.7,.2,1),-webkit-mask-position .9s cubic-bezier(.2,.7,.2,1),mask-position .9s cubic-bezier(.2,.7,.2,1);pointer-events:none}
 #imv .imv-lv video.lv-mask{-webkit-mask-size:cover;mask-size:cover;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:var(--op,50% 42%);mask-position:var(--op,50% 42%)}   /* 2026-11-20a 말하는 사람 자리만 (영상과 똑같이 맞춰 자름) */
 #imv .imv-lv video.base{opacity:1;z-index:0}   /* 듣는 영상: 늘 맨 아래 */
 #imv .imv-lv video.was{opacity:1;z-index:1;transition:object-position .9s cubic-bezier(.2,.7,.2,1)}
 #imv .imv-lv video.on{opacity:1;z-index:2}
-#imv .imv-lv.quick video{transition:opacity .16s ease,object-position .9s cubic-bezier(.2,.7,.2,1)}   /* 말소리가 쉴 때 입 다물기·다시 열기는 빠르게 */
+#imv .imv-lv.quick video{transition:opacity .5s ease,object-position .9s cubic-bezier(.2,.7,.2,1)}   /* 말소리가 쉴 때 입 다물기·다시 열기는 빠르게 */
 #imv .imv-photo-img.lv-on{animation:none}
 #imv .imv-photo-img.lv-on .imv-mp{display:none}
 /* 2026-11-24i 끊김 방지: 면접 화면 안에서는 영상 위 흐림(backdrop-filter)·필터 효과를 쓰지 않음. 큰 화면(4K·175%)에서 영상 프레임마다 흐림을 다시 그려 끊김의 큰 원인이었음 (재현 시험 19% → 10%). 글씨 뒤 배경은 원래 어두운 반투명이라 그대로 읽힘 */
