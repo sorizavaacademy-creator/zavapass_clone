@@ -374,6 +374,10 @@ function answerKind(answer: string): string {
   const a = answer.replace(/\s/g, "");
   if (a.length < 6) return "거의 비어 있음";
   if (/모르겠|모릅니다|잘몰라|생각이안|기억이안|없습니다$|딱히없/.test(a) && a.length < 60) return "모르겠다·없다에 가까움";
+  // 2026-11-26a "경험이 부족해서 고민해 봐야겠다"처럼 해 본 적이 없다고 밝힌 답 (한림대 시연에서 이런 답을 '보통'으로 보고 더 캐물었음)
+  const noExp = /(경험|해본적|해본일|다뤄본적|써본적|배운적|지식|전문성)(이|은|도)?(많이|거의|아직|전혀|별로)?(부족|없|적)/.test(a);
+  const later = /(고민해봐야|생각해봐야|생각해보아야|고민해보아야|공부해봐야|알아봐야|더배워야|강화한후에|학습한후에|배운후에)/.test(a);
+  if ((noExp || later) && a.length < 200) return "경험·지식이 부족하다고 밝힘";
   return "보통";
 }
 
@@ -418,6 +422,7 @@ Deno.serve(async (req: Request) => {
   const lang = body.lang === "en" ? "en" : "ko";              // 2026-11-05 영어 질문이면 영어로 묻기
   const force = body.force === true;                          // 이번엔 반드시 꼬리질문 (면접 전체 최소 1개)
   const bankType = cleanText(body.qb_type, 12);               // 질문은행 유형 (자기소개·경험·역량 …)
+  const ibBasis = cleanText(body.ib_basis, 80), ibWhy = cleanText(body.ib_why, 100);   // 2026-11-26a 커리어 인바디 리포트 질문의 근거
   const qbQid = cleanText(body.qb_qid, 12);                   // 2026-11-09 한림대 추가 질문 번호 (예상 꼬리질문을 첫 후보로)
   const personal = personalWords(answer);
   if (!question || !answer) return json({ error: "question과 answer는 필수입니다." }, 400);
@@ -451,6 +456,10 @@ Deno.serve(async (req: Request) => {
   const followupCount = followupsDone ?? history.filter((h) => h.role === "interviewer").length;
   const guide = QTYPE_GUIDE[qtype] ?? (question !== rootQuestion && rootQuestion ? QTYPE_GUIDE.followup : QTYPE_GUIDE.general);
   const kind = answerKind(answer);
+  const NOEXP = "경험·지식이 부족하다고 밝힘";
+  const kindRule = kind === "보통" ? " → 답변의 핵심을 받아 실무 상황으로 넓혀 묻습니다."
+    : kind === NOEXP ? " → 해 보지 않은 일을 다시 캐묻지 않습니다. 나무라지 말고, 범위를 좁혀 학생이 실제로 해 본 비슷한 작은 경험(수업 과제·실습·팀 활동·지금 공부하는 것)으로 쉽게 다시 묻습니다(clarify). 예: '괜찮습니다. 그 수업에서 직접 해 본 과제 하나를 떠올려 보시면, 어떤 문제를 어떻게 풀었는지 말씀해 주세요.' 정답을 알려 주지 않습니다."
+    : " → 나무라지 말고 힌트 한 가지와 함께 같은 주제를 부드럽게 다시 묻습니다(clarify). 정답을 알려 주지 않습니다. 이미 한 번 다시 물었다면 next로 마무리합니다.";
 
   const userPrompt = [
     history.length ? "[지금까지의 대화]\n" + history.map((h) => (h.role === "interviewer" ? "면접관: " : "면접자: ") + h.text).join("\n") : null,
@@ -462,8 +471,9 @@ Deno.serve(async (req: Request) => {
     resumeSummary ? `[지원자 자기소개서 원문 (면접자에게 읽어 주지 않음 · 여기에 없는 경험은 언급 금지)]\n${resumeSummary}` : null,
     cvSummary ? `[지원자 이력서 원문 — 학력·경력·자격 (면접자에게 읽어 주지 않음, 개인정보는 언급 금지 · 여기에 없는 경력은 언급 금지)]\n${cvSummary}` : null,
     docFocus ? `[이 질문의 근거가 된 서류 문장]\n${docFocus}` : null,
+    ibBasis ? `[이 질문의 근거 — 학생의 학교 커리어 인바디 리포트 (면접자에게 읽어 주지 않음)]\n${ibBasis}${ibWhy ? `\n확인하려는 것: ${ibWhy}` : ""}\n꼬리질문은 이 근거와 방금 답변 안에서만 묻습니다. 리포트의 '개선 방향'·추천처럼 학생이 아직 해 보지 않은 일을 해 본 것처럼 전제하지 않습니다.` : null,
     `[면접자 답변 — 음성 인식 결과라 오류가 섞여 있을 수 있음]\n${answer}`,
-    `[답변 상태] ${kind}` + (kind !== "보통" ? " → 나무라지 말고 힌트 한 가지와 함께 같은 주제를 부드럽게 다시 묻습니다(clarify). 정답을 알려 주지 않습니다. 이미 한 번 다시 물었다면 next로 마무리합니다." : " → 답변의 핵심을 받아 실무 상황으로 넓혀 묻습니다."),
+    `[답변 상태] ${kind}` + kindRule,
     `[참고] 이 본 질문에 대한 꼬리질문은 지금까지 ${followupCount}개 했습니다.` + (followupCount >= 2 ? " 이번에는 intent를 next로 마무리하세요." : ""),
     bankType ? `[질문 유형] ${bankType}` : null,
     addInfo && (addInfo.intent || addInfo.followups) ? `[이 질문의 의도와 예상 꼬리질문 — 면접자에게 노출 금지]` + (addInfo.intent ? `\n질문 의도: ${addInfo.intent}` : "") + (addInfo.followups ? `\n예상 꼬리질문: ${addInfo.followups}\n` + (followupCount === 0

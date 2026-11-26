@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-24l';
+var APP_VERSION = '2026-11-26a';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -11113,6 +11113,7 @@ async function rejectIfExpired(profile, authUser){
   if(profile.is_admin || !accessInfo(profile.access_until).expired) return false;
   // 2026-10-16a: 분야를 받았던 사람은 '기간 종료' 화면으로 (연습은 막고, 실제 면접 질문 남기기·결과 알려 주기만)
   if(authUser){   // 2026-10-23e: 분야가 비어 있는 기간 종료 계정도 로그아웃하지 않고 '기간 종료' 화면으로
+    userScopeReset(authUser.id);
     state.currentUser = { id: authUser.id, email: authUser.email, name: profile.name, note: profile.note, pledgeAt: profile.report_pledge_at || null, isAdmin:false, allowed: profile.allowed_fields || [],
       status: profile.status || '', phone: profile.phone || '', accessUntil: profile.access_until || null, aiOverride: null };
     state.username = profile.name;
@@ -11517,6 +11518,7 @@ async function handleLogin(){
   if(await rejectIfExpired(profile, data.user)){ saveRememberedEmail(loginRaw); return; }
   if(await School.rejectSuspended(profile)) return;
   saveRememberedEmail(loginRaw);
+  userScopeReset(data.user.id);
   state.currentUser = {
     id: data.user.id,
     email: data.user.email,
@@ -11670,7 +11672,19 @@ async function endInterviewForKick(){
   try{ stopRehearsalMeter(); }catch(_){} try{ stopRecognition(); }catch(_){} try{ stopCamera(); }catch(_){}
   return false;
 }
+/* 2026-11-26a 같은 기기에서 계정을 바꿔 로그인하면 앞 학생의 면접 준비 자료(학과·학년·저장한 경험·인바디 리포트)가 화면 기억에 남아
+   다음 학생 계정에 저장되던 문제. 로그아웃할 때, 그리고 다른 계정으로 로그인할 때 이 기억을 모두 비움 */
+function userScopeReset(nextUid){
+  if(nextUid && userScopeReset._uid === nextUid) return;   // 같은 학생이 다시 들어오면 그대로
+  userScopeReset._uid = nextUid || null;
+  try{ clearTimeout(PrepSync._t); PrepSync._t = 0; PrepSync._p = null; PrepSync.loaded = false; PrepSync.profile = {}; }catch(_){}
+  try{ StartFlow.s = null; StartFlow.exps = []; }catch(_){}
+  try{ Inbody.d = null; Inbody.peers = null; Inbody.loaded = false; Inbody._p = null; }catch(_){}
+  try{ document.getElementById('modal-flow').classList.remove('active'); }catch(_){}
+}
 async function handleLogout(){
+  try{ if(PrepSync._t){ clearTimeout(PrepSync._t); PrepSync._t = 0; if(state.currentUser) await PrepSync.flush(); } }catch(_){}   // 저장 대기분은 지금 학생 계정에 먼저 저장
+  userScopeReset(null);
   try{ MicStream.close(); }catch(_){}
   try{ RealReport.reset(); }catch(_){}
   try{ Notice.reset(); }catch(_){}
@@ -11696,6 +11710,7 @@ async function tryRestoreSession(){
   if(await School.rejectSuspended(profile)) return;
   // 한 계정 한 기기: 그사이 다른 기기에서 로그인했다면 이 기기는 들어오지 않고 안내
   if(!profile.is_admin && !SessionGuard.OFF){ const cur = await SessionGuard.peek(); if(cur && cur.ok === false && cur.reason === 'replaced'){ SessionGuard.showKicked(cur, { restore:true }); return; } }
+  userScopeReset(userId);
   state.currentUser = {
     id: userId,
     email: data.session.user.email,
@@ -14227,7 +14242,7 @@ const Inbody = {
   reportQs(){ const r = this.report(); return r ? r.questions.filter(x=>x && x.q && x.basis) : []; },
   pickReportQs(n){ const L = this.reportQs(); if(!L.length) return [];
     let off = 0; try{ off = (+localStorage.getItem('zp_ibq_off') || 0) % L.length; localStorage.setItem('zp_ibq_off', String(off + n)); }catch(_){}
-    const out = []; for(let i = 0; i < Math.min(n, L.length); i++){ const x = L[(off + i) % L.length]; out.push({ q: x.q, spoken: x.q, ref: null, hint: x.why || '', ib: { basis: x.basis, why: x.why || '' } }); }
+    const out = []; for(let i = 0; i < Math.min(n, L.length); i++){ const x = L[(off + i) % L.length]; out.push({ q: x.q, spoken: x.q, ref: null, hint: x.why || '', qtype: /과목|이수|수강|스킬|자격/.test(String(x.basis || '')) ? 'knowledge' : 'experience', ib: { basis: x.basis, why: x.why || '' } }); }   // 2026-11-26a 리포트 질문은 '경험·역량'·'전공 지식'으로 (예전에는 유형이 없어 '가치관·태도'로 되물었음)
     return out; },
   bindReport(){
     const f = document.getElementById('ib-rp-file'); if(f) f.onchange = ()=>{ const file = f.files && f.files[0]; f.value = ''; if(file) this.readReport(file); };
@@ -15088,11 +15103,11 @@ const StartFlow = {
     const prev = this.s || {};
     this.s = { step: kind ? 1 : 0, kind: kind || null, mode: mode || null, count:2, people:['hr','lead'], spk:0, diff: first ? '하' : '중', showSet:false, fromKind: !!kind, sub:'', openMy:false,
       qcount: prev.qcount || (+(((document.querySelector('#chip-count .chip.sel') || {}).dataset || {}).val) || 5), cap: !!prev.cap, pip: !!prev.pip, rec: prev.rec !== false, cam: prev.cam !== false, typed:false, expText: prev.expText || '', expId: prev.expId || '',
-      major:{ dept: (prev.major && prev.major.dept) || dept, grade: (prev.major && prev.major.grade) || '' }, use: (prev.use || this.exps.map(e=>e.id)),
+      major:{ dept:'', grade:'' }, use: (prev.use || this.exps.map(e=>e.id)),   // 2026-11-26a 전공·학년은 면접을 시작할 때마다 빈칸 (학생이 직접 입력)
       job:{ field:f.id, company:'', companyId:'', role:'', post:'', jobcat:'', jobPicked:false, eng: !!(prev.job && prev.job.eng) } };
     document.getElementById('modal-flow').classList.add('active'); this.render();
     // 2026-11-03a ⑥ 저장해 둔 경험·학년을 불러와 채움
-    const applySaved = ()=>{ if(!this.s) return; const p = PrepSync.profile || {}; if(!this.s.major.grade && p.grade) this.s.major.grade = p.grade; if(!String(this.s.major.dept || '').trim() && p.dept) this.s.major.dept = p.dept;
+    const applySaved = ()=>{ if(!this.s) return;   // 2026-11-26a 저장한 전공·학년은 미리 채우지 않음 (경험만 불러옴)
       this.exps.forEach(e=>{ if(!this.s.use.includes(e.id)) this.s.use.push(e.id); }); };
     if(PrepSync.loaded) applySaved(); else PrepSync.pull().then(()=>{ applySaved(); if(document.getElementById('modal-flow').classList.contains('active') && this.s && this.s.step <= 2) this.render(); });
   },
@@ -15331,7 +15346,14 @@ const StartFlow = {
       const id = 'e' + Date.now().toString(36); this.exps.push({ id, type: ty.value, text: v.slice(0, 120) }); s.use.push(id); try{ PrepSync.save(); }catch(_){} this.render(); setTimeout(()=>{ const n = document.getElementById('fl-exp-text'); if(n) n.focus(); }, 0); };
     const et = document.getElementById('fl-exp-text'); if(et) et.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); add && add.click(); } });
     const bind = (id, obj, key, re)=>{ const el = document.getElementById(id); if(!el) return; el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', ()=>{ obj[key] = el.value; if(re) this.render(); const h = document.getElementById('fl-need'); if(h) h.textContent = ''; }); };
-    bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade'); bind('fl-exp-now', s, 'expText'); bind('fl-role', s.job, 'role'); { const ri = document.getElementById('fl-role'); if(ri) ri.addEventListener('input', ()=>{ s.job.roleGroup = ''; clearTimeout(this._rt); this._rt = setTimeout(()=>this.renderRoles(), 250); }); } bind('fl-post', s.job, 'post');
+    bind('fl-dept', s.major, 'dept'); bind('fl-grade', s.major, 'grade');
+    { const box = document.getElementById('fl-ibm');   // 2026-11-26a 리포트 전공·학년과 다르면 안내 (입력할 때마다 다시 확인)
+      if(box){ const re = ()=>{ box.innerHTML = this.ibMajorHint(); };
+        ['fl-dept', 'fl-grade'].forEach(id=>{ const e = document.getElementById(id); if(e){ e.addEventListener('input', re); e.addEventListener('change', re); } });
+        box.addEventListener('click', ev=>{ if(!ev.target.closest('[data-ibm]')) return; let pf = null; try{ pf = Inbody.hal().profile; }catch(_){} if(!pf) return;
+          s.major.dept = String(pf.major || '').trim(); if(/^[1-4]$/.test(String(pf.grade || ''))) s.major.grade = String(pf.grade);
+          const d = document.getElementById('fl-dept'), g = document.getElementById('fl-grade'); if(d) d.value = s.major.dept; if(g) g.value = s.major.grade; re(); }); } }
+    bind('fl-exp-now', s, 'expText'); bind('fl-role', s.job, 'role'); { const ri = document.getElementById('fl-role'); if(ri) ri.addEventListener('input', ()=>{ s.job.roleGroup = ''; clearTimeout(this._rt); this._rt = setTimeout(()=>this.renderRoles(), 250); }); } bind('fl-post', s.job, 'post');
     { const qc = document.getElementById('fl-qcount'); if(qc) qc.addEventListener('change', ()=>{ s.qcount = +qc.value; this.render(); }); }
     { const goIb = ()=>{ this.saveNow(); s.page = 'ib'; s.pageFrom = 'step'; this.render(); };   // 2026-11-17 인바디 화면을 흐름 안에서 열고, 돌아오면 하던 단계 그대로
       const ib = document.getElementById('fl-inbody'); if(ib) ib.onclick = goIb; body.querySelectorAll('[data-ibgo]').forEach(b=>b.onclick = goIb);
@@ -15429,7 +15451,18 @@ const StartFlow = {
       <div class="fl-add"><label class="sr" for="fl-exp-type">경험 종류</label><select id="fl-exp-type">${this.EXP_TYPES.map(t=>`<option>${t}</option>`).join('')}</select>
       <label class="sr" for="fl-exp-text">경험 내용</label><input id="fl-exp-text" maxlength="120" placeholder="예: 마케팅원론 팀 프로젝트에서 설문 분석 담당"><button type="button" class="btn btn-outline" id="fl-exp-add">추가</button></div></div>`; },
   vSummary(){ const u = this.usedExps(); return `<div class="fl-summary"><b>이번 면접에 활용할 경험</b>${u.length ? `<ul>${u.map(e=>`<li><span>${escapeHtml(e.type)}</span>${escapeHtml(e.text)}</li>`).join('')}</ul>` : '<p>선택한 경험이 없어요. 전공·직무 일반 질문으로 진행해요.</p>'}</div>`; },
-  vProfile(){ const m = this.s.major; return `<div class="fl-grid"><div class="fl-f"><label for="fl-dept">전공 <span class="req">*</span></label><input id="fl-dept" value="${escapeHtml(m.dept)}" placeholder="예: 경영학과"></div>
+  /** 2026-11-26a 올린 커리어 인바디 리포트의 전공·학년과 입력한 값이 다르면 알려 줌 (자동으로 채우지는 않고, 버튼을 누를 때만 채움) */
+  ibMajorHint(){
+    let pf = null; try{ const h = Inbody.hal(); pf = h && h.profile; }catch(_){}
+    const rd = String((pf && pf.major) || '').trim(), rg = String((pf && pf.grade) || '').trim(); if(!rd) return '';
+    const m = (this.s && this.s.major) || {}, n = x=>String(x || '').replace(/\s/g, '').replace(/(학과|학부|전공|과)$/, '');
+    const md = n(m.dept), same = md && (n(rd).includes(md) || md.includes(n(rd))), gOk = !rg || !/^[1-4]$/.test(rg) || !m.grade || m.grade === rg;
+    if(same && gOk) return '';
+    const rgT = /^[1-4]$/.test(rg) ? ` · ${rg}학년` : rg ? ` · ${escapeHtml(rg)}` : '';
+    return `<p class="fl-hint" style="color:#9a4b12;background:#fff4e8;border-radius:8px;padding:8px 10px;margin-top:6px">${md || m.grade ? '입력한 값이 올린 커리어 인바디 리포트와 달라요. ' : ''}리포트에 적힌 전공·학년: <b>${escapeHtml(rd)}${rgT}</b> · 리포트 질문은 리포트 내용을 기준으로 나와요.
+      <button type="button" class="btn btn-outline" data-ibm style="margin-left:6px;padding:4px 10px;font-size:12.5px">리포트 값으로 채우기</button></p>`;
+  },
+  vProfile(){ const m = this.s.major; return `<div class="fl-grid"><div class="fl-f"><label for="fl-dept">전공 <span class="req">*</span></label><input id="fl-dept" value="${escapeHtml(m.dept)}" placeholder="학과·전공을 직접 입력해 주세요"></div>
     <div class="fl-f"><label for="fl-grade">학년 <span class="req">*</span></label><select id="fl-grade"><option value="">학년 선택</option>${['1','2','3','4'].map(g=>`<option value="${g}" ${g===m.grade?'selected':''}>${g}학년</option>`).join('')}</select></div></div>`; },
   vPrep(){ const s = this.s;
     if(s.kind === 'major') return `<h2 class="fl-h">전공·경험 면접 준비</h2><p class="fl-lead">전공 시험이 아니라, 내 경험을 얼마나 깊이 이해하고 설명하는지 확인하는 면접이에요.</p>${this.vProfile()}${this.vExps('수강 과목·프로젝트·활동')}${this.vDocs()}${this.vSummary()}`;
@@ -15452,8 +15485,9 @@ const StartFlow = {
     ${job ? `<section class="fl-sec fl-jobsec" aria-label="지원 기관·직무"><h3 class="fl-sec-t">지원할 곳</h3><p class="fl-hint">기관 정보가 없거나 확인되지 않으면 직무 일반 질문으로 대신해요.</p>${this.vJob()}</section>` : ''}
     <div class="fl-2col">
       <div class="fl-col">
-        <div class="fl-grid fl-grid2"><div class="fl-f"><label for="fl-dept">전공 · 필수</label><input id="fl-dept" value="${escapeHtml(m.dept)}" placeholder="예: 국어국문학과" autocomplete="off"></div>
+        <div class="fl-grid fl-grid2"><div class="fl-f"><label for="fl-dept">전공 · 필수</label><input id="fl-dept" value="${escapeHtml(m.dept)}" placeholder="학과·전공을 직접 입력해 주세요" autocomplete="off"></div>
           <div class="fl-f"><label for="fl-grade">학년 · 필수</label><select id="fl-grade"><option value="">선택해 주세요</option>${['1','2','3','4'].map(g=>`<option value="${g}" ${g===m.grade?'selected':''}>${g}학년</option>`).join('')}</select></div></div>
+        <div id="fl-ibm">${this.ibMajorHint()}</div>
         <div class="fl-f wide"><label for="fl-exp-now">이번에 이야기할 경험 · 선택</label><textarea id="fl-exp-now" rows="4" maxlength="120" placeholder="예: 팀 프로젝트에서 역할을 조율한 경험">${escapeHtml(s.expText || '')}</textarea>
           <p class="fl-hint">수업·프로젝트·활동 중 하나만 적어도 돼요. 떠오르지 않으면 건너뛸 수 있어요. 적은 경험은 '내 자료'에 저장돼 다음에도 쓸 수 있어요.</p></div>
       </div>
@@ -25727,13 +25761,14 @@ const StenoDialog = {
   /* ② 답변 → ③ 꼬리질문 */
   /** 2026-11-12z8 AI 꼬리질문을 쓸 수 있는지 (꺼져 있으면 규칙 꼬리질문이라 미리 만들 필요가 없음) */
   aiOn(){ try{ return !!(STEP1.useLlmFollowup && AiSwitch.on('ai_followup') && AiQuota.canUse()); }catch(_){ return false; } },
-  async followup({ fieldId, question, answer, reference, history, pressure, rootQuestion, followupsDone, qid, lang, force, qbType, qbQid, noRemember }){
+  async followup({ fieldId, question, answer, reference, history, pressure, rootQuestion, followupsDone, qid, lang, force, qbType, qbQid, ib, noRemember }){
     history = history || [];
     const tpl = m=>this.safeTemplate(m, answer, lang, force, followupsDone);   // 2026-11-05 템플릿 꼬리질문도 안전장치·영어 지킴
     if(STEP1.useLlmFollowup && AiSwitch.on('ai_followup') && AiQuota.canUse()){
       try{
         const root = rootQuestion || question;
         let qtype = null; try{ qtype = (typeof Rubric !== 'undefined' && Rubric.detectType) ? Rubric.edgeType(Rubric.detectType(root)) : null; }catch(e){}
+        if(ib && (qbType === 'experience' || qbType === 'knowledge')) qtype = qbType;   // 2026-11-26a 커리어 인바디 리포트 질문은 질문 문장이 아니라 근거로 유형을 정함
         const invoke = sb.functions.invoke('followup-question', {
           body: { field_id: fieldId, question, answer, reference: refForAi(reference), history, pressure: pressure || 'normal',
                   root_question: root, qtype: qtype || undefined, followups_done: (typeof followupsDone === 'number') ? followupsDone : undefined,
@@ -25741,7 +25776,7 @@ const StenoDialog = {
                   cv_summary: state.cvText ? state.cvText.slice(0, 1500) : null,
                   doc_focus: (typeof DocQ !== 'undefined') ? DocQ.srcOf(root) : null,
                   recent_followups: this.recentFollowups(),
-                  interview_id: state.demoResult ? null : String(state.startTime || ''), lang: lang === 'en' ? 'en' : undefined, force: force ? true : undefined, qb_type: qbType || undefined, qb_qid: qbQid || undefined, ...aiCtx(), ...(()=>{ try{ const nx = PersonaTalk.next(); return nx ? { persona: nx.id } : {}; }catch(_){ return {}; } })() },   // 2026-11-04c 꼬리질문을 할 면접관의 말투로
+                  interview_id: state.demoResult ? null : String(state.startTime || ''), lang: lang === 'en' ? 'en' : undefined, force: force ? true : undefined, qb_type: qbType || undefined, qb_qid: qbQid || undefined, ib_basis: (ib && ib.basis) ? String(ib.basis).slice(0, 80) : undefined, ib_why: (ib && ib.why) ? String(ib.why).slice(0, 100) : undefined, ...aiCtx(), ...(()=>{ try{ const nx = PersonaTalk.next(); return nx ? { persona: nx.id } : {}; }catch(_){ return {}; } })() },   // 2026-11-04c 꼬리질문을 할 면접관의 말투로
         });
         const timeout = new Promise((_, rej)=>setTimeout(()=>rej(new Error('응답 시간 초과 ('+(STEP1.followupTimeoutMs/1000)+'초)')), STEP1.followupTimeoutMs));
         const { data, error } = await Promise.race([invoke, timeout]);
@@ -27265,7 +27300,7 @@ const StenoLoop = {
             }
             return { force };
           };
-          const fuArgs = (ans, force)=>({ fieldId:this.opt.fieldId, question:lastAsk, answer:ans, reference:q.ref, history:history.slice(), pressure:this.opt.pressure, rootQuestion:q.q, followupsDone:f, qid:(q.id != null ? q.id : q.dbId), lang: langNow(), force, qbType: q.qtype || null, qbQid: (q.qb && q.qb.qid) || null, noRemember:true });
+          const fuArgs = (ans, force)=>({ fieldId:this.opt.fieldId, question:lastAsk, answer:ans, reference:q.ref, history:history.slice(), pressure:this.opt.pressure, rootQuestion:q.q, followupsDone:f, qid:(q.id != null ? q.id : q.dbId), lang: langNow(), force, qbType: q.qtype || null, qbQid: (q.qb && q.qb.qid) || null, ib: q.ib || null, noRemember:true });
           // 2026-11-12z8 꼬리질문 미리 만들기: 학생이 말을 멈추고 0.9초 조용하면 그때까지의 답으로 AI 꼬리질문을 미리 만듦.
           //   '답변 완료' 때 답이 같으면 그대로 쓰고, 다시 말을 이어 가면 버리고 다시 멈출 때 새로 만듦. 꼬리질문이 먼저 나오고 학생이 아직 조용하면 그 목소리도 미리 만듦
           const spec = { text:null, p:null, force:false, n:0 };
