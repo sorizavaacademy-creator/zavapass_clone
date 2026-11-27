@@ -13,7 +13,7 @@
 (function(){ try{ var p=location.pathname; if(!/\.github\.io$/i.test(location.hostname) && /^\/stenotalk(\/|$)/i.test(p)){ location.replace('/zavapass' + (p.replace(/^\/stenotalk/i,'') || '/') + location.search + location.hash); } }catch(e){} })();
 (function(){ try{ var p=location.pathname; if(/\/zavapass$/i.test(p)) history.replaceState(null,'',p+'/'+location.search+location.hash); }catch(e){} })();
 (function(){ try{ if(/[?&]v=\d+/.test(location.search)){ var q=new URLSearchParams(location.search); q.delete('v'); var qs=q.toString(); history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+location.hash); } }catch(e){} })();
-var APP_VERSION = '2026-11-26a';
+var APP_VERSION = '2026-11-27a';
 try{ if(localStorage.getItem('zp_cvd') === '1') document.documentElement.classList.add('cvd'); }catch(_){}   // 2026-11-17 색약용 화면 (깜빡임 없이 처음부터)
 </script>
 <script>
@@ -14239,11 +14239,20 @@ const Inbody = {
   },
   report(){ const r = this.d && this.d.report; return r && Array.isArray(r.questions) ? r : null; },
   /** 면접에 넣을 리포트 근거 질문 (AI가 리포트에서 만든 것. 없으면 빈 배열) */
-  reportQs(){ const r = this.report(); return r ? r.questions.filter(x=>x && x.q && x.basis) : []; },
+  // 2026-11-27a 학교가 권한 내용(개선 방향·추천 자격증·채용공고·추천 자기소개서)에서 나온 질문은 뺌. 11-26a 전에 만들어 저장된 질문에 남아 있음 (한림대 시연 4번 "C/C++ 사이드 프로젝트" 질문)
+  reportQs(){ const r = this.report(); return r ? r.questions.filter(x=>x && x.q && x.basis && !/(개선\s*방향|추천\s*자격|채용\s*공고|추천\s*자기\s*소개서|자기\s*소개서\s*추천)/.test(String(x.basis))) : []; },
+  /** 2026-11-27a 계정마다 아직 안 나온 질문 중에서, 근거 종류(이수 과목·경험·스킬…)가 겹치지 않게 고름.
+   *  예전에는 기기(브라우저)마다 순번(zp_ibq_off)을 돌려서, 시연 노트북에서 앞서 한 면접 횟수에 따라 5·6번째 질문이 나왔음 */
   pickReportQs(n){ const L = this.reportQs(); if(!L.length) return [];
-    let off = 0; try{ off = (+localStorage.getItem('zp_ibq_off') || 0) % L.length; localStorage.setItem('zp_ibq_off', String(off + n)); }catch(_){}
-    const out = []; for(let i = 0; i < Math.min(n, L.length); i++){ const x = L[(off + i) % L.length]; out.push({ q: x.q, spoken: x.q, ref: null, hint: x.why || '', qtype: /과목|이수|수강|스킬|자격/.test(String(x.basis || '')) ? 'knowledge' : 'experience', ib: { basis: x.basis, why: x.why || '' } }); }   // 2026-11-26a 리포트 질문은 '경험·역량'·'전공 지식'으로 (예전에는 유형이 없어 '가치관·태도'로 되물었음)
-    return out; },
+    const r = this.report() || {}, uid = (state.currentUser && state.currentUser.id) || 'anon', key = 'zp_ibq_used:' + uid + ':' + String(r.edited_at || r.at || '');
+    let used = []; try{ used = JSON.parse(localStorage.getItem(key) || '[]'); if(!Array.isArray(used)) used = []; localStorage.removeItem('zp_ibq_off'); }catch(_){ used = []; }
+    let fresh = L.filter(x=>!used.includes(x.q)), carry = [];
+    if(fresh.length < Math.min(n, L.length)){ carry = fresh; used = []; fresh = L.filter(x=>!carry.includes(x)); }   // 남은 것을 먼저 쓰고, 모자라면 처음부터
+    const sh = fresh.map(x=>[Math.random(), x]).sort((a, b)=>a[0] - b[0]).map(p=>p[1]), kind = x=>String(x.basis || '').split('·')[0].trim();
+    const pick = carry.slice(); sh.forEach(x=>{ if(pick.length < n && !pick.some(p=>kind(p) === kind(x))) pick.push(x); }); sh.forEach(x=>{ if(pick.length < n && !pick.includes(x)) pick.push(x); });
+    try{ localStorage.setItem(key, JSON.stringify(used.concat(pick.map(x=>x.q)).slice(-30))); }catch(_){}
+    return pick.map(x=>({ q: x.q, spoken: x.q, ref: null, hint: x.why || '', qtype: /과목|이수|수강|스킬|자격/.test(String(x.basis || '')) ? 'knowledge' : 'experience', ib: { basis: x.basis, why: x.why || '' } }));   // 2026-11-26a 리포트 질문은 '경험·역량'·'전공 지식'으로 (예전에는 유형이 없어 '가치관·태도'로 되물었음)
+  },
   bindReport(){
     const f = document.getElementById('ib-rp-file'); if(f) f.onchange = ()=>{ const file = f.files && f.files[0]; f.value = ''; if(file) this.readReport(file); };
     const del = document.getElementById('ib-rp-del'); if(del) del.onclick = ()=>this.removeReport();
@@ -20734,6 +20743,9 @@ const Rubric = {
     const rel = ctx.relevance || 0;
     if(/((질문이|무슨)\s*(잘\s*)?(뭔지|무슨|말씀인지|말인지|이해가)|뭘 묻는|무슨 말씀|무슨 뜻|다시 (한\s*번\s*)?말씀|못 들었|잘 못 알아|비슷한 상황이 뭔지)/.test(t) && core.length < 45) return 'confused';
     if(/(모르겠|잘 모르|알 수가 없|알 수 없|기억이 (잘\s*)?(안|나지)|생각이 (잘\s*)?안 나|모름|몰라)/.test(t) && core.length < 45) return 'dontKnow';
+    // 2026-11-27a "경험이 부족해서 고민해 봐야겠다"처럼 해 본 적이 없다고만 밝힌 짧은 답도 '모름'으로 (한림대 시연에서 '보통'으로 보고 더 캐물었음. 서버 followup-question의 answerKind와 같은 기준, 짧은 답만)
+    { const a = t.replace(/\s/g, '');
+      if(core.length < 70 && (/(경험|해본적|해본일|다뤄본적|써본적|배운적|지식|전문성)(이|은|도)?(많이|거의|아직|전혀|별로)?(부족|없|적(습|어|다|은|고))/.test(a) || /(고민해봐야|생각해봐야|생각해보아야|고민해보아야|공부해봐야|알아봐야|더배워야|강화한후에|학습한후에|배운후에)/.test(a))) return 'dontKnow'; }
     if(/^(네|예|아+|음+|어+)?[,.\s]*(없습니다|없어요|없어|아닙니다|아니요|딱히 없|특별히 없|그런 거 없|따로 없|없는 것 같습니다|지금 말한 부분이 다|그게 다|아닙니다\s*없습니다)/.test(t) && core.length < 30) return 'deny';
     if(/(면접\s*(종료|끝)|테스트|마이크|스피커|화면이|버튼|안 들려|들리진 않|인식(돼|이 안)|에이아이로|프레임|안\s*잡혀|잡히나|잡혀요\?|들리나요|들려요\?|녹음\s*(돼|되나|되고))/.test(t) && rel <= 1) return 'offtopic';
     if(core.length < 12 && rel === 0 && (/(감사|안녕|수고|^네|^예)/.test(t) || !/(니다|요)$/.test(t.replace(/[.!?\s]+$/,'')))) return 'nonanswer';
@@ -28026,8 +28038,12 @@ function aiCtx(){
   try{ if(typeof IvVoice !== 'undefined' && IvVoice.active()){ const pid = IvVoice.speakerId(); if(pid) out.persona = pid; } }catch(_){}
   try{ const cp = (typeof CompanyData !== 'undefined') ? CompanyData.active() : null; const id = cp && cp.talent && cp.talent.id; if(id && !/^(GOV|WEL)-/.test(id)) out.company_id = id; }catch(_){}
   if(fc.purpose) out.purpose = fc.purpose;
-  if(fc.job && fc.job.role) out.job_role = String(fc.job.role).slice(0, 40);
-  if(fc.major && fc.major.dept) out.major_dept = String(fc.major.dept).slice(0, 40);
+  // 2026-11-27a 커리어 인바디 리포트를 올렸으면 리포트의 전공을 화면에 입력한 학과보다 먼저 보냄. 희망 직무는 화면에서 고른 직무가 없을 때만 채움
+  //   (한림대 시연: 리포트는 AI 전공·시스템SW 엔지니어인데 화면 학과 '경영학과'가 꼬리질문·채점에 들어가 "경영학 수업에서 배운…" 피드백이 나옴)
+  let rp = null; try{ const h = (typeof Inbody !== 'undefined') ? Inbody.hal() : null; rp = h && h.profile; }catch(_){}
+  const rMajor = String((rp && rp.major) || '').trim(), rJob = String((rp && rp.target_job) || '').trim();
+  if(fc.job && fc.job.role) out.job_role = String(fc.job.role).slice(0, 40); else if(rJob) out.job_role = rJob.slice(0, 40);
+  if(rMajor) out.major_dept = rMajor.slice(0, 40); else if(fc.major && fc.major.dept) out.major_dept = String(fc.major.dept).slice(0, 40);
   if(Array.isArray(fc.interviewers) && fc.interviewers.length) out.persona_ids = fc.interviewers.slice(0, 10);
   return out;
 }
